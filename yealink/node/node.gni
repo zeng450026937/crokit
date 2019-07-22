@@ -1,0 +1,55 @@
+
+declare_args() {
+  node_host_binary = "node"
+}
+
+node_addon_configs = [
+  "//yealink/node:node_lib_header",
+  "//yealink/node:node_lib_config",
+]
+
+node_remove_configs = []
+
+if (is_clang) {
+  node_remove_configs += [
+    "//build/config/clang:find_bad_constructs",
+  ]
+}
+
+set_defaults("node_addon") {
+  win_delay_load_hook = true
+  configs = node_addon_configs
+}
+
+template("node_addon") {
+  loadable_module(target_name) {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "configs",
+                             "public_configs",
+                           ])
+
+    configs += invoker.configs
+    configs -= node_remove_configs
+
+    public_configs = []
+    if (defined(invoker.public_configs)) {
+      public_configs += invoker.public_configs
+    }
+
+    output_extension = "node"
+
+    defines = [
+      "NODE_GN_MODULE_NAME=" + target_name,
+      "BUILDING_NODE_EXTENSION"
+    ]
+
+    if (is_win && invoker.win_delay_load_hook) {
+      defines += [ "HOST_BINARY=" + "\"{{node_host_binary}}.exe\"" ]
+      sources += [
+        "//yealink/node/win_delay_load_hook.cc"
+      ]
+    }
+  }
+}

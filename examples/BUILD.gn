@@ -1,0 +1,26 @@
+import("//yealink/node/node.gni")
+
+group("examples") {
+  testonly = true
+  deps = [
+    ":hello",
+    ":hello_addon",
+  ]
+}
+
+executable("hello") {
+  sources = [
+    "hello.cc",
+  ]
+}
+
+node_addon("hello_addon") {
+  sources = [
+    "hello_node.cc",
+  ]
+  deps = [
+    "//gin",
+    "//yealink/native_mate",
+    "//yealink/native_mate:converters",
+  ]
+}

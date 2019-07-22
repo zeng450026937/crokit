@@ -1,0 +1,52 @@
+
+source_set("native_mate") {
+  deps = [
+    "//base",
+  ]
+  configs += [
+    "//yealink/node:node_lib_header",
+  ]
+  sources = [
+    "arguments.cc",
+    "arguments.h",
+    "compat.h",
+    "constructor.h",
+    "converter.cc",
+    "converter.h",
+    "dictionary.cc",
+    "dictionary.h",
+    "function_template.cc",
+    "function_template.h",
+    "handle.h",
+    "object_template_builder.cc",
+    "object_template_builder.h",
+    "persistent_dictionary.cc",
+    "persistent_dictionary.h",
+    "scoped_persistent.h",
+    "wrappable.cc",
+    "wrappable.h",
+    "wrappable_base.h",
+  ]
+}
+
+source_set("converters") {
+  deps = [
+    "//base",
+  ]
+  configs += [
+    "//yealink/node:node_lib_header",
+  ]
+  sources = [
+    "converters/callback.h",
+    "converters/callback.cc",
+    "converters/file_path_converter.h.h",
+    "converters/gurl_converter.h",
+    "converters/map_converter.h",
+    "converters/once_callback.h",
+    "converters/string16_converter.h",
+    "converters/v8_value_converter.h",
+    "converters/v8_value_converter.cc",
+    "converters/value_converter.h",
+    "converters/value_converter.cc",
+  ]
+}

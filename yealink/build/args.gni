@@ -1,0 +1,8 @@
+is_debug = true
+is_clang = false
+is_component_build = true
+enable_iterator_debugging = true
+use_custom_libcxx = false
+use_rtti = true
+
+enable_mojom_typemapping = false

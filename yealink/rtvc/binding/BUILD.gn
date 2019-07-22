@@ -1,0 +1,17 @@
+import("//yealink/node/node.gni")
+
+group("binding") {
+  deps = [
+    ":rtvc_binding"
+  ]
+}
+
+node_addon("rtvc_binding") {
+  sources = [
+    "hello_node.cc",
+  ]
+  deps = [
+    "//gin",
+    "//yealink/native_mate",
+  ]
+}
