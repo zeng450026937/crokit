@@ -32,35 +32,45 @@ const intptr_t* g_reference_table = nullptr;
 
 IsolateHolder::IsolateHolder(
     scoped_refptr<base::SingleThreadTaskRunner> task_runner,
-    IsolateType isolate_type)
+    IsolateType isolate_type,
+    v8::Isolate* isolate)
     : IsolateHolder(std::move(task_runner),
                     AccessMode::kSingleThread,
-                    isolate_type) {}
+                    isolate_type,
+                    isolate) {}
 
 IsolateHolder::IsolateHolder(
     scoped_refptr<base::SingleThreadTaskRunner> task_runner,
     AccessMode access_mode,
-    IsolateType isolate_type)
+    IsolateType isolate_type,
+    v8::Isolate* isolate)
     : IsolateHolder(std::move(task_runner),
                     access_mode,
                     kAllowAtomicsWait,
                     isolate_type,
-                    IsolateCreationMode::kNormal) {}
+                    IsolateCreationMode::kNormal,
+                    isolate) {}
 
 IsolateHolder::IsolateHolder(
     scoped_refptr<base::SingleThreadTaskRunner> task_runner,
     AccessMode access_mode,
     AllowAtomicsWaitMode atomics_wait_mode,
     IsolateType isolate_type,
-    IsolateCreationMode isolate_creation_mode)
-    : access_mode_(access_mode), isolate_type_(isolate_type) {
+    IsolateCreationMode isolate_creation_mode,
+    v8::Isolate* isolate)
+    : access_mode_(access_mode), isolate_(isolate), isolate_type_(isolate_type) {
   DCHECK(task_runner);
   DCHECK(task_runner->BelongsToCurrentThread());
 
   v8::ArrayBuffer::Allocator* allocator = g_array_buffer_allocator;
   CHECK(allocator) << "You need to invoke gin::IsolateHolder::Initialize first";
 
-  isolate_ = v8::Isolate::Allocate();
+  bool isolate_locally_generated = false;
+  if (!isolate_) {
+    isolate_locally_generated = true;
+    isolate_ = v8::Isolate::Allocate();
+  }
+
   isolate_data_.reset(
       new PerIsolateData(isolate_, allocator, access_mode_, task_runner));
   if (isolate_creation_mode == IsolateCreationMode::kCreateSnapshot) {
@@ -69,7 +79,7 @@ IsolateHolder::IsolateHolder(
     snapshot_creator_.reset(
         new v8::SnapshotCreator(isolate_, g_reference_table));
     DCHECK_EQ(isolate_, snapshot_creator_->GetIsolate());
-  } else {
+  } else if (isolate_locally_generated) {
     v8::Isolate::CreateParams params;
     params.code_event_handler = DebugImpl::GetJitCodeEventHandler();
     params.constraints.ConfigureDefaults(
@@ -120,9 +130,10 @@ IsolateHolder::~IsolateHolder() {
 // static
 void IsolateHolder::Initialize(ScriptMode mode,
                                v8::ArrayBuffer::Allocator* allocator,
-                               const intptr_t* reference_table) {
+                               const intptr_t* reference_table,
+                               IsolateType isolate_type) {
   CHECK(allocator);
-  V8Initializer::Initialize(mode);
+  V8Initializer::Initialize(mode, isolate_type);
   g_array_buffer_allocator = allocator;
   g_reference_table = reference_table;
 }

@@ -61,21 +61,24 @@ class GIN_EXPORT IsolateHolder {
     kBlinkMainThread,
     kBlinkWorkerThread,
     kTest,
-    kUtility
+    kUtility,
+    kNode
   };
 
   explicit IsolateHolder(
       scoped_refptr<base::SingleThreadTaskRunner> task_runner,
-      IsolateType isolate_type);
+      IsolateType isolate_type, v8::Isolate* isolate = nullptr);
   IsolateHolder(scoped_refptr<base::SingleThreadTaskRunner> task_runner,
                 AccessMode access_mode,
-                IsolateType isolate_type);
+                IsolateType isolate_type,
+                v8::Isolate* isolate = nullptr);
   IsolateHolder(
       scoped_refptr<base::SingleThreadTaskRunner> task_runner,
       AccessMode access_mode,
       AllowAtomicsWaitMode atomics_wait_mode,
       IsolateType isolate_type,
-      IsolateCreationMode isolate_creation_mode = IsolateCreationMode::kNormal);
+      IsolateCreationMode isolate_creation_mode = IsolateCreationMode::kNormal,
+      v8::Isolate* isolate = nullptr);
   ~IsolateHolder();
 
   // Should be invoked once before creating IsolateHolder instances to
@@ -91,7 +94,8 @@ class GIN_EXPORT IsolateHolder {
   // reference pointers. Otherwise, it can be nullptr.
   static void Initialize(ScriptMode mode,
                          v8::ArrayBuffer::Allocator* allocator,
-                         const intptr_t* reference_table = nullptr);
+                         const intptr_t* reference_table = nullptr,
+                         IsolateType isolate_type = IsolateType::kBlinkMainThread);
 
   v8::Isolate* isolate() { return isolate_; }
 

@@ -8,9 +8,13 @@ group("binding") {
 
 node_addon("rtvc_binding") {
   sources = [
-    "hello_node.cc",
+    "index.cc",
+    "null_task_runner.h",
+    "user_agent.h",
+    "user_agent.cc",
   ]
   deps = [
+    "//base",
     "//gin",
     "//yealink/native_mate",
   ]

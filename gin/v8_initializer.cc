@@ -204,8 +204,12 @@ enum LoadV8FileResult {
 }  // namespace
 
 // static
-void V8Initializer::Initialize(IsolateHolder::ScriptMode mode) {
+void V8Initializer::Initialize(IsolateHolder::ScriptMode mode,
+                               IsolateHolder::IsolateType type) {
   static bool v8_is_initialized = false;
+  if (type == IsolateHolder::IsolateType::kNode) {
+    v8_is_initialized = true;
+  }
   if (v8_is_initialized)
     return;
 

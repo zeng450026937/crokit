@@ -46,6 +46,7 @@ export interface Account {
   get(key: string): any;
 
   // register account so it can be founded by server
+  // aka online
   register(): void;
   unregister(): void;
 
