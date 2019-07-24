@@ -39,7 +39,6 @@ void UserAgent::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("registered", &UserAgent::registered)
       .SetMethod("call", &UserAgent::Call)
       .SetMethod("send", &UserAgent::Send);
-  LOG(INFO) << "BuildPrototype";
 }
 
 UserAgent::UserAgent(v8::Isolate* isolate,

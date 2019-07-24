@@ -96,8 +96,14 @@ class ArrayBuffer::Private : public base::RefCounted<ArrayBuffer::Private> {
   v8::Isolate* isolate_;
   void* buffer_;
   size_t length_;
+  #if (V8_MAJOR_VERSION == 6)
+  void* allocation_base_;
+  size_t allocation_length_;
+  v8::ArrayBuffer::Allocator::AllocationMode allocation_mode_;
+  #elif (V8_MAJOR_VERSION == 7)
   DataDeleter deleter_;
   void* deleter_data_;
+  #endif
 };
 
 scoped_refptr<ArrayBuffer::Private> ArrayBuffer::Private::From(
@@ -118,10 +124,25 @@ ArrayBuffer::Private::Private(v8::Isolate* isolate,
   // Take ownership of the array buffer.
   CHECK(!array->IsExternal());
   v8::ArrayBuffer::Contents contents = array->Externalize();
+  #if (V8_MAJOR_VERSION == 6)
+  // We shouldn't receive large page-allocated array buffers.
+  CHECK_NE(v8::ArrayBuffer::Allocator::AllocationMode::kReservation,
+           contents.AllocationMode());
+  #endif
   buffer_ = contents.Data();
   length_ = contents.ByteLength();
+  #if (V8_MAJOR_VERSION == 6)
+  allocation_base_ = contents.AllocationBase();
+  allocation_length_ = contents.AllocationLength();
+
+  DCHECK(reinterpret_cast<uintptr_t>(allocation_base_) <=
+         reinterpret_cast<uintptr_t>(buffer_));
+  DCHECK(reinterpret_cast<uintptr_t>(buffer_) + length_ <=
+         reinterpret_cast<uintptr_t>(allocation_base_) + allocation_length_);
+  #elif (V8_MAJOR_VERSION == 7)
   deleter_ = contents.Deleter();
   deleter_data_ = contents.DeleterData();
+  #endif
 
   array->SetAlignedPointerInInternalField(kWrapperInfoIndex,
                                           &g_array_buffer_wrapper_info);
@@ -133,7 +154,12 @@ ArrayBuffer::Private::Private(v8::Isolate* isolate,
 }
 
 ArrayBuffer::Private::~Private() {
+  #if (V8_MAJOR_VERSION == 6)
+  PerIsolateData::From(isolate_)->allocator()->Free(allocation_base_,
+                                                    allocation_length_);
+  #elif (V8_MAJOR_VERSION == 7)
   deleter_(buffer_, length_, deleter_data_);
+  #endif
 }
 
 void ArrayBuffer::Private::FirstWeakCallback(

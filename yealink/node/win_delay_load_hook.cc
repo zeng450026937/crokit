@@ -13,6 +13,10 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#ifndef HOST_BINARY
+#define HOST_BINARY "node.exe"
+#endif
+
 #include <windows.h>
 
 #include <delayimp.h>

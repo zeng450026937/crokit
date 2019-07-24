@@ -42,11 +42,12 @@ template("node_addon") {
 
     defines = [
       "NODE_GN_MODULE_NAME=" + target_name,
+      "NODE_GYP_MODULE_NAME=" + target_name,
       "BUILDING_NODE_EXTENSION"
     ]
 
     if (is_win && invoker.win_delay_load_hook) {
-      defines += [ "HOST_BINARY=" + "\"{{node_host_binary}}.exe\"" ]
+      defines += [ "HOST_BINARY=\"${node_host_binary}.exe\"" ]
       sources += [
         "//yealink/node/win_delay_load_hook.cc"
       ]

@@ -58,16 +58,18 @@ IsolateHolder::IsolateHolder(
     IsolateType isolate_type,
     IsolateCreationMode isolate_creation_mode,
     v8::Isolate* isolate)
-    : access_mode_(access_mode), isolate_(isolate), isolate_type_(isolate_type) {
+    : access_mode_(access_mode),
+      isolate_(isolate),
+      isolate_locally_generated_(!isolate),
+      isolate_type_(isolate_type) {
   DCHECK(task_runner);
   DCHECK(task_runner->BelongsToCurrentThread());
 
   v8::ArrayBuffer::Allocator* allocator = g_array_buffer_allocator;
   CHECK(allocator) << "You need to invoke gin::IsolateHolder::Initialize first";
 
-  bool isolate_locally_generated = false;
   if (!isolate_) {
-    isolate_locally_generated = true;
+    isolate_locally_generated_ = true;
     isolate_ = v8::Isolate::Allocate();
   }
 
@@ -79,7 +81,7 @@ IsolateHolder::IsolateHolder(
     snapshot_creator_.reset(
         new v8::SnapshotCreator(isolate_, g_reference_table));
     DCHECK_EQ(isolate_, snapshot_creator_->GetIsolate());
-  } else if (isolate_locally_generated) {
+  } else if (isolate_locally_generated_) {
     v8::Isolate::CreateParams params;
     params.code_event_handler = DebugImpl::GetJitCodeEventHandler();
     params.constraints.ConfigureDefaults(
@@ -97,6 +99,7 @@ IsolateHolder::IsolateHolder(
   isolate_memory_dump_provider_.reset(
       new V8IsolateMemoryDumpProvider(this, task_runner));
 #if defined(OS_WIN)
+  if (isolate_type_ != IsolateType::kNode)
   {
     void* code_range;
     size_t size;
@@ -111,6 +114,7 @@ IsolateHolder::IsolateHolder(
 
 IsolateHolder::~IsolateHolder() {
 #if defined(OS_WIN)
+  if (isolate_type_ != IsolateType::kNode)
   {
     void* code_range;
     size_t size;
@@ -123,7 +127,9 @@ IsolateHolder::~IsolateHolder() {
 #endif
   isolate_memory_dump_provider_.reset();
   isolate_data_.reset();
-  isolate_->Dispose();
+  if (isolate_locally_generated_) {
+    isolate_->Dispose();
+  }
   isolate_ = nullptr;
 }
 

@@ -1,8 +1,9 @@
 let binding
 try {
-  binding = require('../out/debug/rtvc_binding');
+  binding = require('D:\\workspace\\crokit\\src\\out\\debug\\rtvc_binding.node');
 } catch (error) {
-  console.error(error);
+  console.log(error);
+  return;
 }
 
 console.log(binding);
