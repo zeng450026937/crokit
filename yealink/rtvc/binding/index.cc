@@ -10,12 +10,17 @@
 #include "gin/array_buffer.h"
 
 #include "yealink/native_mate/dictionary.h"
+#include "yealink/rtvc/binding/audio_manager_binding.h"
+#include "yealink/rtvc/binding/libuv_task_runner.h"
 #include "yealink/rtvc/binding/null_task_runner.h"
-#include "yealink/rtvc/binding/user_agent.h"
+#include "yealink/rtvc/binding/user_agent_binding.h"
+#include "yealink/rtvc/binding/video_manager_binding.h"
 
 namespace {
 
-using yealink::node::UserAgent;
+using yealink::rtvc::AudioManagerBinding;
+using yealink::rtvc::UserAgentBinding;
+using yealink::rtvc::VideoManagerBinding;
 
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
@@ -45,10 +50,14 @@ void Initialize(v8::Local<v8::Object> exports,
   mate::Dictionary dict(isolate, exports);
   dict.Set("version", "1.0.0-alpha");
 
-  UserAgent::SetConstructor(isolate, base::BindRepeating(&UserAgent::New));
-  dict.Set("UserAgent", UserAgent::GetConstructor(isolate)
+  UserAgentBinding::SetConstructor(isolate,
+                                   base::BindRepeating(&UserAgentBinding::New));
+  dict.Set("UserAgent", UserAgentBinding::GetConstructor(isolate)
                             ->GetFunction(context)
                             .ToLocalChecked());
+
+  dict.Set("audioManager", AudioManagerBinding::Create(isolate));
+  dict.Set("videoManager", VideoManagerBinding::Create(isolate));
 }
 
 }  // namespace

@@ -1,34 +1,21 @@
-#ifndef API_VIDEO_VIDEO_FRAME_BUFFER_H_
-#define API_VIDEO_VIDEO_FRAME_BUFFER_H_
+#ifndef YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_BUFFER_H_
+#define YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_BUFFER_H_
 
 #include <stdint.h>
 
-#include "api/scoped_refptr.h"
-#include "rtc_base/ref_count.h"
+#include "base/memory/ref_counted.h"
+#include "base/memory/scoped_refptr.h"
 
-namespace webrtc {
+namespace yealink {
 
-class I420BufferInterface;
-class I420ABufferInterface;
-class I444BufferInterface;
-class I010BufferInterface;
+namespace rtvc {
 
-// Base class for frame buffers of different types of pixel format and storage.
-// The tag in type() indicates how the data is represented, and each type is
-// implemented as a subclass. To access the pixel data, call the appropriate
-// GetXXX() function, where XXX represents the type. There is also a function
-// ToI420() that returns a frame buffer in I420 format, converting from the
-// underlying representation if necessary. I420 is the most widely accepted
-// format and serves as a fallback for video sinks that can only handle I420,
-// e.g. the internal WebRTC software encoders. A special enum value 'kNative' is
-// provided for external clients to implement their own frame buffer
-// representations, e.g. as textures. The external client can produce such
-// native frame buffers from custom video sources, and then cast it back to the
-// correct subclass in custom video sinks. The purpose of this is to improve
-// performance by providing an optimized path without intermediate conversions.
-// Frame metadata such as rotation and timestamp are stored in
-// webrtc::VideoFrame, and not here.
-class VideoFrameBuffer : public rtc::RefCountInterface {
+class I420Buffer;
+class I420ABuffer;
+class I444Buffer;
+class I010Buffer;
+
+class VideoFrameBuffer : public base::RefCounted<VideoFrameBuffer> {
  public:
   // New frame buffer types will be added conservatively when there is an
   // opportunity to optimize the path between some pair of video source and
@@ -53,23 +40,25 @@ class VideoFrameBuffer : public rtc::RefCountInterface {
   // in another format, a conversion will take place. All implementations must
   // provide a fallback to I420 for compatibility with e.g. the internal WebRTC
   // software encoders.
-  virtual rtc::scoped_refptr<I420BufferInterface> ToI420() = 0;
+  virtual scoped_refptr<I420Buffer> ToI420() = 0;
 
   // These functions should only be called if type() is of the correct type.
   // Calling with a different type will result in a crash.
   // TODO(magjed): Return raw pointers for GetI420 once deprecated interface is
   // removed.
-  rtc::scoped_refptr<I420BufferInterface> GetI420();
-  rtc::scoped_refptr<const I420BufferInterface> GetI420() const;
-  I420ABufferInterface* GetI420A();
-  const I420ABufferInterface* GetI420A() const;
-  I444BufferInterface* GetI444();
-  const I444BufferInterface* GetI444() const;
-  I010BufferInterface* GetI010();
-  const I010BufferInterface* GetI010() const;
+  scoped_refptr<I420Buffer> GetI420();
+  scoped_refptr<const I420Buffer> GetI420() const;
+  I420ABuffer* GetI420A();
+  const I420ABuffer* GetI420A() const;
+  I444Buffer* GetI444();
+  const I444Buffer* GetI444() const;
+  I010Buffer* GetI010();
+  const I010Buffer* GetI010() const;
 
  protected:
-  ~VideoFrameBuffer() override {}
+  friend class base::RefCounted<VideoFrameBuffer>;
+
+  virtual ~VideoFrameBuffer() = default;
 };
 
 // This interface represents planar formats.
@@ -85,7 +74,7 @@ class PlanarYuvBuffer : public VideoFrameBuffer {
   virtual int StrideV() const = 0;
 
  protected:
-  ~PlanarYuvBuffer() override {}
+  ~PlanarYuvBuffer() override = default;
 };
 
 // This interface represents 8-bit color depth formats: Type::kI420,
@@ -99,33 +88,35 @@ class PlanarYuv8Buffer : public PlanarYuvBuffer {
   virtual const uint8_t* DataV() const = 0;
 
  protected:
-  ~PlanarYuv8Buffer() override {}
+  ~PlanarYuv8Buffer() override = default;
 };
 
-class I420BufferInterface : public PlanarYuv8Buffer {
+class I420Buffer : public PlanarYuv8Buffer {
  public:
   Type type() const override;
 
   int ChromaWidth() const final;
   int ChromaHeight() const final;
 
-  rtc::scoped_refptr<I420BufferInterface> ToI420() final;
+  scoped_refptr<I420Buffer> ToI420() final;
 
  protected:
-  ~I420BufferInterface() override {}
+  friend class VideoFrameBuffer;
+
+  ~I420Buffer() override = default;
 };
 
-class I420ABufferInterface : public I420BufferInterface {
+class I420ABuffer : public I420Buffer {
  public:
   Type type() const final;
   virtual const uint8_t* DataA() const = 0;
   virtual int StrideA() const = 0;
 
  protected:
-  ~I420ABufferInterface() override {}
+  ~I420ABuffer() override = default;
 };
 
-class I444BufferInterface : public PlanarYuv8Buffer {
+class I444Buffer : public PlanarYuv8Buffer {
  public:
   Type type() const final;
 
@@ -133,7 +124,7 @@ class I444BufferInterface : public PlanarYuv8Buffer {
   int ChromaHeight() const final;
 
  protected:
-  ~I444BufferInterface() override {}
+  ~I444Buffer() override = default;
 };
 
 // This interface represents 8-bit to 16-bit color depth formats: Type::kI010.
@@ -146,12 +137,12 @@ class PlanarYuv16BBuffer : public PlanarYuvBuffer {
   virtual const uint16_t* DataV() const = 0;
 
  protected:
-  ~PlanarYuv16BBuffer() override {}
+  ~PlanarYuv16BBuffer() override = default;
 };
 
 // Represents Type::kI010, allocates 16 bits per pixel and fills 10 least
 // significant bits with color information.
-class I010BufferInterface : public PlanarYuv16BBuffer {
+class I010Buffer : public PlanarYuv16BBuffer {
  public:
   Type type() const override;
 
@@ -159,9 +150,11 @@ class I010BufferInterface : public PlanarYuv16BBuffer {
   int ChromaHeight() const final;
 
  protected:
-  ~I010BufferInterface() override {}
+  ~I010Buffer() override = default;
 };
 
-}  // namespace webrtc
+}  // namespace rtvc
 
-#endif  // API_VIDEO_VIDEO_FRAME_BUFFER_H_
+}  // namespace yealink
+
+#endif  // YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_BUFFER_H_

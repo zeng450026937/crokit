@@ -8,8 +8,8 @@
 #include <utility>
 #include <vector>
 
-#include "yealink/native_mate/converters/string16_converter.h"
 #include "yealink/native_mate/converter.h"
+#include "yealink/native_mate/converters/string16_converter.h"
 
 namespace mate {
 

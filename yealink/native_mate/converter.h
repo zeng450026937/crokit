@@ -214,7 +214,7 @@ struct Converter<std::vector<T>> {
       result
           ->Set(context, static_cast<int>(i),
                 Converter<T>::ToV8(isolate, val[i]))
-          .Check();
+          .ToChecked();
     }
     return result;
   }

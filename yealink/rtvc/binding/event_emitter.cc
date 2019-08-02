@@ -41,9 +41,8 @@ v8::Local<v8::Object> CreateEventObject(v8::Isolate* isolate) {
 
 namespace internal {
 
-v8::Local<v8::Object> CreateJSEvent(
-    v8::Isolate* isolate,
-    v8::Local<v8::Object> object) {
+v8::Local<v8::Object> CreateJSEvent(v8::Isolate* isolate,
+                                    v8::Local<v8::Object> object) {
   v8::Local<v8::Object> event = CreateEventObject(isolate);
   mate::Dictionary dict(isolate, event);
   dict.Set("sender", object);

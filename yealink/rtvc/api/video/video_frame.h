@@ -1,30 +1,17 @@
-/*
- *  Copyright (c) 2014 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
-
-#ifndef API_VIDEO_VIDEO_FRAME_H_
-#define API_VIDEO_VIDEO_FRAME_H_
+#ifndef YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_H_
+#define YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_H_
 
 #include <stdint.h>
 
-#include "absl/types/optional.h"
-#include "api/scoped_refptr.h"
-#include "api/video/color_space.h"
-#include "api/video/hdr_metadata.h"
-#include "api/video/video_frame_buffer.h"
-#include "api/video/video_rotation.h"
-#include "rtc_base/checks.h"
-#include "rtc_base/system/rtc_export.h"
+#include "base/optional.h"
+#include "yealink/rtvc/api/video/video_frame_buffer.h"
+#include "yealink/rtvc/api/video/video_rotation.h"
 
-namespace webrtc {
+namespace yealink {
 
-class RTC_EXPORT VideoFrame {
+namespace rtvc {
+
+class VideoFrame {
  public:
   struct UpdateRect {
     int offset_x;
@@ -52,33 +39,30 @@ class RTC_EXPORT VideoFrame {
 
     VideoFrame build();
     Builder& set_video_frame_buffer(
-        const rtc::scoped_refptr<VideoFrameBuffer>& buffer);
+        const scoped_refptr<VideoFrameBuffer>& buffer);
     Builder& set_timestamp_ms(int64_t timestamp_ms);
     Builder& set_timestamp_us(int64_t timestamp_us);
     Builder& set_timestamp_rtp(uint32_t timestamp_rtp);
     Builder& set_ntp_time_ms(int64_t ntp_time_ms);
     Builder& set_rotation(VideoRotation rotation);
-    Builder& set_color_space(const absl::optional<ColorSpace>& color_space);
-    Builder& set_color_space(const ColorSpace* color_space);
     Builder& set_id(uint16_t id);
     Builder& set_update_rect(const UpdateRect& update_rect);
 
    private:
     uint16_t id_ = 0;
-    rtc::scoped_refptr<webrtc::VideoFrameBuffer> video_frame_buffer_;
+    scoped_refptr<VideoFrameBuffer> video_frame_buffer_;
     int64_t timestamp_us_ = 0;
     uint32_t timestamp_rtp_ = 0;
     int64_t ntp_time_ms_ = 0;
     VideoRotation rotation_ = kVideoRotation_0;
-    absl::optional<ColorSpace> color_space_;
-    absl::optional<UpdateRect> update_rect_;
+    base::Optional<UpdateRect> update_rect_;
   };
 
   // To be deprecated. Migrate all use to Builder.
-  VideoFrame(const rtc::scoped_refptr<VideoFrameBuffer>& buffer,
-             webrtc::VideoRotation rotation,
+  VideoFrame(const scoped_refptr<VideoFrameBuffer>& buffer,
+             VideoRotation rotation,
              int64_t timestamp_us);
-  VideoFrame(const rtc::scoped_refptr<VideoFrameBuffer>& buffer,
+  VideoFrame(const scoped_refptr<VideoFrameBuffer>& buffer,
              uint32_t timestamp_rtp,
              int64_t render_time_ms,
              VideoRotation rotation);
@@ -107,7 +91,7 @@ class RTC_EXPORT VideoFrame {
   uint16_t id() const { return id_; }
   void set_id(uint16_t id) { id_ = id; }
 
-  // System monotonic clock, same timebase as rtc::TimeMicros().
+  // System monotonic clock, same timebase as TimeMicros().
   int64_t timestamp_us() const { return timestamp_us_; }
   void set_timestamp_us(int64_t timestamp_us) { timestamp_us_ = timestamp_us; }
 
@@ -146,19 +130,13 @@ class RTC_EXPORT VideoFrame {
   VideoRotation rotation() const { return rotation_; }
   void set_rotation(VideoRotation rotation) { rotation_ = rotation; }
 
-  // Get color space when available.
-  const absl::optional<ColorSpace>& color_space() const { return color_space_; }
-  void set_color_space(const absl::optional<ColorSpace>& color_space) {
-    color_space_ = color_space;
-  }
-
   // Get render time in milliseconds.
   // TODO(nisse): Deprecated. Migrate all users to timestamp_us().
   int64_t render_time_ms() const;
 
   // Return the underlying buffer. Never nullptr for a properly
   // initialized VideoFrame.
-  rtc::scoped_refptr<webrtc::VideoFrameBuffer> video_frame_buffer() const;
+  scoped_refptr<VideoFrameBuffer> video_frame_buffer() const;
 
   // TODO(nisse): Deprecated.
   // Return true if the frame is stored in a texture.
@@ -171,36 +149,36 @@ class RTC_EXPORT VideoFrame {
   UpdateRect update_rect() const { return update_rect_; }
   // Rectangle must be within the frame dimensions.
   void set_update_rect(const VideoFrame::UpdateRect& update_rect) {
-    RTC_DCHECK_GE(update_rect.offset_x, 0);
-    RTC_DCHECK_GE(update_rect.offset_y, 0);
-    RTC_DCHECK_LE(update_rect.offset_x + update_rect.width, width());
-    RTC_DCHECK_LE(update_rect.offset_y + update_rect.height, height());
+    DCHECK_GE(update_rect.offset_x, 0);
+    DCHECK_GE(update_rect.offset_y, 0);
+    DCHECK_LE(update_rect.offset_x + update_rect.width, width());
+    DCHECK_LE(update_rect.offset_y + update_rect.height, height());
     update_rect_ = update_rect;
   }
 
  private:
   VideoFrame(uint16_t id,
-             const rtc::scoped_refptr<VideoFrameBuffer>& buffer,
+             const scoped_refptr<VideoFrameBuffer>& buffer,
              int64_t timestamp_us,
              uint32_t timestamp_rtp,
              int64_t ntp_time_ms,
              VideoRotation rotation,
-             const absl::optional<ColorSpace>& color_space,
-             const absl::optional<UpdateRect>& update_rect);
+             const base::Optional<UpdateRect>& update_rect);
 
   uint16_t id_;
   // An opaque reference counted handle that stores the pixel data.
-  rtc::scoped_refptr<webrtc::VideoFrameBuffer> video_frame_buffer_;
+  scoped_refptr<VideoFrameBuffer> video_frame_buffer_;
   uint32_t timestamp_rtp_;
   int64_t ntp_time_ms_;
   int64_t timestamp_us_;
   VideoRotation rotation_;
-  absl::optional<ColorSpace> color_space_;
   // Updated since the last frame area. Unless set explicitly, will always be
   // a full frame rectangle.
   UpdateRect update_rect_;
 };
 
-}  // namespace webrtc
+}  // namespace rtvc
 
-#endif  // API_VIDEO_VIDEO_FRAME_H_
+}  // namespace yealink
+
+#endif  // YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_H_

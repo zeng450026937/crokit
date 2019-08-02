@@ -38,6 +38,11 @@ template("node_addon") {
       public_configs += invoker.public_configs
     }
 
+    ldflags = []
+    if (defined(invoker.ldflags)) {
+      ldflags += invoker.ldflags
+    }
+
     output_extension = "node"
 
     defines = [
@@ -50,6 +55,9 @@ template("node_addon") {
       defines += [ "HOST_BINARY=\"${node_host_binary}.exe\"" ]
       sources += [
         "//yealink/node/win_delay_load_hook.cc"
+      ]
+      ldflags += [
+        "/DELAYLOAD:${node_host_binary}.exe",
       ]
     }
   }

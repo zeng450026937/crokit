@@ -8,17 +8,16 @@
 #include <utility>
 #include <vector>
 
-#include "yealink/rtvc/binding/event_emitter_caller.h"
 #include "base/optional.h"
 #include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/binding/event_emitter_caller.h"
 
 namespace mate {
 
 namespace internal {
 
-v8::Local<v8::Object> CreateJSEvent(
-    v8::Isolate* isolate,
-    v8::Local<v8::Object> object);
+v8::Local<v8::Object> CreateJSEvent(v8::Isolate* isolate,
+                                    v8::Local<v8::Object> object);
 v8::Local<v8::Object> CreateCustomEvent(v8::Isolate* isolate,
                                         v8::Local<v8::Object> object,
                                         v8::Local<v8::Object> event);

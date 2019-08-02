@@ -1,64 +1,54 @@
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
-
-#ifndef API_VIDEO_I420_BUFFER_H_
-#define API_VIDEO_I420_BUFFER_H_
+#ifndef YEALINK_RTVC_API_VIDEO_I420_BUFFER_H_
+#define YEALINK_RTVC_API_VIDEO_I420_BUFFER_H_
 
 #include <stdint.h>
 #include <memory>
 
-#include "api/scoped_refptr.h"
-#include "api/video/video_frame_buffer.h"
-#include "api/video/video_rotation.h"
-#include "rtc_base/memory/aligned_malloc.h"
-#include "rtc_base/system/rtc_export.h"
+#include "base/memory/aligned_memory.h"
+#include "base/memory/scoped_refptr.h"
+#include "yealink/rtvc/api/video/video_frame_buffer.h"
+#include "yealink/rtvc/api/video/video_rotation.h"
 
-namespace webrtc {
+namespace yealink {
 
-// Plain I420 buffer in standard memory.
-class RTC_EXPORT I420Buffer : public I420BufferInterface {
+namespace rtvc {
+
+class I420BufferImpl : public I420Buffer {
  public:
-  static rtc::scoped_refptr<I420Buffer> Create(int width, int height);
-  static rtc::scoped_refptr<I420Buffer> Create(int width,
-                                               int height,
-                                               int stride_y,
-                                               int stride_u,
-                                               int stride_v);
+  static scoped_refptr<I420BufferImpl> Create(int width, int height);
+  static scoped_refptr<I420BufferImpl> Create(int width,
+                                              int height,
+                                              int stride_y,
+                                              int stride_u,
+                                              int stride_v);
 
   // Create a new buffer and copy the pixel data.
-  static rtc::scoped_refptr<I420Buffer> Copy(const I420BufferInterface& buffer);
+  static scoped_refptr<I420BufferImpl> Copy(const I420Buffer& buffer);
   // Deprecated.
-  static rtc::scoped_refptr<I420Buffer> Copy(const VideoFrameBuffer& buffer) {
+  static scoped_refptr<I420BufferImpl> Copy(const VideoFrameBuffer& buffer) {
     return Copy(*buffer.GetI420());
   }
 
-  static rtc::scoped_refptr<I420Buffer> Copy(int width,
-                                             int height,
-                                             const uint8_t* data_y,
-                                             int stride_y,
-                                             const uint8_t* data_u,
-                                             int stride_u,
-                                             const uint8_t* data_v,
-                                             int stride_v);
+  static scoped_refptr<I420BufferImpl> Copy(int width,
+                                            int height,
+                                            const uint8_t* data_y,
+                                            int stride_y,
+                                            const uint8_t* data_u,
+                                            int stride_u,
+                                            const uint8_t* data_v,
+                                            int stride_v);
 
   // Returns a rotated copy of |src|.
-  static rtc::scoped_refptr<I420Buffer> Rotate(const I420BufferInterface& src,
-                                               VideoRotation rotation);
+  static scoped_refptr<I420BufferImpl> Rotate(const I420Buffer& src,
+                                              VideoRotation rotation);
   // Deprecated.
-  static rtc::scoped_refptr<I420Buffer> Rotate(const VideoFrameBuffer& src,
-                                               VideoRotation rotation) {
+  static scoped_refptr<I420BufferImpl> Rotate(const VideoFrameBuffer& src,
+                                              VideoRotation rotation) {
     return Rotate(*src.GetI420(), rotation);
   }
 
   // Sets the buffer to all black.
-  static void SetBlack(I420Buffer* buffer);
+  static void SetBlack(I420BufferImpl* buffer);
 
   // Sets all three planes to all zeros. Used to work around for
   // quirks in memory checkers
@@ -84,7 +74,7 @@ class RTC_EXPORT I420Buffer : public I420BufferInterface {
 
   // Scale the cropped area of |src| to the size of |this| buffer, and
   // write the result into |this|.
-  void CropAndScaleFrom(const I420BufferInterface& src,
+  void CropAndScaleFrom(const I420Buffer& src,
                         int offset_x,
                         int offset_y,
                         int crop_width,
@@ -92,22 +82,24 @@ class RTC_EXPORT I420Buffer : public I420BufferInterface {
 
   // The common case of a center crop, when needed to adjust the
   // aspect ratio without distorting the image.
-  void CropAndScaleFrom(const I420BufferInterface& src);
+  void CropAndScaleFrom(const I420Buffer& src);
 
   // Scale all of |src| to the size of |this| buffer, with no cropping.
-  void ScaleFrom(const I420BufferInterface& src);
+  void ScaleFrom(const I420Buffer& src);
 
   // Pastes whole picture to canvas at (offset_row, offset_col).
   // Offsets and picture dimensions must be even.
-  void PasteFrom(const I420BufferInterface& picture,
-                 int offset_col,
-                 int offset_row);
+  void PasteFrom(const I420Buffer& picture, int offset_col, int offset_row);
 
  protected:
-  I420Buffer(int width, int height);
-  I420Buffer(int width, int height, int stride_y, int stride_u, int stride_v);
+  I420BufferImpl(int width, int height);
+  I420BufferImpl(int width,
+                 int height,
+                 int stride_y,
+                 int stride_u,
+                 int stride_v);
 
-  ~I420Buffer() override;
+  ~I420BufferImpl() override;
 
  private:
   const int width_;
@@ -115,9 +107,11 @@ class RTC_EXPORT I420Buffer : public I420BufferInterface {
   const int stride_y_;
   const int stride_u_;
   const int stride_v_;
-  const std::unique_ptr<uint8_t, AlignedFreeDeleter> data_;
+  const std::unique_ptr<uint8_t, base::AlignedFreeDeleter> data_;
 };
 
-}  // namespace webrtc
+}  // namespace rtvc
 
-#endif  // API_VIDEO_I420_BUFFER_H_
+}  // namespace yealink
+
+#endif  // YEALINK_RTVC_API_VIDEO_I420_BUFFER_H_

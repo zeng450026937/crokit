@@ -1,6 +1,73 @@
+import("//yealink/node/node.gni")
 
 group("rtvc") {
   deps = [
-    "binding"
+    ":rtvc_binding",
+    ":rtvc_lib",
+  ]
+}
+
+source_set("rtvc_api") {
+  sources = [
+    "api/user_agent.h",
+    "api/audio_manager.h",
+    "api/video_manager.h",
+    "api/video/video_frame_buffer.h",
+    "api/video/video_frame_buffer.cc",
+    "api/video/i420_buffer.h",
+    "api/video/i420_buffer.cc",
+    "api/video/i010_buffer.h",
+    "api/video/i010_buffer.cc",
+    "api/video/video_frame.h",
+    "api/video/video_frame.cc",
+    "api/video/video_rotation.h",
+    "api/video/video_sink.h",
+    "api/video/video_source.h",
+  ]
+  deps = [
+    "//base",
+    "//third_party/libyuv"
+  ]
+}
+
+source_set("rtvc_lib") {
+  sources = [
+    "lib/user_agent_impl.h",
+    "lib/user_agent_impl.cc",
+    "lib/audio_manager_impl.h",
+    "lib/audio_manager_impl.cc",
+    "lib/video_manager_impl.h",
+    "lib/video_manager_impl.cc",
+  ]
+  deps = [
+    "//base",
+    ":rtvc_api",
+  ]
+}
+
+node_addon("rtvc_binding") {
+  sources = [
+    "binding/converter.h",
+    "binding/index.cc",
+    "binding/null_task_runner.h",
+    "binding/libuv_task_runner.h",
+    "binding/libuv_task_runner.cc",
+    "binding/event_emitter.h",
+    "binding/event_emitter.cc",
+    "binding/event_emitter_caller.h",
+    "binding/event_emitter_caller.cc",
+    "binding/user_agent_binding.h",
+    "binding/user_agent_binding.cc",
+    "binding/audio_manager_binding.h",
+    "binding/audio_manager_binding.cc",
+    "binding/video_manager_binding.h",
+    "binding/video_manager_binding.cc",
+  ]
+  deps = [
+    "//base",
+    "//gin",
+    "//yealink/native_mate",
+    "//yealink/native_mate:converters",
+    ":rtvc_lib",
   ]
 }

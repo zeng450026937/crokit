@@ -1,17 +1,9 @@
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
+#ifndef YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_
+#define YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_
 
-#ifndef API_VIDEO_VIDEO_ROTATION_H_
-#define API_VIDEO_VIDEO_ROTATION_H_
+namespace yealink {
 
-namespace webrtc {
+namespace rtvc {
 
 // enum for clockwise rotation.
 enum VideoRotation {
@@ -21,6 +13,8 @@ enum VideoRotation {
   kVideoRotation_270 = 270
 };
 
-}  // namespace webrtc
+}  // namespace rtvc
 
-#endif  // API_VIDEO_VIDEO_ROTATION_H_
+}  // namespace yealink
+
+#endif  // YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_

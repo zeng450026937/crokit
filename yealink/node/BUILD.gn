@@ -2,7 +2,7 @@ import("//yealink/node/node.gni")
 
 declare_args() {
   node_engine_include_dir = "deps/v8/include"
-  node_root_dir = "//yealink/node/lib_electron"
+  node_root_dir = "//yealink/node/lib"
   node_lib_file = "node.lib"
 }
 
@@ -25,10 +25,6 @@ config("node_lib_header") {
 }
 
 config("node_lib_config") {
-  ldflags = [
-    "/DELAYLOAD:${node_host_binary}.exe",
-  ]
-
   lib_dirs = []
   if (target_cpu == "x86") {
     lib_dirs += [ node_root_dir + "/x86" ]

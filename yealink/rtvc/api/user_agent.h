@@ -2,14 +2,13 @@
 #define YEALINK_RTVC_API_USER_AGENT_H_
 
 #include <string>
+#include <memory>
 
-#include "base/memory/ref_counted.h"
-#include "base/memory/scoped_refptr.h"
 #include "base/optional.h"
 
 namespace yealink {
 
-namespace api {
+namespace rtvc {
 
 class UserAgent {
  public:
@@ -20,7 +19,9 @@ class UserAgent {
     std::string domain;
   };
 
-  static scoped_refptr<UserAgent> Create(UserAgent::Config config);
+  virtual ~UserAgent() = default;
+
+  static std::unique_ptr<UserAgent> Create(Config config);
 
   virtual std::string workspace_folder() = 0;
 
@@ -32,15 +33,9 @@ class UserAgent {
   virtual void UnRegister() = 0;
 
   virtual bool registered() = 0;
-
-  virtual void Call(std::string target) = 0;
-  virtual void Send(std::string target, std::string msg) = 0;
-
- protected:
-  virtual ~UserAgent() = default;
 };
 
-}  // namespace api
+}  // namespace rtvc
 
 }  // namespace yealink
 

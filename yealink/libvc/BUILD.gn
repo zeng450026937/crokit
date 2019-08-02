@@ -1,0 +1,23 @@
+declare_args() {
+  libvc_dir = "//yealink/libvc"
+  libvc_file = "libvc.lib"
+}
+
+config("libvc_config") {
+  lib_dirs = []
+  if (target_cpu == "x86") {
+    lib_dirs += [ libvc_dir + "/x86" ]
+  }
+  else if (target_cpu == "x64") {
+    lib_dirs += [ libvc_dir + "/x64" ]
+  }
+
+  libs = []
+  libs += [ libvc_file ]
+}
+
+group("libvc") {
+  public_configs = [
+    ":libvc_config",
+  ]
+}

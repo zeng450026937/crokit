@@ -1,27 +1,19 @@
-/*
- *  Copyright (c) 2018 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
-#include "api/video/i010_buffer.h"
+#include "yealink/rtvc/api/video/i010_buffer.h"
 
 #include <utility>
 
-#include "api/video/i420_buffer.h"
-#include "rtc_base/checks.h"
-#include "rtc_base/ref_counted_object.h"
+#include "base/logging.h"
 #include "third_party/libyuv/include/libyuv/convert.h"
 #include "third_party/libyuv/include/libyuv/scale.h"
+#include "yealink/rtvc/api/video/i420_buffer.h"
 
 // Aligning pointer to 64 bytes for improved performance, e.g. use SIMD.
 static const int kBufferAlignment = 64;
 static const int kBytesPerPixel = 2;
 
-namespace webrtc {
+namespace yealink {
+
+namespace rtvc {
 
 namespace {
 
@@ -32,56 +24,54 @@ int I010DataSize(int height, int stride_y, int stride_u, int stride_v) {
 
 }  // namespace
 
-I010Buffer::I010Buffer(int width,
-                       int height,
-                       int stride_y,
-                       int stride_u,
-                       int stride_v)
+I010BufferImpl::I010BufferImpl(int width,
+                               int height,
+                               int stride_y,
+                               int stride_u,
+                               int stride_v)
     : width_(width),
       height_(height),
       stride_y_(stride_y),
       stride_u_(stride_u),
       stride_v_(stride_v),
       data_(static_cast<uint16_t*>(
-          AlignedMalloc(I010DataSize(height, stride_y, stride_u, stride_v),
-                        kBufferAlignment))) {
-  RTC_DCHECK_GT(width, 0);
-  RTC_DCHECK_GT(height, 0);
-  RTC_DCHECK_GE(stride_y, width);
-  RTC_DCHECK_GE(stride_u, (width + 1) / 2);
-  RTC_DCHECK_GE(stride_v, (width + 1) / 2);
+          base::AlignedAlloc(I010DataSize(height, stride_y, stride_u, stride_v),
+                             kBufferAlignment))) {
+  DCHECK_GT(width, 0);
+  DCHECK_GT(height, 0);
+  DCHECK_GE(stride_y, width);
+  DCHECK_GE(stride_u, (width + 1) / 2);
+  DCHECK_GE(stride_v, (width + 1) / 2);
 }
 
-I010Buffer::~I010Buffer() {}
+I010BufferImpl::~I010BufferImpl() {}
 
 // static
-rtc::scoped_refptr<I010Buffer> I010Buffer::Create(int width, int height) {
-  return new rtc::RefCountedObject<I010Buffer>(
-      width, height, width, (width + 1) / 2, (width + 1) / 2);
+scoped_refptr<I010BufferImpl> I010BufferImpl::Create(int width, int height) {
+  return base::WrapRefCounted<I010BufferImpl>(new I010BufferImpl(
+      width, height, width, (width + 1) / 2, (width + 1) / 2));
 }
 
 // static
-rtc::scoped_refptr<I010Buffer> I010Buffer::Copy(
-    const I010BufferInterface& source) {
+scoped_refptr<I010BufferImpl> I010BufferImpl::Copy(const I010Buffer& source) {
   const int width = source.width();
   const int height = source.height();
-  rtc::scoped_refptr<I010Buffer> buffer = Create(width, height);
-  RTC_CHECK_EQ(
-      0, libyuv::I010Copy(
-             source.DataY(), source.StrideY(), source.DataU(), source.StrideU(),
-             source.DataV(), source.StrideV(), buffer->MutableDataY(),
-             buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(),
-             buffer->MutableDataV(), buffer->StrideV(), width, height));
+  scoped_refptr<I010BufferImpl> buffer = Create(width, height);
+  CHECK_EQ(0, libyuv::I010Copy(source.DataY(), source.StrideY(), source.DataU(),
+                               source.StrideU(), source.DataV(),
+                               source.StrideV(), buffer->MutableDataY(),
+                               buffer->StrideY(), buffer->MutableDataU(),
+                               buffer->StrideU(), buffer->MutableDataV(),
+                               buffer->StrideV(), width, height));
   return buffer;
 }
 
 // static
-rtc::scoped_refptr<I010Buffer> I010Buffer::Copy(
-    const I420BufferInterface& source) {
+scoped_refptr<I010BufferImpl> I010BufferImpl::Copy(const I420Buffer& source) {
   const int width = source.width();
   const int height = source.height();
-  rtc::scoped_refptr<I010Buffer> buffer = Create(width, height);
-  RTC_CHECK_EQ(
+  scoped_refptr<I010BufferImpl> buffer = Create(width, height);
+  CHECK_EQ(
       0, libyuv::I420ToI010(
              source.DataY(), source.StrideY(), source.DataU(), source.StrideU(),
              source.DataV(), source.StrideV(), buffer->MutableDataY(),
@@ -91,24 +81,21 @@ rtc::scoped_refptr<I010Buffer> I010Buffer::Copy(
 }
 
 // static
-rtc::scoped_refptr<I010Buffer> I010Buffer::Rotate(
-    const I010BufferInterface& src,
-    VideoRotation rotation) {
-  if (rotation == webrtc::kVideoRotation_0)
+scoped_refptr<I010BufferImpl> I010BufferImpl::Rotate(const I010Buffer& src,
+                                                     VideoRotation rotation) {
+  if (rotation == kVideoRotation_0)
     return Copy(src);
 
-  RTC_CHECK(src.DataY());
-  RTC_CHECK(src.DataU());
-  RTC_CHECK(src.DataV());
+  CHECK(src.DataY());
+  CHECK(src.DataU());
+  CHECK(src.DataV());
   int rotated_width = src.width();
   int rotated_height = src.height();
-  if (rotation == webrtc::kVideoRotation_90 ||
-      rotation == webrtc::kVideoRotation_270) {
+  if (rotation == kVideoRotation_90 || rotation == kVideoRotation_270) {
     std::swap(rotated_width, rotated_height);
   }
 
-  rtc::scoped_refptr<webrtc::I010Buffer> buffer =
-      Create(rotated_width, rotated_height);
+  scoped_refptr<I010BufferImpl> buffer = Create(rotated_width, rotated_height);
   // TODO(emircan): Remove this when there is libyuv::I010Rotate().
   for (int x = 0; x < src.width(); x++) {
     for (int y = 0; y < src.height(); y++) {
@@ -116,18 +103,18 @@ rtc::scoped_refptr<I010Buffer> I010Buffer::Rotate(
       int dest_y = y;
       switch (rotation) {
         // This case is covered by the early return.
-        case webrtc::kVideoRotation_0:
-          RTC_NOTREACHED();
+        case kVideoRotation_0:
+          NOTREACHED();
           break;
-        case webrtc::kVideoRotation_90:
+        case kVideoRotation_90:
           dest_x = src.height() - y - 1;
           dest_y = x;
           break;
-        case webrtc::kVideoRotation_180:
+        case kVideoRotation_180:
           dest_x = src.width() - x - 1;
           dest_y = src.height() - y - 1;
           break;
-        case webrtc::kVideoRotation_270:
+        case kVideoRotation_270:
           dest_x = y;
           dest_y = src.width() - x - 1;
           break;
@@ -147,9 +134,9 @@ rtc::scoped_refptr<I010Buffer> I010Buffer::Rotate(
   return buffer;
 }
 
-rtc::scoped_refptr<I420BufferInterface> I010Buffer::ToI420() {
-  rtc::scoped_refptr<I420Buffer> i420_buffer =
-      I420Buffer::Create(width(), height());
+scoped_refptr<I420Buffer> I010BufferImpl::ToI420() {
+  scoped_refptr<I420BufferImpl> i420_buffer =
+      I420BufferImpl::Create(width(), height());
   libyuv::I010ToI420(DataY(), StrideY(), DataU(), StrideU(), DataV(), StrideV(),
                      i420_buffer->MutableDataY(), i420_buffer->StrideY(),
                      i420_buffer->MutableDataU(), i420_buffer->StrideU(),
@@ -158,55 +145,55 @@ rtc::scoped_refptr<I420BufferInterface> I010Buffer::ToI420() {
   return i420_buffer;
 }
 
-int I010Buffer::width() const {
+int I010BufferImpl::width() const {
   return width_;
 }
 
-int I010Buffer::height() const {
+int I010BufferImpl::height() const {
   return height_;
 }
 
-const uint16_t* I010Buffer::DataY() const {
+const uint16_t* I010BufferImpl::DataY() const {
   return data_.get();
 }
-const uint16_t* I010Buffer::DataU() const {
+const uint16_t* I010BufferImpl::DataU() const {
   return data_.get() + stride_y_ * height_;
 }
-const uint16_t* I010Buffer::DataV() const {
+const uint16_t* I010BufferImpl::DataV() const {
   return data_.get() + stride_y_ * height_ + stride_u_ * ((height_ + 1) / 2);
 }
 
-int I010Buffer::StrideY() const {
+int I010BufferImpl::StrideY() const {
   return stride_y_;
 }
-int I010Buffer::StrideU() const {
+int I010BufferImpl::StrideU() const {
   return stride_u_;
 }
-int I010Buffer::StrideV() const {
+int I010BufferImpl::StrideV() const {
   return stride_v_;
 }
 
-uint16_t* I010Buffer::MutableDataY() {
+uint16_t* I010BufferImpl::MutableDataY() {
   return const_cast<uint16_t*>(DataY());
 }
-uint16_t* I010Buffer::MutableDataU() {
+uint16_t* I010BufferImpl::MutableDataU() {
   return const_cast<uint16_t*>(DataU());
 }
-uint16_t* I010Buffer::MutableDataV() {
+uint16_t* I010BufferImpl::MutableDataV() {
   return const_cast<uint16_t*>(DataV());
 }
 
-void I010Buffer::CropAndScaleFrom(const I010BufferInterface& src,
-                                  int offset_x,
-                                  int offset_y,
-                                  int crop_width,
-                                  int crop_height) {
-  RTC_CHECK_LE(crop_width, src.width());
-  RTC_CHECK_LE(crop_height, src.height());
-  RTC_CHECK_LE(crop_width + offset_x, src.width());
-  RTC_CHECK_LE(crop_height + offset_y, src.height());
-  RTC_CHECK_GE(offset_x, 0);
-  RTC_CHECK_GE(offset_y, 0);
+void I010BufferImpl::CropAndScaleFrom(const I010Buffer& src,
+                                      int offset_x,
+                                      int offset_y,
+                                      int crop_width,
+                                      int crop_height) {
+  CHECK_LE(crop_width, src.width());
+  CHECK_LE(crop_height, src.height());
+  CHECK_LE(crop_width + offset_x, src.width());
+  CHECK_LE(crop_height + offset_y, src.height());
+  CHECK_GE(offset_x, 0);
+  CHECK_GE(offset_y, 0);
 
   // Make sure offset is even so that u/v plane becomes aligned.
   const int uv_offset_x = offset_x / 2;
@@ -225,28 +212,26 @@ void I010Buffer::CropAndScaleFrom(const I010BufferInterface& src,
       StrideU(), MutableDataV(), StrideV(), width(), height(),
       libyuv::kFilterBox);
 
-  RTC_DCHECK_EQ(res, 0);
+  DCHECK_EQ(res, 0);
 }
 
-void I010Buffer::ScaleFrom(const I010BufferInterface& src) {
+void I010BufferImpl::ScaleFrom(const I010Buffer& src) {
   CropAndScaleFrom(src, 0, 0, src.width(), src.height());
 }
 
-void I010Buffer::PasteFrom(const I010BufferInterface& picture,
-                           int offset_col,
-                           int offset_row) {
-  RTC_CHECK_LE(picture.width() + offset_col, width());
-  RTC_CHECK_LE(picture.height() + offset_row, height());
-  RTC_CHECK_GE(offset_col, 0);
-  RTC_CHECK_GE(offset_row, 0);
+void I010BufferImpl::PasteFrom(const I010Buffer& picture,
+                               int offset_col,
+                               int offset_row) {
+  CHECK_LE(picture.width() + offset_col, width());
+  CHECK_LE(picture.height() + offset_row, height());
+  CHECK_GE(offset_col, 0);
+  CHECK_GE(offset_row, 0);
 
   // Pasted picture has to be aligned so subsumpled UV plane isn't corrupted.
-  RTC_CHECK(offset_col % 2 == 0);
-  RTC_CHECK(offset_row % 2 == 0);
-  RTC_CHECK(picture.width() % 2 == 0 ||
-            picture.width() + offset_col == width());
-  RTC_CHECK(picture.height() % 2 == 0 ||
-            picture.height() + offset_row == height());
+  CHECK(offset_col % 2 == 0);
+  CHECK(offset_row % 2 == 0);
+  CHECK(picture.width() % 2 == 0 || picture.width() + offset_col == width());
+  CHECK(picture.height() % 2 == 0 || picture.height() + offset_row == height());
 
   libyuv::CopyPlane_16(picture.DataY(), picture.StrideY(),
                        MutableDataY() + StrideY() * offset_row + offset_col,
@@ -263,4 +248,6 @@ void I010Buffer::PasteFrom(const I010BufferInterface& picture,
       picture.width() / 2, picture.height() / 2);
 }
 
-}  // namespace webrtc
+}  // namespace rtvc
+
+}  // namespace yealink

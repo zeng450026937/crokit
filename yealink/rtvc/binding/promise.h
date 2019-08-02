@@ -8,9 +8,9 @@
 #include <string>
 #include <utility>
 
+#include "base/task/post_task.h"
 #include "yealink/native_mate/converters/callback.h"
 #include "yealink/native_mate/converters/once_callback.h"
-#include "base/task/post_task.h"
 // #include "content/public/browser/browser_task_traits.h"
 // #include "content/public/browser/browser_thread.h"
 #include "yealink/native_mate/converter.h"
@@ -218,7 +218,8 @@ class CopyablePromise {
     // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
     //   base::PostTaskWithTraits(
     //       FROM_HERE, {content::BrowserThread::UI},
-    //       base::BindOnce(Promise::ResolveEmptyPromise, promise.GetPromise()));
+    //       base::BindOnce(Promise::ResolveEmptyPromise,
+    //       promise.GetPromise()));
     // } else {
     //   promise.GetPromise().Resolve();
     // }
