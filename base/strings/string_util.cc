@@ -79,23 +79,13 @@ struct NonASCIIMask;
 template <>
 struct NonASCIIMask<char> {
   static constexpr MachineWord value() {
-  #if defined(ARCH_CPU_X86_64)
     return static_cast<MachineWord>(0x8080808080808080ULL);
-  #endif  // ARCH_CPU_X86_64
-  #if defined(ARCH_CPU_X86)
-    return static_cast<MachineWord>(0x80808080ULL);
-  #endif  // ARCH_CPU_X86
   }
 };
 template <>
 struct NonASCIIMask<char16> {
   static constexpr MachineWord value() {
-  #if defined(ARCH_CPU_X86_64)
     return static_cast<MachineWord>(0xFF80FF80FF80FF80ULL);
-  #endif  // ARCH_CPU_X86_64
-  #if defined(ARCH_CPU_X86)
-    return static_cast<MachineWord>(0xFF80FF80ULL);
-  #endif  // ARCH_CPU_X86
   }
 };
 #if defined(WCHAR_T_IS_UTF32)

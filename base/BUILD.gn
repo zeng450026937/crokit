@@ -86,6 +86,13 @@ config("base_flags") {
       "-Wglobal-constructors",
     ]
   }
+  else if (target_cpu == "x86") {
+    cflags = [
+      "/wd4309",
+      "/wd4146",
+      "/wd4018",
+    ]
+  }
 }
 
 config("base_implementation") {

@@ -70,6 +70,7 @@ node_addon("rtvc_binding") {
   deps = [
     "//base",
     "//gin",
+    "//yealink/libvc",
     "//yealink/native_mate",
     "//yealink/native_mate:converters",
     ":rtvc_lib",
