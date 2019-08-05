@@ -14,6 +14,7 @@
 #include "yealink/rtvc/binding/libuv_task_runner.h"
 #include "yealink/rtvc/binding/null_task_runner.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
+#include "yealink/rtvc/binding/v8_util.h"
 #include "yealink/rtvc/binding/video_manager_binding.h"
 
 namespace {
@@ -44,11 +45,22 @@ void Initialize(v8::Local<v8::Object> exports,
   v8::Isolate* isolate = context->GetIsolate();
 
   static gin::IsolateHolder instance(
-      base::MakeRefCounted<yealink::node::NullTaskRunner>(),
+      base::MakeRefCounted<yealink::node::LibuvTaskRunner>(),
       gin::IsolateHolder::IsolateType::kNode, isolate);
 
   mate::Dictionary dict(isolate, exports);
+
   dict.Set("version", "1.0.0-alpha");
+
+  mate::Dictionary v8_util = mate::Dictionary::CreateEmpty(isolate);
+  v8_util.SetMethod("getHiddenValue", &yealink::rtvc::GetHiddenValue);
+  v8_util.SetMethod("setHiddenValue", &yealink::rtvc::SetHiddenValue);
+  v8_util.SetMethod("deleteHiddenValue", &yealink::rtvc::DeleteHiddenValue);
+  v8_util.SetMethod("getObjectHash", &yealink::rtvc::GetObjectHash);
+  v8_util.SetMethod("takeHeapSnapshot", &yealink::rtvc::TakeHeapSnapshot);
+  v8_util.SetMethod("requestGarbageCollectionForTesting",
+              &yealink::rtvc::RequestGarbageCollectionForTesting);
+  dict.Set("v8Util", v8_util);
 
   UserAgentBinding::SetConstructor(isolate,
                                    base::BindRepeating(&UserAgentBinding::New));

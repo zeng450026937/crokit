@@ -46,12 +46,10 @@ Local<Value> Converter<bool>::ToV8(Isolate* isolate, bool val) {
 bool Converter<bool>::FromV8(Isolate* isolate, Local<Value> val, bool* out) {
   if (!val->IsBoolean())
     return false;
-  // Even though IntegerValue returns int64_t, JavaScript cannot represent
-  // the full precision of int64_t, which means some rounding might occur.
-  return FromMaybe(val->BooleanValue(isolate->GetCurrentContext()), out);
-  // *out = val->BooleanValue(isolate);
+  // return FromMaybe(val->BooleanValue(isolate->GetCurrentContext()), out);
+  *out = val->BooleanValue(isolate);
   // BooleanValue cannot throw.
-  // return true;
+  return true;
 }
 
 Local<Value> Converter<int32_t>::ToV8(Isolate* isolate, int32_t val) {

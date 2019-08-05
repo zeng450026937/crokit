@@ -1,6 +1,6 @@
 declare_args() {
   libvc_dir = "//yealink/libvc"
-  libvc_file = "libvc.lib"
+  libvc_file = "vc_sdk_native.lib"
 }
 
 config("libvc_config") {

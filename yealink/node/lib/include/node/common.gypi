@@ -1,5 +1,6 @@
 {
   'variables': {
+    'configuring_node%': 0,
     'asan%': 0,
     'werror': '',                     # Turn off -Werror in V8 build.
     'visibility%': 'hidden',          # V8's visibility setting
@@ -19,7 +20,7 @@
     'node_use_bundled_v8%': 'true',
     'node_module_version%': '',
     'node_with_ltcg%': '',
-    'node_use_pch%': 'false',
+    'node_shared_openssl%': 'false',
 
     'node_tag%': '',
     'uv_library%': 'static_library',
@@ -28,29 +29,48 @@
 
     'openssl_fips%': '',
 
-    # Reset this number to 0 on major V8 upgrades.
-    # Increment by one for each non-official patch applied to deps/v8.
-    'v8_embedder_string': '-node.19',
-
-    # Turn on SipHash for hash seed generation, addresses HashWick
-    'v8_use_siphash': 'true',
-
-    # Enable disassembler for `--print-code` v8 options
-    'v8_enable_disassembler': 1,
-
-    # Don't bake anything extra into the snapshot.
-    'v8_use_external_startup_data%': 0,
-
-    # Disable V8 untrusted code mitigations.
-    # See https://github.com/v8/v8/wiki/Untrusted-code-mitigations
-    'v8_untrusted_code_mitigations': 'false',
-
     # Some STL containers (e.g. std::vector) do not preserve ABI compatibility
     # between debug and non-debug mode.
     'disable_glibcxx_debug': 1,
 
     # Don't use ICU data file (icudtl.dat) from V8, we use our own.
     'icu_use_data_file_flag%': 0,
+
+    # Reset this number to 0 on major V8 upgrades.
+    # Increment by one for each non-official patch applied to deps/v8.
+    'v8_embedder_string': '-node.18',
+
+    ##### V8 defaults for Node.js #####
+
+    # Old time default, now explicitly stated.
+    'v8_use_snapshot': 1,
+
+    # Turn on SipHash for hash seed generation, addresses HashWick
+    'v8_use_siphash': 'true',
+
+    # These are more relevant for V8 internal development.
+    # Refs: https://github.com/nodejs/node/issues/23122
+    # Refs: https://github.com/nodejs/node/issues/23167
+    # Enable compiler warnings when using V8_DEPRECATED apis from V8 code.
+    'v8_deprecation_warnings': 0,
+    # Enable compiler warnings when using V8_DEPRECATE_SOON apis from V8 code.
+    'v8_imminent_deprecation_warnings': 0,
+
+    # Enable disassembler for `--print-code` v8 options
+    'v8_enable_disassembler': 1,
+
+    # https://github.com/nodejs/node/pull/22920/files#r222779926
+    'v8_enable_handle_zapping': 0,
+
+    # Disable V8 untrusted code mitigations.
+    # See https://github.com/v8/v8/wiki/Untrusted-code-mitigations
+    'v8_untrusted_code_mitigations': 0,
+
+    # This is more of a V8 dev setting
+    # https://github.com/nodejs/node/pull/22920/files#r222779926
+    'v8_enable_fast_mksnapshot': 0,
+
+    ##### end V8 defaults #####
 
     'conditions': [
       ['target_arch=="arm64"', {
@@ -61,38 +81,23 @@
       }],
       ['GENERATOR=="ninja"', {
         'obj_dir': '<(PRODUCT_DIR)/obj',
-        'conditions': [
-          [ 'build_v8_with_gn=="true"', {
-            'v8_base': '<(PRODUCT_DIR)/obj/deps/v8/gypfiles/v8_monolith.gen/gn/obj/libv8_monolith.a',
-          }, {
-            'v8_base': '<(PRODUCT_DIR)/obj/deps/v8/gypfiles/libv8_base.a',
-          }],
-        ]
+        'v8_base': '<(PRODUCT_DIR)/obj/tools/v8_gypfiles/libv8_base.a',
        }, {
         'obj_dir%': '<(PRODUCT_DIR)/obj.target',
-        'v8_base': '<(PRODUCT_DIR)/obj.target/deps/v8/gypfiles/libv8_base.a',
+        'v8_base': '<(PRODUCT_DIR)/obj.target/tools/v8_gypfiles/libv8_base.a',
       }],
       ['OS == "win"', {
         'os_posix': 0,
-        'v8_postmortem_support%': 'false',
+        'v8_postmortem_support%': 0,
         'obj_dir': '<(PRODUCT_DIR)/obj',
         'v8_base': '<(PRODUCT_DIR)/lib/v8_libbase.lib',
       }, {
         'os_posix': 1,
-        'v8_postmortem_support%': 'true',
+        'v8_postmortem_support%': 1,
       }],
       ['OS == "mac"', {
         'obj_dir%': '<(PRODUCT_DIR)/obj.target',
         'v8_base': '<(PRODUCT_DIR)/libv8_base.a',
-      }],
-      ['build_v8_with_gn == "true"', {
-        'conditions': [
-          ['GENERATOR == "ninja"', {
-            'v8_base': '<(PRODUCT_DIR)/obj/deps/v8/gypfiles/v8_monolith.gen/gn/obj/libv8_monolith.a',
-          }, {
-            'v8_base': '<(PRODUCT_DIR)/obj.target/v8_monolith/geni/gn/obj/libv8_monolith.a',
-          }],
-        ],
       }],
       ['openssl_fips != ""', {
         'openssl_product': '<(STATIC_LIB_PREFIX)crypto<(STATIC_LIB_SUFFIX)',
@@ -111,13 +116,17 @@
       'Debug': {
         'variables': {
           'v8_enable_handle_zapping': 1,
+          'conditions': [
+            ['node_shared != "true"', {
+              'MSVC_runtimeType': 1,    # MultiThreadedDebug (/MTd)
+            }, {
+              'MSVC_runtimeType': 3,    # MultiThreadedDebugDLL (/MDd)
+            }],
+          ],
         },
         'defines': [ 'DEBUG', '_DEBUG', 'V8_ENABLE_CHECKS' ],
         'cflags': [ '-g', '-O0' ],
         'conditions': [
-          ['target_arch=="x64"', {
-            'msvs_configuration_platform': 'x64',
-          }],
           ['OS=="aix"', {
             'cflags': [ '-gxcoff' ],
             'ldflags': [ '-Wl,-bbigtoc' ],
@@ -126,31 +135,14 @@
             'cflags': [ '-fPIE' ],
             'ldflags': [ '-fPIE', '-pie' ]
           }],
-          ['node_shared=="true"', {
-            'msvs_settings': {
-             'VCCLCompilerTool': {
-               'RuntimeLibrary': 3, # MultiThreadedDebugDLL (/MDd)
-             }
-            }
-          }],
-          ['node_shared=="false"', {
-            'msvs_settings': {
-              'VCCLCompilerTool': {
-                'RuntimeLibrary': 1 # MultiThreadedDebug (/MTd)
-              }
-            }
-          }]
         ],
         'msvs_settings': {
           'VCCLCompilerTool': {
-            'Optimization': 0, # /Od, no optimization
+            'BasicRuntimeChecks': 3,        # /RTC1
             'MinimalRebuild': 'false',
             'OmitFramePointers': 'false',
-            'BasicRuntimeChecks': 3, # /RTC1
-            'MultiProcessorCompilation': 'true',
-            'AdditionalOptions': [
-              '/bigobj', # prevent error C1128 in VS2015
-            ],
+            'Optimization': 0,              # /Od, no optimization
+            'RuntimeLibrary': '<(MSVC_runtimeType)',
           },
           'VCLinkerTool': {
             'LinkIncremental': 2, # enable incremental linking
@@ -163,12 +155,19 @@
       'Release': {
         'variables': {
           'v8_enable_handle_zapping': 0,
+          'pgo_generate': ' -fprofile-generate ',
+          'pgo_use': ' -fprofile-use -fprofile-correction ',
+          'lto': ' -flto=4 -fuse-linker-plugin -ffat-lto-objects ',
+          'conditions': [
+            ['node_shared != "true"', {
+              'MSVC_runtimeType': 0    # MultiThreaded (/MT)
+            }, {
+              'MSVC_runtimeType': 2   # MultiThreadedDLL (/MD)
+            }],
+          ],
         },
         'cflags': [ '-O3' ],
         'conditions': [
-          ['target_arch=="x64"', {
-            'msvs_configuration_platform': 'x64',
-          }],
           ['OS=="solaris"', {
             # pull in V8's postmortem metadata
             'ldflags': [ '-Wl,-z,allextract' ]
@@ -177,11 +176,6 @@
             'cflags': [ '-fno-omit-frame-pointer' ],
           }],
           ['OS=="linux"', {
-            'variables': {
-              'pgo_generate': ' -fprofile-generate ',
-              'pgo_use': ' -fprofile-use -fprofile-correction ',
-              'lto': ' -flto=4 -fuse-linker-plugin -ffat-lto-objects ',
-            },
             'conditions': [
               ['enable_pgo_generate=="true"', {
                 'cflags': ['<(pgo_generate)'],
@@ -201,79 +195,43 @@
             'cflags': [ '-fPIE' ],
             'ldflags': [ '-fPIE', '-pie' ]
           }],
-          ['node_shared=="true"', {
-            'msvs_settings': {
-             'VCCLCompilerTool': {
-               'RuntimeLibrary': 2 # MultiThreadedDLL (/MD)
-             }
-            }
-          }],
-          ['node_shared=="false"', {
-            'msvs_settings': {
-              'VCCLCompilerTool': {
-                'RuntimeLibrary': 0 # MultiThreaded (/MT)
-              }
-            }
-          }],
-          ['node_with_ltcg=="true"', {
-            'msvs_settings': {
-              'VCCLCompilerTool': {
-                'WholeProgramOptimization': 'true' # /GL, whole program optimization, needed for LTCG
-              },
-              'VCLibrarianTool': {
-                'AdditionalOptions': [
-                  '/LTCG:INCREMENTAL', # link time code generation
-                ]
-              },
-              'VCLinkerTool': {
-                'OptimizeReferences': 2, # /OPT:REF
-                'EnableCOMDATFolding': 2, # /OPT:ICF
-                'LinkIncremental': 1, # disable incremental linking
-                'AdditionalOptions': [
-                  '/LTCG:INCREMENTAL', # incremental link-time code generation
-                ]
-              }
-            }
-          }, {
-            'msvs_settings': {
-              'VCCLCompilerTool': {
-                'WholeProgramOptimization': 'false'
-              },
-              'VCLinkerTool': {
-                'LinkIncremental': 2 # enable incremental linking
-              }
-            }
-          }]
         ],
         'msvs_settings': {
           'VCCLCompilerTool': {
-            'Optimization': 3, # /Ox, full optimization
-            'FavorSizeOrSpeed': 1, # /Ot, favor speed over size
-            'InlineFunctionExpansion': 2, # /Ob2, inline anything eligible
-            'OmitFramePointers': 'true',
             'EnableFunctionLevelLinking': 'true',
             'EnableIntrinsicFunctions': 'true',
+            'FavorSizeOrSpeed': 1,          # /Ot, favor speed over size
+            'InlineFunctionExpansion': 2,   # /Ob2, inline anything eligible
+            'OmitFramePointers': 'true',
+            'Optimization': 3,              # /Ox, full optimization
+            'RuntimeLibrary': '<(MSVC_runtimeType)',
             'RuntimeTypeInfo': 'false',
-            'MultiProcessorCompilation': 'true',
-            'AdditionalOptions': [
-            ],
           }
         }
       }
     },
+
+    # Defines these mostly for node-gyp to pickup, and warn addon authors of
+    # imminent V8 deprecations, also to sync how dependencies are configured.
+    'defines': [
+      'V8_DEPRECATION_WARNINGS',
+      'V8_IMMINENT_DEPRECATION_WARNINGS',
+    ],
+
     # Forcibly disable -Werror.  We support a wide range of compilers, it's
     # simply not feasible to squelch all warnings, never mind that the
     # libraries in deps/ are not under our control.
     'cflags!': ['-Werror'],
     'msvs_settings': {
       'VCCLCompilerTool': {
-        'StringPooling': 'true', # pool string literals
-        'DebugInformationFormat': 1, # /Z7 embed info in .obj files
-        'WarningLevel': 3,
         'BufferSecurityCheck': 'true',
+        'DebugInformationFormat': 1, # /Z7 embed info in .obj files
         'ExceptionHandling': 0, # /EHsc
+        'MultiProcessorCompilation': 'true',
+        'StringPooling': 'true', # pool string literals
         'SuppressStartupBanner': 'true',
         'WarnAsError': 'false',
+        'WarningLevel': 3,       # /W3
       },
       'VCLinkerTool': {
         'conditions': [
@@ -303,11 +261,6 @@
           }],
         ],
         'GenerateDebugInformation': 'true',
-        'GenerateMapFile': 'true', # /MAP
-        'MapExports': 'true', # /MAPINFO:EXPORTS
-        'RandomizedBaseAddress': 2, # enable ASLR
-        'DataExecutionPrevention': 2, # enable DEP
-        'AllowIsolation': 'true',
         'SuppressStartupBanner': 'true',
       },
     },
@@ -325,7 +278,18 @@
     # - "C4244: conversion from 'type1' to 'type2', possible loss of data"
     #   Ususaly safe. Disable for `dep`, enable for `src`
     'msvs_disabled_warnings': [4351, 4355, 4800, 4251, 4275, 4244, 4267],
+    'msvs_cygwin_shell': 0, # prevent actions from trying to use cygwin
+
     'conditions': [
+      [ 'configuring_node', {
+        'msvs_configuration_attributes': {
+          'OutputDirectory': '<(DEPTH)/out/$(Configuration)/',
+          'IntermediateDirectory': '$(OutDir)obj/$(ProjectName)/'
+        },
+      }],
+      [ 'target_arch=="x64"', {
+        'msvs_configuration_platform': 'x64',
+      }],
       [ 'target_arch=="arm64"', {
         'msvs_configuration_platform': 'arm64',
       }],
@@ -357,7 +321,6 @@
         ],
       }],
       ['OS == "win"', {
-        'msvs_cygwin_shell': 0, # prevent actions from trying to use cygwin
         'defines': [
           'WIN32',
           # we don't really want VC++ warning us about
@@ -473,7 +436,7 @@
           'GCC_ENABLE_CPP_RTTI': 'NO',              # -fno-rtti
           'GCC_ENABLE_PASCAL_STRINGS': 'NO',        # No -mpascal-strings
           'PREBINDING': 'NO',                       # No -Wl,-prebind
-          'MACOSX_DEPLOYMENT_TARGET': '10.7',       # -mmacosx-version-min=10.7
+          'MACOSX_DEPLOYMENT_TARGET': '10.10',      # -mmacosx-version-min=10.10
           'USE_HEADERMAP': 'NO',
           'OTHER_CFLAGS': [
             '-fno-strict-aliasing',
@@ -518,7 +481,18 @@
         'ldflags': [
           '-Wl,--export-dynamic',
         ],
-      }]
+      }],
+      ['node_shared_openssl!="true"', {
+        # `OPENSSL_THREADS` is defined via GYP for openSSL for all architectures.
+        'defines': [
+          'OPENSSL_THREADS',
+        ],
+      }],
+      ['node_shared_openssl!="true" and openssl_no_asm==1', {
+        'defines': [
+          'OPENSSL_NO_ASM',
+        ],
+      }],
     ],
   }
 }

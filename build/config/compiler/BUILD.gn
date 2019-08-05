@@ -1409,6 +1409,8 @@ config("default_warnings") {
         # Since we disable 4244 we need to disable 4267 during migration.
         # TODO(jschuh): crbug.com/167187 fix size_t to int truncations.
         "/wd4267",
+        "/wd4146",
+        "/wd4018",
       ]
     }
 

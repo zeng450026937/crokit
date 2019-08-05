@@ -2,7 +2,7 @@ import("//yealink/node/node.gni")
 
 declare_args() {
   node_engine_include_dir = "deps/v8/include"
-  node_root_dir = "//yealink/node/lib"
+  node_root_dir = "//yealink/node/electron"
   node_lib_file = "node.lib"
 }
 
