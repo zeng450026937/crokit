@@ -48,6 +48,8 @@ source_set("rtvc_lib") {
 node_addon("rtvc_binding") {
   sources = [
     "binding/converter.h",
+    "binding/context.h",
+    "binding/context.cc",
     "binding/index.cc",
     "binding/null_task_runner.h",
     "binding/libuv_task_runner.h",
@@ -56,6 +58,10 @@ node_addon("rtvc_binding") {
     "binding/event_emitter.cc",
     "binding/event_emitter_caller.h",
     "binding/event_emitter_caller.cc",
+    "binding/i420_buffer_binding.h",
+    "binding/i420_buffer_binding.cc",
+    "binding/video_frame_binding.h",
+    "binding/video_frame_binding.cc",
     "binding/video_sink_v8.h",
     "binding/video_sink_v8.cc",
     "binding/video_source_v8.h",

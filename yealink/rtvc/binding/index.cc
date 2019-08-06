@@ -1,53 +1,30 @@
 #include <node.h>
 
-#include "base/at_exit.h"
-#include "base/bind.h"
-#include "base/command_line.h"
-#include "base/feature_list.h"
-#include "base/logging.h"
 #include "base/memory/ptr_util.h"
-#include "base/memory/scoped_refptr.h"
-#include "gin/array_buffer.h"
-
 #include "yealink/native_mate/dictionary.h"
+#include "yealink/rtvc/api/video/i420_buffer.h"
 #include "yealink/rtvc/binding/audio_manager_binding.h"
-#include "yealink/rtvc/binding/libuv_task_runner.h"
-#include "yealink/rtvc/binding/null_task_runner.h"
+#include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/v8_util.h"
+#include "yealink/rtvc/binding/video_frame_binding.h"
 #include "yealink/rtvc/binding/video_manager_binding.h"
 
 namespace {
 
 using yealink::rtvc::AudioManagerBinding;
 using yealink::rtvc::UserAgentBinding;
+using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
 
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
                 v8::Local<v8::Context> context,
                 void* priv) {
-  static base::AtExitManager at_exit;
-  base::CommandLine::Init(0, nullptr);
-  base::FeatureList::SetInstance(base::WrapUnique(new base::FeatureList));
-
-  logging::LoggingSettings settings;
-  settings.logging_dest = logging::LOG_TO_SYSTEM_DEBUG_LOG;
-
-  logging::InitLogging(settings);
-  logging::SetLogItems(true, false, true, false);
-
-  gin::IsolateHolder::Initialize(gin::IsolateHolder::kStrictMode,
-                                 gin::ArrayBufferAllocator::SharedInstance(),
-                                 nullptr,
-                                 gin::IsolateHolder::IsolateType::kNode);
-
   v8::Isolate* isolate = context->GetIsolate();
 
-  static gin::IsolateHolder instance(
-      base::MakeRefCounted<yealink::node::LibuvTaskRunner>(),
-      gin::IsolateHolder::IsolateType::kNode, isolate);
-
+  yealink::rtvc::Context::Initialize(isolate);
+  // setup exports
   mate::Dictionary dict(isolate, exports);
 
   dict.Set("version", "1.0.0-alpha");
@@ -59,7 +36,7 @@ void Initialize(v8::Local<v8::Object> exports,
   v8_util.SetMethod("getObjectHash", &yealink::rtvc::GetObjectHash);
   v8_util.SetMethod("takeHeapSnapshot", &yealink::rtvc::TakeHeapSnapshot);
   v8_util.SetMethod("requestGarbageCollectionForTesting",
-              &yealink::rtvc::RequestGarbageCollectionForTesting);
+                    &yealink::rtvc::RequestGarbageCollectionForTesting);
   dict.Set("v8Util", v8_util);
 
   UserAgentBinding::SetConstructor(isolate,
@@ -70,6 +47,15 @@ void Initialize(v8::Local<v8::Object> exports,
 
   dict.Set("audioManager", AudioManagerBinding::Create(isolate));
   dict.Set("videoManager", VideoManagerBinding::Create(isolate));
+
+  auto buffer = yealink::rtvc::I420BufferImpl::Create(480, 360);
+  yealink::rtvc::I420BufferImpl::SetBlack(buffer.get());
+
+  auto frame = yealink::rtvc::VideoFrame::Builder()
+                   .set_video_frame_buffer(buffer)
+                   .build();
+
+  dict.Set("videoFrame", VideoFrameBinding::Create(isolate, frame));
 }
 
 }  // namespace

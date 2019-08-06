@@ -19,6 +19,7 @@ if (is_clang) {
 set_defaults("node_addon") {
   win_delay_load_hook = true
   configs = node_addon_configs
+  suppressed_configs = []
 }
 
 template("node_addon") {
@@ -28,10 +29,12 @@ template("node_addon") {
                            [
                              "configs",
                              "public_configs",
+                             "suppressed_configs",
                            ])
 
     configs += invoker.configs
     configs -= node_remove_configs
+    configs -= invoker.suppressed_configs
 
     public_configs = []
     if (defined(invoker.public_configs)) {

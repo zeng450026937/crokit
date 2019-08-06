@@ -5,6 +5,7 @@
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/device_type.h"
 #include "yealink/rtvc/api/video/video_sink.h"
+#include "yealink/rtvc/api/video/video_frame_buffer.h"
 
 namespace mate {
 
@@ -104,6 +105,55 @@ struct Converter<yealink::rtvc::Device> {
     dict.Get("deviceId", &(out->deviceId));
     dict.Get("label", &(out->label));
     dict.Get("type", &(out->type));
+    return true;
+  }
+};
+
+template <>
+struct Converter<yealink::rtvc::VideoFrameBuffer::Type> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::VideoFrameBuffer::Type val) {
+    std::string buffer_type;
+    switch (val) {
+      case yealink::rtvc::VideoFrameBuffer::Type::kI010:
+        buffer_type = "kI010";
+        break;
+      case yealink::rtvc::VideoFrameBuffer::Type::kI420:
+        buffer_type = "kI420";
+        break;
+      case yealink::rtvc::VideoFrameBuffer::Type::kI420A:
+        buffer_type = "kI420A";
+        break;
+      case yealink::rtvc::VideoFrameBuffer::Type::kI444:
+        buffer_type = "kI444";
+        break;
+      case yealink::rtvc::VideoFrameBuffer::Type::kNative:
+        buffer_type = "kNative";
+        break;
+    }
+    return mate::ConvertToV8(isolate, buffer_type);
+  }
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::VideoFrameBuffer::Type* out) {
+    std::string buffer_type;
+    if (!ConvertFromV8(isolate, val, &buffer_type))
+      return false;
+
+    if (buffer_type == "kI010")
+      *out = yealink::rtvc::VideoFrameBuffer::Type::kI010;
+    else if (buffer_type == "kI420")
+      *out = yealink::rtvc::VideoFrameBuffer::Type::kI420;
+    else if (buffer_type == "kI420A")
+      *out = yealink::rtvc::VideoFrameBuffer::Type::kI420A;
+    else if (buffer_type == "kI444")
+      *out = yealink::rtvc::VideoFrameBuffer::Type::kI444;
+    else if (buffer_type == "kNative")
+      *out = yealink::rtvc::VideoFrameBuffer::Type::kNative;
+    else
+      return false;
+
     return true;
   }
 };

@@ -1,8 +1,8 @@
 is_debug = true
 is_clang = false
-is_component_build = true
+is_component_build = false
 enable_iterator_debugging = true
 use_custom_libcxx = false
 use_rtti = true
-
-enable_mojom_typemapping = false
+use_dynamic_crt = true
+target_cpu="x86"

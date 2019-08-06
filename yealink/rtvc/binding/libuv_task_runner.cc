@@ -36,8 +36,8 @@ LibuvTaskRunner::LibuvTaskRunner(uv_loop_t* loop, LibuvRunnerType runner_type)
 }
 LibuvTaskRunner::~LibuvTaskRunner() {
   if (runner_type_ == kLibuvAsyncRunner) {
-    ::uv_close((uv_handle_t*)(&asyncer_),
-               [](uv_handle_t* handle) { free(handle); });
+    // ::uv_close((uv_handle_t*)(&asyncer_), [](uv_handle_t* handle) {});
+    ::uv_close((uv_handle_t*)(&asyncer_), nullptr);
   } else if (runner_type_ == kLibuvIdleRunner) {
     ::uv_idle_stop(&idler_);
   }
@@ -77,7 +77,7 @@ void LibuvTaskRunner::RunPendingTasks() {
   for (auto& task : deferred_tasks_queue_) {
     std::move(task.task).Run();
   }
-  
+
   deferred_tasks_queue_.clear();
 }
 

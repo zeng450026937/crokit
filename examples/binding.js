@@ -8,37 +8,79 @@ try {
 
 console.log(binding);
 
-const { version, UserAgent, audioManager, videoManager } = binding;
+const { version, UserAgent, audioManager, videoManager, videoFrame } = binding;
 
 console.log(version);
 
-const user_agent = new UserAgent({
-  username: 'my username',
-  password: 'my password',
-  domain: 'my domain',
-});
+console.log(videoFrame);
+console.log(videoFrame.width);
+console.log(videoFrame.height);
+console.log(videoFrame.size);
+console.log(videoFrame.buffer);
 
-console.log(user_agent.username)
+const i420Buffer = videoFrame.buffer;
+const i420Buffer2 = videoFrame.buffer;
 
-console.log(audioManager.volume)
-audioManager.volume = 1;
-console.log(audioManager.volume)
+console.log(i420Buffer == i420Buffer2);
+console.log(i420Buffer === i420Buffer2);
 
-console.log(audioManager.audioInputDevice)
-audioManager.audioInputDevice = { deviceId: 'testdeviceid', label: 'testdevice', type: 'kAudioOutput' };
-console.log(audioManager.audioInputDevice)
+console.log(i420Buffer);
+console.log(i420Buffer.type);
+console.log(i420Buffer.width);
+console.log(i420Buffer.height);
+console.log(i420Buffer.chromaWidth);
+console.log(i420Buffer.chromaHeight);
+console.log(i420Buffer.strideY);
+console.log(i420Buffer.strideU);
+console.log(i420Buffer.strideV);
+console.log(i420Buffer.dataY);
+console.log(i420Buffer.dataU);
+console.log(i420Buffer.dataV);
+console.log(i420Buffer.toI420());
+console.log(i420Buffer.getI420());
+console.log(i420Buffer.getI420A());
+console.log(i420Buffer.getI444());
 
-console.log(videoManager.videoInputDeviceList)
-console.log(videoManager.videoInputDeviceList())
 
-let video_sink = {}
+console.log(i420Buffer == i420Buffer.toI420());
+console.log(i420Buffer === i420Buffer.getI420());
+console.log(i420Buffer == i420Buffer.getI420());
+console.log(i420Buffer === i420Buffer.getI420());
 
-videoManager.setLocalVideoSink(video_sink)
+// const user_agent = new UserAgent({
+//   username: 'my username',
+//   password: 'my password',
+//   domain: 'my domain',
+// });
 
-video_sink.onFrame = function() { console.log('onFrame'); }
+// console.log(user_agent.username)
 
-videoManager.setLocalVideoSink(video_sink)
+// console.log(audioManager.volume)
+// audioManager.volume = 1;
+// console.log(audioManager.volume)
 
-video_sink = {}
+// console.log(audioManager.mute)
 
-videoManager.setLocalVideoSink(video_sink)
+// audioManager.enumerateDevices();
+
+// console.log(audioManager.audioInputDevice)
+// audioManager.audioInputDevice = { deviceId: 'testdeviceid', label: 'testdevice', type: 'kAudioOutput' };
+// console.log(audioManager.audioInputDevice)
+
+// console.log(videoManager.videoInputDeviceList)
+// console.log(videoManager.videoInputDeviceList())
+
+// let video_sink = {}
+
+// videoManager.setLocalVideoSink(video_sink)
+
+// video_sink.onFrame = function() { console.log('onFrame'); }
+
+// videoManager.setLocalVideoSink(video_sink)
+
+// video_sink = {}
+
+// videoManager.setLocalVideoSink(video_sink)
+
+
+// console.log(videoManager.videoInputDeviceList())

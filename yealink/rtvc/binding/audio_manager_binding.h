@@ -7,6 +7,8 @@
 
 namespace yealink {
 
+class Media;
+
 namespace rtvc {
 
 class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding>,
@@ -43,6 +45,8 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding>,
   bool playback() override;
   void SetPlayback(bool enable) override;
 
+  void EnumerateDevices();
+
   std::vector<Device> audioInputDeviceList() override;
   std::vector<Device> audioOutputDeviceList() override;
 
@@ -58,6 +62,11 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding>,
   void StartPlayFile(std::string path) override;
   void StopPlayFile() override;
 
+ private:
+  yealink::Media* media_;
+
+  std::vector<Device> record_devices_;
+  std::vector<Device> playback_devices_;
 };
 
 }  // namespace rtvc

@@ -3,6 +3,14 @@ declare_args() {
   libvc_file = "vc_sdk_native.lib"
 }
 
+config("libvc_header") {
+  include_dirs = [
+    libvc_dir + "/include",
+  ]
+
+  defines = []
+}
+
 config("libvc_config") {
   lib_dirs = []
   if (target_cpu == "x86") {
@@ -18,6 +26,7 @@ config("libvc_config") {
 
 group("libvc") {
   public_configs = [
+    ":libvc_header",
     ":libvc_config",
   ]
 }
