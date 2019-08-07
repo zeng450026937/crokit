@@ -11,16 +11,20 @@
 
 namespace yealink {
 
-namespace node {
+namespace rtvc {
 
 class LibuvTaskRunner : public base::SingleThreadTaskRunner {
  public:
-  enum LibuvRunnerType { kLibuvIdleRunner, kLibuvAsyncRunner };
+  enum LibuvRunnerType {
+    kLibuvAsyncRunner,
+    kLibuvIdleRunner,
+    kLibuvTimerRunner
+  };
 
   // node.js use default loop as its main loop
   LibuvTaskRunner(uv_loop_t* loop = ::uv_default_loop(),
                   LibuvRunnerType task_type = kLibuvAsyncRunner);
-  ~LibuvTaskRunner();
+  ~LibuvTaskRunner() override;
 
   // SingleThreadTaskRunner implementation.
   bool PostDelayedTask(const base::Location& from_here,
@@ -33,7 +37,6 @@ class LibuvTaskRunner : public base::SingleThreadTaskRunner {
 
   bool RunsTasksInCurrentSequence() const override { return true; }
 
-  void RunPendingTasks();
 
  private:
   struct DeferredTask {
@@ -49,24 +52,35 @@ class LibuvTaskRunner : public base::SingleThreadTaskRunner {
     bool is_non_nestable;
   };
 
+  class Runner {
+   public:
+    virtual ~Runner() {}
+  };
+  class AsyncRunner;
+  class IdleRunner;
+  class TimerRunner;
+
+  void EnsureTaskRunner();
+
   void QueueDeferredTask(const base::Location& from_here,
                          base::OnceClosure task,
                          base::TimeDelta delay,
                          bool is_non_nestable);
 
+  void RunPendingTasks();
+
   mutable base::Lock lock_;
 
   uv_loop_t* loop_;
-  uv_async_t asyncer_;
-  uv_idle_t idler_;
   LibuvRunnerType runner_type_;
-
+  std::unique_ptr<Runner> runner_;
   std::vector<DeferredTask> deferred_tasks_queue_;
 
   DISALLOW_COPY_AND_ASSIGN(LibuvTaskRunner);
 };
 
-}  // namespace node
+}  // namespace rtvc
+
 }  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_LIBUV_TASK_RUNNER_H_

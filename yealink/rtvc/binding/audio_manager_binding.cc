@@ -18,7 +18,6 @@ const int kMaxAudioDeviceCout = 10;
 void AudioManagerBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  LOG(INFO) << __FUNCTIONW__;
   prototype->SetClassName(mate::StringToV8(isolate, "AudioManager"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
@@ -51,8 +50,7 @@ void AudioManagerBinding::BuildPrototype(
 }
 
 AudioManagerBinding::AudioManagerBinding(v8::Isolate* isolate)
-    : media_(yealink::Media::CreateInstance(
-          Context::GetWorkspaceFolder().AsUTF8Unsafe().c_str())) {
+    : media_(Context::Instance()->GetMedia()) {
   Init(isolate);
 }
 AudioManagerBinding::~AudioManagerBinding() = default;
@@ -118,52 +116,74 @@ void AudioManagerBinding::EnumerateDevices() {
 
   count = media_->EnumAudioRecordDevices(devices, kMaxAudioDeviceCout);
 
-  record_devices_.clear();
+  audio_input_device_list_.clear();
 
   for (int i = 0; i < count; i++) {
     Device device;
     device.type = DeviceType::kAudioInput;
     device.deviceId = devices[i].strId.ConstData();
     device.label = devices[i].strName.ConstData();
-    record_devices_.emplace_back(device);
+    audio_input_device_list_.emplace_back(device);
   }
 
   count = media_->EnumAudioPlayoutDevices(devices, kMaxAudioDeviceCout);
 
-  playback_devices_.clear();
+  audio_output_device_list_.clear();
 
   for (int i = 0; i < count; i++) {
     Device device;
     device.type = DeviceType::kAudioOutput;
     device.deviceId = devices[i].strId.ConstData();
     device.label = devices[i].strName.ConstData();
-    playback_devices_.emplace_back(device);
+    audio_output_device_list_.emplace_back(device);
   }
 }
 
 std::vector<Device> AudioManagerBinding::audioInputDeviceList() {
-  LOG(INFO) << __FUNCTIONW__;
-  return std::vector<Device>();
+  return audio_input_device_list_;
 }
 std::vector<Device> AudioManagerBinding::audioOutputDeviceList() {
-  LOG(INFO) << __FUNCTIONW__;
-  return std::vector<Device>();
+  return audio_output_device_list_;
 }
 
-Device AudioManagerBinding::audioInputDevice() {
-  LOG(INFO) << __FUNCTIONW__;
-  return Device();
+base::Optional<Device> AudioManagerBinding::audioInputDevice() {
+  return audio_input_device_;
 }
-void AudioManagerBinding::SetAudioInputDevice(Device device) {
-  LOG(INFO) << __FUNCTIONW__;
+void AudioManagerBinding::SetAudioInputDevice(base::Optional<Device> device) {
+  if (!device) {
+    isolate()->ThrowException(v8::Exception::Error(
+        mate::StringToV8(isolate(), "Invalid device argument.")));
+    return;
+  }
+
+  if (!device->deviceId.size()) {
+    isolate()->ThrowException(v8::Exception::Error(
+        mate::StringToV8(isolate(), "Invalid device id.")));
+    return;
+  }
+
+  if (media_->SetAudioRecordDevice(device->deviceId.c_str()))
+    audio_input_device_ = device;
 }
 
-Device AudioManagerBinding::audioOutputDevice() {
-  LOG(INFO) << __FUNCTIONW__;
-  return Device();
+base::Optional<Device> AudioManagerBinding::audioOutputDevice() {
+  return audio_output_device_;
 }
-void AudioManagerBinding::SetAudioOutputDevice(Device device) {
-  LOG(INFO) << __FUNCTIONW__;
+void AudioManagerBinding::SetAudioOutputDevice(base::Optional<Device> device) {
+  if (!device) {
+    isolate()->ThrowException(v8::Exception::Error(
+        mate::StringToV8(isolate(), "Invalid device argument.")));
+    return;
+  }
+
+  if (!device->deviceId.size()) {
+    isolate()->ThrowException(v8::Exception::Error(
+        mate::StringToV8(isolate(), "Invalid device id.")));
+    return;
+  }
+
+  if (media_->SetAudioRecordDevice(device->deviceId.c_str()))
+    audio_output_device_ = device;
 }
 
 // TODO:

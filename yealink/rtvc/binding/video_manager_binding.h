@@ -1,16 +1,24 @@
 #ifndef YEALINK_RTVC_BINDING_VIDEO_MANAGER_BINDING_H_
 #define YEALINK_RTVC_BINDING_VIDEO_MANAGER_BINDING_H_
 
+#include <map>
+#include <memory>
+
 #include "yealink/native_mate/handle.h"
+#include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video_manager.h"
+#include "yealink/rtvc/binding/video_sink_v8.h"
+#include "yealink/rtvc/binding/video_source_adapter.h"
+#include "base/macros.h"
 
 namespace yealink {
 
+class Media;
+
 namespace rtvc {
 
-class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding>,
-                            VideoManager {
+class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
  public:
   static mate::Handle<VideoManagerBinding> Create(v8::Isolate* isolate) {
     return mate::CreateHandle(isolate, new VideoManagerBinding(isolate));
@@ -22,33 +30,40 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding>,
   VideoManagerBinding(v8::Isolate* isolate);
   ~VideoManagerBinding() override;
 
-  std::vector<Device> videoInputDeviceList() override;
+  void EnumerateDevices();
+  void EnumerateScreenDevices();
+  void EnumerateWindowDevices();
 
-  std::vector<Device> screenDeviceList() override;
-  std::vector<Device> windowDeviceList() override;
+  std::vector<Device> videoInputDeviceList();
 
-  Device videoInputDevice() override;
-  void setVideoInputDevice(Device device) override;
+  std::vector<Device> screenDeviceList();
+  std::vector<Device> windowDeviceList();
 
-  // secondary video input device is used for content sharing
-  // or when video input device is not usable
-  Device secondaryVideoInputDevice() override;
-  void setSecondaryVideoInputDevice(Device device) override;
+  base::Optional<Device> videoInputDevice();
+  void setVideoInputDevice(base::Optional<Device> device);
 
-  // only 0 | 90 | 180 | 270 degrees are allowed
-  void SetRotation(int degree, bool is_secondary = false) override;
+  base::Optional<Device> secondaryVideoInputDevice();
+  void setSecondaryVideoInputDevice(base::Optional<Device> device);
 
-  // as we don't expose 'VideoTrack' interface like webrtc
-  // video sink can only be setted here for renderer impl
-  // currently, we support two video track at one call,
-  // and all calls share the video device setting.
-  // hence, remote video sink is set in per call instance
-  void SetLocalVideoSink(VideoSink* sink) override;
-  void SetLocalShareVideoSink(VideoSink* sink) override;
+  void SetRotation(int degree, bool is_secondary = false);
 
-  void SetLocalVideoSinkAdapted(v8::Local<v8::Object> sink);
-  void SetLocalShareVideoSinkAdapted(v8::Local<v8::Object> sink);
+  void SetLocalVideoSink(mate::PersistentDictionary sink);
+  void SetLocalShareVideoSink(mate::PersistentDictionary sink);
 
+ private:
+  yealink::Media* media_;
+
+  std::vector<Device> video_input_device_list_;
+  base::Optional<Device> video_input_device_;
+  base::Optional<Device> secondary_video_input_device_;
+
+  std::unique_ptr<VideoSourceAdapter> local_video_source_;
+  std::unique_ptr<VideoSourceAdapter> local_share_video_source_;
+
+  std::map<int, VideoSinkV8*> local_video_sinks_;
+  std::map<int, VideoSinkV8*> local_share_video_sinks_;
+
+  DISALLOW_COPY_AND_ASSIGN(VideoManagerBinding);
 };
 
 }  // namespace rtvc

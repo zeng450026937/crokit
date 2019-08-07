@@ -1,4 +1,5 @@
 let binding
+
 try {
   binding = require('D:\\workspace\\crokit\\src\\out\\debug\\rtvc_binding.node');
 } catch (error) {
@@ -6,46 +7,15 @@ try {
   return;
 }
 
-console.log(binding);
+console.log(binding.version);
 
-const { version, UserAgent, audioManager, videoManager, videoFrame } = binding;
+const tests = {
+  videoManger : require('./video-manager-test'),
+};
 
-console.log(version);
+console.log('simple binding test');
 
-console.log(videoFrame);
-console.log(videoFrame.width);
-console.log(videoFrame.height);
-console.log(videoFrame.size);
-console.log(videoFrame.buffer);
-
-const i420Buffer = videoFrame.buffer;
-const i420Buffer2 = videoFrame.buffer;
-
-console.log(i420Buffer == i420Buffer2);
-console.log(i420Buffer === i420Buffer2);
-
-console.log(i420Buffer);
-console.log(i420Buffer.type);
-console.log(i420Buffer.width);
-console.log(i420Buffer.height);
-console.log(i420Buffer.chromaWidth);
-console.log(i420Buffer.chromaHeight);
-console.log(i420Buffer.strideY);
-console.log(i420Buffer.strideU);
-console.log(i420Buffer.strideV);
-console.log(i420Buffer.dataY);
-console.log(i420Buffer.dataU);
-console.log(i420Buffer.dataV);
-console.log(i420Buffer.toI420());
-console.log(i420Buffer.getI420());
-console.log(i420Buffer.getI420A());
-console.log(i420Buffer.getI444());
-
-
-console.log(i420Buffer == i420Buffer.toI420());
-console.log(i420Buffer === i420Buffer.getI420());
-console.log(i420Buffer == i420Buffer.getI420());
-console.log(i420Buffer === i420Buffer.getI420());
+tests.videoManger(binding);
 
 // const user_agent = new UserAgent({
 //   username: 'my username',
@@ -63,9 +33,20 @@ console.log(i420Buffer === i420Buffer.getI420());
 
 // audioManager.enumerateDevices();
 
+// console.log("enumerateDevices")
 // console.log(audioManager.audioInputDevice)
 // audioManager.audioInputDevice = { deviceId: 'testdeviceid', label: 'testdevice', type: 'kAudioOutput' };
 // console.log(audioManager.audioInputDevice)
+// try {
+// audioManager.audioInputDevice = null;
+// } catch (error) {
+// console.error(error)
+// }
+// console.log(audioManager.audioInputDevice)
+// console.log(audioManager.audioInputDeviceList)
+// console.log(audioManager.audioInputDeviceList())
+
+// videoManager.enumerateDevices();
 
 // console.log(videoManager.videoInputDeviceList)
 // console.log(videoManager.videoInputDeviceList())

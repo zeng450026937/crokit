@@ -1,11 +1,14 @@
 #ifndef YEALINK_RTVC_BINDING_CONVERTER_H_
 #define YEALINK_RTVC_BINDING_CONVERTER_H_
 
+#include "base/optional.h"
 #include "yealink/native_mate/converter.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/device_type.h"
-#include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_frame_buffer.h"
+#include "yealink/rtvc/api/video/video_rotation.h"
+#include "yealink/rtvc/api/video/video_sink.h"
+#include "yealink/rtvc/api/video/video_source.h"
 
 namespace mate {
 
@@ -26,6 +29,27 @@ struct Converter<std::pair<Type1, Type2>> {
                isolate, array->Get(context, 0).ToLocalChecked(), &out->first) &&
            Converter<Type2>::FromV8(
                isolate, array->Get(context, 1).ToLocalChecked(), &out->second);
+  }
+};
+
+template <typename T>
+struct Converter<base::Optional<T>> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const base::Optional<T>& val) {
+    if (!val.has_value())
+      return v8::Null(isolate);
+    return ConvertToV8(isolate, val.value());
+  }
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     base::Optional<T>* out) {
+    T dict;
+    if (!ConvertFromV8(isolate, val, &dict))
+      *out = base::nullopt;
+    else
+      *out = base::Optional<T>(dict);
+    return true;
   }
 };
 
@@ -54,7 +78,7 @@ struct Converter<yealink::rtvc::DeviceType> {
         device_type = "kImageFile";
         break;
     }
-    return mate::ConvertToV8(isolate, device_type);
+    return ConvertToV8(isolate, device_type);
   }
 
   static bool FromV8(v8::Isolate* isolate,
@@ -89,7 +113,7 @@ template <>
 struct Converter<yealink::rtvc::Device> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const yealink::rtvc::Device& val) {
-    mate::Dictionary dict = mate::Dictionary::CreateEmpty(isolate);
+    Dictionary dict = Dictionary::CreateEmpty(isolate);
     dict.Set("deviceId", val.deviceId);
     dict.Set("label", val.label);
     dict.Set("type", val.type);
@@ -99,7 +123,7 @@ struct Converter<yealink::rtvc::Device> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::Device* out) {
-    mate::Dictionary dict;
+    Dictionary dict;
     if (!ConvertFromV8(isolate, val, &dict))
       return false;
     dict.Get("deviceId", &(out->deviceId));
@@ -131,7 +155,7 @@ struct Converter<yealink::rtvc::VideoFrameBuffer::Type> {
         buffer_type = "kNative";
         break;
     }
-    return mate::ConvertToV8(isolate, buffer_type);
+    return ConvertToV8(isolate, buffer_type);
   }
 
   static bool FromV8(v8::Isolate* isolate,
@@ -151,6 +175,53 @@ struct Converter<yealink::rtvc::VideoFrameBuffer::Type> {
       *out = yealink::rtvc::VideoFrameBuffer::Type::kI444;
     else if (buffer_type == "kNative")
       *out = yealink::rtvc::VideoFrameBuffer::Type::kNative;
+    else
+      return false;
+
+    return true;
+  }
+};
+
+template <>
+struct Converter<yealink::rtvc::VideoRotation> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::VideoRotation val) {
+    std::string rotation;
+    switch (val) {
+      case yealink::rtvc::VideoRotation::kVideoRotation_0:
+        rotation = "kVideoRotation_0";
+        break;
+      case yealink::rtvc::VideoRotation::kVideoRotation_180:
+        rotation = "kVideoRotation_180";
+        break;
+      case yealink::rtvc::VideoRotation::kVideoRotation_270:
+        rotation = "kVideoRotation_270";
+        break;
+      case yealink::rtvc::VideoRotation::kVideoRotation_90:
+        rotation = "kVideoRotation_90";
+        break;
+      default:
+        rotation = "kVideoRotation_0";
+        break;
+    }
+    return ConvertToV8(isolate, rotation);
+  }
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::VideoRotation* out) {
+    std::string buffer_type;
+    if (!ConvertFromV8(isolate, val, &buffer_type))
+      return false;
+
+    if (buffer_type == "kVideoRotation_0")
+      *out = yealink::rtvc::VideoRotation::kVideoRotation_0;
+    else if (buffer_type == "kVideoRotation_180")
+      *out = yealink::rtvc::VideoRotation::kVideoRotation_180;
+    else if (buffer_type == "kVideoRotation_270")
+      *out = yealink::rtvc::VideoRotation::kVideoRotation_270;
+    else if (buffer_type == "kVideoRotation_90")
+      *out = yealink::rtvc::VideoRotation::kVideoRotation_90;
     else
       return false;
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "base/optional.h"
 #include "yealink/rtvc/api/device_type.h"
 
 namespace yealink {
@@ -38,10 +39,10 @@ class AudioManager {
   virtual std::vector<Device> audioInputDeviceList() = 0;
   virtual std::vector<Device> audioOutputDeviceList() = 0;
 
-  virtual Device audioInputDevice() = 0;
+  virtual base::Optional<Device> audioInputDevice() = 0;
   virtual void SetAudioInputDevice(Device device) = 0;
 
-  virtual Device audioOutputDevice() = 0;
+  virtual base::Optional<Device> audioOutputDevice() = 0;
   virtual void SetAudioOutputDevice(Device device) = 0;
 
   // TODO:

@@ -1,7 +1,7 @@
 #ifndef YEALINK_RTVC_BINDING_VIDEO_SINK_V8_H_
 #define YEALINK_RTVC_BINDING_VIDEO_SINK_V8_H_
 
-#include "yealink/native_mate/dictionary.h"
+#include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
 namespace yealink {
@@ -10,13 +10,15 @@ namespace rtvc {
 
 class VideoSinkV8 : public VideoSink {
  public:
-  VideoSinkV8(mate::Dictionary sink);
+  VideoSinkV8(mate::PersistentDictionary sink);
   ~VideoSinkV8();
 
- private:
-  void OnFrame(const VideoFrame& frame);
+  void OnFrame(const VideoFrame& frame) override;
 
-  mate::Dictionary sink_;
+  mate::PersistentDictionary GetHandle() { return sink_; }
+
+ private:
+  mate::PersistentDictionary sink_;
 };
 
 }  // namespace rtvc

@@ -7,10 +7,12 @@ namespace yealink {
 
 namespace rtvc {
 
-VideoSourceV8::VideoSourceV8(mate::Dictionary source) : source_(source) {
+VideoSourceV8::VideoSourceV8(mate::PersistentDictionary source)
+    : source_(source) {
   v8::Isolate* isolate = source_.isolate();
 
-  source_adapter_ = mate::Dictionary::CreateEmpty(isolate);
+  source_adapter_ =
+      mate::PersistentDictionary(isolate, v8::Object::New(isolate));
   source_adapter_.SetMethod(
       "onFrame",
       base::BindRepeating(&VideoSourceV8::OnFrame, base::Unretained(this)));
@@ -25,11 +27,13 @@ VideoSourceV8::~VideoSourceV8() {
                                      "removeSink", &converted_args);
 }
 
-void VideoSourceV8::OnFrame() {
-  VideoFrame frame = VideoFrame::Builder().build();
-  for (VideoSink* sink : sinks_) {
-    sink->OnFrame(frame);
-  }
+void VideoSourceV8::OnFrame(mate::Dictionary frame) {
+  // TBD
+  
+  // VideoFrame frame = VideoFrame::Builder().build();
+  // for (VideoSink* sink : sinks_) {
+  //   sink->OnFrame(frame);
+  // }
 }
 
 void VideoSourceV8::AddOrUpdateSink(VideoSink* sink) {
@@ -39,10 +43,7 @@ void VideoSourceV8::AddOrUpdateSink(VideoSink* sink) {
 
 void VideoSourceV8::RemoveSink(VideoSink* sink) {
   DCHECK(sink);
-  auto it = sinks_.find(sink);
-  if (it != sinks_.end()) {
-    sinks_.erase(it);
-  }
+  sinks_.erase(sink);
 }
 
 }  // namespace rtvc

@@ -9,8 +9,8 @@ namespace yealink {
 
 namespace rtvc {
 
-class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
-                         UserAgent {
+class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>
+                         {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -23,16 +23,16 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                    std::unique_ptr<UserAgent> impl);
   ~UserAgentBinding() override;
 
-  std::string workspace_folder() override;
+  std::string workspace_folder();
 
-  std::string username() override;
-  std::string password() override;
-  std::string domain() override;
+  std::string username();
+  std::string password();
+  std::string domain();
 
-  void Register() override;
-  void UnRegister() override;
+  void Register();
+  void UnRegister();
 
-  bool registered() override;
+  bool registered();
 
  private:
   std::unique_ptr<UserAgent> impl_;

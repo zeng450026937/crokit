@@ -5,7 +5,7 @@
 
 namespace yealink {
 
-namespace node {
+namespace rtvc {
 
 class NullTaskRunner final : public base::SingleThreadTaskRunner {
  public:
@@ -27,7 +27,7 @@ class NullTaskRunner final : public base::SingleThreadTaskRunner {
   bool RunsTasksInCurrentSequence() const override { return true; }
 };
 
-}  // namespace node
+}  // namespace rtvc
 
 }  // namespace yealink
 

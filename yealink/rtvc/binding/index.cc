@@ -23,7 +23,7 @@ void Initialize(v8::Local<v8::Object> exports,
                 void* priv) {
   v8::Isolate* isolate = context->GetIsolate();
 
-  yealink::rtvc::Context::Initialize(isolate);
+  yealink::rtvc::Context::Instance()->Initialize(isolate);
   // setup exports
   mate::Dictionary dict(isolate, exports);
 

@@ -2,16 +2,79 @@
 
 namespace yealink {
 
-namespace node {
+namespace rtvc {
 
-namespace {
-void async_callback(uv_async_t* handle) {
-  reinterpret_cast<LibuvTaskRunner*>(handle->data)->RunPendingTasks();
-}
-void idle_callback(uv_idle_t* handle) {
-  reinterpret_cast<LibuvTaskRunner*>(handle->data)->RunPendingTasks();
-}
-}  // namespace
+class LibuvTaskRunner::AsyncRunner : public LibuvTaskRunner::Runner {
+ public:
+  AsyncRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
+      : async_(nullptr), loop_(loop) {
+    async_ = new uv_async_t;
+    async_->data = delegate;
+    uv_async_init(loop_, async_, [](uv_async_t* handle) {
+      reinterpret_cast<LibuvTaskRunner*>(handle->data)->RunPendingTasks();
+    });
+    ::uv_async_send(async_);
+  }
+  ~AsyncRunner() override {
+    ::uv_close(reinterpret_cast<uv_handle_t*>(async_), [](uv_handle_t* handle) {
+      delete reinterpret_cast<uv_async_t*>(handle);
+    });
+  }
+
+ private:
+  LibuvTaskRunner* delegate_;
+  uv_loop_t* loop_;
+  uv_async_t* async_;
+};
+
+class LibuvTaskRunner::IdleRunner : public LibuvTaskRunner::Runner {
+ public:
+  IdleRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
+      : idle_(nullptr), loop_(loop) {
+    idle_ = new uv_idle_t;
+    idle_->data = delegate;
+    uv_idle_init(loop_, idle_);
+    ::uv_idle_start(idle_, [](uv_idle_t* handle) {
+      reinterpret_cast<LibuvTaskRunner*>(handle->data)->RunPendingTasks();
+    });
+  }
+  ~IdleRunner() override {
+    ::uv_idle_stop(idle_);
+    ::uv_close(reinterpret_cast<uv_handle_t*>(idle_), [](uv_handle_t* handle) {
+      delete reinterpret_cast<uv_idle_t*>(handle);
+    });
+  }
+
+ private:
+  uv_loop_t* loop_;
+  uv_idle_t* idle_;
+};
+
+class LibuvTaskRunner::TimerRunner : public LibuvTaskRunner::Runner {
+ public:
+  TimerRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
+      : timer_(nullptr), loop_(loop) {
+    timer_ = new uv_timer_t;
+    timer_->data = this;
+    uv_timer_init(loop_, timer_);
+    ::uv_timer_start(
+        timer_,
+        [](uv_timer_t* handle) {
+          reinterpret_cast<LibuvTaskRunner*>(handle->data)->RunPendingTasks();
+        },
+        0, 0);
+  }
+  ~TimerRunner() override {
+    ::uv_timer_stop(timer_);
+    uv_close(reinterpret_cast<uv_handle_t*>(timer_), [](uv_handle_t* handle) {
+      delete reinterpret_cast<uv_timer_t*>(handle);
+    });
+  }
+
+ private:
+  uv_loop_t* loop_;
+  uv_timer_t* timer_;
+};
 
 LibuvTaskRunner::DeferredTask::DeferredTask() : is_non_nestable(false) {}
 
@@ -25,50 +88,27 @@ LibuvTaskRunner::DeferredTask& LibuvTaskRunner::DeferredTask::operator=(
 LibuvTaskRunner::LibuvTaskRunner(uv_loop_t* loop, LibuvRunnerType runner_type)
     : loop_(loop), runner_type_(runner_type) {
   DCHECK(loop);
-  if (runner_type_ == kLibuvAsyncRunner) {
-    ::uv_async_init(loop, &asyncer_, async_callback);
-    asyncer_.data = this;
-  } else if (runner_type_ == kLibuvIdleRunner) {
-    ::uv_idle_init(loop, &idler_);
-    idler_.data = this;
-    ::uv_idle_start(&idler_, idle_callback);
-  }
 }
-LibuvTaskRunner::~LibuvTaskRunner() {
-  if (runner_type_ == kLibuvAsyncRunner) {
-    // ::uv_close((uv_handle_t*)(&asyncer_), [](uv_handle_t* handle) {});
-    ::uv_close((uv_handle_t*)(&asyncer_), nullptr);
-  } else if (runner_type_ == kLibuvIdleRunner) {
-    ::uv_idle_stop(&idler_);
-  }
-}
+LibuvTaskRunner::~LibuvTaskRunner() {}
 
 bool LibuvTaskRunner::PostDelayedTask(const base::Location& from_here,
                                       base::OnceClosure task,
                                       base::TimeDelta delay) {
-  if (runner_type_ == kLibuvAsyncRunner) {
-    base::AutoLock lock(lock_);
-
-    QueueDeferredTask(from_here, std::move(task), delay,
-                      false /* is_non_nestable */);
-
-    ::uv_async_send(&asyncer_);
-  }
-  return false;
+  base::AutoLock lock(lock_);
+  QueueDeferredTask(from_here, std::move(task), delay,
+                    false /* is_non_nestable */);
+  EnsureTaskRunner();
+  return true;
 }
 bool LibuvTaskRunner::PostNonNestableDelayedTask(
     const base::Location& from_here,
     base::OnceClosure task,
     base::TimeDelta delay) {
-  if (runner_type_ == kLibuvAsyncRunner) {
-    base::AutoLock lock(lock_);
-
-    QueueDeferredTask(from_here, std::move(task), delay,
-                      true /* is_non_nestable */);
-
-    ::uv_async_send(&asyncer_);
-  }
-  return false;
+  base::AutoLock lock(lock_);
+  QueueDeferredTask(from_here, std::move(task), delay,
+                    true /* is_non_nestable */);
+  EnsureTaskRunner();
+  return true;
 }
 
 void LibuvTaskRunner::RunPendingTasks() {
@@ -79,6 +119,21 @@ void LibuvTaskRunner::RunPendingTasks() {
   }
 
   deferred_tasks_queue_.clear();
+
+  runner_.reset();
+}
+
+void LibuvTaskRunner::EnsureTaskRunner() {
+  if (runner_.get())
+    return;
+
+  if (runner_type_ == kLibuvAsyncRunner) {
+    runner_.reset(new AsyncRunner(this, loop_));
+  } else if (runner_type_ == kLibuvIdleRunner) {
+    runner_.reset(new IdleRunner(this, loop_));
+  } else if (runner_type_ == kLibuvTimerRunner) {
+    runner_.reset(new TimerRunner(this, loop_));
+  }
 }
 
 void LibuvTaskRunner::QueueDeferredTask(const base::Location& from_here,
@@ -99,6 +154,6 @@ void LibuvTaskRunner::QueueDeferredTask(const base::Location& from_here,
   deferred_tasks_queue_.push_back(std::move(deferred_task));
 }
 
-}  // namespace node
+}  // namespace rtvc
 
 }  // namespace yealink

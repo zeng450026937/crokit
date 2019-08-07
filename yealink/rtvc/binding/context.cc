@@ -1,5 +1,6 @@
 #include "yealink/rtvc/binding/context.h"
 
+#include <node.h>
 #include "base/at_exit.h"
 #include "base/base_paths.h"
 #include "base/bind.h"
@@ -12,23 +13,51 @@
 #include "base/strings/string_util.h"
 #include "gin/array_buffer.h"
 #include "gin/public/isolate_holder.h"
+#include "yealink/libvc/include/media/media_api.h"
+#include "yealink/rtvc/binding/libuv_task_runner.h"
 #include "yealink/rtvc/binding/null_task_runner.h"
+#include "yealink/rtvc/binding/task_runner_libuv.h"
+#include "yealink/rtvc/binding/uv_task_runner.h"
 
 namespace yealink {
 
 namespace rtvc {
 
-namespace {
-bool g_initialized = false;
-v8::Isolate* g_isolate = nullptr;
-base::FilePath g_workspace_folder;
-}  // namespace
-
 // static
-void Context::Initialize(v8::Isolate* isolate) {
-  DCHECK(!g_initialized);
+Context* Context::Instance() {
+  static Context* instance = new Context();
+  return instance;
+}
 
-  g_isolate = isolate;
+Context::Context() {}
+Context::~Context() {
+  // if (media_) {
+  //   Media::ReleaseInstance(media_);
+  // }
+}
+
+void Context::Initialize(v8::Isolate* isolate) {
+  base::FilePath workspace_folder;
+  base::PathService::Get(base::DIR_MODULE, &workspace_folder);
+
+#if defined(OS_WIN)
+  std::vector<base::FilePath::StringType> components;
+  workspace_folder.GetComponents(&components);
+  components.erase(components.begin());
+  components.erase(components.begin());
+  workspace_folder =
+      base::FilePath(base::JoinString(components, base::FilePath::kSeparators));
+#endif
+
+  Initialize(isolate, workspace_folder);
+}
+
+void Context::Initialize(v8::Isolate* isolate,
+                         const base::FilePath& workspace_folder) {
+  DCHECK(!initialized_);
+
+  isolate_ = isolate;
+  workspace_folder_ = workspace_folder;
 
   static base::AtExitManager at_exit;
 
@@ -48,40 +77,39 @@ void Context::Initialize(v8::Isolate* isolate) {
                                  nullptr,
                                  gin::IsolateHolder::IsolateType::kNode);
 
-  scoped_refptr<base::SingleThreadTaskRunner> task_runner =
-      base::MakeRefCounted<yealink::node::NullTaskRunner>();
+  task_runner_ = base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
 
   static gin::IsolateHolder instance(
-      task_runner, gin::IsolateHolder::IsolateType::kNode, isolate);
+      task_runner_, gin::IsolateHolder::IsolateType::kNode, isolate);
 
-  base::PathService::Get(base::DIR_MODULE, &g_workspace_folder);
+  media_ =
+      yealink::Media::CreateInstance(workspace_folder_.AsUTF8Unsafe().c_str());
 
-#if defined(OS_WIN)
-  std::vector<base::FilePath::StringType> components;
-  g_workspace_folder.GetComponents(&components);
-  components.erase(components.begin());
-  components.erase(components.begin());
-  g_workspace_folder =
-      base::FilePath(base::JoinString(components, base::FilePath::kSeparators));
-#endif
+  ::node::AddEnvironmentCleanupHook(
+      isolate,
+      [](void* arg) {
+        Context* context = reinterpret_cast<Context*>(arg);
+        delete context;
+      },
+      this);
 
-  g_initialized = true;
-
-  LOG(INFO) << g_workspace_folder << g_workspace_folder.value();
+  initialized_ = true;
 }
 
-// static
+scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner() {
+  return task_runner_;
+}
+
 v8::Isolate* Context::GetIsolate() {
-  return g_isolate;
+  return isolate_;
 }
 
-// static
-const base::FilePath& Context::GetWorkspaceFolder() {
-  return g_workspace_folder;
+base::FilePath Context::GetWorkspaceFolder() {
+  return workspace_folder_;
 }
-// static
-void Context::SetWorkspaceFolder(const base::FilePath& workspace_folder) {
-  g_workspace_folder = workspace_folder;
+
+Media* Context::GetMedia() {
+  return media_;
 }
 
 }  // namespace rtvc
