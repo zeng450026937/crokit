@@ -16,7 +16,6 @@
 #include "yealink/libvc/include/media/media_api.h"
 #include "yealink/rtvc/binding/libuv_task_runner.h"
 #include "yealink/rtvc/binding/null_task_runner.h"
-#include "yealink/rtvc/binding/task_runner_libuv.h"
 #include "yealink/rtvc/binding/uv_task_runner.h"
 
 namespace yealink {

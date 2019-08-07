@@ -54,8 +54,6 @@ node_addon("rtvc_binding") {
     "binding/null_task_runner.h",
     "binding/libuv_task_runner.h",
     "binding/libuv_task_runner.cc",
-    "binding/task_runner_libuv.h",
-    "binding/task_runner_libuv.cc",
     "binding/uv_task_runner.h",
     "binding/uv_task_runner.cc",
     "binding/event_emitter.h",

@@ -29,11 +29,17 @@ class UvTaskRunner : public base::SingleThreadTaskRunner {
  private:
   ~UvTaskRunner() override;
   static void OnTimeout(uv_timer_t* timer);
+  static void OnIdle(uv_idle_t* idle);
+  static void OnAsync(uv_async_t* async);
   static void OnClose(uv_handle_t* handle);
+  static void OnIdleClose(uv_handle_t* handle);
+  static void OnAsyncClose(uv_handle_t* handle);
 
   uv_loop_t* loop_;
 
-  std::map<uv_timer_t*, base::OnceClosure> tasks_;
+  std::map<uv_timer_t*, base::OnceClosure> timer_tasks_;
+  std::map<uv_idle_t*, base::OnceClosure> idle_tasks_;
+  std::map<uv_async_t*, base::OnceClosure> async_tasks_;
 
   DISALLOW_COPY_AND_ASSIGN(UvTaskRunner);
 };
