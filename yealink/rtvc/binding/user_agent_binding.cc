@@ -25,8 +25,7 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   options.Get("password", &config.password);
   options.Get("domain", &config.domain);
 
-  return new UserAgentBinding(args->isolate(), args->GetThis(),
-                              UserAgent::Create(std::move(config)));
+  return new UserAgentBinding(args->isolate(), args->GetThis(), config);
 }
 
 // static
@@ -48,8 +47,8 @@ void UserAgentBinding::BuildPrototype(
 
 UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
-                                   std::unique_ptr<UserAgent> impl)
-    : impl_(std::move(impl)) {
+                                   UserAgent::Config config)
+    : config_(std::move(config)) {
   InitWith(isolate, wrapper);
 }
 UserAgentBinding::~UserAgentBinding() {
@@ -57,35 +56,29 @@ UserAgentBinding::~UserAgentBinding() {
 };
 
 std::string UserAgentBinding::workspace_folder() {
-  LOG(INFO) << __FUNCTIONW__;
-  return impl_->workspace_folder();
+  return config_.workspace_folder.value_or("");
 }
 
 std::string UserAgentBinding::username() {
-  LOG(INFO) << __FUNCTIONW__;
-  return impl_->username();
+  return config_.username;
 }
 std::string UserAgentBinding::password() {
-  LOG(INFO) << __FUNCTIONW__;
-  return impl_->password();
+  return config_.password;
 }
 std::string UserAgentBinding::domain() {
-  LOG(INFO) << __FUNCTIONW__;
-  return impl_->domain();
+  return config_.domain;
 }
 
 void UserAgentBinding::Register() {
   LOG(INFO) << __FUNCTIONW__;
-  impl_->Register();
 }
 void UserAgentBinding::UnRegister() {
   LOG(INFO) << __FUNCTIONW__;
-  impl_->UnRegister();
 }
 
 bool UserAgentBinding::registered() {
   LOG(INFO) << __FUNCTIONW__;
-  return impl_->registered();
+  return false;
 }
 
 }  // namespace rtvc

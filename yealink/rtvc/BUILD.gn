@@ -26,7 +26,26 @@ source_set("rtvc_api") {
   ]
   deps = [
     "//base",
-    "//third_party/libyuv"
+    "//third_party/libyuv",
+  ]
+}
+
+source_set("desktop_media") {
+  sources = [
+    "binding/desktop_media_id.h",
+    "binding/desktop_media_id.cc",
+    "binding/desktop_capture.h",
+    "binding/desktop_capture.cc",
+    "binding/desktop_media_list.h",
+    "binding/desktop_media_list_observer.h",
+    "binding/desktop_media_list_base.h",
+    "binding/desktop_media_list_base.cc",
+    "binding/native_desktop_media_list.h",
+    "binding/native_desktop_media_list.cc",
+  ]
+  deps = [
+    "//base",
+    "//third_party/webrtc/modules/desktop_capture",
   ]
 }
 
@@ -88,5 +107,6 @@ node_addon("rtvc_binding") {
     "//yealink/native_mate",
     "//yealink/native_mate:converters",
     ":rtvc_lib",
+    ":desktop_media",
   ]
 }

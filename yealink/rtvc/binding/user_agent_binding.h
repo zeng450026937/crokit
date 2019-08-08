@@ -9,8 +9,7 @@ namespace yealink {
 
 namespace rtvc {
 
-class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>
-                         {
+class UserAgentBinding : public mate::EventEmitter<UserAgentBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -20,7 +19,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>
  protected:
   UserAgentBinding(v8::Isolate* isolate,
                    v8::Local<v8::Object> wrapper,
-                   std::unique_ptr<UserAgent> impl);
+                   UserAgent::Config config);
   ~UserAgentBinding() override;
 
   std::string workspace_folder();
@@ -35,7 +34,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>
   bool registered();
 
  private:
-  std::unique_ptr<UserAgent> impl_;
+  UserAgent::Config config_;
 };
 
 }  // namespace rtvc

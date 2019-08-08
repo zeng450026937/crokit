@@ -434,6 +434,7 @@ class BASE_EXPORT ScopedAllowBaseSyncPrimitivesOutsideBlockingScope {
   friend class ::BrowserProcessImpl;  // http://crbug.com/125207
   friend class ::KeyStorageLinux;
   friend class ::NativeDesktopMediaList;
+  friend class yealink::rtvc::NativeDesktopMediaList;
   friend class ::StartupTimeBomb;
   friend class android::JavaHandlerThread;
   friend class android_webview::

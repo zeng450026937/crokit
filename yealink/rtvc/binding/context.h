@@ -21,7 +21,7 @@ class Context {
   void Initialize(v8::Isolate* isolate);
   void Initialize(v8::Isolate* isolate, const base::FilePath& workspace_folder);
 
-  scoped_refptr<base::SingleThreadTaskRunner> GetTaskRunner();
+  scoped_refptr<base::SingleThreadTaskRunner> GetTaskRunner(bool high_priority = true);
 
   v8::Isolate* GetIsolate();
 
@@ -36,6 +36,7 @@ class Context {
  private:
   bool initialized_ = false;
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
+  scoped_refptr<base::SingleThreadTaskRunner> high_priority_task_runner_;
   v8::Isolate* isolate_ = nullptr;
   base::FilePath workspace_folder_;
   Media* media_ = nullptr;

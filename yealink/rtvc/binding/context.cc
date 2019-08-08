@@ -11,6 +11,7 @@
 #include "base/memory/scoped_refptr.h"
 #include "base/path_service.h"
 #include "base/strings/string_util.h"
+#include "base/threading/thread_task_runner_handle.h"
 #include "gin/array_buffer.h"
 #include "gin/public/isolate_holder.h"
 #include "yealink/libvc/include/media/media_api.h"
@@ -70,13 +71,17 @@ void Context::Initialize(v8::Isolate* isolate,
   logging::InitLogging(settings);
   logging::SetLogItems(true, false, true, false);
 
+  task_runner_ = base::MakeRefCounted<yealink::rtvc::UvTaskRunner>();
+  high_priority_task_runner_ =
+      base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
+
+  base::ThreadTaskRunnerHandle handle(task_runner_);
+
   // setup gin
   gin::IsolateHolder::Initialize(gin::IsolateHolder::kStrictMode,
                                  gin::ArrayBufferAllocator::SharedInstance(),
                                  nullptr,
                                  gin::IsolateHolder::IsolateType::kNode);
-
-  task_runner_ = base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
 
   static gin::IsolateHolder instance(
       task_runner_, gin::IsolateHolder::IsolateType::kNode, isolate);
@@ -95,8 +100,9 @@ void Context::Initialize(v8::Isolate* isolate,
   initialized_ = true;
 }
 
-scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner() {
-  return task_runner_;
+scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner(
+    bool high_priority) {
+  return high_priority ? high_priority_task_runner_ : task_runner_;
 }
 
 v8::Isolate* Context::GetIsolate() {
