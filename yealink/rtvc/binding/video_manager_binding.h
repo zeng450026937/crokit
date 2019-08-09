@@ -4,13 +4,13 @@
 #include <map>
 #include <memory>
 
+#include "base/macros.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video_manager.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
-#include "base/macros.h"
 
 namespace yealink {
 
@@ -20,14 +20,13 @@ namespace rtvc {
 
 class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
  public:
-  static mate::Handle<VideoManagerBinding> Create(v8::Isolate* isolate) {
-    return mate::CreateHandle(isolate, new VideoManagerBinding(isolate));
-  }
+  static mate::WrappableBase* New(mate::Arguments* args);
+
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
  protected:
-  VideoManagerBinding(v8::Isolate* isolate);
+  VideoManagerBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~VideoManagerBinding() override;
 
   void EnumerateDevices();

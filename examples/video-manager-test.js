@@ -1,7 +1,9 @@
 function test(binding) {
   console.log('video manager test')
 
-  const { videoManager } = binding;
+  const { VideoManager } = binding;
+
+  const videoManager = new VideoManager();
 
   console.log('-- enumerateDevices --');
   videoManager.enumerateDevices();

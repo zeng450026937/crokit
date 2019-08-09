@@ -89,7 +89,7 @@ LibuvTaskRunner::LibuvTaskRunner(uv_loop_t* loop, LibuvRunnerType runner_type)
     : loop_(loop), runner_type_(runner_type) {
   DCHECK(loop);
 }
-LibuvTaskRunner::~LibuvTaskRunner() {}
+LibuvTaskRunner::~LibuvTaskRunner() = default;
 
 bool LibuvTaskRunner::PostDelayedTask(const base::Location& from_here,
                                       base::OnceClosure task,

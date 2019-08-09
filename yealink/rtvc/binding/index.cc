@@ -4,6 +4,7 @@
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/video/i420_buffer.h"
 #include "yealink/rtvc/binding/audio_manager_binding.h"
+#include "yealink/rtvc/binding/bootstrap_binding.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/v8_util.h"
@@ -13,6 +14,7 @@
 namespace {
 
 using yealink::rtvc::AudioManagerBinding;
+using yealink::rtvc::BootstrapBinding;
 using yealink::rtvc::UserAgentBinding;
 using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
@@ -45,17 +47,21 @@ void Initialize(v8::Local<v8::Object> exports,
                             ->GetFunction(context)
                             .ToLocalChecked());
 
-  dict.Set("audioManager", AudioManagerBinding::Create(isolate));
-  dict.Set("videoManager", VideoManagerBinding::Create(isolate));
+  dict.Set("AudioManager", AudioManagerBinding::GetConstructor(isolate)
+                               ->GetFunction(context)
+                               .ToLocalChecked());
 
-  auto buffer = yealink::rtvc::I420BufferImpl::Create(480, 360);
-  yealink::rtvc::I420BufferImpl::SetBlack(buffer.get());
+  VideoManagerBinding::SetConstructor(
+      isolate, base::BindRepeating(&VideoManagerBinding::New));
+  dict.Set("VideoManager", VideoManagerBinding::GetConstructor(isolate)
+                               ->GetFunction(context)
+                               .ToLocalChecked());
 
-  auto frame = yealink::rtvc::VideoFrame::Builder()
-                   .set_video_frame_buffer(buffer)
-                   .build();
-
-  dict.Set("videoFrame", VideoFrameBinding::Create(isolate, frame));
+  BootstrapBinding::SetConstructor(isolate,
+                                   base::BindRepeating(&BootstrapBinding::New));
+  dict.Set("Bootstrap", BootstrapBinding::GetConstructor(isolate)
+                            ->GetFunction(context)
+                            .ToLocalChecked());
 }
 
 }  // namespace

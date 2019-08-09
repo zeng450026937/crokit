@@ -16,6 +16,11 @@ const int kMaxVideoDeviceCout = 10;
 }  // namespace
 
 // static
+mate::WrappableBase* VideoManagerBinding::New(mate::Arguments* args) {
+  return new VideoManagerBinding(args->isolate(), args->GetThis());
+}
+
+// static
 void VideoManagerBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
@@ -42,11 +47,12 @@ void VideoManagerBinding::BuildPrototype(
                  &VideoManagerBinding::SetLocalShareVideoSink);
 }
 
-VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate)
+VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate,
+                                         v8::Local<v8::Object> wrapper)
     : media_(Context::Instance()->GetMedia()),
       local_video_source_(new VideoSourceAdapter()),
       local_share_video_source_(new VideoSourceAdapter()) {
-  Init(isolate);
+  InitWith(isolate, wrapper);
   media_->SetVideoCameraDeviceRender(local_video_source_.get());
 }
 VideoManagerBinding::~VideoManagerBinding() = default;

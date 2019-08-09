@@ -134,7 +134,7 @@ void NativeDesktopMediaList::Worker::Refresh(
   }
 
   static base::string16 DESKTOP_MEDIA_SCREEN_NAME =
-      base::UTF8ToUTF16("screen:");
+      base::UTF8ToUTF16("Screen");
 
   bool mutiple_sources = sources.size() > 1;
   base::string16 title;

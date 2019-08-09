@@ -25,7 +25,7 @@ void VideoSourceAdapter::RemoveSink(VideoSink* sink) {
 
 void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
   if (!thread_checker_.CalledOnValidThread()) {
-    Context::Instance()->GetTaskRunner()->PostTask(
+    Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnVideoFrame,
                                   base::Unretained(this), frame));
 

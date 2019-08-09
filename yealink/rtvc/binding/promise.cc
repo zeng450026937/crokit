@@ -1,14 +1,10 @@
-// Copyright (c) 2018 GitHub, Inc.
-// Use of this source code is governed by the MIT license that can be
-// found in the LICENSE file.
+#include "yealink/rtvc/binding/promise.h"
 
 #include <string>
 
-#include "yealink/rtvc/binding/promise.h"
+namespace yealink {
 
-namespace atom {
-
-namespace util {
+namespace rtvc {
 
 Promise::Promise(v8::Isolate* isolate)
     : Promise(isolate,
@@ -57,15 +53,15 @@ Promise CopyablePromise::GetPromise() const {
                  v8::Local<v8::Promise::Resolver>::New(isolate_, handle_));
 }
 
-}  // namespace util
+}  // namespace rtvc
 
-}  // namespace atom
+}  // namespace yealink
 
 namespace mate {
 
-v8::Local<v8::Value> mate::Converter<atom::util::Promise>::ToV8(
+v8::Local<v8::Value> mate::Converter<yealink::rtvc::Promise>::ToV8(
     v8::Isolate*,
-    const atom::util::Promise& val) {
+    const yealink::rtvc::Promise& val) {
   return val.GetHandle();
 }
 

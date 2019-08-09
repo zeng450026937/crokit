@@ -32,7 +32,6 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
 void UserAgentBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  LOG(INFO) << __FUNCTIONW__;
   prototype->SetClassName(mate::StringToV8(isolate, "UserAgent"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()

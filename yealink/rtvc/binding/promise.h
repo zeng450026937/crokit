@@ -1,23 +1,17 @@
-// Copyright (c) 2018 GitHub, Inc.
-// Use of this source code is governed by the MIT license that can be
-// found in the LICENSE file.
-
-#ifndef ATOM_COMMON_PROMISE_UTIL_H_
-#define ATOM_COMMON_PROMISE_UTIL_H_
+#ifndef YEALINK_RTVC_BINDING_PROMISE_H_
+#define YEALINK_RTVC_BINDING_PROMISE_H_
 
 #include <string>
 #include <utility>
 
-#include "base/task/post_task.h"
+#include "yealink/native_mate/converter.h"
 #include "yealink/native_mate/converters/callback.h"
 #include "yealink/native_mate/converters/once_callback.h"
-// #include "content/public/browser/browser_task_traits.h"
-// #include "content/public/browser/browser_thread.h"
-#include "yealink/native_mate/converter.h"
+#include "yealink/rtvc/binding/context.h"
 
-namespace atom {
+namespace yealink {
 
-namespace util {
+namespace rtvc {
 
 // A wrapper around the v8::Promise.
 //
@@ -46,42 +40,37 @@ class Promise {
 
   template <typename T>
   static void ResolvePromise(Promise promise, T result) {
-    // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-    //   base::PostTaskWithTraits(
-    //       FROM_HERE, {content::BrowserThread::UI},
-    //       base::BindOnce(
-    //           [](Promise promise, T result) { promise.Resolve(result); },
-    //           std::move(promise), std::move(result)));
-    // } else {
-    //   promise.Resolve(result);
-    // }
-    promise.Resolve(result);
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE, base::BindOnce([](Promise promise,
+                                       T result) { promise.Resolve(result); },
+                                    std::move(promise), std::move(result)));
+    } else {
+      promise.Resolve(result);
+    }
   }
 
   static void ResolveEmptyPromise(Promise promise) {
-    // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-    //   base::PostTaskWithTraits(
-    //       FROM_HERE, {content::BrowserThread::UI},
-    //       base::BindOnce([](Promise promise) { promise.Resolve(); },
-    //                      std::move(promise)));
-    // } else {
-    //   promise.Resolve();
-    // }
-    promise.Resolve();
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE, base::BindOnce([](Promise promise) { promise.Resolve(); },
+                                    std::move(promise)));
+    } else {
+      promise.Resolve();
+    }
   }
 
   static void RejectPromise(Promise promise, std::string errmsg) {
-    // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-    //   base::PostTaskWithTraits(FROM_HERE, {content::BrowserThread::UI},
-    //                            base::BindOnce(
-    //                                [](Promise promise, std::string errmsg) {
-    //                                  promise.RejectWithErrorMessage(errmsg);
-    //                                },
-    //                                std::move(promise), std::move(errmsg)));
-    // } else {
-    //   promise.RejectWithErrorMessage(errmsg);
-    // }
-    promise.RejectWithErrorMessage(errmsg);
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE, base::BindOnce(
+                         [](Promise promise, std::string errmsg) {
+                           promise.RejectWithErrorMessage(errmsg);
+                         },
+                         std::move(promise), std::move(errmsg)));
+    } else {
+      promise.RejectWithErrorMessage(errmsg);
+    }
   }
 
   // Returns an already-resolved promise.
@@ -204,8 +193,8 @@ class CopyablePromise {
 
   template <typename T>
   static void ResolveCopyablePromise(const CopyablePromise& promise, T result) {
-    if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-      base::PostTaskWithTraits(
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
           FROM_HERE, {content::BrowserThread::UI},
           base::BindOnce(Promise::ResolvePromise<T>, promise.GetPromise(),
                          std::move(result)));
@@ -215,27 +204,24 @@ class CopyablePromise {
   }
 
   static void ResolveEmptyCopyablePromise(const CopyablePromise& promise) {
-    // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-    //   base::PostTaskWithTraits(
-    //       FROM_HERE, {content::BrowserThread::UI},
-    //       base::BindOnce(Promise::ResolveEmptyPromise,
-    //       promise.GetPromise()));
-    // } else {
-    //   promise.GetPromise().Resolve();
-    // }
-    promise.GetPromise().Resolve();
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE,
+          base::BindOnce(Promise::ResolveEmptyPromise, promise.GetPromise()));
+    } else {
+      promise.GetPromise().Resolve();
+    }
   }
 
   static void RejectCopyablePromise(const CopyablePromise& promise,
                                     std::string errmsg) {
-    // if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
-    //   base::PostTaskWithTraits(
-    //       FROM_HERE, {content::BrowserThread::UI},
-    //       base::BindOnce(Promise::RejectPromise, promise.GetPromise(),
-    //                      std::move(errmsg)));
-    // } else {
-    //   promise.GetPromise().RejectWithErrorMessage(errmsg);
-    // }
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE, base::BindOnce(Promise::RejectPromise,
+                                    promise.GetPromise(), std::move(errmsg)));
+    } else {
+      promise.GetPromise().RejectWithErrorMessage(errmsg);
+    }
     promise.GetPromise().RejectWithErrorMessage(errmsg);
   }
 
@@ -249,16 +235,16 @@ class CopyablePromise {
   CopyablePersistent handle_;
 };
 
-}  // namespace util
+}  // namespace rtvc
 
-}  // namespace atom
+}  // namespace yealink
 
 namespace mate {
 
 template <>
-struct Converter<atom::util::Promise> {
+struct Converter<yealink::rtvc::Promise> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const atom::util::Promise& val);
+                                   const yealink::rtvc::Promise& val);
   // TODO(MarshallOfSound): Implement FromV8 to allow promise chaining
   //                        in native land
   // static bool FromV8(v8::Isolate* isolate,
@@ -268,4 +254,4 @@ struct Converter<atom::util::Promise> {
 
 }  // namespace mate
 
-#endif  // ATOM_COMMON_PROMISE_UTIL_H_
+#endif  // YEALINK_RTVC_BINDING_PROMISE_H_

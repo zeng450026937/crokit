@@ -67,6 +67,7 @@ source_set("rtvc_lib") {
 node_addon("rtvc_binding") {
   sources = [
     "binding/converter.h",
+    "binding/converter.cc",
     "binding/context.h",
     "binding/context.cc",
     "binding/index.cc",
@@ -81,6 +82,8 @@ node_addon("rtvc_binding") {
     "binding/event_emitter_caller.cc",
     "binding/invoke_method.h",
     "binding/invoke_method.cc",
+    "binding/promise.h",
+    "binding/promise.cc",
     "binding/i420_buffer_binding.h",
     "binding/i420_buffer_binding.cc",
     "binding/video_frame_binding.h",
@@ -93,6 +96,8 @@ node_addon("rtvc_binding") {
     "binding/video_sink_v8.cc",
     "binding/video_source_v8.h",
     "binding/video_source_v8.cc",
+    "binding/bootstrap_binding.h",
+    "binding/bootstrap_binding.cc",
     "binding/user_agent_binding.h",
     "binding/user_agent_binding.cc",
     "binding/audio_manager_binding.h",

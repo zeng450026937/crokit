@@ -11,11 +11,13 @@ console.log(binding.version);
 
 const tests = {
   videoManger : require('./video-manager-test'),
+  bootstrap : require('./bootstrap-test'),
 };
 
 console.log('simple binding test');
 
-tests.videoManger(binding);
+//tests.videoManger(binding);
+tests.bootstrap(binding);
 
 // const user_agent = new UserAgent({
 //   username: 'my username',

@@ -9,9 +9,14 @@
 #include "base/logging.h"
 #include "base/memory/ptr_util.h"
 #include "base/memory/scoped_refptr.h"
+#include "base/message_loop/message_loop.h"
+#include "base/no_destructor.h"
 #include "base/path_service.h"
+#include "base/run_loop.h"
 #include "base/strings/string_util.h"
+#include "base/task/task_scheduler/task_scheduler.h"
 #include "base/threading/thread_task_runner_handle.h"
+#include "base/unguessable_token.h"
 #include "gin/array_buffer.h"
 #include "gin/public/isolate_holder.h"
 #include "yealink/libvc/include/media/media_api.h"
@@ -29,11 +34,14 @@ Context* Context::Instance() {
   return instance;
 }
 
-Context::Context() {}
+Context::Context() : unique_id_(base::UnguessableToken::Create().ToString()) {}
 Context::~Context() {
-  // if (media_) {
-  //   Media::ReleaseInstance(media_);
-  // }
+  if (base::TaskScheduler::GetInstance()) {
+    base::TaskScheduler::GetInstance()->Shutdown();
+  }
+  if (media_) {
+    Media::ReleaseInstance(media_);
+  }
 }
 
 void Context::Initialize(v8::Isolate* isolate) {
@@ -59,7 +67,7 @@ void Context::Initialize(v8::Isolate* isolate,
   isolate_ = isolate;
   workspace_folder_ = workspace_folder;
 
-  static base::AtExitManager at_exit;
+  at_exit_.reset(new base::AtExitManager);
 
   base::CommandLine::Init(0, nullptr);
   base::FeatureList::SetInstance(base::WrapUnique(new base::FeatureList));
@@ -75,7 +83,13 @@ void Context::Initialize(v8::Isolate* isolate,
   high_priority_task_runner_ =
       base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
 
-  base::ThreadTaskRunnerHandle handle(task_runner_);
+
+  message_loop_.reset(new base::MessageLoop);
+  message_loop_->SetTaskRunner(high_priority_task_runner_);
+
+  // base::ThreadTaskRunnerHandle handle(high_priority_task_runner_);
+
+  base::TaskScheduler::CreateAndStartWithDefaultParams("rtvc");
 
   // setup gin
   gin::IsolateHolder::Initialize(gin::IsolateHolder::kStrictMode,
@@ -86,16 +100,13 @@ void Context::Initialize(v8::Isolate* isolate,
   static gin::IsolateHolder instance(
       task_runner_, gin::IsolateHolder::IsolateType::kNode, isolate);
 
-  media_ =
-      yealink::Media::CreateInstance(workspace_folder_.AsUTF8Unsafe().c_str());
-
   ::node::AddEnvironmentCleanupHook(
       isolate,
       [](void* arg) {
         Context* context = reinterpret_cast<Context*>(arg);
         delete context;
       },
-      this);
+      Context::Instance());
 
   initialized_ = true;
 }
@@ -105,8 +116,22 @@ scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner(
   return high_priority ? high_priority_task_runner_ : task_runner_;
 }
 
+bool Context::CalledOnValidThread() {
+  return thread_checker_.CalledOnValidThread();
+}
+
+void Context::PostTask(const base::Location& from_here,
+                       base::OnceClosure task) {
+  high_priority_task_runner_->PostDelayedTask(from_here, std::move(task),
+                                              base::TimeDelta());
+}
+
 v8::Isolate* Context::GetIsolate() {
   return isolate_;
+}
+
+std::string Context::GetUniqueId() {
+  return unique_id_;
 }
 
 base::FilePath Context::GetWorkspaceFolder() {
@@ -114,6 +139,11 @@ base::FilePath Context::GetWorkspaceFolder() {
 }
 
 Media* Context::GetMedia() {
+  if (!media_) {
+    media_ = yealink::Media::CreateInstance(
+        workspace_folder_.AsUTF8Unsafe().c_str());
+  }
+
   return media_;
 }
 
