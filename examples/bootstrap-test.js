@@ -20,7 +20,6 @@ function test(binding) {
   bootstrap.authenticate()
     .then((r) => {
       console.log('authenticated resolved', r)
-
     })
     .catch(() => {
       console.log('authenticated rejected')

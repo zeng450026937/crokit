@@ -8,6 +8,7 @@
 #include "yealink/native_mate/converters/callback.h"
 #include "yealink/native_mate/converters/once_callback.h"
 #include "yealink/rtvc/binding/context.h"
+#include "yealink/rtvc/binding/libuv_holder.h"
 
 namespace yealink {
 
@@ -177,6 +178,10 @@ class Promise {
   v8::Isolate* isolate_;
   v8::Global<v8::Context> context_;
   v8::Global<v8::Promise::Resolver> resolver_;
+
+#if defined(NODE_BUILD)
+  scoped_refptr<LibUVHolder> holder_;
+#endif
 
   DISALLOW_COPY_AND_ASSIGN(Promise);
 };

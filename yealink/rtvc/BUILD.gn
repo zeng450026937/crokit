@@ -64,6 +64,17 @@ source_set("rtvc_lib") {
   ]
 }
 
+source_set("rtvc_glue") {
+  sources = [
+    "glue/struct_traits.h",
+    "glue/struct_traits.cc",
+  ]
+  deps = [
+    "//yealink/libvc",
+    ":rtvc_api",
+  ]
+}
+
 node_addon("rtvc_binding") {
   sources = [
     "binding/converter.h",
@@ -112,6 +123,7 @@ node_addon("rtvc_binding") {
     "//yealink/native_mate",
     "//yealink/native_mate:converters",
     ":rtvc_lib",
+    ":rtvc_glue",
     ":desktop_media",
   ]
 }

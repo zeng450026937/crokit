@@ -94,7 +94,7 @@ void BootstrapBinding::DoAuthenticate() {
       access_agent_->LoginAccessService(info, nullptr);
 }
 void BootstrapBinding::OnAuthenticateCompeleted(Promise promise) {
-  promise.Resolve("resolved");
+  std::move(promise).Resolve("resolved");
 }
 
 }  // namespace rtvc

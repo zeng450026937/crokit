@@ -14,7 +14,13 @@ Promise::Promise(v8::Isolate* isolate)
 Promise::Promise(v8::Isolate* isolate, v8::Local<v8::Promise::Resolver> handle)
     : isolate_(isolate),
       context_(isolate, isolate->GetCurrentContext()),
-      resolver_(isolate, handle) {}
+      resolver_(isolate, handle)
+#if defined(NODE_BUILD)
+      ,
+      holder_(base::MakeRefCounted<LibUVHolder>())
+#endif
+{
+}
 
 Promise::~Promise() = default;
 

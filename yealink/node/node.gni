@@ -1,6 +1,7 @@
 
 declare_args() {
   node_host_binary = "node"
+  node_build = true
 }
 
 node_addon_configs = [
@@ -53,6 +54,10 @@ template("node_addon") {
       "NODE_GYP_MODULE_NAME=" + target_name,
       "BUILDING_NODE_EXTENSION"
     ]
+
+    if (node_build) {
+      defines += [ "NODE_BUILD" ]
+    }
 
     if (is_win && invoker.win_delay_load_hook) {
       defines += [ "HOST_BINARY=\"${node_host_binary}.exe\"" ]
