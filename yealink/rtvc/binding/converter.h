@@ -9,6 +9,7 @@
 #include "yealink/rtvc/api/video/video_rotation.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_source.h"
+#include "yealink/rtvc/api/account_info.h"
 
 namespace mate {
 
@@ -91,6 +92,12 @@ struct Converter<yealink::rtvc::VideoRotation> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::VideoRotation* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::AccountInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::AccountInfo& val);
 };
 
 }  // namespace mate

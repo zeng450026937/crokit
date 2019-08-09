@@ -68,8 +68,8 @@ v8::Local<v8::Value> Converter<yealink::rtvc::Device>::ToV8(
 }
 
 bool Converter<yealink::rtvc::Device>::FromV8(v8::Isolate* isolate,
-            v8::Local<v8::Value> val,
-            yealink::rtvc::Device* out) {
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::Device* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -171,6 +171,39 @@ bool Converter<yealink::rtvc::VideoRotation>::FromV8(
     return false;
 
   return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::AccountInfo& val) {
+  Dictionary enterprise = Dictionary::CreateEmpty(isolate);
+  enterprise.Set("area", val.enterprise.area);
+  enterprise.Set("country", val.enterprise.country);
+  enterprise.Set("domain", val.enterprise.domain);
+  enterprise.Set("frozen", val.enterprise.frozen);
+  enterprise.Set("name", val.enterprise.name);
+  enterprise.Set("number", val.enterprise.number);
+  enterprise.Set("realm", val.enterprise.realm);
+  enterprise.Set("slot", val.enterprise.slot);
+  enterprise.Set("status", val.enterprise.status);
+  enterprise.Set("subtype", val.enterprise.subtype);
+  enterprise.Set("uid", val.enterprise.uid);
+  enterprise.Set("zone", val.enterprise.zone);
+
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("enterprise", enterprise);
+  dict.Set("uid", val.uid);
+  dict.Set("number", val.number);
+  dict.Set("fullNumber", val.full_number);
+  dict.Set("name", val.name);
+  dict.Set("namePinyin", val.name_pinyin);
+  dict.Set("groupInfo", val.group_info);
+  dict.Set("token", val.token);
+  dict.Set("type", val.type);
+  dict.Set("meetnow", val.meetnow);
+
+  return dict.GetHandle();
 }
 
 }  // namespace mate

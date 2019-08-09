@@ -1,11 +1,10 @@
 #include "yealink/rtvc/binding/bootstrap_binding.h"
 
-#include "base/synchronization/waitable_event.h"
 #include "base/task/post_task.h"
-#include "base/task/task_traits.h"
-#include "base/threading/platform_thread.h"
 #include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/object_template_builder.h"
+#include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/glue/struct_traits.h"
 
 namespace yealink {
 
@@ -73,10 +72,8 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  base::PostTaskWithTraitsAndReply(
+  base::PostTaskAndReply(
       FROM_HERE,
-      {base::TaskShutdownBehavior::BLOCK_SHUTDOWN,
-       base::TaskPriority::BEST_EFFORT, base::MayBlock()},
       base::BindOnce(&BootstrapBinding::DoAuthenticate, base::Unretained(this)),
       base::BindOnce(&BootstrapBinding::OnAuthenticateCompeleted,
                      base::Unretained(this), std::move(promise)));
@@ -89,12 +86,10 @@ void BootstrapBinding::DoAuthenticate() {
   info.server = server_.c_str();
   info.username = username_.c_str();
   info.password = password_.c_str();
-
-  Array<LoginUserInfo> account_list_ =
-      access_agent_->LoginAccessService(info, nullptr);
+  ConvertFrom(account_list_, access_agent_->LoginAccessService(info, nullptr));
 }
 void BootstrapBinding::OnAuthenticateCompeleted(Promise promise) {
-  std::move(promise).Resolve("resolved");
+  std::move(promise).Resolve(account_list_);
 }
 
 }  // namespace rtvc
