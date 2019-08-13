@@ -1,14 +1,17 @@
 #ifndef YEALINK_RTVC_BINDING_CALL_BINDING_H_
 #define YEALINK_RTVC_BINDING_CALL_BINDING_H_
 
-#include "yealink/rtvc/api/call.h"
 #include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/native_mate/persistent_dictionary.h"
 
 namespace yealink {
 
 namespace rtvc {
 
-class CallBinding : public mate::EventEmitter<CallBinding>, Call, CallObserver {
+class VideoSource;
+class VideoSink;
+
+class CallBinding : public mate::EventEmitter<CallBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -16,45 +19,47 @@ class CallBinding : public mate::EventEmitter<CallBinding>, Call, CallObserver {
                              v8::Local<v8::FunctionTemplate> prototype);
 
  protected:
-  CallBinding(v8::Isolate* isolate);
+  CallBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~CallBinding() override;
 
-  void Connect() override;
-  void Disconnect() override;
+  void Connect();
+  void Disconnect();
 
-  void Forward() override;
-  void Refer() override;
-  void Replace() override;
+  void Forward();
+  void Refer();
+  void Replace();
 
-  void Hold() override;
-  void Unhold() override;
+  void Hold();
+  void Unhold();
 
-  void Mute() override;
-  void Unmute() override;
+  void Mute();
+  void Unmute();
 
-  void Renegotiate() override;
+  void Renegotiate();
 
-  bool isInProgress() override;
-  bool isEstablished() override;
-  bool isEnded() override;
+  bool isInProgress();
+  bool isEstablished();
+  bool isEnded();
 
-  bool local_sharing() override;
-  bool remote_sharing() override;
+  bool local_sharing();
+  bool remote_sharing();
 
-  void StartShare() override;
-  void StopShare() override;
+  void StartShare();
+  void StopShare();
 
-  void SetMediaBitrate(int bitrate) override;
-  void SetShareBitrate(int bitrate) override;
+  void SetMediaBitrate(int bitrate);
+  void SetShareBitrate(int bitrate);
 
-  void SetLocalVideoSource(VideoSource* source = nullptr) override;
-  void SetLocalShareVideoSource(VideoSource* source = nullptr) override;
+  void SetLocalVideoSource(mate::PersistentDictionary source);
+  void SetLocalShareVideoSource(mate::PersistentDictionary source);
 
-  void SetRemoteVideoSink(VideoSink* sink = nullptr) override;
-  void SetRemoteShareVideoSink(VideoSink* sink = nullptr) override;
+  void SetRemoteVideoSink(mate::PersistentDictionary sink);
+  void SetRemoteShareVideoSink(mate::PersistentDictionary sink);
 
-  bool conference_aware() override;
-  void SetConferenceAware(bool enable) override;
+  bool conference_aware();
+  void SetConferenceAware(bool enable);
+
+  void AsConference();
 };
 
 }  // namespace rtvc

@@ -1,6 +1,8 @@
 #ifndef YEALINK_RTVC_BINDING_SIP_POLLER_H_
 #define YEALINK_RTVC_BINDING_SIP_POLLER_H_
 
+#include <atomic>
+
 #include "base/memory/weak_ptr.h"
 #include "base/single_thread_task_runner.h"
 
@@ -16,9 +18,13 @@ class SIPPoller {
             yealink::SIPClient* sip_client);
   ~SIPPoller();
 
+  void Start();
+  void Stop();
+
  private:
   void OnPoll();
 
+  std::atomic<bool> enabled_ = false;
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
   yealink::SIPClient* sip_client_;
   base::WeakPtrFactory<SIPPoller> weak_factory_;

@@ -22,7 +22,7 @@ Windows
 
 ```sh
 $ mkdir rtvc && cd rtvc
-$ gclient config --name "src/yealink" --unmanaged http://gitcode.yealink.com/server/client/web_app/crokit.git
+$ gclient config --name "src" --unmanaged http://gitcode.yealink.com/server/client/web_app/crokit.git
 $ gclient sync --with_branch_heads --with_tags
 # This will take a while, go get a coffee.
 ```

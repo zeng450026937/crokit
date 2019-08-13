@@ -1,6 +1,7 @@
 #include "yealink/rtvc/binding/call_binding.h"
 
 #include "base/logging.h"
+#include "yealink/native_mate/object_template_builder.h"
 
 namespace yealink {
 
@@ -8,42 +9,48 @@ namespace rtvc {
 
 // static
 mate::WrappableBase* CallBinding::New(mate::Arguments* args) {
-  UserAgent::Config config;
-  mate::Dictionary options;
-
-  if (!args->GetNext(&options)) {
-    args->ThrowError();
-    return nullptr;
-  }
-
-  options.Get("username", &config.username);
-  options.Get("password", &config.password);
-  options.Get("domain", &config.domain);
-
-  return new CallBinding(args->isolate(), args->GetThis(),
-                              UserAgent::Create(std::move(config)));
+  return new CallBinding(args->isolate(), args->GetThis());
 }
 
 // static
-void CallBinding::BuildPrototype(
-    v8::Isolate* isolate,
-    v8::Local<v8::FunctionTemplate> prototype) {
-  LOG(INFO) << __FUNCTIONW__;
-  prototype->SetClassName(mate::StringToV8(isolate, "UserAgent"));
+void CallBinding::BuildPrototype(v8::Isolate* isolate,
+                                 v8::Local<v8::FunctionTemplate> prototype) {
+  prototype->SetClassName(mate::StringToV8(isolate, "Call"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("workspaceFolder", &UserAgentBinding::workspace_folder)
-      .SetProperty("username", &UserAgentBinding::username)
-      .SetProperty("password", &UserAgentBinding::password)
-      .SetProperty("domain", &UserAgentBinding::domain)
-      .SetMethod("register", &UserAgentBinding::Register)
-      .SetMethod("unregister", &UserAgentBinding::UnRegister)
-      .SetProperty("registered", &UserAgentBinding::registered);
+      .SetMethod("connect", &CallBinding::Connect)
+      .SetMethod("disconnect", &CallBinding::Disconnect)
+      .SetMethod("forward", &CallBinding::Forward)
+      .SetMethod("refer", &CallBinding::Refer)
+      .SetMethod("replace", &CallBinding::Replace)
+      .SetMethod("hold", &CallBinding::Hold)
+      .SetMethod("unhold", &CallBinding::Unhold)
+      .SetMethod("mute", &CallBinding::Mute)
+      .SetMethod("unmute", &CallBinding::Unmute)
+      .SetMethod("renegotiate", &CallBinding::Renegotiate)
+      .SetProperty("isInProgress", &CallBinding::isInProgress)
+      .SetProperty("isEstablished", &CallBinding::isEstablished)
+      .SetProperty("isEnded", &CallBinding::isEnded)
+      .SetProperty("localSharing", &CallBinding::local_sharing)
+      .SetProperty("remoteSharing", &CallBinding::remote_sharing)
+      .SetMethod("startShare", &CallBinding::StartShare)
+      .SetMethod("stopShare", &CallBinding::StopShare)
+      .SetMethod("setMediaBitrate", &CallBinding::SetMediaBitrate)
+      .SetMethod("setShareBitrate", &CallBinding::SetShareBitrate)
+      .SetMethod("setLocalVideoSource", &CallBinding::SetLocalVideoSource)
+      .SetMethod("setLocalShareVideoSource",
+                 &CallBinding::SetLocalShareVideoSource)
+      .SetMethod("setRemoteVideoSink", &CallBinding::SetRemoteVideoSink)
+      .SetMethod("setRemoteShareVideoSink",
+                 &CallBinding::SetRemoteShareVideoSink)
+      .SetProperty("conferenceAware", &CallBinding::conference_aware,
+                   &CallBinding::SetConferenceAware)
+      .SetMethod("asConference",
+                 &CallBinding::AsConference);
 }
 
-
-CallBinding::CallBinding(v8::Isolate* isolate) {
-  Init(isolate);
+CallBinding::CallBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper) {
+  InitWith(isolate, wrapper);
 }
 CallBinding::~CallBinding() {}
 
@@ -118,17 +125,17 @@ void CallBinding::SetShareBitrate(int bitrate) {
   LOG(INFO) << __FUNCTIONW__;
 }
 
-void CallBinding::SetLocalVideoSource(VideoSource* source = nullptr) {
+void CallBinding::SetLocalVideoSource(mate::PersistentDictionary source) {
   LOG(INFO) << __FUNCTIONW__;
 }
-void CallBinding::SetLocalShareVideoSource(VideoSource* source = nullptr) {
+void CallBinding::SetLocalShareVideoSource(mate::PersistentDictionary source) {
   LOG(INFO) << __FUNCTIONW__;
 }
 
-void CallBinding::SetRemoteVideoSink(VideoSink* sink = nullptr) {
+void CallBinding::SetRemoteVideoSink(mate::PersistentDictionary sink) {
   LOG(INFO) << __FUNCTIONW__;
 }
-void CallBinding::SetRemoteShareVideoSink(VideoSink* sink = nullptr) {
+void CallBinding::SetRemoteShareVideoSink(mate::PersistentDictionary sink) {
   LOG(INFO) << __FUNCTIONW__;
 }
 
@@ -137,6 +144,10 @@ bool CallBinding::conference_aware() {
   return false;
 }
 void CallBinding::SetConferenceAware(bool enable) {
+  LOG(INFO) << __FUNCTIONW__;
+}
+
+void CallBinding::AsConference() {
   LOG(INFO) << __FUNCTIONW__;
 }
 

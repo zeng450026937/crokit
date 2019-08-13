@@ -114,14 +114,17 @@ v8::Local<v8::Promise> UserAgentBinding::Register() {
     params.hostPort = 5061;
     params.addrProxy = "";
     params.proxyPort = 0;
-    bool ret = sip_client_->Connect(params);
-    DCHECK_EQ(ret, true);
+
+    sip_client_->Connect(params);
   }
 
   return register_promise_->GetHandle();
 }
 
 void UserAgentBinding::UnRegister() {
+  if (!registered())
+    return;
+
   DCHECK(sip_client_);
   DCHECK(sip_poller_);
 
@@ -129,6 +132,8 @@ void UserAgentBinding::UnRegister() {
   register_promise_.reset();
   Context::Instance()->GetTaskRunner(true)->DeleteSoon(FROM_HERE,
                                                        sip_poller_.release());
+
+  registered_ = false;
 }
 
 bool UserAgentBinding::registered() {
@@ -174,8 +179,6 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
 }
 void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
   DCHECK(register_promise_);
-
-  // v8::HandleScope handle_scope(isolate());
 
   switch (event.id) {
     case yealink::AEID_SUCCESS:
