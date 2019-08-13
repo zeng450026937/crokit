@@ -60,7 +60,7 @@
 /cygwin
 /dav1d/libdav1d
 /dawn
-/depot_tools
+# /depot_tools
 /devtools-node-modules
 /directxsdk
 /dom_distiller_js/dist
@@ -103,7 +103,7 @@
 /hamcrest/lib/
 /harfbuzz-ng/src
 /hunspell_dictionaries
-/icu
+# /icu
 /icu4j/lib/
 /intellij/lib/
 /instrumented_libraries/scripts/*.tgz
@@ -124,21 +124,21 @@
 /libFuzzer/src
 /libprotobuf-mutator/src
 /libjingle/source
-/libjpeg_turbo
+# /libjpeg_turbo
 /liblouis/src
 /libphonenumber/dist
-/libsrtp
+# /libsrtp
 /libsync/src
 /libupnp
 /libvpx/source/libvpx
 /libwebm/source
-/libyuv
+# /libyuv
 /lighttpd
 /llvm
 /llvm-allocated-type
 /llvm-bootstrap
 /llvm-bootstrap-install
-/llvm-build
+# /llvm-build
 /llvm-build-tools
 /lss
 /material_design_icons/src
@@ -150,7 +150,7 @@
 /mocha
 /mockito/src
 /nacl_sdk_binaries/
-/nasm
+# /nasm
 /netty-tcnative/src
 /netty4/src
 /node/linux
@@ -221,7 +221,7 @@
 /webgl
 /webgl/src
 /webpagereplay/
-/webrtc
+# /webrtc
 /widevine/cdm/chromeos
 /widevine/cdm/linux
 /widevine/cdm/mac

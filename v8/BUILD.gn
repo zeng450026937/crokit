@@ -1,0 +1,171 @@
+import("gni/v8.gni")
+import("snapshot_toolchain.gni")
+
+import("//yealink/node/node.gni")
+
+declare_args() {
+  # Specifies if the target build is a simulator build. Comparing target cpu
+  # with v8 target cpu to not affect simulator builds for making cross-compile
+  # snapshots.
+  is_target_simulator = (target_cpu != v8_target_cpu && !v8_multi_arch_build) ||
+                        (current_cpu != v8_current_cpu && v8_multi_arch_build)
+
+  # Print to stdout on Android.
+  v8_android_log_stdout = false
+
+  # Dynamically set an additional dependency from v8/custom_deps.
+  v8_custom_deps = ""
+
+  # Turns on all V8 debug features. Enables running V8 in a pseudo debug mode
+  # within a release Chrome.
+  v8_enable_debugging_features = is_debug
+
+  # Sets -DV8_ENABLE_FUTURE.
+  v8_enable_future = false
+
+  # Lite mode disables a number of performance optimizations to reduce memory
+  # at the cost of performance.
+  # Sets --DV8_LITE_MODE.
+  v8_enable_lite_mode = false
+
+  # Sets -DVERIFY_HEAP.
+  v8_enable_verify_heap = ""
+
+  # Sets -DVERIFY_PREDICTABLE
+  v8_enable_verify_predictable = false
+
+  # Enable compiler warnings when using V8_DEPRECATED apis.
+  v8_deprecation_warnings = true
+
+  # Enable compiler warnings when using V8_DEPRECATE_SOON apis.
+  v8_imminent_deprecation_warnings = true
+
+  # Embeds the given script into the snapshot.
+  v8_embed_script = ""
+
+  # Allows the embedder to add a custom suffix to the version string.
+  v8_embedder_string = ""
+
+  # Sets -dENABLE_DISASSEMBLER.
+  v8_enable_disassembler = ""
+
+  # Sets the number of internal fields on promise objects.
+  v8_promise_internal_field_count = 0
+
+  # Sets -dENABLE_GDB_JIT_INTERFACE.
+  v8_enable_gdbjit = ""
+
+  # Sets -dENABLE_VTUNE_JIT_INTERFACE.
+  v8_enable_vtunejit = false
+
+  # Sets -dENABLE_HANDLE_ZAPPING.
+  v8_enable_handle_zapping = true
+
+  # Enable slow dchecks.
+  v8_enable_slow_dchecks = false
+
+  # Enable fast mksnapshot runs.
+  v8_enable_fast_mksnapshot = false
+
+  # Enable embedded builtins.
+  v8_enable_embedded_builtins = true
+
+  # Enable code comments for builtins in the snapshot (impacts performance).
+  v8_enable_snapshot_code_comments = false
+
+  # Enable code-generation-time checking of types in the CodeStubAssembler.
+  v8_enable_verify_csa = false
+
+  # Enable pointer compression (sets -dV8_COMPRESS_POINTERS).
+  v8_enable_pointer_compression = false
+  v8_enable_31bit_smis_on_64bit_arch = false
+
+  # Sets -dOBJECT_PRINT.
+  v8_enable_object_print = ""
+
+  # Sets -dV8_TRACE_MAPS.
+  v8_enable_trace_maps = ""
+
+  # Sets -dV8_ENABLE_CHECKS.
+  v8_enable_v8_checks = ""
+
+  # Sets -dV8_TRACE_IGNITION.
+  v8_enable_trace_ignition = false
+
+  # Sets -dV8_TRACE_FEEDBACK_UPDATES.
+  v8_enable_trace_feedback_updates = false
+
+  # Sets -dV8_CONCURRENT_MARKING
+  v8_enable_concurrent_marking = true
+
+  # Enables various testing features.
+  v8_enable_test_features = ""
+
+  # With post mortem support enabled, metadata is embedded into libv8 that
+  # describes various parameters of the VM for use by debuggers. See
+  # tools/gen-postmortem-metadata.py for details.
+  v8_postmortem_support = false
+
+  # Use Siphash as added protection against hash flooding attacks.
+  v8_use_siphash = false
+
+  # Switches off inlining in V8.
+  v8_no_inline = false
+
+  # Override OS page size when generating snapshot
+  v8_os_page_size = "0"
+
+  # Similar to vfp but on MIPS.
+  v8_can_use_fpu_instructions = true
+
+  # Similar to the ARM hard float ABI but on MIPS.
+  v8_use_mips_abi_hardfloat = true
+
+  # Controls the threshold for on-heap/off-heap Typed Arrays.
+  v8_typed_array_max_size_in_heap = 64
+
+  # List of extra files to snapshot. They will be snapshotted in order so
+  # if files export symbols used by later files, they should go first.
+  #
+  # This default is used by cctests. Projects using V8 will want to override.
+  v8_extra_library_files = [ "//test/cctest/test-extra.js" ]
+
+  v8_enable_gdbjit =
+      ((v8_current_cpu == "x86" || v8_current_cpu == "x64") &&
+       (is_linux || is_mac)) || (v8_current_cpu == "ppc64" && is_linux)
+
+  # Temporary flag to allow embedders to update their microtasks scopes
+  # while rolling in a new version of V8.
+  v8_check_microtasks_scopes_consistency = ""
+
+  # Enable mitigations for executing untrusted code.
+  # Disabled by default on ia32 due to conflicting requirements with embedded
+  # builtins. Enabled by default on Android since it doesn't support
+  # site-isolation in Chrome and on simulator builds which test code generation
+  # on these platforms.
+  v8_untrusted_code_mitigations =
+      v8_current_cpu != "x86" && (is_android || is_target_simulator)
+
+  # Enable minor mark compact.
+  v8_enable_minor_mc = true
+
+  # Check that each header can be included in isolation (requires also
+  # setting the "check_v8_header_includes" gclient variable to run a
+  # specific hook).
+  v8_check_header_includes = false
+
+  # Enable sharing read-only space across isolates.
+  v8_enable_shared_ro_heap = false
+}
+
+config("external_startup_data") {
+  if (v8_use_external_startup_data) {
+    defines = [ "V8_USE_EXTERNAL_STARTUP_DATA" ]
+  }
+}
+
+group("v8") {
+  public_deps = [
+    "//yealink/node:node_lib",
+  ]
+}
