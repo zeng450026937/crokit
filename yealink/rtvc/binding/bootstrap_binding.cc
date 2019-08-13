@@ -4,6 +4,7 @@
 #include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
 namespace yealink {

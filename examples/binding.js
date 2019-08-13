@@ -17,7 +17,7 @@ const tests = {
 console.log('simple binding test');
 
 //tests.videoManger(binding);
-tests.bootstrap(binding);
+tests.bootstrap(binding).catch((e) => console.log(e));
 
 // const user_agent = new UserAgent({
 //   username: 'my username',

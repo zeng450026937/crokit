@@ -16,6 +16,7 @@ class UserAgent {
     base::Optional<std::string> workspace_folder;
     std::string username;
     std::string password;
+    std::string ha1;
     std::string domain;
   };
 

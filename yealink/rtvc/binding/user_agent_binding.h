@@ -1,15 +1,22 @@
 #ifndef YEALINK_RTVC_BINDING_USER_AGENT_BINDING_H_
 #define YEALINK_RTVC_BINDING_USER_AGENT_BINDING_H_
 
+#include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/user_agent.h"
 #include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/rtvc/binding/promise.h"
+#include "yealink/rtvc/binding/sip_poller.h"
 
 namespace yealink {
 
+class SIPClient;
+
 namespace rtvc {
 
-class UserAgentBinding : public mate::EventEmitter<UserAgentBinding> {
+class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
+                         public yealink::ConnectionHandler,
+                         public yealink::AuthHandler {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -28,13 +35,32 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding> {
   std::string password();
   std::string domain();
 
-  void Register();
+  v8::Local<v8::Promise> Register();
   void UnRegister();
 
   bool registered();
+  bool registering();
+
+  // yealink::ConnectionHandler impl
+  void OnConnectFailed(int message) override;
+  void OnConnected() override;
+  void OnConnectInterruption(int message) override;
+  void OnReceivedData() override;
+
+  // yealink::AuthHandler impl
+  yealink::SByteData GetAuthParam(yealink::AuthParamType type) override;
+  void OnAuthEvent(const yealink::AuthEvent& event) override;
+  void OnICEProfile(const yealink::AuthICEProfile& turn,
+                    const yealink::AuthICEProfile& stun) override;
 
  private:
   UserAgent::Config config_;
+
+  bool registered_ = false;
+  std::unique_ptr<Promise> register_promise_;
+
+  yealink::SIPClient* sip_client_;
+  std::unique_ptr<SIPPoller> sip_poller_;
 };
 
 }  // namespace rtvc

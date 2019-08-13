@@ -5,8 +5,8 @@
 
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
-#include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/binding/promise.h"
 
 namespace yealink {
 
@@ -48,6 +48,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string client_id_;
 
   std::vector<AccountInfo> account_list_;
+  AccountInfo current_account_;
 
   AccessAgent* access_agent_;
 };
