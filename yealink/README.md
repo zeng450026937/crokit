@@ -30,7 +30,7 @@ $ gclient sync --with_branch_heads --with_tags
 ## 更新代码
 
 ```sh
-$ cd src/yealink
+$ cd src
 $ git pull
 $ gclient sync -f
 ```
