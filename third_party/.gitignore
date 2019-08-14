@@ -236,5 +236,5 @@
 /xulrunner-sdk
 /yasm/binaries
 /yasm/generate_files.xml
-/yasm/source/patched-yasm
+# /yasm/source/patched-yasm
 /yasm/yasm.xml
