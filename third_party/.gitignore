@@ -37,7 +37,7 @@
 /auto/src
 /bazel/desugar/Desugar.jar
 /bison
-/boringssl/src
+# /boringssl/src
 /bouncycastle/lib/
 /breakpad/breakpad
 /byte_buddy/lib/
