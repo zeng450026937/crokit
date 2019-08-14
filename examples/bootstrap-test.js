@@ -43,6 +43,8 @@ async function test(binding) {
   console.log('unregister()');
 
   userAgent.unregister();
+  userAgent.destroy();
+  
   delete userAgent;
 }
 

@@ -8,10 +8,12 @@ namespace yealink {
 namespace rtvc {
 
 SIPPoller::SIPPoller(scoped_refptr<base::SingleThreadTaskRunner> task_runner,
-                     yealink::SIPClient* sip_client)
+                     base::WeakPtr<yealink::SIPClient> sip_client)
     : task_runner_(task_runner), sip_client_(sip_client), weak_factory_(this) {
   DCHECK(task_runner_);
   DCHECK(sip_client_);
+
+  OnPoll();
 }
 SIPPoller::~SIPPoller() = default;
 
@@ -25,7 +27,7 @@ void SIPPoller::Stop() {
 void SIPPoller::OnPoll() {
   int reschedule_at = 10;
 
-  while (sip_client_->ProcessOnce(0) && reschedule_at) {
+  while (sip_client_ && sip_client_->ProcessOnce(0) && reschedule_at) {
     --reschedule_at;
   }
 

@@ -12,6 +12,9 @@ executable("hello") {
   sources = [
     "hello.cc",
   ]
+  deps = [
+    "//base",
+  ]
 }
 
 node_addon("hello_addon") {

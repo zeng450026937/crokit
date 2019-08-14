@@ -59,7 +59,9 @@ void UserAgentBinding::BuildPrototype(
 UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
                                    UserAgent::Config config)
-    : config_(std::move(config)), sip_client_(yealink::CreateSIPClient()) {
+    : config_(std::move(config)),
+      sip_client_(yealink::CreateSIPClient()),
+      sip_client_weak_factory_(sip_client_) {
   InitWith(isolate, wrapper);
 
   // TODO
@@ -106,8 +108,8 @@ v8::Local<v8::Promise> UserAgentBinding::Register() {
 
   if (!register_promise_) {
     register_promise_.reset(new Promise(isolate()));
-    sip_poller_.reset(
-        new SIPPoller(Context::Instance()->GetTaskRunner(), sip_client_));
+    sip_poller_.reset(new SIPPoller(Context::Instance()->GetTaskRunner(),
+                                    sip_client_weak_factory_.GetWeakPtr()));
 
     yealink::ConnectionParam params;
     params.addrHost = config_.domain.c_str();

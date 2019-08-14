@@ -15,7 +15,7 @@ namespace rtvc {
 class SIPPoller {
  public:
   SIPPoller(scoped_refptr<base::SingleThreadTaskRunner> task_runner,
-            yealink::SIPClient* sip_client);
+            base::WeakPtr<yealink::SIPClient> sip_client);
   ~SIPPoller();
 
   void Start();
@@ -26,7 +26,7 @@ class SIPPoller {
 
   std::atomic<bool> enabled_ = false;
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
-  yealink::SIPClient* sip_client_;
+  base::WeakPtr<yealink::SIPClient> sip_client_;
   base::WeakPtrFactory<SIPPoller> weak_factory_;
 };
 
