@@ -55,6 +55,15 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                     const yealink::AuthICEProfile& stun) override;
 
  private:
+  friend class CallBinding;
+
+  base::WeakPtr<UserAgentBinding> GetWeakPtr() {
+    return weak_factory_.GetWeakPtr();
+  }
+  base::WeakPtr<yealink::SIPClient> GetWeakSIPClientPtr() {
+    return sip_client_weak_factory_.GetWeakPtr();
+  }
+
   UserAgent::Config config_;
 
   bool registered_ = false;
@@ -66,6 +75,8 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   std::unique_ptr<yealink::SIPClient, SIPClientDeleter> sip_client_;
   base::WeakPtrFactory<yealink::SIPClient> sip_client_weak_factory_;
   std::unique_ptr<SIPPoller> sip_poller_;
+
+  base::WeakPtrFactory<UserAgentBinding> weak_factory_;
 };
 
 }  // namespace rtvc

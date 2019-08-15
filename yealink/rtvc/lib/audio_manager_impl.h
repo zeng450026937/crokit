@@ -33,10 +33,10 @@ class AudioManagerImpl : public AudioManager {
   std::vector<Device> audioInputDeviceList() override;
   std::vector<Device> audioOutputDeviceList() override;
 
-  Device audioInputDevice() override;
+  base::Optional<Device> audioInputDevice() override;
   void SetAudioInputDevice(Device device) override;
 
-  Device audioOutputDevice() override;
+  base::Optional<Device> audioOutputDevice() override;
   void SetAudioOutputDevice(Device device) override;
 
   // TODO:

@@ -5,6 +5,7 @@
 #include "yealink/rtvc/api/video/i420_buffer.h"
 #include "yealink/rtvc/binding/audio_manager_binding.h"
 #include "yealink/rtvc/binding/bootstrap_binding.h"
+#include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/v8_util.h"
@@ -15,6 +16,7 @@ namespace {
 
 using yealink::rtvc::AudioManagerBinding;
 using yealink::rtvc::BootstrapBinding;
+using yealink::rtvc::CallBinding;
 using yealink::rtvc::UserAgentBinding;
 using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
@@ -46,6 +48,11 @@ void Initialize(v8::Local<v8::Object> exports,
   dict.Set("UserAgent", UserAgentBinding::GetConstructor(isolate)
                             ->GetFunction(context)
                             .ToLocalChecked());
+
+  CallBinding::SetConstructor(isolate, base::BindRepeating(&CallBinding::New));
+  dict.Set("Call", CallBinding::GetConstructor(isolate)
+                       ->GetFunction(context)
+                       .ToLocalChecked());
 
   dict.Set("AudioManager", AudioManagerBinding::GetConstructor(isolate)
                                ->GetFunction(context)

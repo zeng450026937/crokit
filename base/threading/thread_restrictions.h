@@ -255,6 +255,12 @@ namespace webrtc {
 class DesktopConfigurationMonitor;
 }
 
+namespace yealink {
+namespace rtvc {
+class NativeDesktopMediaList;
+}
+}
+
 namespace base {
 
 namespace sequence_manager {

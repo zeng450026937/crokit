@@ -61,7 +61,8 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    UserAgent::Config config)
     : config_(std::move(config)),
       sip_client_(yealink::CreateSIPClient()),
-      sip_client_weak_factory_(sip_client_.get()) {
+      sip_client_weak_factory_(sip_client_.get()),
+      weak_factory_(this) {
   InitWith(isolate, wrapper);
 
   // TODO
@@ -84,6 +85,7 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
   g_sip_client = sip_client_.get();
 }
 UserAgentBinding::~UserAgentBinding() {
+  LOG(INFO) << __FUNCTIONW__;
   UnRegister();
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);

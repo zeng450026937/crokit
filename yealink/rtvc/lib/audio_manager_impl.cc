@@ -74,7 +74,7 @@ std::vector<Device> AudioManagerImpl::audioOutputDeviceList() {
   return std::vector<Device>();
 }
 
-Device AudioManagerImpl::audioInputDevice() {
+base::Optional<Device> AudioManagerImpl::audioInputDevice() {
   LOG(INFO) << __FUNCTIONW__;
   return Device();
 }
@@ -82,7 +82,7 @@ void AudioManagerImpl::SetAudioInputDevice(Device device) {
   LOG(INFO) << __FUNCTIONW__;
 }
 
-Device AudioManagerImpl::audioOutputDevice() {
+base::Optional<Device> AudioManagerImpl::audioOutputDevice() {
   LOG(INFO) << __FUNCTIONW__;
   return Device();
 }

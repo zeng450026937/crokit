@@ -1,7 +1,7 @@
 async function test(binding) {
   console.log('bootstrap test');
 
-  const { Bootstrap, UserAgent, v8Util } = binding;
+  const { Bootstrap, UserAgent, Call } = binding;
 
   console.log('-- constructor --');
 
@@ -40,12 +40,16 @@ async function test(binding) {
   console.log('password', userAgent.password);
   console.log('domain', userAgent.domain);
 
-  console.log('unregister()');
+  const call = new Call(userAgent);
 
-  userAgent.unregister();
-  userAgent.destroy();
-  delete userAgent;
+  call.connect('sip:6666@002018.onqa.yealinkops.com');
 
+  // console.log('unregister()');
+
+  // userAgent.unregister();
+  // userAgent.destroy();
+  // delete call;
+  // delete userAgent;
 }
 
 module.exports = test;

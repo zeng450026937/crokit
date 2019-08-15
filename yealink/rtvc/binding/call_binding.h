@@ -1,15 +1,15 @@
 #ifndef YEALINK_RTVC_BINDING_CALL_BINDING_H_
 #define YEALINK_RTVC_BINDING_CALL_BINDING_H_
 
-#include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/libvc/include/meeting/meeting_api.h"
+#include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
+#include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/rtvc/binding/user_agent_binding.h"
 
 namespace yealink {
 
 namespace rtvc {
-
-class VideoSource;
-class VideoSink;
 
 class CallBinding : public mate::EventEmitter<CallBinding> {
  public:
@@ -19,10 +19,15 @@ class CallBinding : public mate::EventEmitter<CallBinding> {
                              v8::Local<v8::FunctionTemplate> prototype);
 
  protected:
-  CallBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
+  CallBinding(v8::Isolate* isolate,
+              v8::Local<v8::Object> wrapper,
+              mate::Handle<UserAgentBinding> user_agent);
+  CallBinding(v8::Isolate* isolate,
+              v8::Local<v8::Object> wrapper,
+              base::WeakPtr<UserAgentBinding> user_agent);
   ~CallBinding() override;
 
-  void Connect();
+  void Connect(mate::Arguments* args);
   void Disconnect();
 
   void Forward();
@@ -60,6 +65,19 @@ class CallBinding : public mate::EventEmitter<CallBinding> {
   void SetConferenceAware(bool enable);
 
   void AsConference();
+
+  void SetUserAgent(mate::Handle<UserAgentBinding> user_agent);
+
+ private:
+  base::WeakPtr<UserAgentBinding> user_agent_;
+  base::WeakPtr<yealink::SIPClient> sip_client_;
+
+  yealink::Media* media_;
+
+  struct MeetingDeleter {
+    void operator()(yealink::Meeting* c) { yealink::ReleaseMeeting(c); }
+  };
+  std::unique_ptr<yealink::Meeting, MeetingDeleter> meeting_;
 };
 
 }  // namespace rtvc

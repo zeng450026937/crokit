@@ -2,6 +2,7 @@
 
 #include "base/logging.h"
 #include "yealink/native_mate/object_template_builder.h"
+#include "yealink/rtvc/binding/context.h"
 
 namespace yealink {
 
@@ -9,7 +10,15 @@ namespace rtvc {
 
 // static
 mate::WrappableBase* CallBinding::New(mate::Arguments* args) {
-  return new CallBinding(args->isolate(), args->GetThis());
+  mate::Handle<UserAgentBinding> user_agent;
+
+  if (args->Length() < 1 || !args->GetNext(&user_agent) ||
+      user_agent.IsEmpty()) {
+    args->ThrowError("UserAgent is required to construct Call");
+    return nullptr;
+  }
+
+  return new CallBinding(args->isolate(), args->GetThis(), user_agent);
 }
 
 // static
@@ -45,17 +54,41 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
                  &CallBinding::SetRemoteShareVideoSink)
       .SetProperty("conferenceAware", &CallBinding::conference_aware,
                    &CallBinding::SetConferenceAware)
-      .SetMethod("asConference",
-                 &CallBinding::AsConference);
+      .SetMethod("asConference", &CallBinding::AsConference);
 }
 
-CallBinding::CallBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper) {
+CallBinding::CallBinding(v8::Isolate* isolate,
+                         v8::Local<v8::Object> wrapper,
+                         mate::Handle<UserAgentBinding> user_agent)
+    : CallBinding(isolate, wrapper, user_agent->GetWeakPtr()) {}
+CallBinding::CallBinding(v8::Isolate* isolate,
+                         v8::Local<v8::Object> wrapper,
+                         base::WeakPtr<UserAgentBinding> user_agent)
+    : user_agent_(user_agent),
+      sip_client_(user_agent->GetWeakSIPClientPtr()),
+      media_(Context::Instance()->GetMedia()),
+      meeting_(
+          yealink::CreateMeeting(*sip_client_, *media_, false /* incoming */)) {
   InitWith(isolate, wrapper);
 }
-CallBinding::~CallBinding() {}
-
-void CallBinding::Connect() {
+CallBinding::~CallBinding() {
   LOG(INFO) << __FUNCTIONW__;
+}
+
+void CallBinding::Connect(mate::Arguments* args) {
+  LOG(INFO) << __FUNCTIONW__;
+  std::string target;
+
+  if (!args->GetNext(&target)) {
+    args->ThrowError("Target is required to make a call");
+    return;
+  }
+
+  yealink::DailParam param;
+  param.strUri = target.c_str();
+  param.typAVContent = yealink::AV_VIDEO_AUDIO;
+
+  meeting_->Dail(param);
 }
 void CallBinding::Disconnect() {
   LOG(INFO) << __FUNCTIONW__;
@@ -149,6 +182,10 @@ void CallBinding::SetConferenceAware(bool enable) {
 
 void CallBinding::AsConference() {
   LOG(INFO) << __FUNCTIONW__;
+}
+
+void CallBinding::SetUserAgent(mate::Handle<UserAgentBinding> user_agent) {
+  user_agent_ = user_agent->GetWeakPtr();
 }
 
 }  // namespace rtvc
