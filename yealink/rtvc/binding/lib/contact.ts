@@ -6,13 +6,15 @@ export enum ContactNodeType {
   kDevice,
   kVMR,
   kThirdParty,
+  kRoom,
+  kEnterprise,
 }
 
 export interface ContactNode {
   readonly nodeId: string;
   readonly nodeType: ContactNodeType;
   // one node can have many parent node
-  readonly parentId: Array<string>;
+  readonly parentId: Array<string> | null;
   // child node counts(recursive)
   readonly childCounts: number;
 
@@ -25,6 +27,41 @@ export interface ContactNode {
   readonly extensionNum: string;
 }
 
+export interface ContactConfig {
+  connector: unknown,
+  server: string,
+  workspaceFolder?: string,
+  databaseName?: string,
+}
+
 export interface Contact extends EventEmitter {
-  on(event: 'nodeUpdated', listener: () => void): this;
+  new(config: ContactConfig);
+
+  on(event: 'updated', listener: () => void): this;
+
+  sync(): void;
+
+  getNode(nodeId: string): ContactNode;
+  getNodeChild(nodeId: string): Array<ContactNode>;
+}
+
+export interface LocalContactConfig {
+  workspaceFolder?: string,
+  databaseName?: string,
+}
+
+// CRUD
+export interface LocalContact {
+  new(config: LocalContactConfig);
+
+  create(): void;
+  remove(): void;
+  update(): void;
+  search(): void;
+  // alias for create
+  add(): void;
+  // alias for update
+  modify(): void;
+  // alias for search
+  find(): void;
 }

@@ -34,4 +34,5 @@ export interface Bootstrap {
   password: string,
 
   authenticate(): Array<AccountInfo>,
+  getConnector(uid: string): unknown,
 }
