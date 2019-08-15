@@ -5,10 +5,9 @@
 
 #include "base/memory/weak_ptr.h"
 #include "base/single_thread_task_runner.h"
+#include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 
 namespace yealink {
-
-class SIPClient;
 
 namespace rtvc {
 
@@ -18,16 +17,14 @@ class SIPPoller {
             base::WeakPtr<yealink::SIPClient> sip_client);
   ~SIPPoller();
 
-  void Start();
-  void Stop();
-
  private:
   void OnPoll();
 
-  std::atomic<bool> enabled_ = false;
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
   base::WeakPtr<yealink::SIPClient> sip_client_;
   base::WeakPtrFactory<SIPPoller> weak_factory_;
+  
+  DISALLOW_COPY_AND_ASSIGN(SIPPoller);
 };
 
 }  // namespace rtvc

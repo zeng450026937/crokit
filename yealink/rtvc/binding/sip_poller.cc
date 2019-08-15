@@ -12,17 +12,9 @@ SIPPoller::SIPPoller(scoped_refptr<base::SingleThreadTaskRunner> task_runner,
     : task_runner_(task_runner), sip_client_(sip_client), weak_factory_(this) {
   DCHECK(task_runner_);
   DCHECK(sip_client_);
-
   OnPoll();
 }
-SIPPoller::~SIPPoller() = default;
-
-void SIPPoller::Start() {
-  enabled_ = true;
-}
-void SIPPoller::Stop() {
-  enabled_ = false;
-}
+SIPPoller::~SIPPoller() {}
 
 void SIPPoller::OnPoll() {
   int reschedule_at = 10;

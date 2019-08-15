@@ -60,9 +60,11 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   bool registered_ = false;
   std::unique_ptr<Promise> register_promise_;
 
-  yealink::SIPClient* sip_client_;
+  struct SIPClientDeleter {
+    void operator()(yealink::SIPClient* c) { yealink::RealseSIPClient(c); }
+  };
+  std::unique_ptr<yealink::SIPClient, SIPClientDeleter> sip_client_;
   base::WeakPtrFactory<yealink::SIPClient> sip_client_weak_factory_;
-
   std::unique_ptr<SIPPoller> sip_poller_;
 };
 

@@ -31,6 +31,7 @@ class Context {
   bool CalledOnValidThread();
 
   void PostTask(const base::Location& from_here, base::OnceClosure task);
+  void PostDelayedTask(const base::Location& from_here, base::OnceClosure task);
 
   v8::Isolate* GetIsolate();
 

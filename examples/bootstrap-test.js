@@ -44,8 +44,8 @@ async function test(binding) {
 
   userAgent.unregister();
   userAgent.destroy();
-  
   delete userAgent;
+
 }
 
 module.exports = test;

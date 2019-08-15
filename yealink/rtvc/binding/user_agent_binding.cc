@@ -61,7 +61,7 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    UserAgent::Config config)
     : config_(std::move(config)),
       sip_client_(yealink::CreateSIPClient()),
-      sip_client_weak_factory_(sip_client_) {
+      sip_client_weak_factory_(sip_client_.get()) {
   InitWith(isolate, wrapper);
 
   // TODO
@@ -81,11 +81,13 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
   sip_client_->SetConnectionHandler(this);
   sip_client_->SetAuthHandler(this);
 
-  g_sip_client = sip_client_;
+  g_sip_client = sip_client_.get();
 }
 UserAgentBinding::~UserAgentBinding() {
   UnRegister();
-  yealink::RealseSIPClient(sip_client_);
+  sip_client_->SetAuthHandler(nullptr);
+  sip_client_->SetConnectionHandler(nullptr);
+  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE, sip_client_.release());
   g_sip_client = nullptr;
 };
 
@@ -131,10 +133,9 @@ void UserAgentBinding::UnRegister() {
   DCHECK(sip_poller_);
 
   sip_client_->Disconnect();
-  register_promise_.reset();
-  Context::Instance()->GetTaskRunner(true)->DeleteSoon(FROM_HERE,
-                                                       sip_poller_.release());
+  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE, sip_poller_.release());
 
+  register_promise_.reset();
   registered_ = false;
 }
 
