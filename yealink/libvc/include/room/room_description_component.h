@@ -29,10 +29,19 @@ public:
      */
     SStringA GetConfInfoUrl() const;
     /**
-     * @brief 
-     * @return 
+     * @brief get share info
+     * @param language language of share info
+     * @return request result, and wait notify
+     * @note 
+     * English: "en"\n
+     * Simplified Chinese: "zh"\n
+     * Traditional Chinese: "tw"\n
+     * Spanish: "es"\n
+     * Polish: "pl"\n
+     * Portuguese: "pt"\n
+     * Russian: "ru"\n
      */
-    RequestResult GetShareInfo() const;
+    RequestResult GetShareInfo(const char* language) const;
 };
 } // namespace yealink
 

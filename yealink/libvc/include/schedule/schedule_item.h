@@ -52,6 +52,16 @@ public:
      * @return 
      */
     ScheduleDetailInfo GetDetailInfo() const;
+    /**
+     * @brief 
+     * @return 
+     */
+    SStringA GetShareLink() const;
+    /**
+     * @brief 
+     * @return 
+     */
+    SStringA GetMailTemplate() const;
 };
 } // namespace yealink
 

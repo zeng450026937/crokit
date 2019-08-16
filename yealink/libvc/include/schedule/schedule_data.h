@@ -180,12 +180,30 @@ struct ScheduleRoomInfo
     SStringA name;
 };
 
+enum ScheduleRtmpWatchLimitType
+{
+    SCHEDULE_WATCH_TYPE_INVALID,
+    SCHEDULE_WATCH_TYPE_BY_ALL,
+    SCHEDULE_WATCH_TYPE_BY_PASSWORD
+};
+
 struct ScheduleDetailInfo
 {
+    ScheduleDetailInfo()
+        : rtmpWatchLimitType(SCHEDULE_WATCH_TYPE_INVALID)
+        , rtmpAutoRecord(false)
+    {
+    }
+
     ScheduleMemberInfo organizer;
     SStringA remark;
     Array<ScheduleMemberInfo> participants;
     Array<ScheduleRoomInfo> rooms;
+    SStringA rtmpLogoUrl;
+    ScheduleRtmpWatchLimitType rtmpWatchLimitType;
+    SStringA rtmpWatchPwd;
+    bool rtmpAutoRecord;
+    SStringA rtmpWatchUrl;
 };
 
 } // namespace yealink

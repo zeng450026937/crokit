@@ -111,6 +111,8 @@ node_addon("rtvc_binding") {
     "binding/bootstrap_binding.cc",
     "binding/user_agent_binding.h",
     "binding/user_agent_binding.cc",
+    "binding/schedule_binding.h",
+    "binding/schedule_binding.cc",
     "binding/sip_poller.h",
     "binding/sip_poller.cc",
     "binding/call_binding.h",

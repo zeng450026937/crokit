@@ -11,20 +11,12 @@ namespace yealink {
 namespace rtvc {
 
 namespace {
-yealink::SIPClient* g_sip_client = nullptr;
 unsigned char falsy_value = 0;
 unsigned char truthy_value = 0;
 }  // namespace
 
 // static
 mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
-  if (g_sip_client) {
-    args->ThrowError(
-        "We don't support multiple UserAgent instance currently. Release last "
-        "one first.");
-    return nullptr;
-  }
-
   UserAgent::Config config;
   mate::Dictionary options;
 
@@ -81,16 +73,13 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
 
   sip_client_->SetConnectionHandler(this);
   sip_client_->SetAuthHandler(this);
-
-  g_sip_client = sip_client_.get();
 }
 UserAgentBinding::~UserAgentBinding() {
-  LOG(INFO) << __FUNCTIONW__;
   UnRegister();
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
-  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE, sip_client_.release());
-  g_sip_client = nullptr;
+  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
+                                                   sip_client_.release());
 };
 
 std::string UserAgentBinding::workspace_folder() {
@@ -128,14 +117,15 @@ v8::Local<v8::Promise> UserAgentBinding::Register() {
 }
 
 void UserAgentBinding::UnRegister() {
-  if (!registered())
+  if (!registered() && !registering())
     return;
 
   DCHECK(sip_client_);
   DCHECK(sip_poller_);
 
   sip_client_->Disconnect();
-  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE, sip_poller_.release());
+  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
+                                                   sip_poller_.release());
 
   register_promise_.reset();
   registered_ = false;

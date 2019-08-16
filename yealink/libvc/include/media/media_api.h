@@ -144,6 +144,13 @@ typedef struct _ShareWindow
     }
 } ShareWindow;
 
+enum AudioMode
+{
+    AM_IDLE,
+    AM_HANDSET_FREE,
+    AM_HANDSET,
+};
+
 class MediaObserver
 {
 public:
@@ -155,6 +162,7 @@ class MEDIA_EXPORT Media
 {
 public:
     static Media* CreateInstance(const char* strWorkingPath);
+    static Media* CreateInstance2(const char* strWorkingPath, const char* strDeviceType, const char* strDeviceVersion);
     static void ReleaseInstance(Media* obj);
 
 public:
@@ -181,8 +189,11 @@ public:
     virtual int GetVolume() = 0;
     virtual bool SetEnableANS(bool enable) = 0;
     virtual bool GetEnableANS() = 0;
+    virtual bool SetEnableAEC(bool enable) = 0;
+    virtual bool GetEnableAEC() = 0;
     virtual bool SetEnableAGC(bool enable) = 0;
     virtual bool GetEnableAGC() = 0;
+    virtual bool SetAudioMode(AudioMode mode) = 0;
     virtual int EnumVideoCameraDevice(MediaDeviceInfo descs[], int maxSize) = 0;
     virtual bool SetCamera(const char* strId, bool isPicture) = 0;
     virtual bool SetCameraOrientation(int nOrientation) = 0;

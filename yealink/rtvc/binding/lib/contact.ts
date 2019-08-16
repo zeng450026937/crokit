@@ -25,43 +25,58 @@ export interface ContactNode {
   readonly email: string;
   readonly number: string;
   readonly extensionNum: string;
+
+  getChild(recursive: boolean): Array<ContactNode>;
 }
 
 export interface ContactConfig {
-  connector: unknown,
-  server: string,
-  workspaceFolder?: string,
-  databaseName?: string,
-}
-
-export interface Contact extends EventEmitter {
-  new(config: ContactConfig);
-
-  on(event: 'updated', listener: () => void): this;
-
-  sync(): void;
-
-  getNode(nodeId: string): ContactNode;
-  getNodeChild(nodeId: string): Array<ContactNode>;
-}
-
-export interface LocalContactConfig {
   workspaceFolder?: string,
   databaseName?: string,
 }
 
 // CRUD
-export interface LocalContact {
-  new(config: LocalContactConfig);
+export interface Contact {
+  new(config: ContactConfig);
 
   create(): void;
   remove(): void;
   update(): void;
-  search(): void;
+  search(): Promise<Array<ContactNode>>;
   // alias for create
   add(): void;
   // alias for update
   modify(): void;
   // alias for search
   find(): void;
+}
+
+export interface LocalContactConfig extends ContactConfig {}
+
+export interface LocalContact extends Contact {
+  new(config: LocalContactConfig);
+
+  // support paging acquisition
+  // limit 0 to acquire all
+  // acquire all by default
+  getList(limit: number, offset: number): Array<ContactNode>;
+}
+
+export interface CloudContactConfig extends ContactConfig {
+  connector: unknown,
+  server: string,
+}
+
+export interface CloudContact extends EventEmitter, Contact {
+  new(config: CloudContactConfig);
+
+  on(event: 'updated', listener: () => void): this;
+
+  sync(): Promise<void>;
+  search(): Promise<Array<ContactNode>>;
+
+  getRootNodeId(): string;
+  getRootNode(): ContactNode;
+
+  getNode(nodeId: string): ContactNode;
+  getNodeChild(nodeId: string): Array<ContactNode>;
 }

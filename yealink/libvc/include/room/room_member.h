@@ -82,6 +82,11 @@ public:
      * @brief 
      * @return 
      */
+    bool IsDialingIn() const;
+    /**
+     * @brief 
+     * @return 
+     */
     MemberInfo::Roles::PermissionRole GetPermissionRole() const;
     /**
      * @brief 
@@ -123,6 +128,16 @@ public:
      * @return 
      */
     RequestResult GetUserCallStats() const;
+    /**
+     * @brief 
+     * @return 
+     */
+    int64_t GetLobbyTimestamp() const;
+    /**
+     * @brief 
+     * @return 
+     */
+    int64_t GetHandUpTimestamp() const;
 
 public:
     /* setter interface */

@@ -92,7 +92,6 @@ public:
          * @return AuthHandler* 
          */
     virtual AuthHandler* GetAuthHandler() = 0;
-
     /**
          * @brief Set the connection handler object.Remove the handler 
          * by setting the parameter NULL.
@@ -134,6 +133,21 @@ public:
      * @param userAgent
      */
     virtual SStringA Domain() = 0;
+    /**
+     * @brief Set DNS servers
+     *
+     * @param arrServers
+     * @param nCount
+     */
+    virtual bool SetResolver(const char* arrServers[], int nCount) = 0;
+
+    /**
+         * @brief set registe region ,it is for debug mdoe
+         *
+         * @param region example: cn-shanghai cn-shenzhen etc...
+		 * @return true/false
+         */
+    virtual bool SetRegion(const char* region) = 0;
 };
 } // namespace yealink
 #endif

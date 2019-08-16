@@ -7,8 +7,8 @@ async function test(binding) {
 
   const bootstrap = new Bootstrap('01234567890123456789012345678912');
 
-  bootstrap.server = 'https://002018.onqa.yealinkops.com';
-  bootstrap.username = '5555';
+  bootstrap.server = 'https://onylyun.com';
+  bootstrap.username = '223504.1090';
   bootstrap.password = 'v123456789';
 
   const accountList = await bootstrap.authenticate();
@@ -42,7 +42,7 @@ async function test(binding) {
 
   const call = new Call(userAgent);
 
-  call.connect('sip:6666@002018.onqa.yealinkops.com');
+  call.connect('sip:223504.1091@onylyun.com');
 
   // console.log('unregister()');
 

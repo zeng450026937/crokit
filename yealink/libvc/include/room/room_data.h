@@ -386,6 +386,7 @@ struct MemberInfo
         enum Status
         {
             STATUS_INVALID,
+            DIALING_IN,
             DIALING_OUT,
             ON_HOLD,
             CONNECTED,

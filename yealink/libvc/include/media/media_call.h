@@ -43,6 +43,9 @@ struct SdpParams
     bool bEnableCrypted;
     bool bDtls;
     bool bEnableICE;
+    SStringA strLocalIP; //IP直拨时这里应该填写正确的本地IP
+
+    //外部不需要传
     bool bICERestart; //重协商时ice是否重启
 };
 

@@ -40,6 +40,7 @@ typedef struct _MeetingInfo
     SStringA strDomain;
     SStringA strDisplayName;
     SStringA strUserAgent;
+    SStringA strLocalDomain;
     bool isVideoEnabled;
     bool isAudioEnabled;
     bool isMediaEncrypted;
@@ -49,6 +50,7 @@ typedef struct _MeetingInfo
     bool isHoldByRemote;
     bool isHoldByLocal;
     bool isOffer;
+    bool isSupportReplaces;
     _MeetingInfo()
         : isVideoEnabled(false)
         , isAudioEnabled(false)
@@ -59,6 +61,7 @@ typedef struct _MeetingInfo
         , isHoldByRemote(false)
         , isHoldByLocal(false)
         , isOffer(false)
+        , isSupportReplaces(false)
     {
     }
 } MeetingInfo;
@@ -142,7 +145,7 @@ public:
          *
          * @return bool
          */
-    virtual bool CreateAplloConference() = 0;
+    virtual bool CreateAplloConference(AVContentType typ) = 0;
     /**
          * @brief Send early.
          *

@@ -94,14 +94,24 @@ public:
     virtual bool RemoveObserverHandler(AccessObserver* observer) = 0;
 
     /**
-         * @brief login access service , acquire token
+         * @brief login access service by schedule service
          * 
-         * @param server 
+         * @param server : schedule server address
 		 * @param username 
 		 * @param password 
          * @return SStringA
          */
     virtual Array<LoginUserInfo> LoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
+
+    /**
+         * @brief login access service direct
+         * 
+         * @param server : access server address
+		 * @param username 
+		 * @param password 
+         * @return SStringA
+         */
+    virtual Array<LoginUserInfo> UnscheduledLoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief start access push service, after invoke LoginAccessService()
@@ -124,7 +134,30 @@ public:
          */
     virtual SStringA SendHttpRequest(const HttpRequestParam& params, AccessProcess* process) = 0;
 
+    /**
+         * @brief get Schedule Services Information
+         * 
+         * @param url 
+         * @param process 
+         * @return ScheduleMetaInfo
+         */
     virtual ScheduleMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
+
+    /**
+         * @brief set device display language
+         * 
+         * @param lang 
+         * @return true/false
+         */
+    virtual bool SetLanguage(const char* lang) = 0;
+
+    /**
+         * @brief set registe area
+         * 
+         * @param area 
+         * @return true/false
+         */
+    virtual bool SetRegion(const char* region) = 0;
 };
 } // namespace yealink
 

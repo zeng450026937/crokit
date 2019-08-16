@@ -84,9 +84,18 @@ public:
 
 private:
     /**
+     * @brief 设置存储头指针
+     * @param newStoragePtr 新的地址
+     */
+    void SetStoragePtr(char* newStoragePtr);
+    /**
      * @brief 数组的头位置
      */
-    char* m_headerPtr;
+    char* m_storagePtr;
+    /**
+     * @brief 调试用元素头
+     */
+    ElementType* m_elementPtr;
     /**
      * @brief 数组的最大容量
      */
@@ -99,21 +108,23 @@ private:
 
 template<typename ElementType>
 Array<ElementType>::Array(size_t maxSize)
-    : m_maxSize(maxSize)
+    : m_storagePtr(NULL)
+    , m_elementPtr(NULL)
+    , m_maxSize(maxSize)
     , m_size(0)
 {
     if (m_maxSize != 0)
     {
-        m_headerPtr = new char[sizeof(ElementType) * m_maxSize];
-        memset(m_headerPtr, 0, sizeof(ElementType) * m_maxSize);
-        if (m_headerPtr == nullptr)
+        SetStoragePtr(new char[sizeof(ElementType) * m_maxSize]);
+        memset(m_storagePtr, 0, sizeof(ElementType) * m_maxSize);
+        if (m_storagePtr == NULL)
         {
             m_maxSize = 0;
         }
     }
     else
     {
-        m_headerPtr = nullptr;
+        SetStoragePtr(NULL);
     }
 }
 
@@ -122,28 +133,30 @@ Array<ElementType>::~Array()
 {
     for (size_t i = 0; i < m_size; ++i)
     {
-        reinterpret_cast<ElementType*>(m_headerPtr + i * sizeof(ElementType))
+        reinterpret_cast<ElementType*>(m_storagePtr + i * sizeof(ElementType))
             ->~ElementType();
     }
-    delete[] m_headerPtr;
-    m_headerPtr = nullptr;
+    delete[] m_storagePtr;
+    SetStoragePtr(NULL);
     m_size = 0;
     m_maxSize = 0;
 }
 
 template<typename ElementType>
 Array<ElementType>::Array(const Array& other)
-    : m_maxSize(other.m_maxSize)
+    : m_storagePtr(NULL)
+    , m_elementPtr(NULL)
+    , m_maxSize(other.m_maxSize)
     , m_size(other.m_size)
 {
     m_maxSize = other.m_maxSize;
-    m_headerPtr = new char[sizeof(ElementType) * m_maxSize];
-    memset(m_headerPtr, 0, sizeof(ElementType) * m_maxSize);
-    if (m_headerPtr != nullptr)
+    SetStoragePtr(new char[sizeof(ElementType) * m_maxSize]);
+    memset(m_storagePtr, 0, sizeof(ElementType) * m_maxSize);
+    if (m_storagePtr != nullptr)
     {
         for (size_t i = 0; i < m_size; ++i)
         {
-            new (m_headerPtr + i * sizeof(ElementType)) ElementType(other[i]);
+            new (m_storagePtr + i * sizeof(ElementType)) ElementType(other[i]);
         }
     }
     else
@@ -163,13 +176,13 @@ Array<ElementType>& Array<ElementType>::operator=(const Array& other)
     Clear();
     m_maxSize = other.m_maxSize;
     m_size = other.m_size;
-    m_headerPtr = new char[sizeof(ElementType) * m_maxSize];
-    memset(m_headerPtr, 0, sizeof(ElementType) * m_maxSize);
-    if (m_headerPtr != nullptr)
+    SetStoragePtr(new char[sizeof(ElementType) * m_maxSize]);
+    memset(m_storagePtr, 0, sizeof(ElementType) * m_maxSize);
+    if (m_storagePtr != nullptr)
     {
         for (size_t i = 0; i < m_size; ++i)
         {
-            new (m_headerPtr + i * sizeof(ElementType)) ElementType(other[i]);
+            new (m_storagePtr + i * sizeof(ElementType)) ElementType(other[i]);
         }
     }
     else
@@ -196,10 +209,10 @@ Array<ElementType>& Array<ElementType>::Append(const ElementType& element)
             {
                 new (newPtr + i * sizeof(ElementType))
                     ElementType(*reinterpret_cast<ElementType*>(
-                        m_headerPtr + i * sizeof(ElementType)));
+                        m_storagePtr + i * sizeof(ElementType)));
             }
             Clear();
-            m_headerPtr = newPtr;
+            SetStoragePtr(newPtr);
             m_size = currentSize;
             m_maxSize = newCaptionSize;
         }
@@ -209,7 +222,7 @@ Array<ElementType>& Array<ElementType>::Append(const ElementType& element)
             return *this;
         }
     }
-    new (m_headerPtr + m_size * sizeof(ElementType)) ElementType(element);
+    new (m_storagePtr + m_size * sizeof(ElementType)) ElementType(element);
     m_size++;
     return *this;
 }
@@ -219,11 +232,11 @@ void Array<ElementType>::Clear()
 {
     for (size_t i = 0; i < m_size; ++i)
     {
-        reinterpret_cast<ElementType*>(m_headerPtr + i * sizeof(ElementType))
+        reinterpret_cast<ElementType*>(m_storagePtr + i * sizeof(ElementType))
             ->~ElementType();
     }
-    delete[] m_headerPtr;
-    m_headerPtr = nullptr;
+    delete[] m_storagePtr;
+    SetStoragePtr(NULL);
     m_size = 0;
     m_maxSize = 0;
 }
@@ -235,8 +248,7 @@ ElementType& Array<ElementType>::operator[](size_t index)
     {
         std::abort();
     }
-    return *reinterpret_cast<ElementType*>(m_headerPtr
-                                           + index * sizeof(ElementType));
+    return *(m_elementPtr + index);
 }
 
 template<typename ElementType>
@@ -246,8 +258,7 @@ const ElementType& Array<ElementType>::operator[](size_t index) const
     {
         std::abort();
     }
-    return *reinterpret_cast<ElementType*>(m_headerPtr
-                                           + index * sizeof(ElementType));
+    return *(m_elementPtr + index);
 }
 
 template<typename ElementType>
@@ -260,6 +271,13 @@ template<typename ElementType>
 size_t Array<ElementType>::MaxSize() const
 {
     return m_maxSize;
+}
+
+template<typename ElementType>
+void Array<ElementType>::SetStoragePtr(char* newStoragePtr)
+{
+    m_storagePtr = newStoragePtr;
+    m_elementPtr = reinterpret_cast<ElementType*>(m_storagePtr);
 }
 } // namespace yealink
 #endif // SIMPLE_ARRAY_HPP

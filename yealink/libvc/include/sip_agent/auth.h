@@ -17,6 +17,7 @@ enum AuthEventId
 {
     AEID_SUCCESS,
     AEID_FAILED,
+    AEID_UPDATED,
 };
 
 enum AuthParamType

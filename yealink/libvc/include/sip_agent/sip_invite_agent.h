@@ -269,6 +269,11 @@ public:
          * @param pObserver 
          */
     virtual void SetObserver(SIPInviteObserver* pObserver) = 0;
+    /**
+         * @brief Get the connection local host.
+         *
+         */
+    virtual SStringA UsedLocalHost() = 0;
 };
 } // namespace yealink
 #endif

@@ -40,6 +40,7 @@ public:
         MEDIA_SLIENCE,
         MEDIA_ESTABLISHED,
         MEDIA_BROKEN,
+        MEDIA_RESUME,
         MEDIA_FINISHED
     };
 
