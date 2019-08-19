@@ -2,10 +2,13 @@
 #define YEALINK_RTVC_GLUE_STRUCT_TRAITS_H_
 
 #include <string>
+#include <vector>
 
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/schedule_item.h"
 
 #include "yealink/libvc/include/access/access_define.h"
+#include "yealink/libvc/include/schedule/schedule_item.h"
 
 namespace yealink {
 
@@ -56,15 +59,111 @@ struct StructTraits<std::string> {
   }
 };
 
+template <typename T>
+struct StructTraits<std::vector<T>> {
+  template <typename U>
+  static bool To(const std::vector<T>& val, yealink::Array<U>& out) {
+    for (auto& t : val) {
+      U u;
+      ConvertTo(t, u);
+      out.Append(u);
+    }
+    return true;
+  }
+  template <typename U>
+  static bool From(std::vector<T>& out, const yealink::Array<U>& val) {
+    for (size_t i = 0; i < val.Size(); i++) {
+      T t;
+      ConvertFrom(t, val[i]);
+      out.emplace_back(t);
+    }
+    return true;
+  }
+};
+
 template <>
 struct StructTraits<AccountInfo> {
   static bool From(AccountInfo& out, const yealink::LoginUserInfo& val);
 };
 
 template <>
-struct StructTraits<AccountInfoList> {
-  static bool From(AccountInfoList& out,
-                   const yealink::Array<LoginUserInfo>& val);
+struct StructTraits<ScheduleItemProfile> {
+  static bool From(ScheduleItemProfile& out,
+                   const yealink::ScheduleItemProfile& val);
+};
+
+template <>
+struct StructTraits<ScheduleRecurrenceType> {
+  static bool From(ScheduleRecurrenceType& out,
+                   const yealink::ScheduleRecurrenceType& val);
+};
+
+template <>
+struct StructTraits<ScheduleRecurrenceDailyType> {
+  static bool From(ScheduleRecurrenceDailyType& out,
+                   const yealink::ScheduleDailyType& val);
+};
+
+template <>
+struct StructTraits<ScheduleRecurrenceRangeType> {
+  static bool From(ScheduleRecurrenceRangeType& out,
+                   const yealink::ScheduleRangeType& val);
+};
+
+template <>
+struct StructTraits<ScheduleMemberRole> {
+  static bool From(ScheduleMemberRole& out,
+                   const yealink::ScheduleMemberRole& val);
+};
+
+template <>
+struct StructTraits<ScheduleMemberType> {
+  static bool From(ScheduleMemberType& out,
+                   const yealink::ScheduleMemberType& val);
+};
+
+template <>
+struct StructTraits<ScheduleRTMPLimitType> {
+  static bool From(ScheduleRTMPLimitType& out,
+                   const yealink::ScheduleRtmpWatchLimitType& val);
+};
+
+template <>
+struct StructTraits<ScheduleDaylightStrategy> {
+  static bool From(ScheduleDaylightStrategy& out,
+                   const yealink::ScheduleDaylightStrategyInfo& val);
+};
+
+template <>
+struct StructTraits<ScheduleTimeZoneRule> {
+  static bool From(ScheduleTimeZoneRule& out,
+                   const yealink::ScheduleTimeZoneRule& val);
+};
+
+template <>
+struct StructTraits<ScheduleTimeZone> {
+  static bool From(ScheduleTimeZone& out,
+                   const yealink::ScheduleTimeZoneConfig& val);
+};
+
+template <>
+struct StructTraits<ScheduleMember> {
+  static bool From(ScheduleMember& out, const yealink::ScheduleMemberInfo& val);
+};
+
+template <>
+struct StructTraits<ScheduleRoom> {
+  static bool From(ScheduleRoom& out, const yealink::ScheduleRoomInfo& val);
+};
+
+template <>
+struct StructTraits<ScheduleItem> {
+  static bool From(ScheduleItem& out, const yealink::ScheduleSimpleInfo& val);
+};
+
+template <>
+struct StructTraits<ScheduleItemDetail> {
+  static bool From(ScheduleItemDetail& out, const yealink::ScheduleDetailInfo& val);
 };
 
 }  // namespace rtvc

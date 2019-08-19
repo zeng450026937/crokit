@@ -7,6 +7,7 @@
 #include "yealink/rtvc/binding/bootstrap_binding.h"
 #include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/context.h"
+#include "yealink/rtvc/binding/schedule_binding.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/v8_util.h"
 #include "yealink/rtvc/binding/video_frame_binding.h"
@@ -17,6 +18,7 @@ namespace {
 using yealink::rtvc::AudioManagerBinding;
 using yealink::rtvc::BootstrapBinding;
 using yealink::rtvc::CallBinding;
+using yealink::rtvc::ScheduleBinding;
 using yealink::rtvc::UserAgentBinding;
 using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
@@ -69,6 +71,12 @@ void Initialize(v8::Local<v8::Object> exports,
   dict.Set("Bootstrap", BootstrapBinding::GetConstructor(isolate)
                             ->GetFunction(context)
                             .ToLocalChecked());
+
+  ScheduleBinding::SetConstructor(isolate,
+                                  base::BindRepeating(&ScheduleBinding::New));
+  dict.Set("Schedule", ScheduleBinding::GetConstructor(isolate)
+                           ->GetFunction(context)
+                           .ToLocalChecked());
 }
 
 }  // namespace

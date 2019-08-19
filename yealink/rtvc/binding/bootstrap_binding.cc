@@ -6,6 +6,7 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
+#include "yealink/rtvc/binding/connector_binding.h"
 
 namespace yealink {
 
@@ -36,7 +37,8 @@ void BootstrapBinding::BuildPrototype(
                    &BootstrapBinding::SetUsername)
       .SetProperty("password", &BootstrapBinding::password,
                    &BootstrapBinding::SetPassword)
-      .SetMethod("authenticate", &BootstrapBinding::Authenticate);
+      .SetMethod("authenticate", &BootstrapBinding::Authenticate)
+      .SetMethod("getConnector", &BootstrapBinding::GetConnector);
 }
 
 BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
@@ -80,6 +82,16 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
                      base::Unretained(this), std::move(promise)));
 
   return handle;
+}
+
+v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
+  DCHECK(access_agent_);
+  access_agent_->StartAccessPushService(uid.c_str());
+  if (connector_.IsEmpty()) {
+    auto handle = ConnectorBinding::Create(isolate(), access_agent_);
+    connector_.Reset(isolate(), handle.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), connector_);
 }
 
 void BootstrapBinding::DoAuthenticate() {

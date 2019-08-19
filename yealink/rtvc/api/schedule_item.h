@@ -14,7 +14,7 @@ enum class ScheduleItemProfile {
   kEducation,
 };
 
-enum class ScheduleRecurrence {
+enum class ScheduleRecurrenceType {
   kNone,
   kDaily,
   kWeekly,
@@ -24,10 +24,26 @@ enum class ScheduleRecurrence {
   kYearlyNTH,
 };
 
-enum class ScheduleRecurrenceDaily {
+enum class ScheduleRecurrenceDailyType {
   kNone,
-  kEveryFewDays,
-  kWorkingDay,
+  kEach,
+  kWeekday,
+};
+
+enum class ScheduleRecurrenceRangeType {
+  kForever,
+  kTimes,
+  kUntil,
+};
+
+struct ScheduleRecurrence {
+  ScheduleRecurrenceType type;
+  ScheduleRecurrenceDailyType dailyType;
+  ScheduleRecurrenceRangeType rangeType;
+  int64_t interval;
+  int64_t startDate;
+  int64_t endDate;
+  int64_t count;
 };
 
 struct ScheduleDaylightStrategy {
@@ -51,7 +67,7 @@ struct ScheduleTimeZone {
   std::string id;
   std::string cnName;
   std::string usName;
-  int utcOffset;
+  int64_t utcOffset;
   std::string utcOffsetName;
   std::vector<ScheduleTimeZoneRule> rule;
 };
@@ -81,16 +97,30 @@ struct ScheduleRoom {
   std::string name;
 };
 
+enum class ScheduleRTMPLimitType {
+  kAll,
+  kPassword,
+};
+
+struct ScheduleRTMP {
+  bool autoRecord;
+  std::string url;
+  std::string password;
+  std::string logoUrl;
+  ScheduleRTMPLimitType limitType;
+};
+
 struct ScheduleItemDetail {
   std::string remark;
   ScheduleMember organizer;
   std::vector<ScheduleMember> participants;
   std::vector<ScheduleRoom> rooms;
+  ScheduleRTMP rtmp;
 };
 
 struct ScheduleItem {
   std::string planId;
-  int sequence;
+  int64_t sequence;
 
   ScheduleItemProfile profile;
   std::string subject;
@@ -99,28 +129,59 @@ struct ScheduleItem {
   std::string timezoneId;
   ScheduleTimeZone timezone;
 
-  int aheadTime;
-  int startTime;
-  int endTime;
+  int64_t aheadTime;
+  int64_t startTime;
+  int64_t endTime;
 
   std::string confNum;
   std::string confPwd;
   bool isRTMP;
 
-  std::vector<std::string> rooms;
+  std::vector<std::string> roomNames;
 
-  ScheduleRecurrence recurrenceType;
-  ScheduleRecurrenceDaily recurrenceDailyType;
-  int recurrenceInterval;
-  int recurrenceStartDate;
-  int recurrenceEndDate;
-  int recurrenceCount;
+  ScheduleRecurrence recurrence;
 
-  std::string dayOfWeek;
-  int dayOfWeekIndex;
-  int dayOfMonth;
-  int dayOfMonthIndex;
+  std::vector<int> dayOfWeek;
+  int64_t dayOfWeekIndex;
+  int64_t dayOfMonth;
+  int64_t monthOfYear;
 };
+/*
+class ScheduleItem {
+ public:
+  virtual std::string planId() = 0;
+  virtual int64_t sequence() = 0;
+
+  virtual ScheduleItemProfile profile() = 0;
+  virtual std::string subject() = 0;
+  virtual std::string organizer() = 0;
+
+  virtual std::string timezoneId() = 0;
+  virtual ScheduleTimeZone timezone() = 0;
+
+  virtual int64_t aheadTime() = 0;
+  virtual int64_t startTime() = 0;
+  virtual int64_t endTime() = 0;
+
+  virtual std::string confNum() = 0;
+  virtual std::string confPwd() = 0;
+  virtual bool isRTMP() = 0;
+
+  virtual std::vector<std::string> rooms() = 0;
+
+  virtual ScheduleRecurrence recurrence() = 0;
+
+  virtual std::vector<int> dayOfWeek() = 0;
+  virtual int64_t dayOfWeekIndex() = 0;
+  virtual int64_t dayOfMonth() = 0;
+  virtual int64_t monthOfYear() = 0;
+
+  virtual ScheduleItemDetail GetDetail() = 0;
+
+ protected:
+  virtual ~ScheduleItem() = default;
+};
+*/
 
 }  // namespace rtvc
 

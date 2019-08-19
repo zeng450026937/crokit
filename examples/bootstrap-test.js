@@ -1,9 +1,11 @@
+const schedule_test = require('./schedule-test');
+
 async function test(binding) {
-  console.log('bootstrap test');
+  console.log('Bootstrap test');
 
   const { Bootstrap, UserAgent, Call } = binding;
 
-  console.log('-- constructor --');
+  console.log('constructor()');
 
   const bootstrap = new Bootstrap('01234567890123456789012345678912');
 
@@ -11,11 +13,14 @@ async function test(binding) {
   bootstrap.username = '223504.1090';
   bootstrap.password = 'v123456789';
 
+  console.log('authenticate()');
+
   const accountList = await bootstrap.authenticate();
 
   console.log('authenticated', accountList)
 
   const [ account ] = accountList;
+  const uid = account.uid;
   const username = account.number;
   const password = bootstrap.password;
   const domain = account.enterprise.domain;
@@ -24,32 +29,11 @@ async function test(binding) {
   console.log('default password', password);
   console.log('default domain', domain);
 
-  const userAgent = new UserAgent({
-    username,
-    password,
-    domain,
-  });
+  console.log('getConnector()');
 
-  console.log('register()')
+  const connector = bootstrap.getConnector(uid);
 
-  await userAgent.register().then((r) => console.log(r));
-
-  console.log('account registerd');
-
-  console.log('username', userAgent.username);
-  console.log('password', userAgent.password);
-  console.log('domain', userAgent.domain);
-
-  const call = new Call(userAgent);
-
-  call.connect('sip:223504.1091@onylyun.com');
-
-  // console.log('unregister()');
-
-  // userAgent.unregister();
-  // userAgent.destroy();
-  // delete call;
-  // delete userAgent;
+  schedule_test(binding, connector);
 }
 
 module.exports = test;

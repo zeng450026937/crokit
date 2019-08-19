@@ -93,5 +93,6 @@ export interface Schedule extends EventEmitter {
 
   on(event: 'updated', listener: () => void): this;
 
+  sync(startTime: Date, endTime: Date): Promise<void>;
   fetch(startTime: Date, endTime: Date): Array<ScheduleItem>;
 }

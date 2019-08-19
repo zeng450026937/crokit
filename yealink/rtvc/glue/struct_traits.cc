@@ -32,14 +32,271 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
 }
 
 // static
-bool StructTraits<AccountInfoList>::From(
-    AccountInfoList& out,
-    const yealink::Array<LoginUserInfo>& val) {
-  for (size_t i = 0; i < val.Size(); i++) {
-    AccountInfo info;
-    ConvertFrom(info, val[i]);
-    out.emplace_back(info);
+bool StructTraits<ScheduleItemProfile>::From(
+    ScheduleItemProfile& out,
+    const yealink::ScheduleItemProfile& val) {
+  switch (val) {
+    case yealink::ScheduleItemProfile::SCHEDULE_ITEM_PROFILE_DEFAULT:
+      out = ScheduleItemProfile::kDefault;
+      break;
+    case yealink::ScheduleItemProfile::SCHEDULE_ITEM_PROFILE_EDUCATION:
+      out = ScheduleItemProfile::kEducation;
+      break;
+    case yealink::ScheduleItemProfile::SCHEDULE_ITEM_PROFILE_SEMINAR:
+      out = ScheduleItemProfile::kSeminar;
+      break;
+    default:
+      out = ScheduleItemProfile::kDefault;
+      break;
   }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleRecurrenceType>::From(
+    ScheduleRecurrenceType& out,
+    const yealink::ScheduleRecurrenceType& val) {
+  switch (val) {
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_INVALID:
+      out = ScheduleRecurrenceType::kNone;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_DAILY:
+      out = ScheduleRecurrenceType::kDaily;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_WEEKLY:
+      out = ScheduleRecurrenceType::kWeekly;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_MONTHLY:
+      out = ScheduleRecurrenceType::kMonthly;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_MONTH_NTH:
+      out = ScheduleRecurrenceType::kMonthlyNTH;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_YEAR_NTH:
+      out = ScheduleRecurrenceType::kYearlyNTH;
+      break;
+    case yealink::ScheduleRecurrenceType::SCHEDULE_RECURRENCE_TYPE_YEARLY:
+      out = ScheduleRecurrenceType::kYearly;
+      break;
+    default:
+      out = ScheduleRecurrenceType::kNone;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleRecurrenceDailyType>::From(
+    ScheduleRecurrenceDailyType& out,
+    const yealink::ScheduleDailyType& val) {
+  switch (val) {
+    case yealink::ScheduleDailyType::SCHEDULE_DAILY_TYPE_INVALID:
+      out = ScheduleRecurrenceDailyType::kNone;
+      break;
+    case yealink::ScheduleDailyType::SCHEDULE_DAILY_TYPE_EACH:
+      out = ScheduleRecurrenceDailyType::kEach;
+      break;
+    case yealink::ScheduleDailyType::SCHEDULE_DAILY_TYPE_WEEKDAY:
+      out = ScheduleRecurrenceDailyType::kWeekday;
+      break;
+    default:
+      out = ScheduleRecurrenceDailyType::kNone;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleRecurrenceRangeType>::From(
+    ScheduleRecurrenceRangeType& out,
+    const yealink::ScheduleRangeType& val) {
+  switch (val) {
+    case yealink::ScheduleRangeType::SCHEDULE_RANGE_TYPE_FOREVER:
+      out = ScheduleRecurrenceRangeType::kForever;
+      break;
+    case yealink::ScheduleRangeType::SCHEDULE_RANGE_TYPE_TIMES:
+      out = ScheduleRecurrenceRangeType::kTimes;
+      break;
+    case yealink::ScheduleRangeType::SCHEDULE_RANGE_TYPE_UNTIL:
+      out = ScheduleRecurrenceRangeType::kUntil;
+      break;
+    default:
+      out = ScheduleRecurrenceRangeType::kTimes;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleMemberRole>::From(
+    ScheduleMemberRole& out,
+    const yealink::ScheduleMemberRole& val) {
+  switch (val) {
+    case yealink::ScheduleMemberRole::SCHEDULE_MEMBER_ROLE_CAST_VIEWER:
+      out = ScheduleMemberRole::kCastViewer;
+      break;
+    case yealink::ScheduleMemberRole::SCHEDULE_MEMBER_ROLE_ORGANIZER:
+      out = ScheduleMemberRole::kOrganizer;
+      break;
+    case yealink::ScheduleMemberRole::SCHEDULE_MEMBER_ROLE_PARTICIPANT:
+      out = ScheduleMemberRole::kPaticipant;
+      break;
+    case yealink::ScheduleMemberRole::SCHEDULE_MEMBER_ROLE_PRESENTER:
+      out = ScheduleMemberRole::kPresenter;
+      break;
+    default:
+      out = ScheduleMemberRole::kPaticipant;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleMemberType>::From(
+    ScheduleMemberType& out,
+    const yealink::ScheduleMemberType& val) {
+  switch (val) {
+    case yealink::ScheduleMemberType::SCHEDULE_MEMBER_TYPE_OUTSIDER:
+      out = ScheduleMemberType::kExternal;
+      break;
+    case yealink::ScheduleMemberType::SCHEDULE_MEMBER_TYPE_INSIDER:
+      out = ScheduleMemberType::kInternal;
+      break;
+    default:
+      out = ScheduleMemberType::kInternal;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleRTMPLimitType>::From(
+    ScheduleRTMPLimitType& out,
+    const yealink::ScheduleRtmpWatchLimitType& val) {
+  switch (val) {
+    case yealink::ScheduleRtmpWatchLimitType::SCHEDULE_WATCH_TYPE_BY_ALL:
+      out = ScheduleRTMPLimitType::kAll;
+      break;
+    case yealink::ScheduleRtmpWatchLimitType::SCHEDULE_WATCH_TYPE_BY_PASSWORD:
+      out = ScheduleRTMPLimitType::kPassword;
+      break;
+    default:
+      out = ScheduleRTMPLimitType::kPassword;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleDaylightStrategy>::From(
+    ScheduleDaylightStrategy& out,
+    const yealink::ScheduleDaylightStrategyInfo& val) {
+  ConvertFrom(out.day, val.day);
+  ConvertFrom(out.dayOfWeek, val.dayOfWeek);
+  ConvertFrom(out.isFixedDateRule, val.isFixedDateRule);
+  ConvertFrom(out.month, val.month);
+  ConvertFrom(out.timeOfDay, val.timeOfDay);
+  ConvertFrom(out.week, val.week);
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleTimeZoneRule>::From(
+    ScheduleTimeZoneRule& out,
+    const yealink::ScheduleTimeZoneRule& val) {
+  ConvertFrom(out.daylightDelta, val.daylightDelta);
+  ConvertFrom(out.daylightStrategyEnd, val.daylightStrategyEnd);
+  ConvertFrom(out.daylightStrategyStart, val.daylightStrategyStart);
+  ConvertFrom(out.endDate, val.dateEnd);
+  ConvertFrom(out.startDate, val.dateStart);
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleTimeZone>::From(
+    ScheduleTimeZone& out,
+    const yealink::ScheduleTimeZoneConfig& val) {
+  ConvertFrom(out.id, val.zoneId);
+  ConvertFrom(out.cnName, val.cnZoneName);
+  ConvertFrom(out.usName, val.usZoneName);
+  ConvertFrom(out.utcOffset, val.utcOffset);
+  ConvertFrom(out.utcOffsetName, val.offsetDisplayName);
+  ConvertFrom(out.rule, val.rule);
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleMember>::From(
+    ScheduleMember& out,
+    const yealink::ScheduleMemberInfo& val) {
+  ConvertFrom(out.id, val.identifier);
+  ConvertFrom(out.name, val.showName);
+  ConvertFrom(out.number, val.extension);
+  ConvertFrom(out.role, val.role);
+  ConvertFrom(out.type, val.type);
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleRoom>::From(ScheduleRoom& out,
+                                      const yealink::ScheduleRoomInfo& val) {
+  ConvertFrom(out.id, val.roomId);
+  ConvertFrom(out.name, val.name);
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleItem>::From(ScheduleItem& out,
+                                      const yealink::ScheduleSimpleInfo& val) {
+  ConvertFrom(out.planId, val.planId);
+  ConvertFrom(out.sequence, val.sequence);
+  ConvertFrom(out.profile, val.profile);
+  ConvertFrom(out.subject, val.subject);
+  ConvertFrom(out.organizer, val.organizerName);
+  ConvertFrom(out.timezoneId, val.zoneId);
+  ConvertFrom(out.timezone, val.timeZoneConfig);
+  ConvertFrom(out.aheadTime, val.aheadTime);
+  ConvertFrom(out.startTime, val.startDateTime);
+  ConvertFrom(out.endTime, val.endDateTime);
+  ConvertFrom(out.confNum, val.conferenceNo);
+  ConvertFrom(out.confPwd, val.conferencePwd);
+  ConvertFrom(out.isRTMP, val.isRtmp);
+  ConvertFrom(out.roomNames, val.roomNames);
+  ConvertFrom(out.recurrence.type, val.recurrenceType);
+  ConvertFrom(out.recurrence.dailyType, val.dailyType);
+  ConvertFrom(out.recurrence.rangeType, val.rangeType);
+  ConvertFrom(out.recurrence.interval, static_cast<int64_t>(val.recurrenceInterval));
+  ConvertFrom(out.recurrence.count, static_cast<int64_t>(val.rangeOccurrences));
+  ConvertFrom(out.recurrence.startDate, val.rangeStartDate);
+  ConvertFrom(out.recurrence.endDate, val.rangeEndDate);
+  ConvertFrom(out.dayOfWeek, val.dayOfWeek);
+  // ConvertFrom(out.dayOfWeekIndex, val.dayOfWeekIndex);
+  out.dayOfWeekIndex = 0;
+  ConvertFrom(out.dayOfMonth, static_cast<int64_t>(val.dayOfMonth));
+  ConvertFrom(out.monthOfYear, static_cast<int64_t>(val.monthOfYear));
+  return true;
+}
+
+// static
+bool StructTraits<ScheduleItemDetail>::From(
+    ScheduleItemDetail& out,
+    const yealink::ScheduleDetailInfo& val) {
+  ConvertFrom(out.remark, val.remark);
+  ConvertFrom(out.organizer, val.organizer);
+  ConvertFrom(out.participants, val.participants);
+  ConvertFrom(out.rooms, val.rooms);
+  ConvertFrom(out.rtmp.autoRecord, val.rtmpAutoRecord);
+  ConvertFrom(out.rtmp.limitType, val.rtmpWatchLimitType);
+  ConvertFrom(out.rtmp.logoUrl, val.rtmpLogoUrl);
+  ConvertFrom(out.rtmp.password, val.rtmpWatchPwd);
+  ConvertFrom(out.rtmp.url, val.rtmpWatchUrl);
   return true;
 }
 
