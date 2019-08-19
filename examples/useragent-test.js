@@ -1,3 +1,4 @@
+const call_test = require('./call-test');
 
 async function test(binding, account) {
   console.log('UserAgent test');
@@ -27,6 +28,8 @@ async function test(binding, account) {
   // userAgent.destroy();
   // delete call;
   // delete userAgent;
+
+  call_test(binding, userAgent);
 }
 
 module.exports = test;

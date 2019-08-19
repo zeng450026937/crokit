@@ -21,7 +21,7 @@ async function test(binding, connector) {
   await schedule.sync(start.valueOf(), end.valueOf());
 
   console.log('fetch()');
-  const list = schedule.fetch(start.valueOf(), end.valueOf());
+  const list = await schedule.fetch(start.valueOf(), end.valueOf());
 
   console.log(list);
 

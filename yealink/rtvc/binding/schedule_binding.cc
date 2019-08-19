@@ -63,8 +63,15 @@ ScheduleBinding::~ScheduleBinding() {
 }
 
 v8::Local<v8::Promise> ScheduleBinding::Sync(uint64_t start_time,
-                                             uint64_t end_time) {
+                                             uint64_t end_time,
+                                             mate::Arguments* args) {
   DCHECK_GT(end_time, start_time);
+
+  bool force = false;
+
+  if (args->GetNext(&force) && force) {
+    synced_ = false;
+  }
 
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
@@ -73,15 +80,34 @@ v8::Local<v8::Promise> ScheduleBinding::Sync(uint64_t start_time,
       FROM_HERE,
       base::BindOnce(&ScheduleBinding::DoSync, weak_factory_.GetWeakPtr(),
                      start_time, end_time),
-      base::BindOnce([](Promise promise) { std::move(promise).Resolve(); },
-                     std::move(promise)));
+      base::BindOnce(&Promise::ResolveEmptyPromise, std::move(promise)));
 
   return handle;
 }
-v8::Local<v8::Value> ScheduleBinding::Fetch(uint64_t start_time,
-                                            uint64_t end_time) {
-  DCHECK(!IsOutOfRange(start_time, end_time)) << "Sync first";
-  return mate::ConvertToV8(
+v8::Local<v8::Promise> ScheduleBinding::Fetch(uint64_t start_time,
+                                              uint64_t end_time) {
+  DCHECK_GT(end_time, start_time);
+
+  if (IsOutOfRange(start_time, end_time)) {
+    Promise promise(isolate());
+    v8::Local<v8::Promise> handle = promise.GetHandle();
+
+    base::PostTaskAndReply(
+        FROM_HERE,
+        base::BindOnce(&ScheduleBinding::DoSync, weak_factory_.GetWeakPtr(),
+                       start_time, end_time),
+        base::BindOnce(
+            [](Promise promise, yealink::ScheduleManager* manager,
+               uint64_t start_time, uint64_t end_time) {
+              std::move(promise).Resolve(
+                  manager->GetScheduleList(start_time, end_time));
+            },
+            std::move(promise), schedule_manager_.get(), start_time, end_time));
+
+    return handle;
+  }
+
+  return Promise::ResolvedPromise(
       isolate(), schedule_manager_->GetScheduleList(start_time, end_time));
 }
 
@@ -112,6 +138,8 @@ void ScheduleBinding::DoSync(uint64_t start_time, uint64_t end_time) {
     schedule_manager_->Sync(end_time);
     end_time_ = end_time;
   }
+
+  synced_ = true;
 }
 
 }  // namespace rtvc

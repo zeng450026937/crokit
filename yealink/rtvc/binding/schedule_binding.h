@@ -24,8 +24,8 @@ class ScheduleBinding : public mate::EventEmitter<ScheduleBinding> {
                   yealink::AccessAgent* access_agent);
   ~ScheduleBinding() override;
 
-  v8::Local<v8::Promise> Sync(uint64_t start_time, uint64_t end_time);
-  v8::Local<v8::Value> Fetch(uint64_t start_time, uint64_t end_time);
+  v8::Local<v8::Promise> Sync(uint64_t start_time, uint64_t end_time, mate::Arguments* args);
+  v8::Local<v8::Promise> Fetch(uint64_t start_time, uint64_t end_time);
 
  private:
   bool IsOutOfRange(uint64_t start_time, uint64_t end_time);

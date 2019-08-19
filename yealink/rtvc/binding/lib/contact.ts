@@ -69,14 +69,19 @@ export interface CloudContactConfig extends ContactConfig {
 export interface CloudContact extends EventEmitter, Contact {
   new(config: CloudContactConfig);
 
+  on(event: 'updating', listener: () => void): this;
   on(event: 'updated', listener: () => void): this;
+  on(event: 'changed', listener: () => void): this;
+
+  readonly synced: boolean;
+  readonly loadMode: any;
+
+  readonly rootId: string;
+  readonly selfId: string;
 
   sync(): Promise<void>;
   search(): Promise<Array<ContactNode>>;
 
-  getRootNodeId(): string;
-  getRootNode(): ContactNode;
-
   getNode(nodeId: string): ContactNode;
-  getNodeChild(nodeId: string): Array<ContactNode>;
+  getNodeChild(nodeId: string, recursive: boolean): Array<ContactNode>;
 }

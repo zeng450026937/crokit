@@ -117,6 +117,8 @@ node_addon("rtvc_binding") {
     "binding/schedule_binding.cc",
     "binding/schedule_item_binding.h",
     "binding/schedule_item_binding.cc",
+    "binding/cloud_contact_binding.h",
+    "binding/cloud_contact_binding.cc",
     "binding/sip_poller.h",
     "binding/sip_poller.cc",
     "binding/call_binding.h",

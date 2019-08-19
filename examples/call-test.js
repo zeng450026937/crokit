@@ -6,7 +6,7 @@ async function test(binding, userAgent) {
 
   const call = new Call(userAgent);
 
-  call.connect('sip:223504.1091@onylyun.com');
+  call.connect('sip:223504.1090@onylyun.com');
 }
 
 module.exports = test;

@@ -26,6 +26,9 @@ source_set("native_mate") {
     "wrappable.cc",
     "wrappable.h",
     "wrappable_base.h",
+    "key_weak_map.h",
+    "trackable_object.cc",
+    "trackable_object.h",
   ]
 }
 
