@@ -1,6 +1,7 @@
 #ifndef YEALINK_RTVC_BINDING_CONTEXT_H_
 #define YEALINK_RTVC_BINDING_CONTEXT_H_
 
+#include "base/callback.h"
 #include "base/at_exit.h"
 #include "base/files/file_path.h"
 #include "base/message_loop/message_loop.h"
@@ -24,6 +25,8 @@ class Context {
 
   void Initialize(v8::Isolate* isolate);
   void Initialize(v8::Isolate* isolate, const base::FilePath& workspace_folder);
+
+  void RegisterDestructionCallback(base::OnceClosure callback);
 
   scoped_refptr<base::SingleThreadTaskRunner> GetTaskRunner(
       bool high_priority = false);
@@ -49,6 +52,8 @@ class Context {
  private:
   bool initialized_ = false;
   THREAD_CHECKER(thread_checker_);
+    // List of callbacks should be executed before destroying JS env.
+  std::list<base::OnceClosure> destructors_;
   std::unique_ptr<base::AtExitManager> at_exit_;
   std::unique_ptr<base::MessageLoop> message_loop_;
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;

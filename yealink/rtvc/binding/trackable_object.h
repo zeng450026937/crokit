@@ -1,13 +1,13 @@
-#ifndef YEALINK_NATIVE_MATE_TRACKABLE_OBJECT_H_
-#define YEALINK_NATIVE_MATE_TRACKABLE_OBJECT_H_
+#ifndef YEALINK_RTVC_BINDING_TRACKABLE_OBJECT_H_
+#define YEALINK_RTVC_BINDING_TRACKABLE_OBJECT_H_
 
 #include <vector>
 
 #include "base/bind.h"
 #include "base/memory/weak_ptr.h"
-#include "key_weak_map.h"
-#include "object_template_builder.h"
-#include "wrappable.h"
+#include "yealink/rtvc/binding/key_weak_map.h"
+#include "yealink/native_mate/object_template_builder.h"
+#include "yealink/native_mate/wrappable.h"
 
 namespace base {
 class SupportsUserData;
@@ -48,8 +48,7 @@ class TrackableObjectBase {
 // All instances of TrackableObject will be kept in a weak map and can be got
 // from its ID.
 template <typename T>
-class TrackableObject : public TrackableObjectBase,
-                        public Wrappable<T> {
+class TrackableObject : public TrackableObjectBase, public Wrappable<T> {
  public:
   // Mark the JS object as destroyed.
   void MarkDestroyed() {
@@ -130,4 +129,4 @@ KeyWeakMap<int32_t>* TrackableObject<T>::weak_map_ = nullptr;
 
 }  // namespace mate
 
-#endif  // YEALINK_NATIVE_MATE_TRACKABLE_OBJECT_H_
+#endif  // YEALINK_RTVC_BINDING_TRACKABLE_OBJECT_H_

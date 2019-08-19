@@ -1,5 +1,5 @@
-#ifndef YEALINK_NATIVE_MATE_KEY_WEAK_MAP_H_
-#define YEALINK_NATIVE_MATE_KEY_WEAK_MAP_H_
+#ifndef YEALINK_RTVC_BINDING_KEY_WEAK_MAP_H_
+#define YEALINK_RTVC_BINDING_KEY_WEAK_MAP_H_
 
 #include <unordered_map>
 #include <utility>
@@ -80,4 +80,4 @@ class KeyWeakMap {
 
 }  // namespace mate
 
-#endif  // YEALINK_NATIVE_MATE_KEY_WEAK_MAP_H_
+#endif  // YEALINK_RTVC_BINDING_KEY_WEAK_MAP_H_

@@ -36,6 +36,18 @@ Context* Context::Instance() {
 
 Context::Context() : unique_id_(base::UnguessableToken::Create().ToString()) {}
 Context::~Context() {
+  // Make sure destruction callbacks are called before message loop is
+  // destroyed, otherwise some objects that need to be deleted on IO thread
+  // won't be freed.
+  // We don't use ranged for loop because iterators are getting invalided when
+  // the callback runs.
+  for (auto iter = destructors_.begin(); iter != destructors_.end();) {
+    base::OnceClosure callback = std::move(*iter);
+    if (!callback.is_null())
+      std::move(callback).Run();
+    ++iter;
+  }
+  
   if (base::TaskScheduler::GetInstance()) {
     base::TaskScheduler::GetInstance()->Shutdown();
   }
@@ -83,7 +95,6 @@ void Context::Initialize(v8::Isolate* isolate,
   high_priority_task_runner_ =
       base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
 
-
   message_loop_.reset(new base::MessageLoop);
   message_loop_->SetTaskRunner(high_priority_task_runner_);
 
@@ -111,6 +122,13 @@ void Context::Initialize(v8::Isolate* isolate,
   initialized_ = true;
 }
 
+void Context::RegisterDestructionCallback(base::OnceClosure callback) {
+  // The destructors should be called in reversed order, so dependencies between
+  // JavaScript objects can be correctly resolved.
+  // For example WebContentsView => WebContents => Session.
+  destructors_.insert(destructors_.begin(), std::move(callback));
+}
+
 scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner(
     bool high_priority) {
   return high_priority ? high_priority_task_runner_ : task_runner_;
@@ -126,9 +144,8 @@ void Context::PostTask(const base::Location& from_here,
                                               base::TimeDelta());
 }
 void Context::PostDelayedTask(const base::Location& from_here,
-                       base::OnceClosure task) {
-  task_runner_->PostDelayedTask(from_here, std::move(task),
-                                              base::TimeDelta());
+                              base::OnceClosure task) {
+  task_runner_->PostDelayedTask(from_here, std::move(task), base::TimeDelta());
 }
 
 v8::Isolate* Context::GetIsolate() {
