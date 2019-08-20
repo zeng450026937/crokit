@@ -5,6 +5,7 @@
 #include "yealink/native_mate/converter.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/device_type.h"
 #include "yealink/rtvc/api/schedule_item.h"
 #include "yealink/rtvc/api/video/video_frame_buffer.h"
@@ -301,6 +302,37 @@ struct Converter<yealink::rtvc::ScheduleItemDetail> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::ScheduleItemDetail* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ContactLoadMode> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::ContactLoadMode val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ContactLoadMode* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ContactNodeType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::ContactNodeType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ContactNodeType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ContactNode> {
+  static v8::Local<v8::Value> ToV8(
+      v8::Isolate* isolate,
+      const yealink::rtvc::ContactNode& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ContactNode* out);
 };
 
 }  // namespace mate

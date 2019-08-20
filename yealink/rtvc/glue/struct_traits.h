@@ -5,9 +5,11 @@
 #include <vector>
 
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/schedule_item.h"
 
 #include "yealink/libvc/include/access/access_define.h"
+#include "yealink/libvc/include/contact/cloud_contact_type.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 
 namespace yealink {
@@ -163,7 +165,33 @@ struct StructTraits<ScheduleItem> {
 
 template <>
 struct StructTraits<ScheduleItemDetail> {
-  static bool From(ScheduleItemDetail& out, const yealink::ScheduleDetailInfo& val);
+  static bool From(ScheduleItemDetail& out,
+                   const yealink::ScheduleDetailInfo& val);
+};
+
+template <>
+struct StructTraits<ContactLoadMode> {
+  static bool From(ContactLoadMode& out,
+                   const yealink::CloudContactLoadMode& val);
+};
+
+template <>
+struct StructTraits<ContactNodeType> {
+  static bool From(ContactNodeType& out,
+                   const yealink::CloudContactNodeType& val);
+};
+
+template <>
+struct StructTraits<ContactNode> {
+  static bool From(ContactNode& out, const yealink::CloudNodeInfo& val);
+};
+
+template <>
+struct StructTraits<std::vector<ContactNode>> {
+  static bool From(std::vector<ContactNode>& out,
+                   const yealink::CloudSubNodeInfo& val);
+  static bool From(std::vector<ContactNode>& out,
+                   const yealink::Array<yealink::CloudNodeInfo>& val);
 };
 
 }  // namespace rtvc

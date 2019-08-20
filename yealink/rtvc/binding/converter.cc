@@ -310,7 +310,8 @@ bool Converter<yealink::rtvc::ScheduleRecurrenceType>::FromV8(
   return true;
 }
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrenceDailyType>::ToV8(
+v8::Local<v8::Value>
+Converter<yealink::rtvc::ScheduleRecurrenceDailyType>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::ScheduleRecurrenceDailyType val) {
   std::string recurrence_daily;
@@ -364,9 +365,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrence>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRecurrence>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleRecurrence* out) {
+bool Converter<yealink::rtvc::ScheduleRecurrence>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleRecurrence* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -392,9 +394,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleDaylightStrategy>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleDaylightStrategy>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleDaylightStrategy* out) {
+bool Converter<yealink::rtvc::ScheduleDaylightStrategy>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleDaylightStrategy* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -419,9 +422,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZoneRule>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleTimeZoneRule>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleTimeZoneRule* out) {
+bool Converter<yealink::rtvc::ScheduleTimeZoneRule>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleTimeZoneRule* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -446,9 +450,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZone>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleTimeZone>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleTimeZone* out) {
+bool Converter<yealink::rtvc::ScheduleTimeZone>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleTimeZone* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -557,9 +562,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMember>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleMember>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleMember* out) {
+bool Converter<yealink::rtvc::ScheduleMember>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleMember* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -580,9 +586,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRoom>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRoom>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleRoom* out) {
+bool Converter<yealink::rtvc::ScheduleRoom>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleRoom* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -640,9 +647,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRTMP>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRTMP>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleRTMP* out) {
+bool Converter<yealink::rtvc::ScheduleRTMP>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleRTMP* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -666,9 +674,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemDetail>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::ScheduleItemDetail* out) {
+bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ScheduleItemDetail* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -677,6 +686,155 @@ bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(v8::Isolate* isolate,
   dict.Get("participants", &(out->participants));
   dict.Get("rooms", &(out->rooms));
   dict.Get("rtmp", &(out->rtmp));
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<yealink::rtvc::ContactLoadMode>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::ContactLoadMode val) {
+  std::string load_mode;
+  switch (val) {
+    case yealink::rtvc::ContactLoadMode::kAuto:
+      load_mode = "kAuto";
+      break;
+    case yealink::rtvc::ContactLoadMode::kOverall:
+      load_mode = "kOverall";
+      break;
+    case yealink::rtvc::ContactLoadMode::kPartial:
+      load_mode = "kPartial";
+      break;
+    default:
+      load_mode = "kAuto";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+// static
+bool Converter<yealink::rtvc::ContactLoadMode>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ContactLoadMode* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "kAuto")
+    *out = yealink::rtvc::ContactLoadMode::kAuto;
+  else if (load_mode == "kOverall")
+    *out = yealink::rtvc::ContactLoadMode::kOverall;
+  else if (load_mode == "kPartial")
+    *out = yealink::rtvc::ContactLoadMode::kPartial;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<yealink::rtvc::ContactNodeType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::ContactNodeType val) {
+  std::string node_type;
+  switch (val) {
+    case yealink::rtvc::ContactNodeType::kDepartment:
+      node_type = "kDepartment";
+      break;
+    case yealink::rtvc::ContactNodeType::kStaff:
+      node_type = "kStaff";
+      break;
+    case yealink::rtvc::ContactNodeType::kDevice:
+      node_type = "kDevice";
+      break;
+    case yealink::rtvc::ContactNodeType::kVMR:
+      node_type = "kVMR";
+      break;
+    case yealink::rtvc::ContactNodeType::kThirdParty:
+      node_type = "kThirdParty";
+      break;
+    case yealink::rtvc::ContactNodeType::kRoom:
+      node_type = "kRoom";
+      break;
+    case yealink::rtvc::ContactNodeType::kEnterprise:
+      node_type = "kEnterprise";
+      break;
+    default:
+      node_type = "kDevice";
+      break;
+  }
+  return ConvertToV8(isolate, node_type);
+}
+
+// static
+bool Converter<yealink::rtvc::ContactNodeType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ContactNodeType* out) {
+  std::string node_type;
+  if (!ConvertFromV8(isolate, val, &node_type))
+    return false;
+
+  if (node_type == "kDepartment")
+    *out = yealink::rtvc::ContactNodeType::kDepartment;
+  else if (node_type == "kStaff")
+    *out = yealink::rtvc::ContactNodeType::kStaff;
+  else if (node_type == "kDevice")
+    *out = yealink::rtvc::ContactNodeType::kDevice;
+  else if (node_type == "kVMR")
+    *out = yealink::rtvc::ContactNodeType::kVMR;
+  else if (node_type == "kThirdParty")
+    *out = yealink::rtvc::ContactNodeType::kThirdParty;
+  else if (node_type == "kRoom")
+    *out = yealink::rtvc::ContactNodeType::kRoom;
+  else if (node_type == "kEnterprise")
+    *out = yealink::rtvc::ContactNodeType::kEnterprise;
+  else
+    return false;
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::ContactNode>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::ContactNode& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("id", val.id);
+  dict.Set("type", val.type);
+  dict.Set("parentId", val.parentId);
+  dict.Set("childCounts", val.childCounts);
+  dict.Set("name", val.name);
+  dict.Set("i18nName", val.i18nName);
+  dict.Set("pinyin", val.pinyin);
+  dict.Set("pinyinAbbr", val.pinyinAbbr);
+  dict.Set("email", val.email);
+  dict.Set("phone", val.phone);
+  dict.Set("mobile", val.mobile);
+  dict.Set("number", val.number);
+  dict.Set("fullNumber", val.fullNumber);
+  return dict.GetHandle();
+}
+
+bool Converter<yealink::rtvc::ContactNode>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ContactNode* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("id", &(out->id));
+  dict.Get("type", &(out->type));
+  dict.Get("parentId", &(out->parentId));
+  dict.Get("childCounts", &(out->childCounts));
+  dict.Get("name", &(out->name));
+  dict.Get("i18nName", &(out->i18nName));
+  dict.Get("pinyin", &(out->pinyin));
+  dict.Get("pinyinAbbr", &(out->pinyinAbbr));
+  dict.Get("email", &(out->email));
+  dict.Get("phone", &(out->phone));
+  dict.Get("mobile", &(out->mobile));
+  dict.Get("number", &(out->number));
+  dict.Get("fullNumber", &(out->fullNumber));
   return true;
 }
 

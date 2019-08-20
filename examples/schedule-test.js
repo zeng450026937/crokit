@@ -41,8 +41,6 @@ async function test(binding, connector) {
       console.log(detail[key][0]);
     }
   }
-
-  console.log('end');
 }
 
 module.exports = test;

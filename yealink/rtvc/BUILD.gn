@@ -10,6 +10,8 @@ group("rtvc") {
 source_set("rtvc_api") {
   sources = [
     "api/user_agent.h",
+    "api/contact.h",
+    "api/schedule_item.h",
     "api/audio_manager.h",
     "api/video_manager.h",
     "api/video/video_frame_buffer.h",
@@ -122,6 +124,8 @@ node_addon("rtvc_binding") {
     "binding/schedule_item_binding.cc",
     "binding/cloud_contact_binding.h",
     "binding/cloud_contact_binding.cc",
+    "binding/local_contact_binding.h",
+    "binding/local_contact_binding.cc",
     "binding/sip_poller.h",
     "binding/sip_poller.cc",
     "binding/call_binding.h",

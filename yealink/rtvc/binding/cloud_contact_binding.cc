@@ -6,7 +6,9 @@
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/connector_binding.h"
-#include "yealink/rtvc/binding/promise.h"
+#include "yealink/rtvc/binding/context.h"
+#include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/glue/struct_traits.h"
 
 namespace yealink {
 
@@ -33,9 +35,16 @@ mate::WrappableBase* CloudContactBinding::New(mate::Arguments* args) {
 void CloudContactBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Contact"));
+  prototype->SetClassName(mate::StringToV8(isolate, "CloudContact"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
-      .MakeDestroyable();
+      .MakeDestroyable()
+      .SetProperty("synced", &CloudContactBinding::synced)
+      .SetProperty("loadMode", &CloudContactBinding::load_mode)
+      .SetProperty("rootId", &CloudContactBinding::root_id)
+      .SetMethod("sync", &CloudContactBinding::Sync)
+      .SetMethod("search", &CloudContactBinding::Search)
+      .SetMethod("getNode", &CloudContactBinding::GetNode)
+      .SetMethod("getNodeChild", &CloudContactBinding::GetNodeChild);
 }
 
 CloudContactBinding::CloudContactBinding(v8::Isolate* isolate,
@@ -47,8 +56,10 @@ CloudContactBinding::CloudContactBinding(v8::Isolate* isolate,
   DCHECK(access_agent_);
   InitWith(isolate, wrapper);
   contact_manager_->SetCloudPhoneBookConf(access_agent_, "", ".", "");
+  contact_manager_->AddObserver(this);
 }
 CloudContactBinding::~CloudContactBinding() {
+  contact_manager_->RemoveObserver(this);
   contact_manager_->ReleaseManager();
 }
 
@@ -56,46 +67,114 @@ bool CloudContactBinding::synced() {
   return contact_manager_->IsAvailable();
 }
 
-void CloudContactBinding::load_mode() {
-  contact_manager_->GetLoadMode();
+ContactLoadMode CloudContactBinding::load_mode() {
+  ContactLoadMode mode = ContactLoadMode::kAuto;
+  ConvertFrom(mode, contact_manager_->GetLoadMode());
+  return mode;
 }
 
 std::string CloudContactBinding::root_id() {
   return contact_manager_->GetCompanyId().ConstData();
 }
-std::string CloudContactBinding::self_id() {
-  return contact_manager_->GetMyId().ConstData();
-}
 
 v8::Local<v8::Promise> CloudContactBinding::Sync() {
+  if (!sync_promise_) {
+    sync_promise_.reset(new Promise(isolate()));
+    base::PostTask(FROM_HERE, base::BindOnce(&CloudContactBinding::DoSync,
+                                             weak_factory_.GetWeakPtr()));
+  }
+
+  return sync_promise_->GetHandle();
+}
+
+v8::Local<v8::Promise> CloudContactBinding::Search(std::string keyword,
+                                                   uint64_t offset,
+                                                   uint64_t limit) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
+  std::vector<ContactNode>* result = new std::vector<ContactNode>();
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&CloudContactBinding::DoSync, weak_factory_.GetWeakPtr()),
-      base::BindOnce(&Promise::ResolveEmptyPromise, std::move(promise)));
+      base::BindOnce(&CloudContactBinding::DoSearch, weak_factory_.GetWeakPtr(),
+                     std::move(keyword), offset, limit,
+                     base::Unretained(result)),
+      base::BindOnce(
+          [](Promise promise, const std::vector<ContactNode>* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(result)));
 
   return handle;
 }
 
-v8::Local<v8::Promise> CloudContactBinding::Search() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+ContactNode CloudContactBinding::GetNode(std::string nodeId) {
+  ContactNode node;
+  ConvertFrom(node, contact_manager_->GetNodeInfoById(nodeId.c_str()));
+  return std::move(node);
+}
+std::vector<ContactNode> CloudContactBinding::GetNodeChild(std::string nodeId,
+                                                           bool recursive) {
+  std::vector<ContactNode> child;
+  ConvertFrom(child,
+              contact_manager_->GetSubNodeInfo(nodeId.c_str(), recursive, 0, 0,
+                                               yealink::CC_NODE_ALL));
+  return std::move(child);
+}
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&CloudContactBinding::DoSearch,
-                     weak_factory_.GetWeakPtr()),
-      base::BindOnce(&Promise::ResolveEmptyPromise, std::move(promise)));
+void CloudContactBinding::OnUpdating() {
+  LOG(INFO) << __FUNCTIONW__;
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&CloudContactBinding::OnUpdating,
+                                     base::Unretained(this)));
+    return;
+  }
+}
+void CloudContactBinding::OnUpdateFinished() {
+  LOG(INFO) << __FUNCTIONW__;
 
-  return handle;
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&CloudContactBinding::OnUpdateFinished,
+                                     base::Unretained(this)));
+    return;
+  }
+
+  if (sync_promise_) {
+    sync_promise_->Resolve();
+    sync_promise_.reset();
+    // isolate()->RunMicrotasks();
+  }
+}
+void CloudContactBinding::OnEnableStatusChanged(bool available) {
+  LOG(INFO) << __FUNCTIONW__;
+}
+void CloudContactBinding::OnNodeChange(
+    const Array<CloudNodeChangeNotifyEntity>& changeData) {
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&CloudContactBinding::OnNodeChange,
+                                     base::Unretained(this), changeData));
+    return;
+  }
+
+  Emit("changed");
 }
 
 void CloudContactBinding::DoSync() {
   contact_manager_->Update();
 }
-void CloudContactBinding::DoSearch() {}
+void CloudContactBinding::DoSearch(std::string keyword,
+                                   uint64_t offset,
+                                   uint64_t limit,
+                                   std::vector<ContactNode>* result) {
+  ConvertFrom(*result, contact_manager_->SearchContactInfo(keyword.c_str(),
+                                                           offset, limit));
+}
 
 }  // namespace rtvc
 

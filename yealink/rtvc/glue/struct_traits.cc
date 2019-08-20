@@ -272,7 +272,8 @@ bool StructTraits<ScheduleItem>::From(ScheduleItem& out,
   ConvertFrom(out.recurrence.type, val.recurrenceType);
   ConvertFrom(out.recurrence.dailyType, val.dailyType);
   ConvertFrom(out.recurrence.rangeType, val.rangeType);
-  ConvertFrom(out.recurrence.interval, static_cast<int64_t>(val.recurrenceInterval));
+  ConvertFrom(out.recurrence.interval,
+              static_cast<int64_t>(val.recurrenceInterval));
   ConvertFrom(out.recurrence.count, static_cast<int64_t>(val.rangeOccurrences));
   ConvertFrom(out.recurrence.startDate, val.rangeStartDate);
   ConvertFrom(out.recurrence.endDate, val.rangeEndDate);
@@ -297,6 +298,104 @@ bool StructTraits<ScheduleItemDetail>::From(
   ConvertFrom(out.rtmp.logoUrl, val.rtmpLogoUrl);
   ConvertFrom(out.rtmp.password, val.rtmpWatchPwd);
   ConvertFrom(out.rtmp.url, val.rtmpWatchUrl);
+  return true;
+}
+
+// static
+bool StructTraits<ContactLoadMode>::From(
+    ContactLoadMode& out,
+    const yealink::CloudContactLoadMode& val) {
+  switch (val) {
+    case yealink::CloudContactLoadMode::CC_LOAD_AUTO:
+      out = ContactLoadMode::kAuto;
+      break;
+    case yealink::CloudContactLoadMode::CC_LOAD_OVERALL:
+      out = ContactLoadMode::kOverall;
+      break;
+    case yealink::CloudContactLoadMode::CC_LOAD_PARTIAL:
+      out = ContactLoadMode::kPartial;
+      break;
+    default:
+      out = ContactLoadMode::kAuto;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ContactNodeType>::From(
+    ContactNodeType& out,
+    const yealink::CloudContactNodeType& val) {
+  switch (val) {
+    case yealink::CloudContactNodeType::CC_NODE_DEPARTMENT:
+      out = ContactNodeType::kDepartment;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_DEVICE:
+      out = ContactNodeType::kDevice;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_PARTY_MANAGER:
+      out = ContactNodeType::kEnterprise;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_MEETING_ROOM:
+      out = ContactNodeType::kRoom;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_STAFF:
+      out = ContactNodeType::kStaff;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_THIRD_PARTY:
+      out = ContactNodeType::kThirdParty;
+      break;
+    case yealink::CloudContactNodeType::CC_NODE_VMR:
+      out = ContactNodeType::kVMR;
+      break;
+    default:
+      out = ContactNodeType::kDevice;
+      break;
+  }
+
+  return true;
+}
+
+// static
+bool StructTraits<ContactNode>::From(ContactNode& out,
+                                     const yealink::CloudNodeInfo& val) {
+  ConvertFrom(out.id, val.nodeId);
+  ConvertFrom(out.type, val.type);
+  ConvertFrom(out.parentId, val.parentID);
+  ConvertFrom(out.childCounts,
+              static_cast<uint64_t>(val.contactCountRecursive));
+  ConvertFrom(out.name, val.name);
+  ConvertFrom(out.i18nName, val.i18nName);
+  ConvertFrom(out.pinyin, val.pinyin);
+  ConvertFrom(out.pinyinAbbr, val.pinyinAbbr);
+  ConvertFrom(out.email, val.email);
+  ConvertFrom(out.number, val.number);
+  ConvertFrom(out.fullNumber, val.extensionNum);
+  return true;
+}
+
+// static
+bool StructTraits<std::vector<ContactNode>>::From(
+    std::vector<ContactNode>& out,
+    const yealink::CloudSubNodeInfo& val) {
+  for (size_t i = 0; i < val.cloudInfoList.Size(); i++) {
+    ContactNode node;
+    ConvertFrom(node, val.cloudInfoList[i]);
+    out.emplace_back(node);
+  }
+  return true;
+}
+
+// static
+bool StructTraits<std::vector<ContactNode>>::From(
+    std::vector<ContactNode>& out,
+    const yealink::Array<yealink::CloudNodeInfo>& val) {
+  for (size_t i = 0; i < val.Size(); i++) {
+    ContactNode node;
+    ConvertFrom(node, val[i]);
+    out.emplace_back(node);
+  }
   return true;
 }
 

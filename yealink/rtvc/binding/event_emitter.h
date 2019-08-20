@@ -10,6 +10,7 @@
 
 #include "base/optional.h"
 #include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/event_emitter_caller.h"
 
 namespace mate {
@@ -72,7 +73,7 @@ class EventEmitter : public Wrappable<T> {
   bool EmitWithEvent(const base::StringPiece& name,
                      v8::Local<v8::Object> event,
                      Args&&... args) {
-    DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+    yealink::rtvc::Context::Instance()->CalledOnValidThread();
     v8::Locker locker(isolate());
     v8::HandleScope handle_scope(isolate());
     EmitEvent(isolate(), GetWrapper(), name, event,
