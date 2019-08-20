@@ -28,5 +28,8 @@ group("libvc") {
   public_configs = [
     ":libvc_header",
     ":libvc_config",
+    # TODO
+    # remove exceptions once libvc updated
+    "//build/config/compiler:exceptions"
   ]
 }

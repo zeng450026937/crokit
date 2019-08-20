@@ -3,6 +3,7 @@
 
 #include "base/memory/weak_ptr.h"
 #include "yealink/libvc/include/contact/local_contact_api.h"
+#include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/binding/event_emitter.h"
@@ -23,15 +24,32 @@ class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
   LocalContactBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~LocalContactBinding() override;
 
-  void Create();
-  void Remove();
-  void Update();
-  void Search();
-  void Add();
-  void Modify();
-  void Find();
+  int64_t Create(mate::Dictionary dict);
+  int64_t Add(mate::Dictionary dict);
+
+  bool Remove(int64_t uid);
+
+  bool Update(int64_t uid, mate::Dictionary dict);
+  bool Modify(int64_t uid, mate::Dictionary dict);
+
+  v8::Local<v8::Value> Search(std::string keyword, mate::Arguments* args);
+  v8::Local<v8::Value> SearchWith(std::string key,
+                                  std::string value,
+                                  mate::Arguments* args);
+
+  v8::Local<v8::Value> Find(std::string key,
+                            std::string value,
+                            mate::Arguments* args);
+  v8::Local<v8::Value> FindById(int64_t uid);
+  v8::Local<v8::Value> FindByName(std::string name, mate::Arguments* args);
+
+  v8::Local<v8::Value> GetContact(int64_t uid);
+  v8::Local<v8::Value> GetContactList(mate::Arguments* args);
 
  private:
+  yealink::Array<yealink::LocalContactExternInfo> ExactFromDict(
+      mate::Dictionary dict);
+
   std::unique_ptr<LocalContactManager> contact_manager_;
 };
 
