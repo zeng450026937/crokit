@@ -47,7 +47,7 @@ Context::~Context() {
       std::move(callback).Run();
     ++iter;
   }
-  
+
   if (base::TaskScheduler::GetInstance()) {
     base::TaskScheduler::GetInstance()->Shutdown();
   }
@@ -98,7 +98,9 @@ void Context::Initialize(v8::Isolate* isolate,
   message_loop_.reset(new base::MessageLoop);
   message_loop_->SetTaskRunner(high_priority_task_runner_);
 
-  // base::ThreadTaskRunnerHandle handle(high_priority_task_runner_);
+  if (!base::ThreadTaskRunnerHandle::IsSet()) {
+    base::ThreadTaskRunnerHandle handle(high_priority_task_runner_);
+  }
 
   base::TaskScheduler::CreateAndStartWithDefaultParams("rtvc");
 
