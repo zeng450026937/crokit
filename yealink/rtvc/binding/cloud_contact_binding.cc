@@ -111,7 +111,7 @@ v8::Local<v8::Promise> CloudContactBinding::Search(std::string keyword,
 ContactNode CloudContactBinding::GetNode(std::string nodeId) {
   ContactNode node;
   ConvertFrom(node, contact_manager_->GetNodeInfoById(nodeId.c_str()));
-  return std::move(node);
+  return node;
 }
 std::vector<ContactNode> CloudContactBinding::GetNodeChild(std::string nodeId,
                                                            bool recursive) {
@@ -119,7 +119,7 @@ std::vector<ContactNode> CloudContactBinding::GetNodeChild(std::string nodeId,
   ConvertFrom(child,
               contact_manager_->GetSubNodeInfo(nodeId.c_str(), recursive, 0, 0,
                                                yealink::CC_NODE_ALL));
-  return std::move(child);
+  return child;
 }
 
 void CloudContactBinding::OnUpdating() {

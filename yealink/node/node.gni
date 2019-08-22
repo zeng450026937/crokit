@@ -1,7 +1,7 @@
 
 declare_args() {
   node_host_binary = "node"
-  node_build = true
+  node_build = false
 }
 
 node_addon_configs = [
@@ -14,6 +14,11 @@ node_remove_configs = []
 if (is_clang) {
   node_remove_configs += [
     "//build/config/clang:find_bad_constructs",
+    "//build/config/compiler:no_exceptions",
+    "//build/config/compiler:chromium_code",
+  ]
+  node_addon_configs += [
+    "//build/config/compiler:no_chromium_code",
   ]
 }
 

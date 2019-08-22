@@ -243,14 +243,14 @@ public:
          * @param ) 
          * @return true/false
          */
-    virtual bool StartCaptureNetLog(const YtmsLog& log, YTMSProcess* process) = 0;
+    virtual bool StartCaptureNetLog(const YtmsNetLog& log, YTMSProcess* process) = 0;
     /**
          * @brief stop to capture net log job and upload packets
          * 
          * @param ) 
          * @return true/false
          */
-    virtual bool StopCaptureNetLog(const YtmsLog& log, YTMSProcess* process) = 0;
+    virtual bool StopCaptureNetLog(const char* sessionId, YTMSProcess* process) = 0;
 };
 } // namespace yealink
 

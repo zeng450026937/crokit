@@ -29,7 +29,7 @@ PerIsolateData::PerIsolateData(
     IsolateHolder::AccessMode access_mode,
     scoped_refptr<base::SingleThreadTaskRunner> task_runner)
     : isolate_(isolate), allocator_(allocator) {
-  isolate_->SetData(kEmbedderNativeGin, this);
+  isolate_->SetData(kEmbedderNode, this);
 
   DCHECK(task_runner);
   if (access_mode == IsolateHolder::kUseLocker) {
@@ -41,11 +41,11 @@ PerIsolateData::PerIsolateData(
 }
 
 PerIsolateData::~PerIsolateData() {
-  isolate_->SetData(kEmbedderNativeGin, NULL);
+  isolate_->SetData(kEmbedderNode, NULL);
 }
 
 PerIsolateData* PerIsolateData::From(Isolate* isolate) {
-  return static_cast<PerIsolateData*>(isolate->GetData(kEmbedderNativeGin));
+  return static_cast<PerIsolateData*>(isolate->GetData(kEmbedderNode));
 }
 
 void PerIsolateData::SetObjectTemplate(WrapperInfo* info,

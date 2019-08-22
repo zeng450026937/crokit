@@ -2,7 +2,7 @@
 #include <string>
 
 template <typename... T>
-void dummy_wrapper(T... t){};
+void dummy_wrapper(T... t){}
 
 template <class T>
 T unpacker(const T t) {

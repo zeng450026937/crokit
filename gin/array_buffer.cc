@@ -25,7 +25,7 @@ namespace gin {
 
 namespace {
 
-gin::WrapperInfo g_array_buffer_wrapper_info = {gin::kEmbedderNativeGin};
+gin::WrapperInfo g_array_buffer_wrapper_info = {gin::kEmbedderNode};
 
 }  // namespace
 

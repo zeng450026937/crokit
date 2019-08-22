@@ -15,13 +15,13 @@ PerContextData::PerContextData(ContextHolder* context_holder,
     : context_holder_(context_holder),
       runner_(NULL) {
   context->SetAlignedPointerInEmbedderData(
-      kPerContextDataStartIndex + kEmbedderNativeGin, this);
+      kPerContextDataStartIndex + kEmbedderNode, this);
 }
 
 PerContextData::~PerContextData() {
   v8::HandleScope handle_scope(context_holder_->isolate());
   context_holder_->context()->SetAlignedPointerInEmbedderData(
-      kPerContextDataStartIndex + kEmbedderNativeGin, NULL);
+      kPerContextDataStartIndex + kEmbedderNode, NULL);
 }
 
 // static

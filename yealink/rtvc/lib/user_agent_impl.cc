@@ -10,7 +10,7 @@ UserAgentImpl::UserAgentImpl(UserAgent::Config config)
     : config_(std::move(config)), weak_factory_(this) {}
 UserAgentImpl::~UserAgentImpl() {
   LOG(INFO) << __FUNCTIONW__;
-};
+}
 
 std::string UserAgentImpl::workspace_folder() {
   LOG(INFO) << __FUNCTIONW__;

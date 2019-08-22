@@ -8,7 +8,7 @@ namespace yealink {
 
 void Hello(const std::string& msg){
   std::cout << msg << std::endl;
-};
+}
 
 }  // namespace yealink
 

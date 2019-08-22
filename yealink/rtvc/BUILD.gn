@@ -75,6 +75,13 @@ source_set("rtvc_glue") {
     "//yealink/libvc",
     ":rtvc_api",
   ]
+  if (is_clang) {
+    configs -= [
+      "//build/config/clang:find_bad_constructs",
+      "//build/config/compiler:no_exceptions",
+      "//build/config/compiler:chromium_code",
+    ]
+  }
 }
 
 node_addon("rtvc_binding") {

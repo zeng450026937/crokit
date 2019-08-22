@@ -68,6 +68,19 @@ struct YtmsLog
     }
 };
 
+struct YtmsNetLog
+{
+    const char* sessionId;
+    const char* logPath;
+    const char* captureDeviceName;
+    YtmsNetLog()
+        : sessionId("")
+        , logPath("")
+        , captureDeviceName("")
+    {
+    }
+};
+
 struct YtmsSessionStatus
 {
     SStringA sessionId;
@@ -107,13 +120,10 @@ struct YtmsConfigInfo
     const char* userOutbound;
     const char* userServerType; // YMS/CLOUD
     const char* userServerAddress;
+    const char* registerStatus; //  connecting/registering/registered/unregistered
     const char* enterpriseDomain;
     const char* enterpriseId;
     const char* enterpriseName;
-
-    // for pc
-    const char* capturePath;
-    const char* captureDeviceName;
 
     YtmsConfigInfo()
         : clientName("")
@@ -141,38 +151,20 @@ struct YtmsConfigInfo
         , userOutbound("")
         , userServerType("")
         , userServerAddress("")
+        , registerStatus("")
         , enterpriseDomain("")
         , enterpriseId("")
         , enterpriseName("")
-        , capturePath("")
-        , captureDeviceName("")
     {
     }
 };
 
-enum YtmsNetworkMode
-{
-    MODE_3G = 0,
-    MODE_4G,
-    MODE_5G,
-    MODE_WIFI
-};
-
-enum YtmsEventCode
-{
-    CLIENT_START_UP = 0
-};
-
-enum YtmsIspType
-{
-    CHINA_MOBILE = 0
-};
-
 struct YtmsEvent
 {
-    YtmsEventCode eventCode;
-    YtmsNetworkMode networkMode;
-    YtmsIspType ispType;
+    const char* eventCode; // E00001
+    const char* eventName; // CLIENT_START_UP
+    const char* networkMode; // 3G/4G/5G/WIFI
+    const char* ispType; // CHINA MOBILE
 };
 
 struct YtmsAlarm

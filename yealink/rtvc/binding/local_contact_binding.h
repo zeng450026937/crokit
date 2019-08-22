@@ -43,8 +43,8 @@ class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
   v8::Local<v8::Value> FindById(int64_t uid);
   v8::Local<v8::Value> FindByName(std::string name, mate::Arguments* args);
 
-  v8::Local<v8::Value> GetContact(int64_t uid);
-  v8::Local<v8::Value> GetContactList(mate::Arguments* args);
+  v8::Local<v8::Value> GetNode(int64_t uid);
+  v8::Local<v8::Value> GetNodeList(mate::Arguments* args);
 
  private:
   yealink::Array<yealink::LocalContactExternInfo> ExactFromDict(

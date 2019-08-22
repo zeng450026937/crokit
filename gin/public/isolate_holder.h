@@ -121,11 +121,11 @@ class GIN_EXPORT IsolateHolder {
   void SetUp(scoped_refptr<base::SingleThreadTaskRunner> task_runner);
 
   std::unique_ptr<v8::SnapshotCreator> snapshot_creator_;
+  AccessMode access_mode_;
   v8::Isolate* isolate_;
   bool isolate_locally_generated_;
   std::unique_ptr<PerIsolateData> isolate_data_;
   std::unique_ptr<V8IsolateMemoryDumpProvider> isolate_memory_dump_provider_;
-  AccessMode access_mode_;
   IsolateType isolate_type_;
 
   DISALLOW_COPY_AND_ASSIGN(IsolateHolder);

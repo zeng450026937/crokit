@@ -74,7 +74,7 @@ class Wrappable : public WrappableBase {
 
 // static
 template <typename T>
-gin::WrapperInfo Wrappable<T>::kWrapperInfo = {gin::kEmbedderNativeGin};
+gin::WrapperInfo Wrappable<T>::kWrapperInfo = {gin::kEmbedderNode};
 
 // This converter handles any subclass of Wrappable.
 template <typename T>

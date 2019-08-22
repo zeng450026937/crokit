@@ -51,7 +51,7 @@ class Context {
 
  private:
   bool initialized_ = false;
-  THREAD_CHECKER(thread_checker_);
+  base::ThreadChecker thread_checker_;
     // List of callbacks should be executed before destroying JS env.
   std::list<base::OnceClosure> destructors_;
   std::unique_ptr<base::AtExitManager> at_exit_;

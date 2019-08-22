@@ -23,8 +23,8 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
   void OnVideoFrame(const yealink::VideoFrame& frame) override;
 
   std::set<VideoSink*> sinks_;
-  
-  THREAD_CHECKER(thread_checker_);
+
+  base::ThreadChecker thread_checker_;
 };
 
 }  // namespace rtvc

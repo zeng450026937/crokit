@@ -31,7 +31,7 @@ class GIN_EXPORT V8Platform : public v8::Platform {
   void CallOnWorkerThread(std::unique_ptr<v8::Task> task) override;
   void CallBlockingTaskOnWorkerThread(std::unique_ptr<v8::Task> task) override;
   void CallLowPriorityTaskOnWorkerThread(
-      std::unique_ptr<v8::Task> task);
+      std::unique_ptr<v8::Task> task) override;
   void CallDelayedOnWorkerThread(std::unique_ptr<v8::Task> task,
                                  double delay_in_seconds) override;
   void CallOnForegroundThread(v8::Isolate* isolate, v8::Task* task) override;

@@ -7,7 +7,8 @@ namespace rtvc {
 class LibuvTaskRunner::AsyncRunner : public LibuvTaskRunner::Runner {
  public:
   AsyncRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
-      : async_(nullptr), loop_(loop) {
+      : delegate_(delegate), loop_(loop), async_(nullptr) {
+    delegate_ = nullptr;
     async_ = new uv_async_t;
     async_->data = delegate;
     uv_async_init(loop_, async_, [](uv_async_t* handle) {
@@ -30,7 +31,8 @@ class LibuvTaskRunner::AsyncRunner : public LibuvTaskRunner::Runner {
 class LibuvTaskRunner::IdleRunner : public LibuvTaskRunner::Runner {
  public:
   IdleRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
-      : idle_(nullptr), loop_(loop) {
+      : delegate_(delegate), loop_(loop), idle_(nullptr) {
+    delegate_ = nullptr;
     idle_ = new uv_idle_t;
     idle_->data = delegate;
     uv_idle_init(loop_, idle_);
@@ -46,6 +48,7 @@ class LibuvTaskRunner::IdleRunner : public LibuvTaskRunner::Runner {
   }
 
  private:
+  LibuvTaskRunner* delegate_;
   uv_loop_t* loop_;
   uv_idle_t* idle_;
 };
@@ -53,7 +56,8 @@ class LibuvTaskRunner::IdleRunner : public LibuvTaskRunner::Runner {
 class LibuvTaskRunner::TimerRunner : public LibuvTaskRunner::Runner {
  public:
   TimerRunner(LibuvTaskRunner* delegate, uv_loop_t* loop = ::uv_default_loop())
-      : timer_(nullptr), loop_(loop) {
+      : delegate_(delegate), loop_(loop), timer_(nullptr) {
+    delegate_ = nullptr;
     timer_ = new uv_timer_t;
     timer_->data = this;
     uv_timer_init(loop_, timer_);
@@ -72,6 +76,7 @@ class LibuvTaskRunner::TimerRunner : public LibuvTaskRunner::Runner {
   }
 
  private:
+  LibuvTaskRunner* delegate_;
   uv_loop_t* loop_;
   uv_timer_t* timer_;
 };

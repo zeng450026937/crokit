@@ -1,9 +1,5 @@
-// Copyright (c) 2015 GitHub, Inc.
-// Use of this source code is governed by the MIT license that can be
-// found in the LICENSE file.
-
 #ifndef YEALINK_RTVC_BINDING_EVENT_EMITTER_CALLER_H_
-#define YEALINK_BINDING_EVENT_EMITTER_CALLER_H_
+#define YEALINK_RTVC_BINDING_EVENT_EMITTER_CALLER_H_
 
 #include <utility>
 #include <vector>
@@ -66,4 +62,4 @@ v8::Local<v8::Value> CustomEmit(v8::Isolate* isolate,
 
 }  // namespace mate
 
-#endif  // ATOM_COMMON_API_EVENT_EMITTER_CALLER_H_
+#endif  // YEALINK_RTVC_BINDING_EVENT_EMITTER_CALLER_H_

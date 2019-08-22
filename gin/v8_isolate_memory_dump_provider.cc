@@ -131,6 +131,8 @@ std::string IsolateTypeString(IsolateHolder::IsolateType isolate_type) {
       return "test";
     case IsolateHolder::IsolateType::kUtility:
       return "utility";
+    case IsolateHolder::IsolateType::kNode:
+      return "node";
   }
   LOG(FATAL) << "Unreachable code";
 }
@@ -145,6 +147,9 @@ bool CanHaveMultipleIsolates(IsolateHolder::IsolateType isolate_type) {
       LOG(FATAL) << "Unreachable code";
       return false;
     case IsolateHolder::IsolateType::kUtility:
+      // PDFium and ProxyResolver create one isolate per process.
+      return false;
+    case IsolateHolder::IsolateType::kNode:
       // PDFium and ProxyResolver create one isolate per process.
       return false;
   }

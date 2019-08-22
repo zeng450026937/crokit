@@ -12,6 +12,9 @@ template <>
 struct Converter<yealink::LocalContactInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const yealink::LocalContactInfo& val) {
+    if (val.uid <= 0)
+      return v8::Null(isolate);
+
     Dictionary dict = Dictionary::CreateEmpty(isolate);
     dict.Set("uid", val.uid);
     dict.Set("name", val.name);
@@ -53,8 +56,8 @@ void LocalContactBinding::BuildPrototype(
       .SetMethod("find", &LocalContactBinding::Find)
       .SetMethod("findById", &LocalContactBinding::FindById)
       .SetMethod("findByName", &LocalContactBinding::FindByName)
-      .SetMethod("getContact", &LocalContactBinding::GetContact)
-      .SetMethod("getContactList", &LocalContactBinding::GetContactList);
+      .SetMethod("getNode", &LocalContactBinding::GetNode)
+      .SetMethod("getNodeList", &LocalContactBinding::GetNodeList);
 }
 
 LocalContactBinding::LocalContactBinding(v8::Isolate* isolate,
@@ -164,11 +167,10 @@ v8::Local<v8::Value> LocalContactBinding::FindByName(std::string name,
       isolate(), contact_manager_->FindContact(name.c_str(), limit, offset));
 }
 
-v8::Local<v8::Value> LocalContactBinding::GetContact(int64_t uid) {
+v8::Local<v8::Value> LocalContactBinding::GetNode(int64_t uid) {
   return FindById(uid);
 }
-v8::Local<v8::Value> LocalContactBinding::GetContactList(
-    mate::Arguments* args) {
+v8::Local<v8::Value> LocalContactBinding::GetNodeList(mate::Arguments* args) {
   int64_t limit = 0;
   int64_t offset = 0;
 
@@ -206,7 +208,7 @@ LocalContactBinding::ExactFromDict(mate::Dictionary dict) {
     infos.Append(info);
   }
 
-  return std::move(infos);
+  return infos;
 }
 
 }  // namespace rtvc

@@ -11,7 +11,7 @@ WrapperInfo* WrapperInfo::From(v8::Local<v8::Object> object) {
     return NULL;
   WrapperInfo* info = static_cast<WrapperInfo*>(
       object->GetAlignedPointerFromInternalField(kWrapperInfoIndex));
-  return info->embedder == kEmbedderNativeGin ? info : NULL;
+  return info->embedder == kEmbedderNode ? info : NULL;
 }
 
 }  // namespace gin

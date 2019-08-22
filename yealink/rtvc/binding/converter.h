@@ -73,6 +73,7 @@ struct Converter<yealink::SStringA> {
     std::string str;
     Converter<std::string>::FromV8(isolate, val, &str);
     *out = yealink::SStringA(str.c_str());
+    return true;
   }
 };
 

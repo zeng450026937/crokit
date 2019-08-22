@@ -253,7 +253,7 @@ class PageAllocator : public v8::PageAllocator {
     }
   }
 
-  bool DiscardSystemPages(void* address, size_t size) {
+  bool DiscardSystemPages(void* address, size_t size) override {
     base::DiscardSystemPages(address, size);
     return true;
   }

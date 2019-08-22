@@ -7,6 +7,7 @@
 #include "yealink/rtvc/binding/bootstrap_binding.h"
 #include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/cloud_contact_binding.h"
+#include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/local_contact_binding.h"
 #include "yealink/rtvc/binding/schedule_binding.h"
@@ -21,6 +22,7 @@ using yealink::rtvc::AudioManagerBinding;
 using yealink::rtvc::BootstrapBinding;
 using yealink::rtvc::CallBinding;
 using yealink::rtvc::CloudContactBinding;
+using yealink::rtvc::ConnectorBinding;
 using yealink::rtvc::LocalContactBinding;
 using yealink::rtvc::ScheduleBinding;
 using yealink::rtvc::UserAgentBinding;
@@ -73,6 +75,12 @@ void Initialize(v8::Local<v8::Object> exports,
   BootstrapBinding::SetConstructor(isolate,
                                    base::BindRepeating(&BootstrapBinding::New));
   dict.Set("Bootstrap", BootstrapBinding::GetConstructor(isolate)
+                            ->GetFunction(context)
+                            .ToLocalChecked());
+
+  ConnectorBinding::SetConstructor(isolate,
+                                   base::BindRepeating(&ConnectorBinding::New));
+  dict.Set("Connector", ConnectorBinding::GetConstructor(isolate)
                             ->GetFunction(context)
                             .ToLocalChecked());
 

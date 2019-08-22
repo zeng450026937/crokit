@@ -199,11 +199,17 @@ public:
     virtual bool SetCameraOrientation(int nOrientation) = 0;
     virtual bool SetShareWindow(const ShareWindow& window) = 0;
     virtual void SetVideoCameraDeviceRender(VideoRender* render) = 0;
-    virtual void SetICEProfile(const ICEProfile& profile) = 0;
+    virtual void SetICEProfile(const ICEProfile& profile, bool bScheduler) = 0;
     virtual void PlayTone(char key) = 0;
     virtual bool PlayRingFile(const char* strFile, bool bLoop) = 0;
     virtual void StopPlayRing() = 0;
     virtual int GetRecentVolume() = 0;
+    virtual bool BuiltInAECIsAvailable() = 0;
+    virtual bool BuiltInAGCIsAvailable() = 0;
+    virtual bool BuiltInNSIsAvailable() = 0;
+    virtual bool EnableBuiltInAEC(bool enable) = 0;
+    virtual bool EnableBuiltInAGC(bool enable) = 0;
+    virtual bool EnableBuiltInNS(bool enable) = 0;
 };
 
 } // namespace yealink

@@ -14,10 +14,20 @@ config("libvc_header") {
 config("libvc_config") {
   lib_dirs = []
   if (target_cpu == "x86") {
-    lib_dirs += [ libvc_dir + "/x86" ]
+    if (is_debug) {
+      lib_dirs += [ libvc_dir + "/x86" + "/debug" ]
+    }
+    else {
+      lib_dirs += [ libvc_dir + "/x86" + "/release" ]
+    }
   }
   else if (target_cpu == "x64") {
-    lib_dirs += [ libvc_dir + "/x64" ]
+    if (is_debug) {
+      lib_dirs += [ libvc_dir + "/x64" + "/debug" ]
+    }
+    else {
+      lib_dirs += [ libvc_dir + "/x64" + "/release" ]
+    }
   }
 
   libs = []

@@ -1,7 +1,8 @@
-is_debug = true
+# is_debug = true
 is_clang = false
 is_component_build = false
-enable_iterator_debugging = true
+clang_use_chrome_plugins = false
+use_allocator_shim = false
 use_custom_libcxx = false
 use_rtti = true
 use_dynamic_crt = true

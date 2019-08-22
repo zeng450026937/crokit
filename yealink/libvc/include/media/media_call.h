@@ -90,6 +90,8 @@ class MEDIA_EXPORT MediaCall
 public:
     static MediaCall* CreateInstance(Media* pMedia, bool bMain);
     static void ReleaseInstance(MediaCall* pMediaCall);
+    static void GetResultionByBitRate(int nBitrate, int& nFps, int& nWidth, int& nHeight);
+    static int GetBitrateByResultion(int nFps, int nResultion);
 
 public:
     virtual bool Start(SdpParams& params) = 0;
@@ -117,6 +119,7 @@ public:
     virtual void SetRecvVideoResolution(const VideoResolution& resolution) = 0;
     virtual bool RestartIce() = 0;
     virtual bool EnableVideoPortrait(bool enable) = 0;
+    virtual bool IsKeyFrameRequestMethodExternal() = 0;
 
 protected:
     virtual ~MediaCall() = default;
