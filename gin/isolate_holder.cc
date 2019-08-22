@@ -75,6 +75,7 @@ IsolateHolder::IsolateHolder(
 
   isolate_data_.reset(
       new PerIsolateData(isolate_, allocator, access_mode_, task_runner));
+
   if (isolate_creation_mode == IsolateCreationMode::kCreateSnapshot) {
     // This branch is called when creating a V8 snapshot for Blink.
     // Note SnapshotCreator calls isolate->Enter() in its construction.

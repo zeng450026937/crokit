@@ -131,7 +131,7 @@ class MyInterceptor : public Wrappable<MyInterceptor>,
   DISALLOW_COPY_AND_ASSIGN(MyInterceptor);
 };
 
-WrapperInfo MyInterceptor::kWrapperInfo = {kEmbedderNativeGin};
+WrapperInfo MyInterceptor::kWrapperInfo = {kEmbedderFuchsia};
 
 class InterceptorTest : public V8Test {
  public:

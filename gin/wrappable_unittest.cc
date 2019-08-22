@@ -97,9 +97,9 @@ class MyNamedObject : public Wrappable<MyNamedObject> {
   DISALLOW_COPY_AND_ASSIGN(MyNamedObject);
 };
 
-WrapperInfo MyObject::kWrapperInfo = { kEmbedderNativeGin };
-WrapperInfo MyObject2::kWrapperInfo = { kEmbedderNativeGin };
-WrapperInfo MyNamedObject::kWrapperInfo = {kEmbedderNativeGin};
+WrapperInfo MyObject::kWrapperInfo = { kEmbedderFuchsia };
+WrapperInfo MyObject2::kWrapperInfo = { kEmbedderFuchsia };
+WrapperInfo MyNamedObject::kWrapperInfo = {kEmbedderFuchsia};
 
 }  // namespace
 
@@ -325,7 +325,7 @@ class MyObjectWithLazyProperties
   DISALLOW_COPY_AND_ASSIGN(MyObjectWithLazyProperties);
 };
 
-WrapperInfo MyObjectWithLazyProperties::kWrapperInfo = {kEmbedderNativeGin};
+WrapperInfo MyObjectWithLazyProperties::kWrapperInfo = {kEmbedderFuchsia};
 
 TEST_F(WrappableTest, LazyPropertyGetterIsCalledOnce) {
   v8::Isolate* isolate = instance_->isolate();

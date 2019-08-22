@@ -30,7 +30,7 @@ namespace gin {
 // };
 //
 // // my_class.cc
-// WrapperInfo MyClass::kWrapperInfo = {kEmbedderNativeGin};
+// WrapperInfo MyClass::kWrapperInfo = {kEmbedderFuchsia};
 //
 // gin::ObjectTemplateBuilder MyClass::GetObjectTemplateBuilder(
 //     v8::Isolate* isolate) {

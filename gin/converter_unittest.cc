@@ -173,7 +173,7 @@ class MyObject : public Wrappable<MyObject> {
   }
 };
 
-WrapperInfo MyObject::kWrapperInfo = {kEmbedderNativeGin};
+WrapperInfo MyObject::kWrapperInfo = {kEmbedderFuchsia};
 
 }  // namespace
 

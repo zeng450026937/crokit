@@ -16,7 +16,6 @@ enum GinEmbedder {
   kEmbedderBlink,
   kEmbedderPDFium,
   kEmbedderFuchsia,
-  kEmbedderNode = 100,
 };
 
 }  // namespace gin
