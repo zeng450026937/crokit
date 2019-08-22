@@ -838,4 +838,302 @@ bool Converter<yealink::rtvc::ContactNode>::FromV8(
   return true;
 }
 
+v8::Local<v8::Value> Converter<yealink::rtvc::TerminalInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::TerminalInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("name", val.name);
+  handler.Set("type", val.type);
+  handler.Set("category", val.category);
+  handler.Set("model", val.model);
+  handler.Set("platform", val.platform);
+  handler.Set("version", val.version);
+  handler.Set("arch", val.arch);
+  handler.Set("updateChannel", val.update_channel);
+  handler.Set("customId", val.custom_id);
+  handler.Set("configId", val.config_id);
+  handler.Set("remarks", val.remarks);
+
+  handler.Set("deviceModel", val.device_model);
+  handler.Set("deviceResolution", val.device_resolution);
+  handler.Set("deviceOs", val.device_os);
+  handler.Set("deviceIp", val.device_ip);
+  handler.Set("deviceMac", val.device_mac);
+  handler.Set("deviceHostname", val.device_hostname);
+  handler.Set("deviceCpu", val.device_cpu);
+  handler.Set("deviceMemory", val.device_memory);
+
+  handler.Set("account", val.account);
+  handler.Set("displayName", val.display_name);
+  handler.Set("serverType", val.server_type);
+  handler.Set("serverAddress", val.server_address);
+  handler.Set("serverDomain", val.server_domain);
+  handler.Set("serverOutbound", val.server_outbound);
+
+  handler.Set("enterpriseDomain", val.enterprise_domain);
+  handler.Set("enterpriseId", val.enterprise_id);
+  handler.Set("enterpriseName", val.enterprise_name);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::TerminalInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::TerminalInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("name", &(out->name));
+  dict.Get("type", &(out->type));
+  dict.Get("category", &(out->category));
+  dict.Get("model", &(out->model));
+  dict.Get("platform", &(out->platform));
+  dict.Get("version", &(out->version));
+  dict.Get("arch", &(out->arch));
+  dict.Get("updateChannel", &(out->update_channel));
+  dict.Get("customId", &(out->custom_id));
+  dict.Get("configId", &(out->config_id));
+  dict.Get("remarks", &(out->remarks));
+
+  dict.Get("deviceModel", &(out->device_model));
+  dict.Get("deviceResolution", &(out->device_resolution));
+  dict.Get("deviceOs", &(out->device_os));
+  dict.Get("deviceIp", &(out->device_ip));
+  dict.Get("deviceMac", &(out->device_mac));
+  dict.Get("deviceHostname", &(out->device_hostname));
+  dict.Get("deviceCpu", &(out->device_cpu));
+  dict.Get("deviceMemory", &(out->device_memory));
+
+  dict.Get("account", &(out->account));
+  dict.Get("displayName", &(out->display_name));
+  dict.Get("serverType", &(out->server_type));
+  dict.Get("serverAddress", &(out->server_address));
+  dict.Get("serverDomain", &(out->server_domain));
+  dict.Get("serverOutbound", &(out->server_outbound));
+
+  dict.Get("enterpriseDomain", &(out->enterprise_domain));
+  dict.Get("enterpriseId", &(out->enterprise_id));
+  dict.Get("enterpriseName", &(out->enterprise_name));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::AlarmInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::AlarmInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("filePath", val.file_path);
+  handler.Set("code", val.code);
+  handler.Set("name", val.name);
+  handler.Set("type", val.type);
+  handler.Set("level", val.level);
+  handler.Set("desc", val.desc);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::AlarmInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::AlarmInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("filePath", &(out->file_path));
+  dict.Get("code", &(out->code));
+  dict.Get("name", &(out->name));
+  dict.Get("type", &(out->type));
+  dict.Get("level", &(out->level));
+  dict.Get("desc", &(out->desc));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::FeedbackInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::FeedbackInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("title", val.title);
+  handler.Set("content", val.content);
+  handler.Set("category", val.category);
+  handler.Set("contact", val.contact);
+  handler.Set("filePath", val.file_path);
+  handler.Set("imagePath", val.image_path);
+  handler.Set("videoPath", val.video_path);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::FeedbackInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::FeedbackInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("title", &(out->title));
+  dict.Get("content", &(out->content));
+  dict.Get("category", &(out->category));
+  dict.Get("contact", &(out->contact));
+  dict.Get("filePath", &(out->file_path));
+  dict.Get("imagePath", &(out->image_path));
+  dict.Get("videoPath", &(out->video_path));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::PackageInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::PackageInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("version", val.version);
+  handler.Set("date", val.date);
+  handler.Set("note", val.note);
+  handler.Set("name", val.name);
+  handler.Set("url", val.url);
+  handler.Set("md5", val.md5);
+  handler.Set("size", val.size);
+  handler.Set("forceUpdate", val.force_update);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::PackageInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::PackageInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("version", &(out->version));
+  dict.Get("date", &(out->date));
+  dict.Get("note", &(out->note));
+  dict.Get("name", &(out->name));
+  dict.Get("url", &(out->url));
+  dict.Get("md5", &(out->md5));
+  dict.Get("size", &(out->size));
+  dict.Get("forceUpdate", &(out->force_update));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::ConfigurationInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::ConfigurationInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("id", val.id);
+  handler.Set("name", val.name);
+  handler.Set("url", val.url);
+  handler.Set("md5", val.md5);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::ConfigurationInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::ConfigurationInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("id", &(out->id));
+  dict.Get("name", &(out->name));
+  dict.Get("url", &(out->url));
+  dict.Get("md5", &(out->md5));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::DownloadInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::DownloadInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("url", val.url);
+  handler.Set("path", val.path);
+  handler.Set("fileName", val.file_name);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::DownloadInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::DownloadInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("url", &(out->url));
+  dict.Get("path", &(out->path));
+  dict.Get("fileName", &(out->file_name));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::UploadLogInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::UploadLogInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("sessionId", val.session_id);
+  handler.Set("path", val.file_path);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::UploadLogInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::UploadLogInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("sessionId", &(out->session_id));
+  dict.Get("filePath", &(out->file_path));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::NetCaptureInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::NetCaptureInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("sessionId", val.session_id);
+  handler.Set("deviceId", val.device_id);
+  handler.Set("path", val.path);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::NetCaptureInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::NetCaptureInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("sessionId", &(out->session_id));
+  dict.Get("deviceId", &(out->device_id));
+  dict.Get("path", &(out->path));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::EventInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::EventInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("code", val.code);
+  handler.Set("name", val.name);
+  handler.Set("network", val.network);
+  handler.Set("isp", val.isp);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::EventInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              yealink::rtvc::EventInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("code", &(out->code));
+  dict.Get("name", &(out->name));
+  dict.Get("network", &(out->network));
+  dict.Get("isp", &(out->isp));
+
+  return true;
+}
+
 }  // namespace mate

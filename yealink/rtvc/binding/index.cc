@@ -14,6 +14,7 @@
 #include "yealink/rtvc/binding/v8_util.h"
 #include "yealink/rtvc/binding/video_frame_binding.h"
 #include "yealink/rtvc/binding/video_manager_binding.h"
+#include "yealink/rtvc/binding/ytms_binding.h"
 
 namespace {
 
@@ -26,6 +27,7 @@ using yealink::rtvc::ScheduleBinding;
 using yealink::rtvc::UserAgentBinding;
 using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
+using yealink::rtvc::YTMSBinding;
 
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
@@ -93,6 +95,12 @@ void Initialize(v8::Local<v8::Object> exports,
   dict.Set("LocalContact", LocalContactBinding::GetConstructor(isolate)
                                ->GetFunction(context)
                                .ToLocalChecked());
+
+  YTMSBinding::SetConstructor(isolate,
+                              base::BindRepeating(&YTMSBinding::New));
+  dict.Set("YTMS", YTMSBinding::GetConstructor(isolate)
+                            ->GetFunction(context)
+                            .ToLocalChecked());
 }
 
 }  // namespace

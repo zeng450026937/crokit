@@ -12,6 +12,7 @@
 #include "yealink/rtvc/api/video/video_rotation.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_source.h"
+#include "yealink/rtvc/api/ytms_info.h"
 
 #include "yealink/libvc/include/components/base/simplelib/simple_array.hpp"
 #include "yealink/libvc/include/components/base/simplelib/simple_string.hpp"
@@ -333,6 +334,96 @@ struct Converter<yealink::rtvc::ContactNode> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::ContactNode* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::TerminalInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::TerminalInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::TerminalInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::AlarmInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::AlarmInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::AlarmInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::FeedbackInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::FeedbackInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::FeedbackInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::PackageInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::PackageInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::PackageInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ConfigurationInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::ConfigurationInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ConfigurationInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::DownloadInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::DownloadInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::DownloadInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::UploadLogInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::UploadLogInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::UploadLogInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::NetCaptureInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::NetCaptureInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::NetCaptureInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::EventInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::EventInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::EventInfo* out);
 };
 
 }  // namespace mate
