@@ -1,15 +1,121 @@
+const util = require('util');
+const EventEmitter = require('events');
+
 async function test(binding) {
   console.warn('YTMS Test');
 
   const {YTMS} = binding;
 
+  util.inherits(YTMS, EventEmitter);
+
   const ytmsHandler = new YTMS('01234567890123456789012345678912');
 
   ytmsHandler.server = 'http://10.5.200.199:8083';
 
-  const isRegisted = await ytmsHandler.start();
+  ytmsHandler.on('pushPacket', (func) => {
+    console.warn('### 测试 YTMS 推送安装包', func);
+  });
 
-  console.warn('### registe to ytms server', isRegisted);
+  ytmsHandler.on('pushConfig', (func, configId) => {
+    console.warn('### 测试 YTMS 推送配置', func, configId);
+
+    console.warn('### 测试 YTMS 获取配置开始');
+    ytmsHandler.getConfigFileInfo()
+      .then((configInfo) => {
+        console.warn('### 测试 YTMS 获取配置文件信息结果');
+        console.warn('id = ', configInfo.id);
+        console.warn('name = ', configInfo.name);
+        console.warn('url = ', configInfo.url);
+        console.warn('md5 = ', configInfo.md5);
+        console.warn('##################################');
+
+        console.warn('### 测试 YTMS 下载配置文件开始');
+        return ytmsHandler.downloadFile(
+            {
+              'url' : configInfo.url,
+              'path' : 'E:\\file\\',
+              'fileName' : md5 + '.json',
+            }
+        );
+      })
+      .then((res) => {
+        console.warn('### 测试 下载配置文件结果 code = ', res);
+      })
+      .catch((e) => {
+        console.warn('### 测试 YTMS 获取配置失败', e);
+      })
+  });
+
+  ytmsHandler.on('message', (func, msg) => {
+    console.warn('### 测试 YTMS 推送消息', func, msg);
+  });
+
+  ytmsHandler.on('uploadLog', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送上报日志', func, sessionId);
+
+    console.warn('### 测试 上报日志开始');
+    ytmsHandler.uploadLog(
+      {
+        'sessionId' : sessionId,
+        'filePath' : 'E:\\file\\log.zip',
+      }
+    )
+    .then((res) => {
+      console.warn('### 测试 上报日志结束 code = ', res);
+    })
+    .catch((e) => {
+      console.warn('### 测试 上报日志出错 ', e);
+    });
+  });
+
+  ytmsHandler.on('uploadConfig', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送上报配置', func, sessionId);
+
+    console.warn('### 测试 上传配置开始');
+
+    const config = {
+      'testA' : 'aaa',
+      'testB' : 'bbb',
+      'fileName' : 'download.json',
+    };
+
+    ytmsHandler.uploadConfig(JSON.stringify(config))
+      .then((res) => {
+        console.warn('### 测试 上传配置结束 code = ', res);
+      })
+      .catch((e) => {
+        console.warn('### 测试 上传配置出错 ', e);
+      });
+  });
+
+  ytmsHandler.on('startCapture', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送开始抓包', func, sessionId);
+
+    console.warn('### 测试 抓包开始');
+  });
+
+  ytmsHandler.on('stopCapture', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送结束抓包', func, sessionId);
+  });
+
+  ytmsHandler.on('reregiste', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送重新注册', func, sessionId);
+
+    ytmsHandler.start()
+      .then(() => {
+        console.warn('### 测试 重新注册结束 code = ', res);
+      })
+      .catch((e) => {
+        console.warn('### 测试 重新注册出错 ', e);
+      })
+  });
+
+  ytmsHandler.on('reboot', (func, sessionId) => {
+    console.warn('### 测试 YTMS 推送重新重启', func, sessionId);
+  });
+
+  const isRegisted = await ytmsHandler.start();
+  console.warn('### 注册ytms code = ', isRegisted);
 
   console.warn('### update to ytms server start');
   const isUpdated = await ytmsHandler.update(
@@ -19,7 +125,7 @@ async function test(binding) {
       'category' : 'VCD',
       'model' : 'VCD-Native',
       'platform' : 'Windows',
-      'version' : '1.30.28.1',
+      'version' : '1.30.28-alpha',
       'arch' : 'ia32',
       'updateChannel' : 'insiders',
       'customId' : '',
@@ -50,87 +156,69 @@ async function test(binding) {
 
   console.warn('### update to ytms server end', isUpdated);
 
-  // const isUploadAlarm = await ytmsHandler.uploadAlarm(
-  //   {
-  //     'filePath' : 'E:\\file\\alarm.zip',
-  //     'code' : '480001',
-  //     'name' : 'GPU_PROCESS_CRASH',
-  //     'type' : 'PROCESS',
-  //     'level' : '1',
-  //     'desc' : 'This is alarm test'
-  //   }
-  // );
 
-  // ytmsHandler.uploadAlarm(
-  //   {
-  //     'filePath' : 'E:\\file\\alarm.zip',
-  //     'code' : '4800011',
-  //     'name' : 'GPU_PROCESS_CRASH',
-  //     'type' : 'PROCESS',
-  //     'level' : '1',
-  //     'desc' : 'This is alarm test'
-  //   }
-  // ).then((res) => {
-  //   console.warn('### res = ', res);
-  // }).
-  // catch((e) => {
-  //   console.warn('### e = ', e);
-  // });
+  console.warn('### 测试 YTMS 上报告警开始');
+  const isUploadAlarm = await ytmsHandler.uploadAlarm(
+    {
+      'filePath' : 'E:\\file\\alarm.zip',
+      'code' : '480001',
+      'name' : 'GPU_PROCESS_CRASH',
+      'type' : 'PROCESS',
+      'level' : '1',
+      'desc' : 'This is alarm test'
+    }
+  );
+  console.warn('### 测试 YTMS 上报告警结束 code = ', isUploadAlarm);
 
-  // console.warn('### Upload Alarm to ytms server', isUploadAlarm);
+  console.warn('### 测试 YTMS 上报反馈开始');
+  const isUploadFeedback = await ytmsHandler.uploadFeedBack(
+    {
+      'filePath' : 'E:\\file\\feedback.zip',
+      'imagePath' : '',
+      'videoPath' : '',
+      'title' : 'this is feedback test',
+      'content' : 'there is nothing',
+      'category' : 'nothing',
+      'contact' : '18030127553',
+    }
+  );
+  console.warn('### 测试 YTMS 上报反馈结束 code = ', isUploadFeedback);
 
-  // const isUploadFeedback = await ytmsHandler.uploadFeedBack(
-  //   {
-  //     'filePath' : 'E:\\file\\feedback.zip',
-  //     'imagePath' : '',
-  //     'videoPath' : '',
-  //     'title' : 'this is feedback test',
-  //     'content' : 'there is nothing',
-  //     'category' : 'nothing',
-  //     'contact' : '18030127553',
-  //   }
-  // );
+  console.warn('### 测试 YTMS 获取安装包信息开始');
+  const packageInfo = await ytmsHandler.getPackagesInfo();
+  console.warn('### Get Package Infos to ytms server ###');
+  console.warn('version = ', packageInfo.version);
+  console.warn('date = ', packageInfo.date);
+  console.warn('note = ', packageInfo.note);
+  console.warn('name = ', packageInfo.name);
+  console.warn('url = ', packageInfo.url);
+  console.warn('md5 = ', packageInfo.md5);
+  console.warn('size = ', packageInfo.size);
+  console.warn('forceUpdate = ', packageInfo.forceUpdate);
+  console.warn('### 测试 YTMS 获取安装包信息结束');
 
-  // console.warn('### Upload Feedback to ytms server', isUploadFeedback);
+  if(packageInfo.url != null && packageInfo.url != undefined)
+  {
+    console.warn('### 测试 YTMS 开始下载安装包');
+    ytmsHandler.downloadFile(
+      {
+        'url' : packageInfo.url,
+        'path' : 'E:\\file\\',
+        'fileName' : packageInfo.name,
+      }
+    )
+    .then((res) => {
+      console.warn('### 测试 YTMS 下载安装包结束 code = ', res);
+    })
+    .catch((e) => {
+      console.warn('### 测试 YTMS 下载安装包失败', e);
+    });
+  }
 
-  // const packageInfo = await ytmsHandler.getPackagesInfo();
-  // console.warn('### Get Package Infos to ytms server ###');
-  // console.warn('version = ', packageInfo.version);
-  // console.warn('date = ', packageInfo.date);
-  // console.warn('note = ', packageInfo.note);
-  // console.warn('name = ', packageInfo.name);
-  // console.warn('url = ', packageInfo.url);
-  // console.warn('md5 = ', packageInfo.md5);
-  // console.warn('size = ', packageInfo.size);
-  // console.warn('forceUpdate = ', packageInfo.forceUpdate);
-
-  // console.warn('### getConfigFileInfo test start');
-  // const configInfo = await ytmsHandler.getConfigFileInfo();
-  // console.warn('id = ', configInfo.id);
-  // console.warn('name = ', configInfo.name);
-  // console.warn('url = ', configInfo.url);
-  // console.warn('md5 = ', configInfo.md5);
-  // console.warn('### getConfigFileInfo test end');
-
-  // console.warn('### downloadFile test start');
-  // await ytmsHandler.downloadFile(
-  //   {
-  //     'url' : configInfo.url,
-  //     'path' : 'E:\\file\\',
-  //     'fileName' : 'download.json',
-  //   }
-  // );
-  // console.warn('### downloadFile test end');
-
-  // console.warn('### UploadConfig test start');
-  // const config = {
-  //   'testA' : 'aaa',
-  //   'testB' : 'bbb',
-  //   'fileName' : 'download.json',
-  // };
-
-  // await ytmsHandler.uploadConfig(JSON.stringify(config));
-  // console.warn('### UploadConfig test end');
+  setTimeout(() => {
+    console.warn('close test func');
+    ytmsHandler.removeAllListeners();
+  }, 6000000);
 }
 
 module.exports = test;

@@ -79,6 +79,8 @@ void YTMSBinding::OnPushInstallPacket()
                                      base::Unretained(this)));
     return;
   }
+
+  Emit("pushPacket");
 }
 void YTMSBinding::OnPushConfigFile(const char* configFileId)
 {
@@ -86,11 +88,26 @@ void YTMSBinding::OnPushConfigFile(const char* configFileId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = configFileId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, configFileId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushConfigFile,
                                      base::Unretained(this),
-                                     configFileId));
+                                     param));
     return;
+  }
+
+  if(configFileId)
+  {
+    Emit("pushConfig", configFileId);
+    delete[] configFileId;
+    configFileId = nullptr;
+  }
+  else
+  {
+    Emit("pushConfig");
   }
 }
 void YTMSBinding::OnPushMessage(const char* message)
@@ -99,11 +116,26 @@ void YTMSBinding::OnPushMessage(const char* message)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = message;
+    char *param = new char[id.size() + 1];
+    strcpy(param, message);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushMessage,
                                      base::Unretained(this),
-                                     message));
+                                     param));
     return;
+  }
+
+  if(message)
+  {
+    Emit("message", message);
+    delete[] message;
+    message = nullptr;
+  }
+  else
+  {
+    Emit("message");
   }
 }
 void YTMSBinding::OnPushUploadLog(const char* sessionId)
@@ -112,11 +144,26 @@ void YTMSBinding::OnPushUploadLog(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushUploadLog,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("uploadLog", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("uploadLog");
   }
 }
 void YTMSBinding::OnPushUploadConfig(const char* sessionId)
@@ -125,11 +172,26 @@ void YTMSBinding::OnPushUploadConfig(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushUploadConfig,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("uploadConfig", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("uploadConfig");
   }
 }
 void YTMSBinding::OnPushStartCapture(const char* sessionId)
@@ -138,11 +200,26 @@ void YTMSBinding::OnPushStartCapture(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushStartCapture,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("startCapture", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("startCapture");
   }
 }
 void YTMSBinding::OnPushStopCapture(const char* sessionId)
@@ -151,11 +228,26 @@ void YTMSBinding::OnPushStopCapture(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushStopCapture,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("stopCapture", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("stopCapture");
   }
 }
 void YTMSBinding::OnPushReregiste(const char* sessionId)
@@ -164,11 +256,26 @@ void YTMSBinding::OnPushReregiste(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushReregiste,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("reregiste", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("reregiste");
   }
 }
 void YTMSBinding::OnPushReboot(const char* sessionId)
@@ -177,11 +284,26 @@ void YTMSBinding::OnPushReboot(const char* sessionId)
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
+    std::string id = sessionId;
+    char *param = new char[id.size() + 1];
+    strcpy(param, sessionId);
+
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushReboot,
                                      base::Unretained(this),
-                                     sessionId));
+                                     param));
     return;
+  }
+
+  if(sessionId)
+  {
+    Emit("reboot", sessionId);
+    delete[] sessionId;
+    sessionId = nullptr;
+  }
+  else
+  {
+    Emit("reboot");
   }
 }
 

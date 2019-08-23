@@ -1,7 +1,7 @@
 let binding
 
 try {
-  binding = require('D:\\workspace\\crokit\\src\\out\\debug\\rtvc_binding.node');
+  binding = require('E:\\gitcode\\js-sdk\\rtvc\\src\\out\\debug\\rtvc_binding.node');
 } catch (error) {
   console.log(error);
   return;
@@ -12,12 +12,14 @@ console.log(binding.version);
 const tests = {
   videoManger : require('./video-manager-test'),
   bootstrap : require('./bootstrap-test'),
+  ytms : require('./ytms-test')
 };
 
 console.log('simple binding test');
 
 //tests.videoManger(binding);
-tests.bootstrap(binding).catch((e) => console.log(e));
+//tests.bootstrap(binding).catch((e) => console.log(e));
+ tests.ytms(binding).catch((e) => console.log(e));
 
 // const user_agent = new UserAgent({
 //   username: 'my username',
