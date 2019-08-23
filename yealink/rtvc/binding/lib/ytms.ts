@@ -67,6 +67,30 @@ export interface ConfigurationInfo {
   md5: string;
 }
 
+export interface DownloadInfo {
+  url: string;
+  path: string;
+  fileName: string;
+}
+
+export interface UploadLogInfo {
+  sessionId: string;
+  filePath: string;
+}
+
+export interface NetCaptureInfo {
+  path: string;
+  deviceId: string;
+  sessionId: string;
+}
+
+export interface EventInfo {
+  code: string;
+  name: string;
+  network: string;
+  isp: string;
+}
+
 export interface YTMS {
   server: string,
 
@@ -75,7 +99,15 @@ export interface YTMS {
 
   uploadAlarm(params: AlarmInfo): void,
   uploadFeedBack(params: FeedbackInfo): void,
+  UploadEvent(params: EventInfo): void,
+  UploadConfig(params: string): void,
+  UploadLog(params: UploadLogInfo): void,
 
   getPackagesInfo(): PackageInfo,
   getConfigFileInfo(): ConfigurationInfo,
+
+  DownloadFile(params: DownloadInfo): void,
+
+  StartCapture(params: NetCaptureInfo): void,
+  StopCapture(params: string): void,
 }

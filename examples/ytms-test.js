@@ -12,8 +12,26 @@ async function test(binding) {
 
   ytmsHandler.server = 'http://10.5.200.199:8083';
 
+	// YTMS 服务器还不支持推送下来
   ytmsHandler.on('pushPacket', (func) => {
     console.warn('### 测试 YTMS 推送安装包', func);
+
+    console.warn('### 测试 YTMS 获取安装包信息开始');
+    ytmsHandler.getPackagesInfo()
+      .then((packageInfo) => {
+        console.warn('### 测试 YTMS 获取安装包信息结束');
+        console.warn('version = ', packageInfo.version);
+        console.warn('date = ', packageInfo.date);
+        console.warn('note = ', packageInfo.note);
+        console.warn('name = ', packageInfo.name);
+        console.warn('url = ', packageInfo.url);
+        console.warn('md5 = ', packageInfo.md5);
+        console.warn('size = ', packageInfo.size);
+        console.warn('forceUpdate = ', packageInfo.forceUpdate);
+      })
+      .catch((e) => {
+        console.warn('### 测试 YTMS 获取安装包信息失败', e);
+      });
   });
 
   ytmsHandler.on('pushConfig', (func, configId) => {
@@ -34,7 +52,7 @@ async function test(binding) {
             {
               'url' : configInfo.url,
               'path' : 'E:\\file\\',
-              'fileName' : md5 + '.json',
+              'fileName' : configInfo.name + '.json',
             }
         );
       })
@@ -102,7 +120,7 @@ async function test(binding) {
     console.warn('### 测试 YTMS 推送重新注册', func, sessionId);
 
     ytmsHandler.start()
-      .then(() => {
+      .then((res) => {
         console.warn('### 测试 重新注册结束 code = ', res);
       })
       .catch((e) => {
@@ -125,7 +143,7 @@ async function test(binding) {
       'category' : 'VCD',
       'model' : 'VCD-Native',
       'platform' : 'Windows',
-      'version' : '1.30.28-alpha',
+      'version' : '1.30.28-beta',
       'arch' : 'ia32',
       'updateChannel' : 'insiders',
       'customId' : '',
