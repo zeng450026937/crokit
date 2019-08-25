@@ -869,6 +869,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::TerminalInfo>::ToV8(
   handler.Set("serverAddress", val.server_address);
   handler.Set("serverDomain", val.server_domain);
   handler.Set("serverOutbound", val.server_outbound);
+  handler.Set("registerStatus", val.register_status);
 
   handler.Set("enterpriseDomain", val.enterprise_domain);
   handler.Set("enterpriseId", val.enterprise_id);
@@ -910,6 +911,7 @@ bool Converter<yealink::rtvc::TerminalInfo>::FromV8(v8::Isolate* isolate,
   dict.Get("serverAddress", &(out->server_address));
   dict.Get("serverDomain", &(out->server_domain));
   dict.Get("serverOutbound", &(out->server_outbound));
+  dict.Get("registerStatus", &(out->register_status));
 
   dict.Get("enterpriseDomain", &(out->enterprise_domain));
   dict.Get("enterpriseId", &(out->enterprise_id));

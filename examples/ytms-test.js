@@ -109,11 +109,37 @@ async function test(binding) {
   ytmsHandler.on('startCapture', (func, sessionId) => {
     console.warn('### 测试 YTMS 推送开始抓包', func, sessionId);
 
+    const id = sessionId;
+
+    const config = {
+      'path' : 'E:\\file\\',
+      'deviceId' : '{801CE636-BEFB-4BC1-97B2-AB8EC6F9C4DE}',
+      'sessionId' : id,
+    };
+
+    console.warn(config);
+
     console.warn('### 测试 抓包开始');
+
+    ytmsHandler.startCapture(config)
+      .then((res) => {
+        console.warn('### 测试 抓包开始 code = ', res);
+      })
+      .catch((e) => {
+        console.warn('### 测试 抓包开始 出错 ', e);
+      });
   });
 
   ytmsHandler.on('stopCapture', (func, sessionId) => {
     console.warn('### 测试 YTMS 推送结束抓包', func, sessionId);
+
+    ytmsHandler.stopCapture(sessionId)
+      .then((res) => {
+        console.warn('### 测试  抓包结束 code = ', res);
+      })
+      .catch((e) => {
+        console.warn('### 测试 抓包结束 出错 ', e);
+      });
   });
 
   ytmsHandler.on('reregiste', (func, sessionId) => {
@@ -143,7 +169,7 @@ async function test(binding) {
       'category' : 'VCD',
       'model' : 'VCD-Native',
       'platform' : 'Windows',
-      'version' : '1.30.28-beta',
+      'version' : '1.30.254-beta',
       'arch' : 'ia32',
       'updateChannel' : 'insiders',
       'customId' : '',
@@ -165,6 +191,7 @@ async function test(binding) {
       'serverAddress' : '10.200.112.165',
       'serverDomain' : 'academai.com',
       'serverOutbound' : '10.200.112.165',
+      'registerStatus' : 'registered',
 
       'enterpriseDomain' : 'Yealink',
       'enterpriseId' : '666666',
@@ -202,6 +229,15 @@ async function test(binding) {
   );
   console.warn('### 测试 YTMS 上报反馈结束 code = ', isUploadFeedback);
 
+  console.warn('### 测试 YTMS 上报事件开始');
+  const isUploadEvent= await ytmsHandler.uploadEvent(
+    {
+      'code' : '01',
+      'name' : 'CLIENT_START_UP',
+    }
+  );
+  console.warn('### 测试 YTMS 上报时间结束 code = ', isUploadEvent);
+
   console.warn('### 测试 YTMS 获取安装包信息开始');
   const packageInfo = await ytmsHandler.getPackagesInfo();
   console.warn('### Get Package Infos to ytms server ###');
@@ -218,19 +254,19 @@ async function test(binding) {
   if(packageInfo.url != null && packageInfo.url != undefined)
   {
     console.warn('### 测试 YTMS 开始下载安装包');
-    ytmsHandler.downloadFile(
-      {
-        'url' : packageInfo.url,
-        'path' : 'E:\\file\\',
-        'fileName' : packageInfo.name,
-      }
-    )
-    .then((res) => {
-      console.warn('### 测试 YTMS 下载安装包结束 code = ', res);
-    })
-    .catch((e) => {
-      console.warn('### 测试 YTMS 下载安装包失败', e);
-    });
+    // ytmsHandler.downloadFile(
+    //   {
+    //     'url' : packageInfo.url,
+    //     'path' : 'E:\\file\\',
+    //     'fileName' : packageInfo.name,
+    //   }
+    // )
+    // .then((res) => {
+    //   console.warn('### 测试 YTMS 下载安装包结束 code = ', res);
+    // })
+    // .catch((e) => {
+    //   console.warn('### 测试 YTMS 下载安装包失败', e);
+    // });
   }
 
   setTimeout(() => {

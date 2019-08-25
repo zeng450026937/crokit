@@ -35,6 +35,7 @@ struct TerminalInfo {
   std::string server_address;
   std::string server_domain;
   std::string server_outbound;
+  std::string register_status;
 
   std::string enterprise_domain;
   std::string enterprise_id;

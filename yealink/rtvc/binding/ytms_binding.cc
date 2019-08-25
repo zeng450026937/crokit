@@ -381,6 +381,7 @@ void YTMSBinding::DoUpdate(TerminalInfo params, ProcessObserver* observer) {
   config.userServerAddress = params.server_address.c_str();
   config.userDomain = params.server_domain.c_str();
   config.userOutbound = params.server_outbound.c_str();
+  config.registerStatus = params.register_status.c_str();
 
   config.enterpriseDomain = params.enterprise_domain.c_str();
   config.enterpriseId = params.enterprise_id.c_str();
@@ -458,8 +459,10 @@ v8::Local<v8::Promise> YTMSBinding::UploadEvent(EventInfo params) {
 void YTMSBinding::DoUploadEvent(EventInfo params, ProcessObserver* observer) {
   YtmsEvent config;
 
-  // TODO
-  // update params
+  config.eventCode = params.code.c_str();
+  config.eventName = params.name.c_str();
+  config.ispType = params.isp.c_str();
+  config.networkMode = params.network.c_str();
 
   ytms_agent_->UploadEvent(config, observer);
 }
@@ -588,7 +591,12 @@ v8::Local<v8::Promise> YTMSBinding::StartCapture(NetCaptureInfo params) {
   return handle;
 }
 void YTMSBinding::DoStartCapture(NetCaptureInfo params, ProcessObserver* observer) {
-  YtmsLog config;
+  YtmsNetLog config;
+
+  config.captureDeviceName = params.device_id.c_str();
+  config.logPath = params.path.c_str();
+  config.sessionId = params.session_id.c_str();
+
   ytms_agent_->StartCaptureNetLog(config, observer);
 }
 
@@ -613,7 +621,7 @@ v8::Local<v8::Promise> YTMSBinding::StopCapture(mate::Arguments* args) {
   return handle;
 }
 void YTMSBinding::DoStopCapture(std::string params, ProcessObserver* observer) {
-  //ytms_agent_->StopCaptureNetLog(params.c_str(), observer);
+  ytms_agent_->StopCaptureNetLog(params.c_str(), observer);
 }
 
 }  // namespace rtvc
