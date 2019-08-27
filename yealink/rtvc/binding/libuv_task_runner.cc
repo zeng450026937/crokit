@@ -99,30 +99,24 @@ LibuvTaskRunner::~LibuvTaskRunner() = default;
 bool LibuvTaskRunner::PostDelayedTask(const base::Location& from_here,
                                       base::OnceClosure task,
                                       base::TimeDelta delay) {
-  bool acquired = lock_.Try();
+  base::AutoLock lock(lock_);
 
   QueueDeferredTask(from_here, std::move(task), delay,
                     false /* is_non_nestable */);
   EnsureTaskRunner();
-
-  if (acquired) {
-    lock_.Release();
-  }
+  
   return true;
 }
 bool LibuvTaskRunner::PostNonNestableDelayedTask(
     const base::Location& from_here,
     base::OnceClosure task,
     base::TimeDelta delay) {
-  bool acquired = lock_.Try();
+  base::AutoLock lock(lock_);
 
   QueueDeferredTask(from_here, std::move(task), delay,
                     true /* is_non_nestable */);
   EnsureTaskRunner();
 
-  if (acquired) {
-    lock_.Release();
-  }
   return true;
 }
 

@@ -19,9 +19,9 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
   void AddOrUpdateSink(VideoSink* sink) override;
   void RemoveSink(VideoSink* sink) override;
 
- protected:
   void OnVideoFrame(const yealink::VideoFrame& frame) override;
 
+ protected:
   std::set<VideoSink*> sinks_;
 
   base::ThreadChecker thread_checker_;

@@ -12,16 +12,13 @@ namespace yealink {
 
 namespace rtvc {
 
-UvTaskRunner::UvTaskRunner(uv_loop_t* loop) : uv_loop_(loop) {
-  uv_async_init(uv_loop_, &dummy_uv_handle_, nullptr);
-}
+UvTaskRunner::UvTaskRunner(uv_loop_t* loop) : uv_loop_(loop) {}
 
 UvTaskRunner::~UvTaskRunner() {
   for (auto& iter : tasks_) {
     uv_unref(reinterpret_cast<uv_handle_t*>(iter.first));
     delete iter.first;
   }
-  uv_close(reinterpret_cast<uv_handle_t*>(&dummy_uv_handle_), nullptr);
 }
 
 bool UvTaskRunner::PostDelayedTask(const base::Location& from_here,
@@ -33,7 +30,14 @@ bool UvTaskRunner::PostDelayedTask(const base::Location& from_here,
   uv_timer_start(timer, UvTaskRunner::OnTimeout, delay.InMilliseconds(), 0);
   tasks_[timer] = std::move(task);
   // needed in electron renderer process to awake uv loop
-  uv_async_send(&dummy_uv_handle_);
+  uv_async_t* dummy_uv_handle = new uv_async_t;
+  ::uv_async_init(uv_loop_, dummy_uv_handle, [](uv_async_t* handle) {});
+  ::uv_async_send(dummy_uv_handle);
+  ::uv_unref((uv_handle_t*)dummy_uv_handle);
+  ::uv_close(reinterpret_cast<uv_handle_t*>(dummy_uv_handle),
+             [](uv_handle_t* handle) {
+               delete reinterpret_cast<uv_async_t*>(handle);
+             });
   return true;
 }
 

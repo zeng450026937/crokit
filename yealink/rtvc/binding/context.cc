@@ -141,7 +141,7 @@ bool Context::CalledOnValidThread() {
 
 void Context::PostTask(const base::Location& from_here,
                        base::OnceClosure task) {
-  task_runner_->PostDelayedTask(from_here, std::move(task),
+  high_priority_task_runner_->PostDelayedTask(from_here, std::move(task),
                                               base::TimeDelta());
 }
 void Context::PostDelayedTask(const base::Location& from_here,

@@ -2,6 +2,7 @@
 
 #include "base/logging.h"
 #include "base/task/post_task.h"
+#include "yealink/libvc/include/media/media_api.h"
 #include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/object_template_builder.h"
@@ -200,19 +201,13 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
 }
 void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
                                     const yealink::AuthICEProfile& stun) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  LOG(INFO) << "TURN Profile";
-  LOG(INFO) << "url: " << turn.strServer;
-  LOG(INFO) << "username: " << turn.strUserName;
-  LOG(INFO) << "password: " << turn.strPassword;
-  LOG(INFO) << "port: [udp] " << turn.nUDPPort << " [tcp] " << turn.nTCPPort;
-
-  LOG(INFO) << "STUN Profile";
-  LOG(INFO) << "url: " << stun.strServer;
-  LOG(INFO) << "username: " << stun.strUserName;
-  LOG(INFO) << "password: " << stun.strPassword;
-  LOG(INFO) << "port: [udp] " << stun.nUDPPort << " [tcp] " << stun.nTCPPort;
+  yealink::ICEProfile profile;
+  profile.strServer = turn.strServer;
+  profile.strUserName = turn.strUserName;
+  profile.strPassword = turn.strPassword;
+  profile.nUDPPort = turn.nUDPPort;
+  profile.nTCPPort = turn.nTCPPort;
+  Context::Instance()->GetMedia()->SetICEProfile(profile, false);
 }
 
 }  // namespace rtvc

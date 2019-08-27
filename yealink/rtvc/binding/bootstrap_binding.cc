@@ -3,10 +3,10 @@
 #include "base/task/post_task.h"
 #include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/object_template_builder.h"
+#include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
-#include "yealink/rtvc/binding/connector_binding.h"
 
 namespace yealink {
 
@@ -48,7 +48,9 @@ BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
       access_agent_(yealink::CreateAccessAgent(client_id.c_str())) {
   InitWith(isolate, wrapper);
 }
-BootstrapBinding::~BootstrapBinding() {}
+BootstrapBinding::~BootstrapBinding() {
+  yealink::ReleaseAccessAgent(access_agent_);
+}
 
 std::string BootstrapBinding::server() {
   return server_;
@@ -95,6 +97,7 @@ v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
 }
 
 void BootstrapBinding::DoAuthenticate() {
+  account_list_.clear();
   LoginInfo info;
   info.server = server_.c_str();
   info.username = username_.c_str();

@@ -42,6 +42,7 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("forward", &CallBinding::Forward)
       .SetMethod("refer", &CallBinding::Refer)
       .SetMethod("replace", &CallBinding::Replace)
+      .SetMethod("upgrade", &CallBinding::Upgrade)
       .SetMethod("hold", &CallBinding::Hold)
       .SetMethod("unhold", &CallBinding::Unhold)
       .SetMethod("mute", &CallBinding::Mute)
@@ -80,8 +81,11 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       sip_client_(user_agent->GetWeakSIPClientPtr()),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
-      incoming_(incoming) {
+      incoming_(incoming),
+      remote_video_source_(new VideoSourceAdapter()),
+      remote_share_video_source_(new VideoSourceAdapter()) {
   InitWith(isolate, wrapper);
+  meeting_->SetObserver(this);
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -91,10 +95,15 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       sip_client_(user_agent->GetWeakSIPClientPtr()),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
-      incoming_(incoming) {
+      incoming_(incoming),
+      remote_video_source_(new VideoSourceAdapter()),
+      remote_share_video_source_(new VideoSourceAdapter()) {
   Init(isolate);
+  meeting_->SetObserver(this);
 }
-CallBinding::~CallBinding() {}
+CallBinding::~CallBinding() {
+  meeting_->SetObserver(nullptr);
+}
 
 void CallBinding::Connect(std::string target, mate::Arguments* args) {
   yealink::DailParam param;
@@ -134,6 +143,10 @@ void CallBinding::Refer(std::string target) {
 }
 void CallBinding::Replace(mate::Handle<CallBinding> call) {
   meeting_->TransferToCall(meeting_.get());
+}
+
+void CallBinding::Upgrade() {
+  meeting_->CreateAplloConference(yealink::AV_VIDEO_AUDIO);
 }
 
 void CallBinding::Hold() {
@@ -201,16 +214,42 @@ void CallBinding::SetShareBitrate(int64_t send_bitrate, int64_t recv_bitrate) {
   meeting_->SetShareBitRate(send_bitrate, recv_bitrate);
 }
 
-void CallBinding::SetLocalVideoSource(mate::PersistentDictionary source) {
-  LOG(INFO) << __FUNCTIONW__;
-}
+void CallBinding::SetLocalVideoSource(mate::PersistentDictionary source) {}
 void CallBinding::SetLocalShareVideoSource(mate::PersistentDictionary source) {}
 
-void CallBinding::SetRemoteVideoSink(mate::PersistentDictionary sink) {}
-void CallBinding::SetRemoteShareVideoSink(mate::PersistentDictionary sink) {}
+void CallBinding::SetRemoteVideoSink(mate::PersistentDictionary sink) {
+  if (sink.GetHandle()->IsNullOrUndefined()) {
+    for (auto it : remote_video_sinks_) {
+      remote_video_source_->RemoveSink(it.second);
+      delete it.second;
+    }
+    remote_video_sinks_.clear();
+    return;
+  }
+
+  int hash = sink.GetHandle()->GetIdentityHash();
+  VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
+  remote_video_source_->AddOrUpdateSink(sink_v8);
+  remote_video_sinks_.emplace(hash, sink_v8);
+}
+void CallBinding::SetRemoteShareVideoSink(mate::PersistentDictionary sink) {
+  if (sink.GetHandle()->IsNullOrUndefined()) {
+    for (auto it : remote_share_video_sinks_) {
+      remote_share_video_source_->RemoveSink(it.second);
+      delete it.second;
+    }
+    remote_share_video_sinks_.clear();
+    return;
+  }
+
+  int hash = sink.GetHandle()->GetIdentityHash();
+  VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
+  remote_share_video_source_->AddOrUpdateSink(sink_v8);
+  remote_share_video_sinks_.emplace(hash, sink_v8);
+}
 
 bool CallBinding::conference_aware() {
-  return false;
+  return true;
 }
 void CallBinding::SetConferenceAware(bool enable) {}
 
@@ -289,11 +328,19 @@ void CallBinding::OnMediaEvent(yealink::MeetingMediaEventId id) {
       break;
   }
 }
-void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& infoNew) {}
-void CallBinding::OnCreateConferenceAfter(yealink::RoomController* pObject) {}
-void CallBinding::OnRealseConferenceBefore(yealink::RoomController* pObject) {}
-void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {}
-void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {}
+void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
+  meeting_info_ = info;
+}
+void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
+}
+void CallBinding::OnRealseConferenceBefore(
+    yealink::RoomController* controller) {}
+void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
+  remote_video_source_->OnVideoFrame(frame);
+}
+void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
+  remote_share_video_source_->OnVideoFrame(frame);
+}
 
 }  // namespace rtvc
 

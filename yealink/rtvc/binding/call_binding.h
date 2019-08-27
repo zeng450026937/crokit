@@ -7,6 +7,8 @@
 #include "yealink/rtvc/api/call.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
+#include "yealink/rtvc/binding/video_sink_v8.h"
+#include "yealink/rtvc/binding/video_source_adapter.h"
 
 namespace yealink {
 
@@ -47,6 +49,8 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void Forward(std::string target);
   void Refer(std::string target);
   void Replace(mate::Handle<CallBinding> call);
+
+  void Upgrade();
 
   void Hold();
   void Unhold();
@@ -90,9 +94,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   // meeting observer impl
   void OnEvent(yealink::MeetingEventId id) override;
   void OnMediaEvent(yealink::MeetingMediaEventId id) override;
-  void OnCallInfoChanged(const yealink::MeetingInfo& infoNew) override;
-  void OnCreateConferenceAfter(yealink::RoomController* pObject) override;
-  void OnRealseConferenceBefore(yealink::RoomController* pObject) override;
+  void OnCallInfoChanged(const yealink::MeetingInfo& info) override;
+  void OnCreateConferenceAfter(yealink::RoomController* controller) override;
+  void OnRealseConferenceBefore(yealink::RoomController* controller) override;
   void OnVideoFrame(const yealink::VideoFrame& frame) override;
   void OnShareFrame(const yealink::VideoFrame& frame) override;
 
@@ -110,10 +114,18 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   };
   std::unique_ptr<yealink::Meeting, MeetingDeleter> meeting_;
 
+  yealink::MeetingInfo meeting_info_;
+
   CallState state_ = CallState::kNone;
   bool local_sharing_ = false;
   bool remote_sharing_ = false;
   bool incoming_ = false;
+
+  std::unique_ptr<VideoSourceAdapter> remote_video_source_;
+  std::unique_ptr<VideoSourceAdapter> remote_share_video_source_;
+
+  std::map<int, VideoSinkV8*> remote_video_sinks_;
+  std::map<int, VideoSinkV8*> remote_share_video_sinks_;
 };
 
 }  // namespace rtvc
