@@ -25,7 +25,7 @@ enum class ContactNodeType {
 };
 
 struct ContactNode {
-  std::string id;
+  std::string uid;
   ContactNodeType type;
   std::vector<std::string> parentId;
   uint64_t childCounts;

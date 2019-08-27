@@ -16,7 +16,7 @@ struct Converter<yealink::LocalContactInfo> {
       return v8::Null(isolate);
 
     Dictionary dict = Dictionary::CreateEmpty(isolate);
-    dict.Set("id", val.uid);
+    dict.Set("uid", val.uid);
     dict.Set("name", val.name);
     dict.Set("indexed", val.searchKey);
 

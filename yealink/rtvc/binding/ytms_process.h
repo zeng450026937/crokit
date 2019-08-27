@@ -30,7 +30,7 @@ class ProcessObserver : public YTMSProcess {
  private:
   int biz_code_;
   int error_code_;
-  std::string msg;
+  std::string msg_;
 };
 
 }  // namespace rtvc

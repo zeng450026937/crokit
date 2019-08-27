@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "base/memory/weak_ptr.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/account_info.h"
@@ -40,8 +41,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   v8::Local<v8::Value> GetConnector(std::string uid);
 
  private:
-  void DoAuthenticate();
-  void OnAuthenticateCompeleted(Promise promise);
+  void DoAuthenticate(std::vector<AccountInfo>* result);
 
   std::string server_;
   std::string username_;
@@ -50,10 +50,9 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
 
   v8::Global<v8::Value> connector_;
 
-  std::vector<AccountInfo> account_list_;
-  AccountInfo current_account_;
-
   AccessAgent* access_agent_;
+
+  base::WeakPtrFactory<BootstrapBinding> weak_factory_;
 };
 
 }  // namespace rtvc

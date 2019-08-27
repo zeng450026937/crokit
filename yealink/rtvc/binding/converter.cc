@@ -193,6 +193,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
 
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("enterprise", enterprise);
+  dict.Set("id", val.id);
   dict.Set("uid", val.uid);
   dict.Set("number", val.number);
   dict.Set("fullNumber", val.full_number);
@@ -795,48 +796,48 @@ bool Converter<yealink::rtvc::ContactNodeType>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ContactNode>::ToV8(
-    v8::Isolate* isolate,
-    const yealink::rtvc::ContactNode& val) {
-  Dictionary dict = Dictionary::CreateEmpty(isolate);
-  dict.Set("id", val.id);
-  dict.Set("type", val.type);
-  dict.Set("parentId", val.parentId);
-  dict.Set("childCounts", val.childCounts);
-  dict.Set("name", val.name);
-  dict.Set("i18nName", val.i18nName);
-  dict.Set("pinyin", val.pinyin);
-  dict.Set("pinyinAbbr", val.pinyinAbbr);
-  dict.Set("email", val.email);
-  dict.Set("phone", val.phone);
-  dict.Set("mobile", val.mobile);
-  dict.Set("number", val.number);
-  dict.Set("fullNumber", val.fullNumber);
-  return dict.GetHandle();
-}
+// v8::Local<v8::Value> Converter<yealink::rtvc::ContactNode>::ToV8(
+//     v8::Isolate* isolate,
+//     const yealink::rtvc::ContactNode& val) {
+//   Dictionary dict = Dictionary::CreateEmpty(isolate);
+//   dict.Set("uid", val.uid);
+//   dict.Set("type", val.type);
+//   dict.Set("parentId", val.parentId);
+//   dict.Set("childCounts", val.childCounts);
+//   dict.Set("name", val.name);
+//   dict.Set("i18nName", val.i18nName);
+//   dict.Set("pinyin", val.pinyin);
+//   dict.Set("pinyinAbbr", val.pinyinAbbr);
+//   dict.Set("email", val.email);
+//   dict.Set("phone", val.phone);
+//   dict.Set("mobile", val.mobile);
+//   dict.Set("number", val.number);
+//   dict.Set("fullNumber", val.fullNumber);
+//   return dict.GetHandle();
+// }
 
-bool Converter<yealink::rtvc::ContactNode>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ContactNode* out) {
-  Dictionary dict;
-  if (!ConvertFromV8(isolate, val, &dict))
-    return false;
-  dict.Get("id", &(out->id));
-  dict.Get("type", &(out->type));
-  dict.Get("parentId", &(out->parentId));
-  dict.Get("childCounts", &(out->childCounts));
-  dict.Get("name", &(out->name));
-  dict.Get("i18nName", &(out->i18nName));
-  dict.Get("pinyin", &(out->pinyin));
-  dict.Get("pinyinAbbr", &(out->pinyinAbbr));
-  dict.Get("email", &(out->email));
-  dict.Get("phone", &(out->phone));
-  dict.Get("mobile", &(out->mobile));
-  dict.Get("number", &(out->number));
-  dict.Get("fullNumber", &(out->fullNumber));
-  return true;
-}
+// bool Converter<yealink::rtvc::ContactNode>::FromV8(
+//     v8::Isolate* isolate,
+//     v8::Local<v8::Value> val,
+//     yealink::rtvc::ContactNode* out) {
+//   Dictionary dict;
+//   if (!ConvertFromV8(isolate, val, &dict))
+//     return false;
+//   dict.Get("uid", &(out->uid));
+//   dict.Get("type", &(out->type));
+//   dict.Get("parentId", &(out->parentId));
+//   dict.Get("childCounts", &(out->childCounts));
+//   dict.Get("name", &(out->name));
+//   dict.Get("i18nName", &(out->i18nName));
+//   dict.Get("pinyin", &(out->pinyin));
+//   dict.Get("pinyinAbbr", &(out->pinyinAbbr));
+//   dict.Get("email", &(out->email));
+//   dict.Get("phone", &(out->phone));
+//   dict.Get("mobile", &(out->mobile));
+//   dict.Get("number", &(out->number));
+//   dict.Get("fullNumber", &(out->fullNumber));
+//   return true;
+// }
 
 v8::Local<v8::Value> Converter<yealink::rtvc::TerminalInfo>::ToV8(
     v8::Isolate* isolate,

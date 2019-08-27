@@ -7,7 +7,7 @@ namespace rtvc {
 ProcessObserver::ProcessObserver() {
   biz_code_ = 0;
   error_code_ = 0;
-  msg = "";
+  msg_ = "";
 }
 
 ProcessObserver::~ProcessObserver() {}
@@ -30,7 +30,7 @@ void ProcessObserver::SetErrorInfo(int code, const char* msg) {
   LOG(INFO) << __FUNCTIONW__;
 
   error_code_ = code;
-  msg = msg;
+  msg_ = msg;
 }
 
 }  // namespace rtvc

@@ -45,7 +45,8 @@ BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
                                    std::string client_id)
     : client_id_(client_id),
-      access_agent_(yealink::CreateAccessAgent(client_id.c_str())) {
+      access_agent_(yealink::CreateAccessAgent(client_id.c_str())),
+      weak_factory_(this) {
   InitWith(isolate, wrapper);
 }
 BootstrapBinding::~BootstrapBinding() {
@@ -76,12 +77,17 @@ void BootstrapBinding::SetPassword(std::string password) {
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
+  std::vector<AccountInfo>* result = new std::vector<AccountInfo>();
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&BootstrapBinding::DoAuthenticate, base::Unretained(this)),
-      base::BindOnce(&BootstrapBinding::OnAuthenticateCompeleted,
-                     base::Unretained(this), std::move(promise)));
+      base::BindOnce(&BootstrapBinding::DoAuthenticate,
+                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+      base::BindOnce(
+          [](Promise promise, const std::vector<AccountInfo>* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(result)));
 
   return handle;
 }
@@ -96,16 +102,12 @@ v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
   return v8::Local<v8::Value>::New(isolate(), connector_);
 }
 
-void BootstrapBinding::DoAuthenticate() {
-  account_list_.clear();
+void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   LoginInfo info;
   info.server = server_.c_str();
   info.username = username_.c_str();
   info.password = password_.c_str();
-  ConvertFrom(account_list_, access_agent_->LoginAccessService(info, nullptr));
-}
-void BootstrapBinding::OnAuthenticateCompeleted(Promise promise) {
-  std::move(promise).Resolve(account_list_);
+  ConvertFrom(*result, access_agent_->LoginAccessService(info, nullptr));
 }
 
 }  // namespace rtvc

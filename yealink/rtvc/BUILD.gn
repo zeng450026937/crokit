@@ -133,6 +133,8 @@ node_addon("rtvc_binding") {
     "binding/cloud_contact_binding.cc",
     "binding/local_contact_binding.h",
     "binding/local_contact_binding.cc",
+    "binding/contact_node_binding.h",
+    "binding/contact_node_binding.cc",
     "binding/sip_poller.h",
     "binding/sip_poller.cc",
     "binding/call_binding.h",

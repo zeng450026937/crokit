@@ -24,6 +24,7 @@ struct EnterpriseInfo {
 };
 
 struct AccountInfo {
+  std::string id;
   std::string uid;
   std::string number;
   std::string full_number;

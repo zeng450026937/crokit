@@ -4,13 +4,11 @@
 #include <string>
 
 #include "yealink/libvc/include/ytms/ytms_agent_api.h"
-
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/ytms_info.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
-
 #include "ytms_process.h"
 
 namespace yealink {
@@ -54,7 +52,7 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
   v8::Local<v8::Promise> StartCapture(NetCaptureInfo params);
   v8::Local<v8::Promise> StopCapture(mate::Arguments* args);
 
-  // yealink::YTMSObserver imp
+  // yealink::YTMSObserver impl
   void OnPushInstallPacket() override;
   void OnPushConfigFile(const char* configFileId) override;
   void OnPushMessage(const char* message) override;

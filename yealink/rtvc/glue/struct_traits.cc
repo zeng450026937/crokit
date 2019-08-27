@@ -7,7 +7,8 @@ namespace rtvc {
 // static
 bool StructTraits<AccountInfo>::From(AccountInfo& out,
                                      const yealink::LoginUserInfo& val) {
-  ConvertFrom(out.uid, val.account.uid);
+  ConvertFrom(out.id, val.account.uid);
+  ConvertFrom(out.uid, val.subject.uid);
   ConvertFrom(out.number, val.account.extension);
   ConvertFrom(out.full_number, val.account.principle);
   ConvertFrom(out.name, val.subject.name);

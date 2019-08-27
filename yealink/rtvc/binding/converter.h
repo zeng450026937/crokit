@@ -326,16 +326,16 @@ struct Converter<yealink::rtvc::ContactNodeType> {
                      yealink::rtvc::ContactNodeType* out);
 };
 
-template <>
-struct Converter<yealink::rtvc::ContactNode> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const yealink::rtvc::ContactNode& val);
+// template <>
+// struct Converter<yealink::rtvc::ContactNode> {
+//   static v8::Local<v8::Value> ToV8(
+//       v8::Isolate* isolate,
+//       const yealink::rtvc::ContactNode& val);
 
-  static bool FromV8(v8::Isolate* isolate,
-                     v8::Local<v8::Value> val,
-                     yealink::rtvc::ContactNode* out);
-};
+//   static bool FromV8(v8::Isolate* isolate,
+//                      v8::Local<v8::Value> val,
+//                      yealink::rtvc::ContactNode* out);
+// };
 
 template <>
 struct Converter<yealink::rtvc::TerminalInfo> {

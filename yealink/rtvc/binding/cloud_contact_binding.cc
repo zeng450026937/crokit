@@ -6,9 +6,42 @@
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/connector_binding.h"
+#include "yealink/rtvc/binding/contact_node_binding.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
+
+namespace mate {
+template <>
+struct Converter<yealink::rtvc::ContactNode> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::ContactNode& val) {
+    return yealink::rtvc::ContactNodeBinding::Create(isolate, val).ToV8();
+  }
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ContactNode* out) {
+    Dictionary dict;
+    if (!ConvertFromV8(isolate, val, &dict))
+      return false;
+    dict.Get("uid", &(out->uid));
+    dict.Get("type", &(out->type));
+    dict.Get("parentId", &(out->parentId));
+    dict.Get("childCounts", &(out->childCounts));
+    dict.Get("name", &(out->name));
+    dict.Get("i18nName", &(out->i18nName));
+    dict.Get("pinyin", &(out->pinyin));
+    dict.Get("pinyinAbbr", &(out->pinyinAbbr));
+    dict.Get("email", &(out->email));
+    dict.Get("phone", &(out->phone));
+    dict.Get("mobile", &(out->mobile));
+    dict.Get("number", &(out->number));
+    dict.Get("fullNumber", &(out->fullNumber));
+    return true;
+  }
+};
+}  // namespace mate
 
 namespace yealink {
 
