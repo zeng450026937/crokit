@@ -59,12 +59,19 @@ struct SubjectInfo
     int type;
 };
 
+struct TurnServerInfo
+{
+    SStringA username;
+    SStringA password;
+};
+
 struct LoginUserInfo
 {
     AccountInfo account;
     PartyInfo party;
     PermissionInfo permission;
     SubjectInfo subject;
+    TurnServerInfo turnServer;
     SStringA token;
 };
 

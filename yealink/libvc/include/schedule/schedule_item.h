@@ -62,6 +62,11 @@ public:
      * @return 
      */
     SStringA GetMailTemplate() const;
+    /**
+     * @brief check item detail info and mail template is available
+     * @return 
+     */
+    bool IsReady() const;
 };
 } // namespace yealink
 

@@ -342,13 +342,20 @@ public:
 		 */
     virtual MediaStreamStats MediaStats() = 0;
     /**
-         * @brief Set video stream bit rate.
+         * @brief Set video stream bitrate.
          * Video resolution and frame rate will be affected.
          *
-         * @param nBitRateR
-         * @param nBitRateS
+         * @param nBitrateR
+         * @param nBitrateS
          */
-    virtual void SetVideoBitRate(int nBitRateR, int nBitRateS) = 0;
+    virtual void SetVideoBitrate(int nBitrateR, int nBitrateS) = 0;
+    /**
+     * @brief Update video stream send bitrate.
+     * Video resolution and frame rate will be affected.
+     *
+     * @param nBitrate
+     */
+    virtual void UpdateSendBitrate(int nBitrate) = 0;
     /**
          * @brief Set custom video capture source.
          *

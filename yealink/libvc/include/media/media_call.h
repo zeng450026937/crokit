@@ -116,6 +116,7 @@ public:
     virtual void SetCustomCapture(MediaCapture* capture) = 0;
     virtual bool StartSecondaryFlow(MediaDirection direction) = 0;
     virtual void SetSendVideoResolution(const VideoResolution& resolution) = 0;
+    virtual bool UpdateSendVideoResolution(const VideoResolution& resolution) = 0;
     virtual void SetRecvVideoResolution(const VideoResolution& resolution) = 0;
     virtual bool RestartIce() = 0;
     virtual bool EnableVideoPortrait(bool enable) = 0;

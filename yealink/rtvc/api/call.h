@@ -3,12 +3,22 @@
 
 #include <memory>
 
+#include "yealink/rtvc/api/video/video_source.h"
+#include "yealink/rtvc/api/video/video_sink.h"
+
 namespace yealink {
 
 namespace rtvc {
 
-class VideoSource;
-class VideoSink;
+enum class CallState {
+  kNone,
+  kAnswered,
+  kProgress,
+  kConfirmed,
+  kEstablished,
+  kCanceled,
+  kTerminated,
+};
 
 class CallObserver {
  public:
@@ -46,6 +56,8 @@ class Call {
 
   // useful when network environment changed
   virtual void Renegotiate() = 0;
+
+  virtual void GetStats() = 0;
 
   virtual bool isInProgress() = 0;
   virtual bool isEstablished() = 0;
