@@ -113,7 +113,8 @@ async function test(binding) {
 
     const config = {
       'path' : 'E:\\file\\',
-      'deviceId' : '{801CE636-BEFB-4BC1-97B2-AB8EC6F9C4DE}',
+      //'deviceId' : '{801CE636-BEFB-4BC1-97B2-AB8EC6F9C4DE}',
+      'deviceId' :'{79C109C4-206C-4C73-987C-2BA6BD334F79}',
       'sessionId' : id,
     };
 
@@ -236,7 +237,7 @@ async function test(binding) {
       'name' : 'CLIENT_START_UP',
     }
   );
-  console.warn('### 测试 YTMS 上报时间结束 code = ', isUploadEvent);
+  console.warn('### 测试 YTMS 上报事件结束 code = ', isUploadEvent);
 
   console.warn('### 测试 YTMS 获取安装包信息开始');
   const packageInfo = await ytmsHandler.getPackagesInfo();
@@ -254,19 +255,19 @@ async function test(binding) {
   if(packageInfo.url != null && packageInfo.url != undefined)
   {
     console.warn('### 测试 YTMS 开始下载安装包');
-    // ytmsHandler.downloadFile(
-    //   {
-    //     'url' : packageInfo.url,
-    //     'path' : 'E:\\file\\',
-    //     'fileName' : packageInfo.name,
-    //   }
-    // )
-    // .then((res) => {
-    //   console.warn('### 测试 YTMS 下载安装包结束 code = ', res);
-    // })
-    // .catch((e) => {
-    //   console.warn('### 测试 YTMS 下载安装包失败', e);
-    // });
+    ytmsHandler.downloadFile(
+      {
+        'url' : packageInfo.url,
+        'path' : 'E:\\file\\',
+        'fileName' : packageInfo.name,
+      }
+    )
+    .then((res) => {
+      console.warn('### 测试 YTMS 下载安装包结束 code = ', res);
+    })
+    .catch((e) => {
+      console.warn('### 测试 YTMS 下载安装包失败', e);
+    });
   }
 
   setTimeout(() => {
