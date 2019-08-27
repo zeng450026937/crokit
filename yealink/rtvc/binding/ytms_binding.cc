@@ -26,14 +26,12 @@ mate::WrappableBase* YTMSBinding::New(mate::Arguments* args) {
 }
 
 // static
-void YTMSBinding::BuildPrototype(
-    v8::Isolate* isolate,
-    v8::Local<v8::FunctionTemplate> prototype) {
+void YTMSBinding::BuildPrototype(v8::Isolate* isolate,
+                                 v8::Local<v8::FunctionTemplate> prototype) {
   prototype->SetClassName(mate::StringToV8(isolate, "YTMS"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("server", &YTMSBinding::server,
-                   &YTMSBinding::SetServer)
+      .SetProperty("server", &YTMSBinding::server, &YTMSBinding::SetServer)
       .SetMethod("start", &YTMSBinding::Start)
       .SetMethod("update", &YTMSBinding::Update)
       .SetMethod("uploadAlarm", &YTMSBinding::UploadAlarm)
@@ -49,8 +47,8 @@ void YTMSBinding::BuildPrototype(
 }
 
 YTMSBinding::YTMSBinding(v8::Isolate* isolate,
-                                   v8::Local<v8::Object> wrapper,
-                                   std::string client_id)
+                         v8::Local<v8::Object> wrapper,
+                         std::string client_id)
     : client_id_(client_id),
       ytms_agent_(yealink::CreateYTMSAgent(client_id.c_str())) {
   InitWith(isolate, wrapper);
@@ -68,8 +66,7 @@ void YTMSBinding::SetServer(std::string server) {
   server_ = server;
 }
 
-void YTMSBinding::OnPushInstallPacket()
-{
+void YTMSBinding::OnPushInstallPacket() {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
@@ -82,241 +79,194 @@ void YTMSBinding::OnPushInstallPacket()
 
   Emit("pushPacket");
 }
-void YTMSBinding::OnPushConfigFile(const char* configFileId)
-{
+void YTMSBinding::OnPushConfigFile(const char* configFileId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = configFileId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, configFileId);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushConfigFile,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushConfigFile,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(configFileId)
-  {
+  if (configFileId) {
     Emit("pushConfig", configFileId);
     delete[] configFileId;
     configFileId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("pushConfig");
   }
 }
-void YTMSBinding::OnPushMessage(const char* message)
-{
+void YTMSBinding::OnPushMessage(const char* message) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = message;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, message);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushMessage,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushMessage,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(message)
-  {
+  if (message) {
     Emit("message", message);
     delete[] message;
     message = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("message");
   }
 }
-void YTMSBinding::OnPushUploadLog(const char* sessionId)
-{
+void YTMSBinding::OnPushUploadLog(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushUploadLog,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushUploadLog,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("uploadLog", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("uploadLog");
   }
 }
-void YTMSBinding::OnPushUploadConfig(const char* sessionId)
-{
+void YTMSBinding::OnPushUploadConfig(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushUploadConfig,
-                                     base::Unretained(this),
-                                     param));
+                                     base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("uploadConfig", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("uploadConfig");
   }
 }
-void YTMSBinding::OnPushStartCapture(const char* sessionId)
-{
+void YTMSBinding::OnPushStartCapture(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
     context->PostTask(FROM_HERE,
                       base::BindOnce(&YTMSBinding::OnPushStartCapture,
-                                     base::Unretained(this),
-                                     param));
+                                     base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("startCapture", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("startCapture");
   }
 }
-void YTMSBinding::OnPushStopCapture(const char* sessionId)
-{
+void YTMSBinding::OnPushStopCapture(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushStopCapture,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushStopCapture,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("stopCapture", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("stopCapture");
   }
 }
-void YTMSBinding::OnPushReregiste(const char* sessionId)
-{
+void YTMSBinding::OnPushReregiste(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushReregiste,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushReregiste,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("reregiste", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("reregiste");
   }
 }
-void YTMSBinding::OnPushReboot(const char* sessionId)
-{
+void YTMSBinding::OnPushReboot(const char* sessionId) {
   LOG(INFO) << __FUNCTIONW__;
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     std::string id = sessionId;
-    char *param = new char[id.size() + 1];
+    char* param = new char[id.size() + 1];
     strcpy(param, sessionId);
 
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&YTMSBinding::OnPushReboot,
-                                     base::Unretained(this),
-                                     param));
+    context->PostTask(FROM_HERE, base::BindOnce(&YTMSBinding::OnPushReboot,
+                                                base::Unretained(this), param));
     return;
   }
 
-  if(sessionId)
-  {
+  if (sessionId) {
     Emit("reboot", sessionId);
     delete[] sessionId;
     sessionId = nullptr;
-  }
-  else
-  {
+  } else {
     Emit("reboot");
   }
 }
 
-void YTMSBinding::OnProcessCompeleted(Promise promise, ProcessObserver* observer) {
-  if(observer)
-  {
-    int code = observer->bizCode() ? observer->bizCode() : observer->errorCode();
+void YTMSBinding::OnProcessCompeleted(Promise promise,
+                                      ProcessObserver* observer) {
+  if (observer) {
+    int code =
+        observer->bizCode() ? observer->bizCode() : observer->errorCode();
     std::move(promise).Resolve(code);
     delete observer;
     observer = nullptr;
-  }
-  else
-  {
+  } else {
     std::move(promise).Resolve(0);
   }
 }
@@ -329,8 +279,8 @@ v8::Local<v8::Promise> YTMSBinding::Start() {
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&YTMSBinding::DoStart, base::Unretained(this), observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
@@ -345,9 +295,10 @@ v8::Local<v8::Promise> YTMSBinding::Update(TerminalInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUpdate, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUpdate, base::Unretained(this), params,
+                     observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
@@ -397,9 +348,10 @@ v8::Local<v8::Promise> YTMSBinding::UploadAlarm(AlarmInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadAlarm, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUploadAlarm, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
@@ -423,13 +375,15 @@ v8::Local<v8::Promise> YTMSBinding::UploadFeedBack(FeedbackInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadFeedBack, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUploadFeedBack, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
-void YTMSBinding::DoUploadFeedBack(FeedbackInfo params, ProcessObserver* observer) {
+void YTMSBinding::DoUploadFeedBack(FeedbackInfo params,
+                                   ProcessObserver* observer) {
   YtmsFeedback config;
 
   config.title = params.title.c_str();
@@ -450,9 +404,10 @@ v8::Local<v8::Promise> YTMSBinding::UploadEvent(EventInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadEvent, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUploadEvent, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
@@ -480,13 +435,15 @@ v8::Local<v8::Promise> YTMSBinding::UploadConfig(mate::Arguments* args) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadConfig, base::Unretained(this), body, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUploadConfig, base::Unretained(this), body,
+                     observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
-void YTMSBinding::DoUploadConfig(std::string params, ProcessObserver* observer) {
+void YTMSBinding::DoUploadConfig(std::string params,
+                                 ProcessObserver* observer) {
   ytms_agent_->UploadConfig(params.c_str(), observer);
 }
 
@@ -497,9 +454,10 @@ v8::Local<v8::Promise> YTMSBinding::UploadLog(UploadLogInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadLog, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoUploadLog, base::Unretained(this), params,
+                     observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
@@ -560,13 +518,15 @@ v8::Local<v8::Promise> YTMSBinding::DownloadFile(DownloadInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoDownloadFile, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoDownloadFile, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
-void YTMSBinding::DoDownloadFile(DownloadInfo params, ProcessObserver* observer) {
+void YTMSBinding::DoDownloadFile(DownloadInfo params,
+                                 ProcessObserver* observer) {
   yealink::DownloadInfo config;
 
   config.url = params.url.c_str();
@@ -584,13 +544,15 @@ v8::Local<v8::Promise> YTMSBinding::StartCapture(NetCaptureInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoStartCapture, base::Unretained(this), params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoStartCapture, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }
-void YTMSBinding::DoStartCapture(NetCaptureInfo params, ProcessObserver* observer) {
+void YTMSBinding::DoStartCapture(NetCaptureInfo params,
+                                 ProcessObserver* observer) {
   YtmsNetLog config;
 
   config.captureDeviceName = params.device_id.c_str();
@@ -614,9 +576,10 @@ v8::Local<v8::Promise> YTMSBinding::StopCapture(mate::Arguments* args) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoStopCapture, base::Unretained(this), sessionId, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
-                     base::Unretained(this), std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::DoStopCapture, base::Unretained(this),
+                     sessionId, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted, base::Unretained(this),
+                     std::move(promise), observer));
 
   return handle;
 }

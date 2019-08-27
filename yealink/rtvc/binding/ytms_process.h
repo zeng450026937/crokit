@@ -7,29 +7,30 @@
 
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/api/ytms_info.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
-#include "yealink/rtvc/api/ytms_info.h"
 
 namespace yealink {
 
 namespace rtvc {
 
-class ProcessObserver : public YTMSProcess{
-  public :
-    ProcessObserver();
-    ~ProcessObserver();
+class ProcessObserver : public YTMSProcess {
+ public:
+  ProcessObserver();
+  ~ProcessObserver();
 
-    int bizCode();
-    int errorCode();
-  protected:
-    void SetBizCode(int code) override;
-    void SetErrorInfo(int code, const char* msg) override;
+  int bizCode();
+  int errorCode();
 
-  private:
-    int biz_code_;
-    int error_code_;
-    std::string msg;
+ protected:
+  void SetBizCode(int code) override;
+  void SetErrorInfo(int code, const char* msg) override;
+
+ private:
+  int biz_code_;
+  int error_code_;
+  std::string msg;
 };
 
 }  // namespace rtvc
