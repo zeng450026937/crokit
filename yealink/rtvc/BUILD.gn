@@ -151,6 +151,10 @@ node_addon("rtvc_binding") {
     "binding/audio_manager_binding.cc",
     "binding/video_manager_binding.h",
     "binding/video_manager_binding.cc",
+    "binding/ytms_binding.h",
+    "binding/ytms_binding.cc",
+    "binding/ytms_process.h",
+    "binding/ytms_process.cc",
   ]
   deps = [
     "//base",

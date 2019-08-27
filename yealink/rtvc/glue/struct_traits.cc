@@ -399,6 +399,69 @@ bool StructTraits<std::vector<ContactNode>>::From(
   return true;
 }
 
+// static
+// bool StructTraits<TerminalInfo>::From(TerminalInfo& out,
+//                                      const yealink::YtmsConfigInfo& val) {
+//   ConvertFrom(out.name, val.clientName);
+//   ConvertFrom(out.type, val.clientType);
+//   ConvertFrom(out.category, val.clientCategory);
+//   ConvertFrom(out.model, val.clientModel);
+//   ConvertFrom(out.version, val.clientVersion);
+//   ConvertFrom(out.arch, val.clientArch);
+//   ConvertFrom(out.update_channel, val.updateChannel);
+//   ConvertFrom(out.custom_id, val.customId);
+//   ConvertFrom(out.config_id, val.configFileId);
+//   ConvertFrom(out.remarks, val.clientRemarks);
+
+//   ConvertFrom(out.device_model, val.model);
+//   ConvertFrom(out.device_resolution, val.resolution);
+//   ConvertFrom(out.device_os, val.os);
+//   ConvertFrom(out.device_ip, val.ip);
+//   ConvertFrom(out.device_mac, val.mac);
+//   ConvertFrom(out.device_hostname, val.hostname);
+//   ConvertFrom(out.device_cpu, val.cpu);
+//   ConvertFrom(out.device_memory, val.memory);
+
+//   ConvertFrom(out.account, val.userAccount);
+//   ConvertFrom(out.display_name, val.userName);
+//   ConvertFrom(out.server_type, val.userServerType);
+//   ConvertFrom(out.server_address, val.userServerAddress);
+//   ConvertFrom(out.server_domain, val.userDomain);
+//   ConvertFrom(out.server_outbound, val.userOutbound);
+
+//   ConvertFrom(out.enterprise_domain, val.enterpriseDomain);
+//   ConvertFrom(out.enterprise_id, val.enterpriseId);
+//   ConvertFrom(out.enterprise_name, val.enterpriseName);
+
+//   return true;
+// }
+
+// static
+bool StructTraits<PackageInfo>::From(PackageInfo& out,
+                                     const yealink::PackageInfo& val) {
+  ConvertFrom(out.version, val.clientVersion);
+  ConvertFrom(out.date, val.releaseDate);
+  ConvertFrom(out.note, val.releaseNote);
+  ConvertFrom(out.name, val.fileName);
+  ConvertFrom(out.url, val.fileUrl);
+  ConvertFrom(out.md5, val.fileMd5);
+  ConvertFrom(out.size, val.fileSize);
+  ConvertFrom(out.force_update, val.forceUpdate);
+
+  return true;
+}
+
+// static
+bool StructTraits<ConfigurationInfo>::From(ConfigurationInfo& out,
+                                     const yealink::ConfigFileInfo& val) {
+  ConvertFrom(out.id, val.configId);
+  ConvertFrom(out.name, val.configName);
+  ConvertFrom(out.url, val.downloadUrl);
+  ConvertFrom(out.md5, val.fileMd5);
+
+  return true;
+}
+
 }  // namespace rtvc
 
 }  // namespace yealink

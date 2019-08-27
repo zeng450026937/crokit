@@ -7,10 +7,12 @@
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/schedule_item.h"
+#include "yealink/rtvc/api/ytms_info.h"
 
 #include "yealink/libvc/include/access/access_define.h"
 #include "yealink/libvc/include/contact/cloud_contact_type.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
+#include "yealink/libvc/include/ytms/ytms_define.h"
 
 namespace yealink {
 
@@ -194,6 +196,20 @@ struct StructTraits<std::vector<ContactNode>> {
                    const yealink::Array<yealink::CloudNodeInfo>& val);
 };
 
+template <>
+struct StructTraits<TerminalInfo> {
+  static bool From(TerminalInfo& out, const yealink::YtmsConfigInfo& val);
+};
+
+template <>
+struct StructTraits<PackageInfo> {
+  static bool From(PackageInfo& out, const yealink::PackageInfo& val);
+};
+
+template <>
+struct StructTraits<ConfigurationInfo> {
+  static bool From(ConfigurationInfo& out, const yealink::ConfigFileInfo& val);
+};
 }  // namespace rtvc
 
 }  // namespace yealink

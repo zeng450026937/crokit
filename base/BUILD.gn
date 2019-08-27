@@ -50,7 +50,7 @@ declare_args() {
   is_unsafe_developer_build = !is_official_build
 
   # Set to true to disable COM init check hooks.
-  com_init_check_hook_disabled = false
+  com_init_check_hook_disabled = true
 
   # Set to true to enable mutex priority inheritance. See the comments in
   # LockImpl::PriorityInheritanceAvailable() in lock_impl_posix.cc for the
