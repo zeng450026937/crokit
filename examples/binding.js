@@ -6,6 +6,10 @@ try {
   console.log(error);
 }
 
+if (global.window) {
+  window.binding = binding;
+}
+
 console.log(binding);
 console.log(binding.version);
 

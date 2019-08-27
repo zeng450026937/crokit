@@ -12,13 +12,16 @@ namespace yealink {
 
 namespace rtvc {
 
-UvTaskRunner::UvTaskRunner(uv_loop_t* loop) : loop_(loop) {}
+UvTaskRunner::UvTaskRunner(uv_loop_t* loop) : uv_loop_(loop) {
+  uv_async_init(uv_loop_, &dummy_uv_handle_, nullptr);
+}
 
 UvTaskRunner::~UvTaskRunner() {
   for (auto& iter : tasks_) {
     uv_unref(reinterpret_cast<uv_handle_t*>(iter.first));
     delete iter.first;
   }
+  uv_close(reinterpret_cast<uv_handle_t*>(&dummy_uv_handle_), nullptr);
 }
 
 bool UvTaskRunner::PostDelayedTask(const base::Location& from_here,
@@ -26,9 +29,11 @@ bool UvTaskRunner::PostDelayedTask(const base::Location& from_here,
                                    base::TimeDelta delay) {
   auto* timer = new uv_timer_t;
   timer->data = this;
-  uv_timer_init(loop_, timer);
+  uv_timer_init(uv_loop_, timer);
   uv_timer_start(timer, UvTaskRunner::OnTimeout, delay.InMilliseconds(), 0);
   tasks_[timer] = std::move(task);
+  // needed in electron renderer process to awake uv loop
+  uv_async_send(&dummy_uv_handle_);
   return true;
 }
 

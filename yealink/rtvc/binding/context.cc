@@ -96,10 +96,10 @@ void Context::Initialize(v8::Isolate* isolate,
       base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
 
   message_loop_.reset(new base::MessageLoop);
-  message_loop_->SetTaskRunner(high_priority_task_runner_);
+  message_loop_->SetTaskRunner(task_runner_);
 
   if (!base::ThreadTaskRunnerHandle::IsSet()) {
-    base::ThreadTaskRunnerHandle handle(high_priority_task_runner_);
+    base::ThreadTaskRunnerHandle handle(task_runner_);
   }
 
   base::TaskScheduler::CreateAndStartWithDefaultParams("rtvc");
@@ -131,9 +131,8 @@ void Context::RegisterDestructionCallback(base::OnceClosure callback) {
   destructors_.insert(destructors_.begin(), std::move(callback));
 }
 
-scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner(
-    bool high_priority) {
-  return high_priority ? high_priority_task_runner_ : task_runner_;
+scoped_refptr<base::SingleThreadTaskRunner> Context::GetTaskRunner() {
+  return task_runner_;
 }
 
 bool Context::CalledOnValidThread() {
@@ -142,7 +141,7 @@ bool Context::CalledOnValidThread() {
 
 void Context::PostTask(const base::Location& from_here,
                        base::OnceClosure task) {
-  high_priority_task_runner_->PostDelayedTask(from_here, std::move(task),
+  task_runner_->PostDelayedTask(from_here, std::move(task),
                                               base::TimeDelta());
 }
 void Context::PostDelayedTask(const base::Location& from_here,

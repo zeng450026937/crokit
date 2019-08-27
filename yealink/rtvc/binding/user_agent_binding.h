@@ -2,7 +2,6 @@
 #define YEALINK_RTVC_BINDING_USER_AGENT_BINDING_H_
 
 #include "base/memory/weak_ptr.h"
-#include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/user_agent.h"
 #include "yealink/rtvc/binding/event_emitter.h"
@@ -69,10 +68,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   bool registered_ = false;
   std::unique_ptr<Promise> register_promise_;
 
-  struct SIPClientDeleter {
-    void operator()(yealink::SIPClient* c) { yealink::RealseSIPClient(c); }
-  };
-  std::unique_ptr<yealink::SIPClient, SIPClientDeleter> sip_client_;
+  yealink::SIPClient* sip_client_;
   base::WeakPtrFactory<yealink::SIPClient> sip_client_weak_factory_;
   std::unique_ptr<SIPPoller> sip_poller_;
 

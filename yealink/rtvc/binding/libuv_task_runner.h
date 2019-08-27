@@ -1,7 +1,7 @@
 #ifndef YEALINK_RTVC_BINDING_LIBUV_TASK_RUNNER_H_
 #define YEALINK_RTVC_BINDING_LIBUV_TASK_RUNNER_H_
 
-#include <vector>
+#include <queue>
 
 #include "base/bind.h"
 #include "base/macros.h"
@@ -74,7 +74,7 @@ class LibuvTaskRunner : public base::SingleThreadTaskRunner {
   uv_loop_t* loop_;
   LibuvRunnerType runner_type_;
   std::unique_ptr<Runner> runner_;
-  std::vector<DeferredTask> deferred_tasks_queue_;
+  std::queue<DeferredTask> deferred_tasks_queue_;
 
   DISALLOW_COPY_AND_ASSIGN(LibuvTaskRunner);
 };

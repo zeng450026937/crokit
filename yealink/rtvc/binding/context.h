@@ -28,8 +28,7 @@ class Context {
 
   void RegisterDestructionCallback(base::OnceClosure callback);
 
-  scoped_refptr<base::SingleThreadTaskRunner> GetTaskRunner(
-      bool high_priority = false);
+  scoped_refptr<base::SingleThreadTaskRunner> GetTaskRunner();
 
   bool CalledOnValidThread();
 

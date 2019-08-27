@@ -31,7 +31,8 @@ class UvTaskRunner : public base::SingleThreadTaskRunner {
   static void OnTimeout(uv_timer_t* timer);
   static void OnClose(uv_handle_t* handle);
 
-  uv_loop_t* loop_;
+  uv_loop_t* uv_loop_;
+  uv_async_t dummy_uv_handle_;
 
   std::map<uv_timer_t*, base::OnceClosure> tasks_;
 

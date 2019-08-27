@@ -59,7 +59,7 @@ class LibuvTaskRunner::TimerRunner : public LibuvTaskRunner::Runner {
       : delegate_(delegate), loop_(loop), timer_(nullptr) {
     delegate_ = nullptr;
     timer_ = new uv_timer_t;
-    timer_->data = this;
+    timer_->data = delegate;
     uv_timer_init(loop_, timer_);
     ::uv_timer_start(
         timer_,
@@ -99,31 +99,41 @@ LibuvTaskRunner::~LibuvTaskRunner() = default;
 bool LibuvTaskRunner::PostDelayedTask(const base::Location& from_here,
                                       base::OnceClosure task,
                                       base::TimeDelta delay) {
-  base::AutoLock lock(lock_);
+  bool acquired = lock_.Try();
+
   QueueDeferredTask(from_here, std::move(task), delay,
                     false /* is_non_nestable */);
   EnsureTaskRunner();
+
+  if (acquired) {
+    lock_.Release();
+  }
   return true;
 }
 bool LibuvTaskRunner::PostNonNestableDelayedTask(
     const base::Location& from_here,
     base::OnceClosure task,
     base::TimeDelta delay) {
-  base::AutoLock lock(lock_);
+  bool acquired = lock_.Try();
+
   QueueDeferredTask(from_here, std::move(task), delay,
                     true /* is_non_nestable */);
   EnsureTaskRunner();
+
+  if (acquired) {
+    lock_.Release();
+  }
   return true;
 }
 
 void LibuvTaskRunner::RunPendingTasks() {
-  base::AutoLock lock(lock_);
-
-  for (auto& task : deferred_tasks_queue_) {
-    std::move(task.task).Run();
+  while (true) {
+    base::AutoLock lock(lock_);
+    if (deferred_tasks_queue_.empty())
+      break;
+    std::move(deferred_tasks_queue_.front().task).Run();
+    deferred_tasks_queue_.pop();
   }
-
-  deferred_tasks_queue_.clear();
 
   runner_.reset();
 }
@@ -156,7 +166,7 @@ void LibuvTaskRunner::QueueDeferredTask(const base::Location& from_here,
   deferred_task.task = std::move(task);
   deferred_task.delay = delay;
   deferred_task.is_non_nestable = is_non_nestable;
-  deferred_tasks_queue_.push_back(std::move(deferred_task));
+  deferred_tasks_queue_.push(std::move(deferred_task));
 }
 
 }  // namespace rtvc

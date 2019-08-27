@@ -29,7 +29,7 @@ async function test(binding, account) {
   // delete call;
   // delete userAgent;
 
-  call_test(binding, userAgent);
+  // call_test(binding, userAgent);
 }
 
 module.exports = test;

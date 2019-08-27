@@ -2,6 +2,7 @@
 
 #include "base/logging.h"
 #include "base/task/post_task.h"
+#include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/context.h"
@@ -53,7 +54,7 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    UserAgent::Config config)
     : config_(std::move(config)),
       sip_client_(yealink::CreateSIPClient()),
-      sip_client_weak_factory_(sip_client_.get()),
+      sip_client_weak_factory_(sip_client_),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
 
@@ -78,8 +79,12 @@ UserAgentBinding::~UserAgentBinding() {
   UnRegister();
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
-  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
-                                                   sip_client_.release());
+  Context::Instance()->PostTask(FROM_HERE,
+                                base::BindOnce(
+                                    [](yealink::SIPClient* sip_client) {
+                                      yealink::RealseSIPClient(sip_client);
+                                    },
+                                    sip_client_));
 };
 
 std::string UserAgentBinding::workspace_folder() {
