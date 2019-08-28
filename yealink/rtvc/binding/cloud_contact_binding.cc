@@ -177,9 +177,8 @@ void CloudContactBinding::OnUpdateFinished() {
   }
 
   if (sync_promise_) {
-    sync_promise_->Resolve();
-    sync_promise_.reset();
-    // isolate()->RunMicrotasks();
+    std::unique_ptr<Promise> promise(sync_promise_.release());
+    promise->Resolve();
   }
 }
 void CloudContactBinding::OnEnableStatusChanged(bool available) {
