@@ -207,7 +207,7 @@ void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
   profile.strPassword = turn.strPassword;
   profile.nUDPPort = turn.nUDPPort;
   profile.nTCPPort = turn.nTCPPort;
-  Context::Instance()->GetMedia()->SetICEProfile(profile, false);
+  // Context::Instance()->GetMedia()->SetICEProfile(profile, false);
 }
 
 }  // namespace rtvc

@@ -31,6 +31,7 @@ export interface ConferenceDescription {
   readonly attendeeByPass: string;
   readonly lobbyCapable: string;
   readonly joinUrl: string;
+  readonly confInfoUrl: string;
   readonly autopromote: string;
   readonly serverMode: string;
   readonly hideOsd: string;
@@ -40,6 +41,7 @@ export interface ConferenceDescription {
   readonly planId: string;
   readonly speechMode: string;
   readonly recordServerType: string;
+  readonly recordPrivilege: string;
   readonly forwardEnabled: string;
   readonly enterpriseId: string;
 

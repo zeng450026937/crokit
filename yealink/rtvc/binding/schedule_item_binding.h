@@ -2,6 +2,7 @@
 #define YEALINK_RTVC_BINDING_SCHEDULE_ITEM_BINDING_H_
 
 #include "base/memory/weak_ptr.h"
+#include "base/optional.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
@@ -56,13 +57,16 @@ class ScheduleItemBinding : public mate::Wrappable<ScheduleItemBinding> {
   int64_t monthOfYear();
 
   v8::Local<v8::Promise> GetDetail();
+  v8::Local<v8::Promise> GetMailTemplate();
 
  private:
   void DoGetDetail();
+  void DoGetMailTemplate();
 
   yealink::ScheduleItem schedule_item_;
   ScheduleItem properties_;
   std::unique_ptr<ScheduleItemDetail> details_;
+  base::Optional<std::string> mail_template_;
 
   base::WeakPtrFactory<ScheduleItemBinding> weak_factory_;
 };

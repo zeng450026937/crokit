@@ -49,7 +49,8 @@ void ScheduleItemBinding::BuildPrototype(
       .SetProperty("dayOfWeekIndex", &ScheduleItemBinding::dayOfWeekIndex)
       .SetProperty("dayOfMonth", &ScheduleItemBinding::dayOfMonth)
       .SetProperty("monthOfYear", &ScheduleItemBinding::monthOfYear)
-      .SetMethod("getDetail", &ScheduleItemBinding::GetDetail);
+      .SetMethod("getDetail", &ScheduleItemBinding::GetDetail)
+      .SetMethod("getMailTemplate", &ScheduleItemBinding::GetMailTemplate);
 }
 
 ScheduleItemBinding::ScheduleItemBinding(v8::Isolate* isolate,
@@ -153,8 +154,34 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetDetail() {
   return handle;
 }
 
+v8::Local<v8::Promise> ScheduleItemBinding::GetMailTemplate() {
+  if (mail_template_) {
+    return Promise::ResolvedPromise(isolate(), mail_template_.value_or(""));
+  }
+
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  base::PostTaskAndReply(FROM_HERE,
+                         base::BindOnce(&ScheduleItemBinding::DoGetMailTemplate,
+                                        weak_factory_.GetWeakPtr()),
+                         base::BindOnce(
+                             [](Promise promise, base::Optional<std::string>* mail_template) {
+                               std::move(promise).Resolve(mail_template->value());
+                             },
+                             std::move(promise), &mail_template_));
+
+  return handle;
+}
+
 void ScheduleItemBinding::DoGetDetail() {
   ConvertFrom(*details_, schedule_item_.GetDetailInfo());
+  ConvertFrom(details_->share_link, schedule_item_.GetShareLink());
+}
+void ScheduleItemBinding::DoGetMailTemplate() {
+  std::string mail_template;
+  ConvertFrom(mail_template, schedule_item_.GetMailTemplate());
+  mail_template_ = mail_template;
 }
 
 }  // namespace rtvc

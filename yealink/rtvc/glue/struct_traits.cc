@@ -361,7 +361,7 @@ bool StructTraits<ContactNodeType>::From(
 // static
 bool StructTraits<ContactNode>::From(ContactNode& out,
                                      const yealink::CloudNodeInfo& val) {
-  ConvertFrom(out.id, val.nodeId);
+  ConvertFrom(out.uid, val.nodeId);
   ConvertFrom(out.type, val.type);
   ConvertFrom(out.parentId, val.parentID);
   ConvertFrom(out.childCounts,

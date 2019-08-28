@@ -667,6 +667,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemDetail>::ToV8(
     v8::Isolate* isolate,
     const yealink::rtvc::ScheduleItemDetail& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("shareLink", val.share_link);
   dict.Set("remark", val.remark);
   dict.Set("organizer", val.organizer);
   dict.Set("participants", val.participants);
@@ -682,6 +683,7 @@ bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
+  dict.Get("shareLink", &(out->share_link));
   dict.Get("remark", &(out->remark));
   dict.Get("organizer", &(out->organizer));
   dict.Get("participants", &(out->participants));

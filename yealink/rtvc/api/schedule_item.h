@@ -111,6 +111,7 @@ struct ScheduleRTMP {
 };
 
 struct ScheduleItemDetail {
+  std::string share_link;
   std::string remark;
   ScheduleMember organizer;
   std::vector<ScheduleMember> participants;
