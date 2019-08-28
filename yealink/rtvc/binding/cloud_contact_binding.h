@@ -40,6 +40,7 @@ class CloudContactBinding : public mate::EventEmitter<CloudContactBinding>,
 
   ContactNode GetNode(std::string nodeId);
   std::vector<ContactNode> GetNodeChild(std::string nodeId, bool recursive);
+  uint64_t GetNodeChildCounts(std::string nodeId, bool recursive);
 
   // CloudContactObserver impl
   void OnUpdating() override;

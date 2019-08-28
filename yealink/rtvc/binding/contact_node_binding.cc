@@ -49,7 +49,7 @@ mate::Handle<ContactNodeBinding> ContactNodeBinding::Create(
 void ContactNodeBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "ContactNode"));
+  // prototype->SetClassName(mate::StringToV8(isolate, "ContactNode"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetProperty("uid", &ContactNodeBinding::uid)

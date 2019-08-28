@@ -5,14 +5,14 @@
 #include "base/optional.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/native_mate/handle.h"
-#include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/schedule_item.h"
+#include "yealink/rtvc/binding/trackable_object.h"
 
 namespace yealink {
 
 namespace rtvc {
 
-class ScheduleItemBinding : public mate::Wrappable<ScheduleItemBinding> {
+class ScheduleItemBinding : public mate::TrackableObject<ScheduleItemBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -22,6 +22,8 @@ class ScheduleItemBinding : public mate::Wrappable<ScheduleItemBinding> {
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
+
+  void UpdateWith(yealink::ScheduleItem schedule_item);
 
  protected:
   ScheduleItemBinding(v8::Isolate* isolate,

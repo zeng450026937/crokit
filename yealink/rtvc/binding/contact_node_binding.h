@@ -1,7 +1,6 @@
 #ifndef YEALINK_RTVC_BINDING_CONTACT_NODE_BINDING_H_
 #define YEALINK_RTVC_BINDING_CONTACT_NODE_BINDING_H_
 
-#include "base/supports_user_data.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/binding/trackable_object.h"
@@ -10,8 +9,7 @@ namespace yealink {
 
 namespace rtvc {
 
-class ContactNodeBinding : public mate::TrackableObject<ContactNodeBinding>,
-                           public base::SupportsUserData {
+class ContactNodeBinding : public mate::TrackableObject<ContactNodeBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 

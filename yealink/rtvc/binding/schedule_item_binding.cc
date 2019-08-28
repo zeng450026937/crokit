@@ -1,15 +1,34 @@
 #include "yealink/rtvc/binding/schedule_item_binding.h"
 
 #include "base/logging.h"
+#include "base/strings/string_number_conversions.h"
 #include "base/task/post_task.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
+namespace std {
+
+template <>
+struct hash<yealink::ScheduleItem> {
+  size_t operator()(const yealink::ScheduleItem& item) const {
+    std::string hash;
+    yealink::rtvc::ConvertFrom(hash, item.GetPlanId());
+    hash = hash + base::IntToString(item.GetSequence());
+    return std::hash<std::string>()(hash);
+  }
+};
+
+}  // namespace std
+
 namespace yealink {
 
 namespace rtvc {
+
+namespace {
+static std::unordered_map<size_t, int32_t> g_uid_map_;
+}  // namespace
 
 mate::WrappableBase* ScheduleItemBinding::New(mate::Arguments* args) {
   return new ScheduleItemBinding(args->isolate(), args->GetThis());
@@ -19,6 +38,24 @@ mate::WrappableBase* ScheduleItemBinding::New(mate::Arguments* args) {
 mate::Handle<ScheduleItemBinding> ScheduleItemBinding::Create(
     v8::Isolate* isolate,
     yealink::ScheduleItem schedule_item) {
+  auto iter =
+      g_uid_map_.find(std::hash<yealink::ScheduleItem>()(schedule_item));
+
+  if (iter == g_uid_map_.end()) {
+    return mate::CreateHandle(isolate,
+                              new ScheduleItemBinding(isolate, schedule_item));
+  }
+
+  int32_t weak_map_id = iter->second;
+
+  auto binding = mate::TrackableObject<ScheduleItemBinding>::FromWeakMapID(
+      isolate, weak_map_id);
+
+  if (binding) {
+    binding->UpdateWith(schedule_item);
+    return mate::CreateHandle(isolate, binding);
+  }
+
   return mate::CreateHandle(isolate,
                             new ScheduleItemBinding(isolate, schedule_item));
 }
@@ -27,7 +64,7 @@ mate::Handle<ScheduleItemBinding> ScheduleItemBinding::Create(
 void ScheduleItemBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "ScheduleItem"));
+  // prototype->SetClassName(mate::StringToV8(isolate, "ScheduleItem"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetProperty("planId", &ScheduleItemBinding::planId)
@@ -57,6 +94,8 @@ ScheduleItemBinding::ScheduleItemBinding(v8::Isolate* isolate,
                                          yealink::ScheduleItem schedule_item)
     : schedule_item_(std::move(schedule_item)), weak_factory_(this) {
   Init(isolate);
+  g_uid_map_.emplace(std::hash<yealink::ScheduleItem>()(schedule_item_),
+                     weak_map_id_);
   ConvertFrom(properties_, schedule_item_.GetSimpleInfo());
 }
 
@@ -64,8 +103,15 @@ ScheduleItemBinding::ScheduleItemBinding(v8::Isolate* isolate,
                                          v8::Local<v8::Object> wrapper)
     : weak_factory_(this) {
   InitWith(isolate, wrapper);
+  g_uid_map_.emplace(std::hash<yealink::ScheduleItem>()(schedule_item_),
+                     weak_map_id_);
 }
 ScheduleItemBinding::~ScheduleItemBinding() {}
+
+void ScheduleItemBinding::UpdateWith(yealink::ScheduleItem schedule_item) {
+  schedule_item_ = schedule_item;
+  ConvertFrom(properties_, schedule_item_.GetSimpleInfo());
+}
 
 std::string ScheduleItemBinding::planId() {
   return properties_.planId;
@@ -162,14 +208,15 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetMailTemplate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  base::PostTaskAndReply(FROM_HERE,
-                         base::BindOnce(&ScheduleItemBinding::DoGetMailTemplate,
-                                        weak_factory_.GetWeakPtr()),
-                         base::BindOnce(
-                             [](Promise promise, base::Optional<std::string>* mail_template) {
-                               std::move(promise).Resolve(mail_template->value());
-                             },
-                             std::move(promise), &mail_template_));
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleItemBinding::DoGetMailTemplate,
+                     weak_factory_.GetWeakPtr()),
+      base::BindOnce(
+          [](Promise promise, base::Optional<std::string>* mail_template) {
+            std::move(promise).Resolve(mail_template->value());
+          },
+          std::move(promise), &mail_template_));
 
   return handle;
 }

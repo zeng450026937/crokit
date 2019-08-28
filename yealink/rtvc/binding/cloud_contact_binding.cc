@@ -127,6 +127,10 @@ v8::Local<v8::Promise> CloudContactBinding::Search(std::string keyword,
   v8::Local<v8::Promise> handle = promise.GetHandle();
   std::vector<ContactNode>* result = new std::vector<ContactNode>();
 
+  if (limit <= 0) {
+    limit = std::numeric_limits<int>::max();
+  }
+
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&CloudContactBinding::DoSearch, weak_factory_.GetWeakPtr(),
@@ -153,6 +157,13 @@ std::vector<ContactNode> CloudContactBinding::GetNodeChild(std::string nodeId,
               contact_manager_->GetSubNodeInfo(nodeId.c_str(), recursive, 0, 0,
                                                yealink::CC_NODE_ALL));
   return child;
+}
+
+uint64_t CloudContactBinding::GetNodeChildCounts(std::string nodeId,
+                                                 bool recursive) {
+  yealink::CloudSubNodeInfo child = contact_manager_->GetSubNodeInfo(
+      nodeId.c_str(), recursive, 0, 0, yealink::CC_NODE_ALL);
+  return child.total;
 }
 
 void CloudContactBinding::OnUpdating() {
