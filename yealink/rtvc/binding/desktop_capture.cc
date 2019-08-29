@@ -3,7 +3,7 @@
 #include "base/feature_list.h"
 #include "build/build_config.h"
 
-namespace content {
+namespace yealink {
 namespace desktop_capture {
 
 webrtc::DesktopCaptureOptions CreateDesktopCaptureOptions() {
@@ -47,4 +47,4 @@ std::unique_ptr<webrtc::DesktopCapturer> CreateWindowCapturer() {
 }
 
 }  // namespace desktop_capture
-}  // namespace content
+}  // namespace yealink

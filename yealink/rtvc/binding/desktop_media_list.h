@@ -83,6 +83,7 @@ class DesktopMediaList {
 
   virtual int GetSourceCount() const = 0;
   virtual const Source& GetSource(int index) const = 0;
+  virtual const std::vector<Source>& GetSources() const = 0;
 
   virtual DesktopMediaID::Type GetMediaListType() const = 0;
 };

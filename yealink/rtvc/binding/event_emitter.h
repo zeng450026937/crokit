@@ -54,7 +54,7 @@ class EventEmitter : public Wrappable<T> {
   // this.emit(name, new Event(), args...);
   template <typename... Args>
   bool Emit(const base::StringPiece& name, Args&&... args) {
-    v8::Locker locker(isolate());
+    // v8::Locker locker(isolate());
     v8::HandleScope handle_scope(isolate());
     v8::Local<v8::Object> wrapper = GetWrapper();
     if (wrapper.IsEmpty()) {
@@ -73,8 +73,8 @@ class EventEmitter : public Wrappable<T> {
   bool EmitWithEvent(const base::StringPiece& name,
                      v8::Local<v8::Object> event,
                      Args&&... args) {
-    yealink::rtvc::Context::Instance()->CalledOnValidThread();
-    v8::Locker locker(isolate());
+    DCHECK(yealink::rtvc::Context::Instance()->CalledOnValidThread());
+    // v8::Locker locker(isolate());
     v8::HandleScope handle_scope(isolate());
     EmitEvent(isolate(), GetWrapper(), name, event,
               std::forward<Args>(args)...);

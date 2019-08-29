@@ -9,6 +9,7 @@
 #include "yealink/rtvc/binding/cloud_contact_binding.h"
 #include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/context.h"
+#include "yealink/rtvc/binding/desktop_capture_binding.h"
 #include "yealink/rtvc/binding/local_contact_binding.h"
 #include "yealink/rtvc/binding/schedule_binding.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
@@ -24,6 +25,7 @@ using yealink::rtvc::BootstrapBinding;
 using yealink::rtvc::CallBinding;
 using yealink::rtvc::CloudContactBinding;
 using yealink::rtvc::ConnectorBinding;
+using yealink::rtvc::DesktopCaptureBinding;
 using yealink::rtvc::LocalContactBinding;
 using yealink::rtvc::ScheduleBinding;
 using yealink::rtvc::UserAgentBinding;
@@ -52,6 +54,12 @@ void Initialize(v8::Local<v8::Object> exports,
   v8_util.SetMethod("requestGarbageCollectionForTesting",
                     &yealink::rtvc::RequestGarbageCollectionForTesting);
   dict.Set("v8Util", v8_util);
+
+  DesktopCaptureBinding::SetConstructor(isolate,
+                                   base::BindRepeating(&DesktopCaptureBinding::New));
+  dict.Set("DesktopCapture", DesktopCaptureBinding::GetConstructor(isolate)
+                            ->GetFunction(context)
+                            .ToLocalChecked());
 
   UserAgentBinding::SetConstructor(isolate,
                                    base::BindRepeating(&UserAgentBinding::New));
@@ -104,11 +112,10 @@ void Initialize(v8::Local<v8::Object> exports,
                                ->GetFunction(context)
                                .ToLocalChecked());
 
-  YTMSBinding::SetConstructor(isolate,
-                              base::BindRepeating(&YTMSBinding::New));
+  YTMSBinding::SetConstructor(isolate, base::BindRepeating(&YTMSBinding::New));
   dict.Set("YTMS", YTMSBinding::GetConstructor(isolate)
-                            ->GetFunction(context)
-                            .ToLocalChecked());
+                       ->GetFunction(context)
+                       .ToLocalChecked());
 }
 
 }  // namespace

@@ -21,8 +21,8 @@ void DesktopMediaListBase::SetUpdatePeriod(base::TimeDelta period) {
   update_period_ = period;
 }
 
-void DesktopMediaListBase::SetThumbnailSize(const ThumbnailSize& thumbnail_size)
-{
+void DesktopMediaListBase::SetThumbnailSize(
+    const ThumbnailSize& thumbnail_size) {
   thumbnail_size_ = thumbnail_size;
 }
 
@@ -48,6 +48,11 @@ const DesktopMediaList::Source& DesktopMediaListBase::GetSource(
   return sources_[index];
 }
 
+const std::vector<DesktopMediaList::Source>& DesktopMediaListBase::GetSources()
+    const {
+  return sources_;
+}
+
 DesktopMediaID::Type DesktopMediaListBase::GetMediaListType() const {
   return type_;
 }
@@ -59,6 +64,12 @@ DesktopMediaListBase::SourceDescription::SourceDescription(
 
 void DesktopMediaListBase::UpdateSourcesList(
     const std::vector<SourceDescription>& new_sources) {
+  // Notify observer when there was no new source captured.
+  if (new_sources.empty()) {
+    observer_->OnSourceUnchanged(this);
+    return;
+  }
+
   typedef std::set<DesktopMediaID> SourceSet;
   SourceSet new_source_set;
   for (size_t i = 0; i < new_sources.size(); ++i) {
@@ -132,6 +143,8 @@ void DesktopMediaListBase::UpdateSourcesList(
 // }
 
 void DesktopMediaListBase::ScheduleNextRefresh() {
+  if (!observer_->ShouldScheduleNextRefresh(this))
+    return;
   base::ThreadTaskRunnerHandle::Get()->PostDelayedTask(
       FROM_HERE,
       base::BindOnce(&DesktopMediaListBase::Refresh,
