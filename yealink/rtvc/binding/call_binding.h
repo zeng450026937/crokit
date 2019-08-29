@@ -5,6 +5,10 @@
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/api/call.h"
+#include "yealink/rtvc/binding/conference_binding.h"
+#include "yealink/rtvc/binding/conference_state_binding.h"
+#include "yealink/rtvc/binding/conference_description_binding.h"
+#include "yealink/rtvc/binding/conference_view_binding.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
@@ -89,7 +93,14 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   void AsConference();
 
+  v8::Local<v8::Value> RoomController();
+  v8::Local<v8::Value> StateController();
+  v8::Local<v8::Value> DescController();
+
   void SetUserAgent(mate::Handle<UserAgentBinding> user_agent);
+
+  // event
+  void OnEstablished();
 
   // meeting observer impl
   void OnEvent(yealink::MeetingEventId id) override;
@@ -126,6 +137,15 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   std::map<int, VideoSinkV8*> remote_video_sinks_;
   std::map<int, VideoSinkV8*> remote_share_video_sinks_;
+
+  v8::Global<v8::Value> room_controller_v8_;
+  mate::Handle<ConferenceBinding> room_controller_;
+
+  v8::Global<v8::Value> state_controller_v8_;
+  mate::Handle<ConferenceStateBinding> state_controller_;
+
+  v8::Global<v8::Value> desc_controller_v8_;
+  mate::Handle<ConferenceDescriptionBinding> desc_controller_;
 };
 
 }  // namespace rtvc

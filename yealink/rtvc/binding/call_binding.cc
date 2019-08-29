@@ -53,6 +53,9 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetProperty("isEnded", &CallBinding::isEnded)
       .SetProperty("localSharing", &CallBinding::local_sharing)
       .SetProperty("remoteSharing", &CallBinding::remote_sharing)
+      .SetProperty("roomController", &CallBinding::RoomController)
+      .SetProperty("stateController", &CallBinding::StateController)
+      .SetProperty("descController", &CallBinding::DescController)
       .SetMethod("startShare", &CallBinding::StartShare)
       .SetMethod("stopShare", &CallBinding::StopShare)
       .SetMethod("setMediaBitrate", &CallBinding::SetMediaBitrate)
@@ -86,6 +89,9 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       remote_share_video_source_(new VideoSourceAdapter()) {
   InitWith(isolate, wrapper);
   meeting_->SetObserver(this);
+  room_controller_ = ConferenceBinding::Create(isolate, meeting_->Room());
+  state_controller_ = ConferenceStateBinding::Create(isolate, meeting_->Room());
+  desc_controller_ = ConferenceDescriptionBinding::Create(isolate, meeting_->Room());
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -255,8 +261,43 @@ void CallBinding::SetConferenceAware(bool enable) {}
 
 void CallBinding::AsConference() {}
 
+v8::Local<v8::Value> CallBinding::RoomController() {
+  if (room_controller_v8_.IsEmpty()) {
+    room_controller_v8_.Reset(isolate(), room_controller_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), room_controller_v8_);
+}
+
+v8::Local<v8::Value> CallBinding::StateController() {
+  if (state_controller_v8_.IsEmpty()) {
+    state_controller_v8_.Reset(isolate(), state_controller_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), state_controller_v8_);
+}
+
+v8::Local<v8::Value> CallBinding::DescController() {
+  if (desc_controller_v8_.IsEmpty()) {
+    desc_controller_v8_.Reset(isolate(), desc_controller_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), desc_controller_v8_);
+}
+
 void CallBinding::SetUserAgent(mate::Handle<UserAgentBinding> user_agent) {
   user_agent_ = user_agent->GetWeakPtr();
+}
+
+void CallBinding::OnEstablished() {
+  LOG(INFO) << __FUNCTIONW__;
+
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&CallBinding::OnEstablished,
+                                     base::Unretained(this)));
+    return;
+  }
+
+  Emit("established");
 }
 
 void CallBinding::OnEvent(yealink::MeetingEventId id) {
@@ -332,6 +373,9 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
   meeting_info_ = info;
 }
 void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
+  OnEstablished();
+  room_controller_->UpdateRoomController(controller);
+  state_controller_->UpdateRoomController(controller);
 }
 void CallBinding::OnRealseConferenceBefore(
     yealink::RoomController* controller) {}

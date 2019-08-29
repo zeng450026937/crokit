@@ -23,41 +23,6 @@ async function test(binding, userAgent) {
 
   const sink = {
     onFrame(frame) {
-      console.log('onFrame', frame.width, frame.height)
-
-      console.log(frame);
-      console.log(frame.width);
-      console.log(frame.height);
-      console.log(frame.size);
-      console.log(frame.buffer);
-
-      const i420Buffer = frame.buffer;
-      const i420Buffer2 = frame.buffer;
-
-      console.log(i420Buffer == i420Buffer2);
-      console.log(i420Buffer === i420Buffer2);
-
-      console.log(i420Buffer);
-      console.log(i420Buffer.type);
-      console.log(i420Buffer.width);
-      console.log(i420Buffer.height);
-      console.log(i420Buffer.chromaWidth);
-      console.log(i420Buffer.chromaHeight);
-      console.log(i420Buffer.strideY);
-      console.log(i420Buffer.strideU);
-      console.log(i420Buffer.strideV);
-      console.log(i420Buffer.dataY);
-      console.log(i420Buffer.dataU);
-      console.log(i420Buffer.dataV);
-      console.log(i420Buffer.toI420());
-      console.log(i420Buffer.getI420());
-      console.log(i420Buffer.getI420A());
-      console.log(i420Buffer.getI444());
-
-      console.log(i420Buffer == i420Buffer.toI420());
-      console.log(i420Buffer === i420Buffer.getI420());
-      console.log(i420Buffer == i420Buffer.getI420());
-      console.log(i420Buffer === i420Buffer.getI420());
     },
   };
 
@@ -68,14 +33,56 @@ async function test(binding, userAgent) {
 
   const call = new Call(userAgent);
 
-  call.connect('sip:223504.1090@onylyun.com');
+  //console.warn(call.descController);
+  //console.warn(call.descController);
+  //console.warn(call.descController);
+
+  // console.warn(call.roomController);
+  // console.warn(call.roomController);
+  // console.warn(call.roomController);
+
+  // console.warn(call.stateController.active);
+  // console.warn(call.stateController.lock);
+
+  // call.on('established', () => {
+  //   console.warn('call state established');
+
+  //   console.warn(call.stateController);
+  //   console.warn(call.stateController);
+  //   console.warn(call.stateController);
+
+  //   //console.warn(call.stateController);
+  //   //console.warn(call.roomController);
+  // })
+
+  //console.warn('node test log-1', call.roomController);
+  //console.warn('node test log-2', call.descController);
+
+  // call.on('established', () => {
+  //   console.warn('node test log', call.descController);
+  //   console.warn('node test log', call.descController.profile);
+
+  //   console.warn('node test log', call.stateController);
+  //   console.warn('node test log', call.stateController.active);
+  //   console.warn('node test log', call.stateController.lock);
+  // });
+
+  call.connect('sip:58972@223504.onylyun.com;transport=tls');
   call.setRemoteVideoSink(sink);
+
+  console.warn('node test log', call.roomController);
+
+  while(1)
+  {
+    console.warn('node test log', call);
+    console.warn('node test log', call.roomController);
+  }
 
   setTimeout(() => {
     call.hangup();
     videoManager.videoInputDevice = null;
     userAgent.unregister();
-  }, 10000);
+  }, 60 * 1000);
 }
 
 module.exports = test;

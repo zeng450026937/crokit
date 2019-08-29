@@ -1,7 +1,7 @@
 
 declare_args() {
   node_host_binary = "node"
-  node_build = false
+  node_build = true
 }
 
 node_addon_configs = [

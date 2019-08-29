@@ -12,7 +12,7 @@ async function test(binding) {
   const bootstrap = new Bootstrap('01234567890123456789012345678912');
 
   bootstrap.server = 'https://onylyun.com';
-  bootstrap.username = '223504.1091';
+  bootstrap.username = '223504.1066';
   bootstrap.password = 'v123456789';
 
   console.log('authenticate()');
