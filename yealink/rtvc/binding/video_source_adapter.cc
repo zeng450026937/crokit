@@ -40,8 +40,8 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
 
   if (type == VideoRawDataType::VIDEO_RAW_DATA_I420) {
     auto y_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kYPlane);
-    auto u_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kYPlane);
-    auto v_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kYPlane);
+    auto u_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kUPlane);
+    auto v_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kVPlane);
     auto i420_buffer = I420BufferImpl::Copy(
         frame.Width(), frame.Height(), (uint8_t*)y_plane.data, y_plane.stride,
         (uint8_t*)u_plane.data, u_plane.stride, (uint8_t*)v_plane.data,

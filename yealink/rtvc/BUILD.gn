@@ -119,6 +119,8 @@ node_addon("rtvc_binding") {
     "binding/video_sink_v8.cc",
     "binding/video_source_v8.h",
     "binding/video_source_v8.cc",
+    "binding/desktop_capture_binding.h",
+    "binding/desktop_capture_binding.cc",
     "binding/bootstrap_binding.h",
     "binding/bootstrap_binding.cc",
     "binding/connector_binding.h",
@@ -167,5 +169,6 @@ node_addon("rtvc_binding") {
     ":rtvc_lib",
     ":rtvc_glue",
     ":desktop_media",
+    "//third_party/webrtc/modules/desktop_capture",
   ]
 }

@@ -28,23 +28,23 @@ void VideoManagerBinding::BuildPrototype(
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("enumerateDevices", &VideoManagerBinding::EnumerateDevices)
-      .SetMethod("enumerateScreenDevices",
-                 &VideoManagerBinding::EnumerateScreenDevices)
-      .SetMethod("enumerateWindowDevices",
-                 &VideoManagerBinding::EnumerateWindowDevices)
       .SetMethod("videoInputDeviceList",
                  &VideoManagerBinding::videoInputDeviceList)
-      .SetMethod("screenDeviceList", &VideoManagerBinding::screenDeviceList)
-      .SetMethod("windowDeviceList", &VideoManagerBinding::windowDeviceList)
       .SetProperty("videoInputDevice", &VideoManagerBinding::videoInputDevice,
                    &VideoManagerBinding::setVideoInputDevice)
       .SetProperty("secondaryVideoInputDevice",
                    &VideoManagerBinding::secondaryVideoInputDevice,
                    &VideoManagerBinding::setSecondaryVideoInputDevice)
       .SetMethod("setRotation", &VideoManagerBinding::SetRotation)
+      .SetMethod("acquireStream", &VideoManagerBinding::AcquireStream)
+      .SetMethod("releaseStream", &VideoManagerBinding::ReleaseStream)
       .SetMethod("setLocalVideoSink", &VideoManagerBinding::SetLocalVideoSink)
+      .SetMethod("removeLocalVideoSink",
+                 &VideoManagerBinding::RemoveLocalVideoSink)
       .SetMethod("setLocalShareVideoSink",
-                 &VideoManagerBinding::SetLocalShareVideoSink);
+                 &VideoManagerBinding::SetLocalShareVideoSink)
+      .SetMethod("removeLocalShareVideoSink",
+                 &VideoManagerBinding::RemoveLocalShareVideoSink);
 }
 
 VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate,
@@ -55,7 +55,9 @@ VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate,
   InitWith(isolate, wrapper);
   media_->SetVideoCameraDeviceRender(local_video_source_.get());
 }
-VideoManagerBinding::~VideoManagerBinding() = default;
+VideoManagerBinding::~VideoManagerBinding() {
+  media_->SetVideoCameraDeviceRender(nullptr);
+}
 
 void VideoManagerBinding::EnumerateDevices() {
   MediaDeviceInfo devices[kMaxVideoDeviceCout] = {};
@@ -73,20 +75,9 @@ void VideoManagerBinding::EnumerateDevices() {
     video_input_device_list_.emplace_back(device);
   }
 }
-void VideoManagerBinding::EnumerateScreenDevices() {}
-void VideoManagerBinding::EnumerateWindowDevices() {}
 
 std::vector<Device> VideoManagerBinding::videoInputDeviceList() {
   return video_input_device_list_;
-};
-
-std::vector<Device> VideoManagerBinding::screenDeviceList() {
-  LOG(INFO) << __FUNCTIONW__;
-  return std::vector<Device>();
-};
-std::vector<Device> VideoManagerBinding::windowDeviceList() {
-  LOG(INFO) << __FUNCTIONW__;
-  return std::vector<Device>();
 };
 
 base::Optional<Device> VideoManagerBinding::videoInputDevice() {
@@ -96,9 +87,8 @@ void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
   if (!device) {
     // isolate()->ThrowException(v8::Exception::Error(
     //     mate::StringToV8(isolate(), "Invalid device argument.")));
-    if (media_->SetCamera(nullptr, false))
-      video_input_device_ = device;
-
+    media_->SetCamera(nullptr, false);
+    video_input_device_ = device;
     return;
   }
 
@@ -108,8 +98,11 @@ void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
     return;
   }
 
-  if (media_->SetCamera(device->deviceId.c_str(), false))
-    video_input_device_ = device;
+  video_input_device_ = device;
+
+  if (acquiring_stream_) {
+    media_->SetCamera(device->deviceId.c_str(), false);
+  }
 };
 
 base::Optional<Device> VideoManagerBinding::secondaryVideoInputDevice() {
@@ -137,6 +130,17 @@ void VideoManagerBinding::SetRotation(int degree, bool is_secondary) {
   media_->SetCameraOrientation(degree);
 };
 
+void VideoManagerBinding::AcquireStream() {
+  acquiring_stream_ = true;
+  if (video_input_device_) {
+    media_->SetCamera(video_input_device_->deviceId.c_str(), false);
+  }
+}
+void VideoManagerBinding::ReleaseStream() {
+  acquiring_stream_ = false;
+  media_->SetCamera(nullptr, false);
+}
+
 void VideoManagerBinding::SetLocalVideoSink(mate::PersistentDictionary sink) {
   if (sink.GetHandle()->IsNullOrUndefined()) {
     for (auto it : local_video_sinks_) {
@@ -153,13 +157,48 @@ void VideoManagerBinding::SetLocalVideoSink(mate::PersistentDictionary sink) {
   local_video_source_->AddOrUpdateSink(sink_v8);
   local_video_sinks_.emplace(hash, sink_v8);
 };
+
+void VideoManagerBinding::RemoveLocalVideoSink(mate::Dictionary sink) {
+  if (sink.GetHandle()->IsNullOrUndefined())
+    return;
+
+  int hash = sink.GetHandle()->GetIdentityHash();
+  auto it = local_video_sinks_.find(hash);
+  if (it != local_video_sinks_.end()) {
+    local_video_source_->RemoveSink(it->second);
+    delete it->second;
+    local_video_sinks_.erase(it);
+  }
+}
+
 void VideoManagerBinding::SetLocalShareVideoSink(
     mate::PersistentDictionary sink) {
+  if (sink.GetHandle()->IsNullOrUndefined()) {
+    for (auto it : local_share_video_sinks_) {
+      local_share_video_source_->RemoveSink(it.second);
+      delete it.second;
+    }
+    local_share_video_sinks_.clear();
+    return;
+  }
   int hash = sink.GetHandle()->GetIdentityHash();
   VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-  local_video_source_->AddOrUpdateSink(sink_v8);
+  local_share_video_source_->AddOrUpdateSink(sink_v8);
   local_share_video_sinks_.emplace(hash, sink_v8);
 };
+
+void VideoManagerBinding::RemoveLocalShareVideoSink(mate::Dictionary sink) {
+  if (sink.GetHandle()->IsNullOrUndefined())
+    return;
+
+  int hash = sink.GetHandle()->GetIdentityHash();
+  auto it = local_share_video_sinks_.find(hash);
+  if (it != local_share_video_sinks_.end()) {
+    local_share_video_source_->RemoveSink(it->second);
+    delete it->second;
+    local_share_video_sinks_.erase(it);
+  }
+}
 
 }  // namespace rtvc
 

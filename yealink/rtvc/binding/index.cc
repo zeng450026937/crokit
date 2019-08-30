@@ -72,6 +72,8 @@ void Initialize(v8::Local<v8::Object> exports,
                        ->GetFunction(context)
                        .ToLocalChecked());
 
+  AudioManagerBinding::SetConstructor(
+      isolate, base::BindRepeating(&AudioManagerBinding::New));
   dict.Set("AudioManager", AudioManagerBinding::GetConstructor(isolate)
                                ->GetFunction(context)
                                .ToLocalChecked());

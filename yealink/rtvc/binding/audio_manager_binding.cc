@@ -15,6 +15,16 @@ const int kMaxAudioDeviceCout = 10;
 }  // namespace
 
 // static
+mate::WrappableBase* AudioManagerBinding::New(mate::Arguments* args) {
+  return new AudioManagerBinding(args->isolate(), args->GetThis());
+}
+// static
+mate::Handle<AudioManagerBinding> AudioManagerBinding::Create(
+    v8::Isolate* isolate) {
+  return mate::CreateHandle(isolate, new AudioManagerBinding(isolate));
+}
+
+// static
 void AudioManagerBinding::BuildPrototype(
     v8::Isolate* isolate,
     v8::Local<v8::FunctionTemplate> prototype) {
@@ -33,8 +43,16 @@ void AudioManagerBinding::BuildPrototype(
                    &AudioManagerBinding::SetAGC)
       .SetProperty("recording", &AudioManagerBinding::recording,
                    &AudioManagerBinding::SetRecording)
+      .SetMethod("setRecording", &AudioManagerBinding::SetRecording)
       .SetProperty("playback", &AudioManagerBinding::playback,
                    &AudioManagerBinding::SetPlayback)
+      .SetMethod("setPlayback", &AudioManagerBinding::SetPlayback)
+      .SetProperty("desktopRecording", &AudioManagerBinding::desktop_recording,
+                   &AudioManagerBinding::SetDesktopRecording)
+      .SetMethod("setDesktopRecording",
+                 &AudioManagerBinding::SetDesktopRecording)
+      .SetMethod("restartDesktopRecording",
+                 &AudioManagerBinding::RestartDesktopRecording)
       .SetMethod("enumerateDevices", &AudioManagerBinding::EnumerateDevices)
       .SetMethod("audioInputDeviceList",
                  &AudioManagerBinding::audioInputDeviceList)
@@ -46,18 +64,35 @@ void AudioManagerBinding::BuildPrototype(
                    &AudioManagerBinding::SetAudioOutputDevice)
       .SetMethod("playTone", &AudioManagerBinding::PlayTone)
       .SetMethod("startPlayFile", &AudioManagerBinding::StartPlayFile)
-      .SetMethod("stopPlayFile", &AudioManagerBinding::StopPlayFile);
+      .SetMethod("stopPlayFile", &AudioManagerBinding::StopPlayFile)
+      .SetMethod("requestAudioVolume", &AudioManagerBinding::RequestAudioVolume)
+      .SetMethod("builtInAECIsAvailable",
+                 &AudioManagerBinding::BuiltInAECIsAvailable)
+      .SetMethod("builtInAGCIsAvailable",
+                 &AudioManagerBinding::BuiltInAGCIsAvailable)
+      .SetMethod("builtInNSIsAvailable",
+                 &AudioManagerBinding::BuiltInNSIsAvailable)
+      .SetMethod("enableBuiltInAEC", &AudioManagerBinding::EnableBuiltInAEC)
+      .SetMethod("enableBuiltInAGC", &AudioManagerBinding::EnableBuiltInAGC)
+      .SetMethod("enableBuiltInNS", &AudioManagerBinding::EnableBuiltInNS);
 }
 
 AudioManagerBinding::AudioManagerBinding(v8::Isolate* isolate)
     : media_(Context::Instance()->GetMedia()) {
   Init(isolate);
 }
+AudioManagerBinding::AudioManagerBinding(v8::Isolate* isolate,
+                                         v8::Local<v8::Object> wrapper)
+    : media_(Context::Instance()->GetMedia()) {
+  InitWith(isolate, wrapper);
+}
+
 AudioManagerBinding::~AudioManagerBinding() = default;
 
 int AudioManagerBinding::volume() {
   return media_->GetVolume();
 }
+
 void AudioManagerBinding::SetVolume(int volume) {
   media_->SetVolume(volume);
 }
@@ -65,6 +100,7 @@ void AudioManagerBinding::SetVolume(int volume) {
 bool AudioManagerBinding::mute() {
   return media_->IsMute();
 }
+
 void AudioManagerBinding::SetMute(bool mute) {
   media_->Mute(mute);
 }
@@ -72,20 +108,23 @@ void AudioManagerBinding::SetMute(bool mute) {
 bool AudioManagerBinding::ans() {
   return media_->GetEnableANS();
 }
+
 void AudioManagerBinding::SetANS(bool enable) {
   media_->SetEnableANS(enable);
 }
 
 bool AudioManagerBinding::aec() {
-  return false;
+  return media_->GetEnableAEC();
 }
+
 void AudioManagerBinding::SetAEC(bool enable) {
-  LOG(INFO) << __FUNCTIONW__ << " No Impl";
+  media_->SetEnableAEC(enable);
 }
 
 bool AudioManagerBinding::agc() {
   return media_->GetEnableAGC();
 }
+
 void AudioManagerBinding::SetAGC(bool enable) {
   media_->SetEnableAGC(enable);
 }
@@ -93,6 +132,7 @@ void AudioManagerBinding::SetAGC(bool enable) {
 bool AudioManagerBinding::recording() {
   return media_->IsAudioRecording();
 }
+
 void AudioManagerBinding::SetRecording(bool enable) {
   if (enable)
     media_->StartAudioRecord();
@@ -103,11 +143,28 @@ void AudioManagerBinding::SetRecording(bool enable) {
 bool AudioManagerBinding::playback() {
   return media_->IsAudioPlaying();
 }
+
 void AudioManagerBinding::SetPlayback(bool enable) {
   if (enable)
     media_->StartAudioPlayout();
   else
     media_->StartAudioPlayout();
+}
+
+bool AudioManagerBinding::desktop_recording() {
+  return media_->IsAudioPlaying();
+}
+
+void AudioManagerBinding::SetDesktopRecording(bool enable) {
+  media_->EnableSoundShare(enable);
+}
+
+void AudioManagerBinding::RestartDesktopRecording() {
+  media_->RestartSoundShare();
+}
+
+void AudioManagerBinding::SetAudioMode(AudioMode mode) {
+  media_->SetAudioMode(static_cast<yealink::AudioMode>(mode));
 }
 
 void AudioManagerBinding::EnumerateDevices() {
@@ -142,6 +199,7 @@ void AudioManagerBinding::EnumerateDevices() {
 std::vector<Device> AudioManagerBinding::audioInputDeviceList() {
   return audio_input_device_list_;
 }
+
 std::vector<Device> AudioManagerBinding::audioOutputDeviceList() {
   return audio_output_device_list_;
 }
@@ -149,6 +207,7 @@ std::vector<Device> AudioManagerBinding::audioOutputDeviceList() {
 base::Optional<Device> AudioManagerBinding::audioInputDevice() {
   return audio_input_device_;
 }
+
 void AudioManagerBinding::SetAudioInputDevice(base::Optional<Device> device) {
   if (!device) {
     isolate()->ThrowException(v8::Exception::Error(
@@ -169,6 +228,7 @@ void AudioManagerBinding::SetAudioInputDevice(base::Optional<Device> device) {
 base::Optional<Device> AudioManagerBinding::audioOutputDevice() {
   return audio_output_device_;
 }
+
 void AudioManagerBinding::SetAudioOutputDevice(base::Optional<Device> device) {
   if (!device) {
     isolate()->ThrowException(v8::Exception::Error(
@@ -186,18 +246,46 @@ void AudioManagerBinding::SetAudioOutputDevice(base::Optional<Device> device) {
     audio_output_device_ = device;
 }
 
-// TODO:
-// move these(blow) api out of this class
 void AudioManagerBinding::PlayTone(std::string tone) {
   for (char s : tone) {
     media_->PlayTone(s);
   }
 }
+
 void AudioManagerBinding::StartPlayFile(std::string path) {
   media_->PlayRingFile(path.c_str(), false);
 }
+
 void AudioManagerBinding::StopPlayFile() {
   media_->StopPlayRing();
+}
+
+uint64_t AudioManagerBinding::RequestAudioVolume() {
+  return media_->GetRecentVolume();
+}
+
+bool AudioManagerBinding::BuiltInAECIsAvailable() {
+  return media_->BuiltInAECIsAvailable();
+}
+
+bool AudioManagerBinding::BuiltInAGCIsAvailable() {
+  return media_->BuiltInAGCIsAvailable();
+}
+
+bool AudioManagerBinding::BuiltInNSIsAvailable() {
+  return media_->BuiltInNSIsAvailable();
+}
+
+void AudioManagerBinding::EnableBuiltInAEC(bool enable) {
+  media_->EnableBuiltInAEC(enable);
+}
+
+void AudioManagerBinding::EnableBuiltInAGC(bool enable) {
+  media_->EnableBuiltInAGC(enable);
+}
+
+void AudioManagerBinding::EnableBuiltInNS(bool enable) {
+  media_->EnableBuiltInNS(enable);
 }
 
 }  // namespace rtvc

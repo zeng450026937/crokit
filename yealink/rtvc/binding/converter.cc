@@ -2,6 +2,44 @@
 
 namespace mate {
 
+v8::Local<v8::Value> Converter<yealink::rtvc::AudioMode>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::AudioMode val) {
+  std::string audio_mode;
+  switch (val) {
+    case yealink::rtvc::AudioMode::kIdle:
+      audio_mode = "kIdle";
+      break;
+    case yealink::rtvc::AudioMode::kHandset:
+      audio_mode = "kHandset";
+      break;
+    case yealink::rtvc::AudioMode::kHandsetFree:
+      audio_mode = "kHandsetFree";
+      break;
+  }
+  return ConvertToV8(isolate, audio_mode);
+}
+
+bool Converter<yealink::rtvc::AudioMode>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::AudioMode* out) {
+  std::string audio_mode;
+  if (!ConvertFromV8(isolate, val, &audio_mode))
+    return false;
+
+  if (audio_mode == "kHandset")
+    *out = yealink::rtvc::AudioMode::kHandset;
+  else if (audio_mode == "kHandsetFree")
+    *out = yealink::rtvc::AudioMode::kHandsetFree;
+  else if (audio_mode == "kIdle")
+    *out = yealink::rtvc::AudioMode::kIdle;
+  else
+    return false;
+
+  return true;
+}
+
 v8::Local<v8::Value> Converter<yealink::rtvc::DeviceType>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::DeviceType val) {

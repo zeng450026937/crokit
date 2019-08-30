@@ -12,7 +12,7 @@ async function test(binding, connector) {
 
   console.log('sync()');
 
-  await cloud_contact.sync();
+  await cloud_contact.sync().then(() => console.log('synced'));
 
   console.log('synced: ', cloud_contact.synced);
   console.log('loadMode: ', cloud_contact.loadMode);
@@ -21,7 +21,26 @@ async function test(binding, connector) {
   const rootId = cloud_contact.rootId;
   const rootNode = cloud_contact.getNode(rootId);
 
-  console.log('rootNode: ', rootNode);
+  console.log('rootNode: ', rootNode, rootNode.toString());
+
+  if (global.window) {
+    window.node = rootNode;
+  }
+
+  for (const key in rootNode) {
+    console.log(key, rootNode[key]);
+  }
+
+  rootNode.xx = 'xx';
+
+  // contact node is cached by uid
+  const reRootNode = cloud_contact.getNode(rootId);
+
+  console.log('reRootNode: ', reRootNode);
+
+  for (const key in rootNode) {
+    console.log(key, rootNode[key]);
+  }
 
   console.log('constructor()');
 
@@ -122,6 +141,10 @@ async function test(binding, connector) {
   node = local_contact.findById(uid);
 
   console.log('node:', node);
+
+
+  // cloud_contact.destroy();
+  // local_contact.destroy();
 }
 
 module.exports = test;

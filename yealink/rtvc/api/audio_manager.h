@@ -11,6 +11,12 @@ namespace yealink {
 
 namespace rtvc {
 
+enum class AudioMode {
+  kIdle = 0,
+  kHandsetFree,
+  kHandset,
+};
+
 class AudioManager {
  public:
   static AudioManager* Instance();

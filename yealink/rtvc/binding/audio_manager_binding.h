@@ -14,14 +14,16 @@ namespace rtvc {
 
 class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
  public:
-  static mate::Handle<AudioManagerBinding> Create(v8::Isolate* isolate) {
-    return mate::CreateHandle(isolate, new AudioManagerBinding(isolate));
-  }
+  static mate::WrappableBase* New(mate::Arguments* args);
+
+  static mate::Handle<AudioManagerBinding> Create(v8::Isolate* isolate);
+
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
  protected:
   AudioManagerBinding(v8::Isolate* isolate);
+  AudioManagerBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~AudioManagerBinding() override;
 
   int volume();
@@ -45,6 +47,15 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
   bool playback();
   void SetPlayback(bool enable);
 
+  bool desktop_recording();
+  void SetDesktopRecording(bool enable);
+  // Restart desktop recording without changing record state. As desktop
+  // recording always capture the default audio output device, invoke when
+  // device changed.
+  void RestartDesktopRecording();
+
+  void SetAudioMode(AudioMode mode);
+
   void EnumerateDevices();
 
   std::vector<Device> audioInputDeviceList();
@@ -59,6 +70,18 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
   void PlayTone(std::string tone);
   void StartPlayFile(std::string path);
   void StopPlayFile();
+  
+  // calc input audio volume
+  uint64_t RequestAudioVolume();
+
+  // used in android device
+  // should not touch this interface
+  bool BuiltInAECIsAvailable();
+  bool BuiltInAGCIsAvailable();
+  bool BuiltInNSIsAvailable();
+  void EnableBuiltInAEC(bool enable);
+  void EnableBuiltInAGC(bool enable);
+  void EnableBuiltInNS(bool enable);
 
  private:
   yealink::Media* media_;

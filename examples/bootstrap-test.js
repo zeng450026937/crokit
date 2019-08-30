@@ -2,6 +2,8 @@ const useragent_test = require('./useragent-test');
 const schedule_test = require('./schedule-test');
 const contact_test = require('./contact-test');
 
+let g_bootstrp = null;
+
 async function test(binding) {
   console.log('Bootstrap test');
 
@@ -9,7 +11,7 @@ async function test(binding) {
 
   console.log('constructor()');
 
-  const bootstrap = new Bootstrap('01234567890123456789012345678912');
+  const bootstrap = g_bootstrp = new Bootstrap('01234567890123456789012345678912');
 
   bootstrap.server = 'https://onylyun.com';
   bootstrap.username = '223504.1091';
@@ -22,7 +24,7 @@ async function test(binding) {
   console.log('authenticated', accountList)
 
   const [ account ] = accountList;
-  const uid = account.uid;
+  const id = account.id;
   const username = account.number;
   const password = bootstrap.password;
   const domain = account.enterprise.domain;
@@ -33,11 +35,11 @@ async function test(binding) {
 
   console.log('getConnector()');
 
-  const connector = bootstrap.getConnector(uid);
+  const connector = bootstrap.getConnector(id);
 
   useragent_test(binding, {username, password, domain});
-  // schedule_test(binding, connector);
-  // contact_test(binding, connector);
+  schedule_test(binding, connector);
+  contact_test(binding, connector);
 }
 
 module.exports = test;

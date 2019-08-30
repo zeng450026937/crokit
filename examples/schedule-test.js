@@ -11,7 +11,7 @@ async function test(binding, connector) {
   const start = new Date();
   const end = new Date();
 
-  start.setHours(start.getHours() - 7 * 24);
+  start.setHours(start.getHours() - 10 * 24);
   end.setHours(start.getHours() + 7 * 24);
 
   console.log(new Date(), start, end);
@@ -26,6 +26,8 @@ async function test(binding, connector) {
   console.log(list);
 
   const item = list[0];
+
+  if (!item) return;
 
   console.log('\nItem:');
   for (const key in item) {

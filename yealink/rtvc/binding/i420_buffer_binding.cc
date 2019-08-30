@@ -97,21 +97,21 @@ int I420BufferBinding::StrideV() {
 
 v8::Local<v8::Value> I420BufferBinding::DataY() {
   const auto* data = reinterpret_cast<const void*>(impl_->DataY());
-  int length = impl_->StrideY();
+  int length = impl_->StrideY() * impl_->height();
   v8::Local<v8::ArrayBuffer> array_buffer =
       v8::ArrayBuffer::New(isolate(), const_cast<void*>(data), length);
   return v8::Uint8Array::New(array_buffer, 0, length);
 }
 v8::Local<v8::Value> I420BufferBinding::DataU() {
   const auto* data = reinterpret_cast<const void*>(impl_->DataU());
-  int length = impl_->StrideY();
+  int length = impl_->StrideU() * impl_->ChromaHeight();
   v8::Local<v8::ArrayBuffer> array_buffer =
       v8::ArrayBuffer::New(isolate(), const_cast<void*>(data), length);
   return v8::Uint8Array::New(array_buffer, 0, length);
 }
 v8::Local<v8::Value> I420BufferBinding::DataV() {
   const auto* data = reinterpret_cast<const void*>(impl_->DataV());
-  int length = impl_->StrideY();
+  int length = impl_->StrideV() * impl_->ChromaHeight();
   v8::Local<v8::ArrayBuffer> array_buffer =
       v8::ArrayBuffer::New(isolate(), const_cast<void*>(data), length);
   return v8::Uint8Array::New(array_buffer, 0, length);

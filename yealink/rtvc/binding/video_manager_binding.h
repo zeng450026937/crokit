@@ -30,13 +30,8 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   ~VideoManagerBinding() override;
 
   void EnumerateDevices();
-  void EnumerateScreenDevices();
-  void EnumerateWindowDevices();
 
   std::vector<Device> videoInputDeviceList();
-
-  std::vector<Device> screenDeviceList();
-  std::vector<Device> windowDeviceList();
 
   base::Optional<Device> videoInputDevice();
   void setVideoInputDevice(base::Optional<Device> device);
@@ -46,8 +41,14 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
 
   void SetRotation(int degree, bool is_secondary = false);
 
+  void AcquireStream();
+  void ReleaseStream();
+
   void SetLocalVideoSink(mate::PersistentDictionary sink);
+  void RemoveLocalVideoSink(mate::Dictionary sink);
+
   void SetLocalShareVideoSink(mate::PersistentDictionary sink);
+  void RemoveLocalShareVideoSink(mate::Dictionary sink);
 
  private:
   yealink::Media* media_;
@@ -55,6 +56,8 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   std::vector<Device> video_input_device_list_;
   base::Optional<Device> video_input_device_;
   base::Optional<Device> secondary_video_input_device_;
+
+  bool acquiring_stream_ = false;
 
   std::unique_ptr<VideoSourceAdapter> local_video_source_;
   std::unique_ptr<VideoSourceAdapter> local_share_video_source_;

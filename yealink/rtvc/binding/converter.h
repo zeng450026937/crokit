@@ -13,6 +13,7 @@
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_source.h"
 #include "yealink/rtvc/api/ytms_info.h"
+#include "yealink/rtvc/api/audio_manager.h"
 
 #include "yealink/libvc/include/components/base/simplelib/simple_array.hpp"
 #include "yealink/libvc/include/components/base/simplelib/simple_string.hpp"
@@ -113,6 +114,16 @@ struct Converter<yealink::Array<T>> {
     }
     return true;
   }
+};
+
+template <>
+struct Converter<yealink::rtvc::AudioMode> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::AudioMode val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::AudioMode* out);
 };
 
 template <>
