@@ -50,8 +50,10 @@ class Context {
 
  private:
   bool initialized_ = false;
-  base::ThreadChecker thread_checker_;
-    // List of callbacks should be executed before destroying JS env.
+  // we use thread checker to impl CalledOnValidThread as
+  // libuv/uv task runner always return true
+  base::ThreadCheckerImpl thread_checker_;
+  // List of callbacks should be executed before destroying JS env.
   std::list<base::OnceClosure> destructors_;
   std::unique_ptr<base::AtExitManager> at_exit_;
   std::unique_ptr<base::MessageLoop> message_loop_;

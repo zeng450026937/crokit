@@ -186,6 +186,10 @@ void DesktopCaptureBinding::OnSourceUnchanged(DesktopMediaList* list) {
 
 bool DesktopCaptureBinding::ShouldScheduleNextRefresh(DesktopMediaList* list) {
   UpdateSourcesList(list);
+  if (!capture_window_ && window_capturer_)
+    window_capturer_.reset();
+  if (!capture_screen_ && screen_capturer_)
+    screen_capturer_.reset();
   return false;
 }
 
