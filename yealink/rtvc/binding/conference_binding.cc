@@ -33,7 +33,9 @@ void ConferenceBinding::BuildPrototype(
       .MakeDestroyable()
       .SetMethod("connect", &ConferenceBinding::Connect)
       .SetMethod("disconnect", &ConferenceBinding::Disconnect)
-      //.SetProperty("state", &ConferenceBinding::State)
+      .SetProperty("description", &ConferenceBinding::Description)
+      .SetProperty("view", &ConferenceBinding::View)
+      .SetProperty("state", &ConferenceBinding::State)
       .SetProperty("isInProgress", &ConferenceBinding::isInProgress)
       .SetProperty("isEstablished", &ConferenceBinding::isEstablished)
       .SetProperty("isEnded", &ConferenceBinding::isEnded)
@@ -43,21 +45,26 @@ void ConferenceBinding::BuildPrototype(
                    &ConferenceBinding::isChatChannelEstablished);
 }
 
-void ConferenceBinding::UpdateRoomController(RoomController* handler) {
-  room_controller_ = handler;
-
-  //state_->UpdateRoomController(handler);
+void ConferenceBinding::SetController(RoomController* controller) {
+  controller_ = controller;
 }
 
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
-                                     v8::Local<v8::Object> wrapper) {
+                                     v8::Local<v8::Object> wrapper)
+    : controller_(nullptr) {
   InitWith(isolate, wrapper);
 }
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
-                                     yealink::RoomController* controller) {
+                                     yealink::RoomController* controller)
+    : controller_(controller) {
   Init(isolate);
-  room_controller_ = controller;
-  // state_ = ConferenceStateBinding::Create(isolate, controller);
+
+  description_ = ConferenceDescriptionBinding::Create(isolate, controller_);
+  v8_description_.Reset(isolate, description_.ToV8());
+  // view_ = ConferenceViewBinding::Create(isolate, controller_);
+  // v8_view_.Reset(isolate, view_.ToV8());
+  state_ = ConferenceStateBinding::Create(isolate, controller_);
+  v8_state_.Reset(isolate, state_.ToV8());
 }
 
 ConferenceBinding::~ConferenceBinding() {
@@ -83,12 +90,27 @@ bool ConferenceBinding::isChatChannelEstablished() {
   return false;
 }
 
-// v8::Local<v8::Value> ConferenceBinding::State() {
-//   if (state_controller_.IsEmpty()) {
-//     state_controller_.Reset(isolate(), state_.ToV8());
-//   }
-//   return v8::Local<v8::Value>::New(isolate(), state_controller_);
-// }
+v8::Local<v8::Value> ConferenceBinding::Description() {
+  DCHECK(description_.get());
+  if (v8_description_.IsEmpty()) {
+    v8_description_.Reset(isolate(), description_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_description_);
+}
+v8::Local<v8::Value> ConferenceBinding::View() {
+  DCHECK(view_.get());
+  if (v8_view_.IsEmpty()) {
+    v8_view_.Reset(isolate(), view_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_view_);
+}
+v8::Local<v8::Value> ConferenceBinding::State() {
+  DCHECK(state_.get());
+  if (v8_state_.IsEmpty()) {
+    v8_state_.Reset(isolate(), state_.ToV8());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_state_);
+}
 
 }  // namespace rtvc
 

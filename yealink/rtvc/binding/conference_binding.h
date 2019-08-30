@@ -4,7 +4,9 @@
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/binding/event_emitter.h"
-
+#include "yealink/rtvc/binding/conference_state_binding.h"
+#include "yealink/rtvc/binding/conference_description_binding.h"
+#include "yealink/rtvc/binding/conference_view_binding.h"
 #include "yealink/libvc/include/room/room_controller.h"
 #include "yealink/libvc/include/room/room_observer.h"
 #include "yealink/rtvc/api/conference.h"
@@ -26,9 +28,11 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding> {
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateRoomController(RoomController* handler);
+  void SetController(RoomController* handler);
 
  protected:
+  friend class CallBinding;
+
   ConferenceBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ConferenceBinding(v8::Isolate* isolate, yealink::RoomController* controller);
   ~ConferenceBinding() override;
@@ -56,13 +60,21 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding> {
   // member, const Array<UserMediaInfo>& info) override; void
   // OnGetShareInfo(int64_t requestId, const char* shareInfo) override;
 
-  //v8::Local<v8::Value> State();
+  v8::Local<v8::Value> Description();
+  v8::Local<v8::Value> View();
+  v8::Local<v8::Value> State();
 
  private:
-  //v8::Global<v8::Value> state_controller_;
-  //mate::Handle<ConferenceStateBinding> state_;
+  RoomController* controller_;
 
-  RoomController* room_controller_;
+  v8::Global<v8::Value> v8_description_;
+  mate::Handle<ConferenceDescriptionBinding> description_;
+
+  v8::Global<v8::Value> v8_view_;
+  mate::Handle<ConferenceViewBinding> view_;
+
+  v8::Global<v8::Value> v8_state_;
+  mate::Handle<ConferenceStateBinding> state_;
 };
 
 }  // namespace rtvc
