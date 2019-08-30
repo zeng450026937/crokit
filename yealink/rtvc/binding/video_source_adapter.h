@@ -23,8 +23,6 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
 
  protected:
   std::set<VideoSink*> sinks_;
-
-  base::ThreadChecker thread_checker_;
 };
 
 }  // namespace rtvc

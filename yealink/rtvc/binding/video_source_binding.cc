@@ -22,7 +22,7 @@ VideoSourceBinding::VideoSourceBinding(v8::Isolate* isolate) {}
 VideoSourceBinding::~VideoSourceBinding() {}
 
 void VideoSourceBinding::OnFrame(const VideoFrame& frame) {
-  // DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
+  DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
   for (auto it : sinks_) {
     it.second->OnFrame(frame);
   }
