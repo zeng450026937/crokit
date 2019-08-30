@@ -126,7 +126,7 @@ void VideoManagerBinding::setSecondaryVideoInputDevice(
   secondary_video_input_device_ = device;
 };
 
-void VideoManagerBinding::SetRotation(int degree, bool is_secondary) {
+void VideoManagerBinding::SetRotation(uint64_t degree, bool is_secondary) {
   media_->SetCameraOrientation(degree);
 };
 

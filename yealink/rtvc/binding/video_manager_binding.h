@@ -39,7 +39,7 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   base::Optional<Device> secondaryVideoInputDevice();
   void setSecondaryVideoInputDevice(base::Optional<Device> device);
 
-  void SetRotation(int degree, bool is_secondary = false);
+  void SetRotation(uint64_t degree, bool is_secondary = false);
 
   void AcquireStream();
   void ReleaseStream();
