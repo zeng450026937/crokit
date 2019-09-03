@@ -68,9 +68,9 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
   void SetAudioOutputDevice(base::Optional<Device> device);
 
   void PlayTone(std::string tone);
-  void StartPlayFile(std::string path);
+  void StartPlayFile(std::string path, mate::Arguments* args);
   void StopPlayFile();
-  
+
   // calc input audio volume
   uint64_t RequestAudioVolume();
 

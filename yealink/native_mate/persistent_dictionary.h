@@ -14,6 +14,8 @@ namespace mate {
 // safely on heap.
 class PersistentDictionary : public Dictionary {
  public:
+  static PersistentDictionary CreateEmpty(v8::Isolate* isolate);
+
   PersistentDictionary();
   PersistentDictionary(v8::Isolate* isolate, v8::Local<v8::Object> object);
   PersistentDictionary(const PersistentDictionary& other);

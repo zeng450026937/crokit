@@ -9,6 +9,7 @@
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
+#include "yealink/rtvc/binding/promise.h"
 
 namespace yealink {
 
@@ -17,40 +18,41 @@ namespace rtvc {
 class CallBinding : public mate::EventEmitter<CallBinding>,
                     public MeetingObserver {
  public:
-  static mate::WrappableBase* New(mate::Arguments* args);
+  static mate::WrappableBase* New(mate::Handle<UserAgentBinding> user_agent,
+                                  mate::Arguments* args);
 
   static mate::Handle<CallBinding> Create(
       v8::Isolate* isolate,
-      base::WeakPtr<UserAgentBinding> user_agent,
+      mate::Handle<UserAgentBinding> user_agent,
       bool incoming = true);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
+  yealink::Meeting* GetMeeting() { return meeting_.get(); };
+
  protected:
   CallBinding(v8::Isolate* isolate,
               v8::Local<v8::Object> wrapper,
               mate::Handle<UserAgentBinding> user_agent,
-              bool incoming);
+              bool incoming = false);
   CallBinding(v8::Isolate* isolate,
-              v8::Local<v8::Object> wrapper,
-              base::WeakPtr<UserAgentBinding> user_agent,
-              bool incoming);
-
-  CallBinding(v8::Isolate* isolate,
-              base::WeakPtr<UserAgentBinding> user_agent,
-              bool incoming);
+              mate::Handle<UserAgentBinding> user_agent,
+              bool incoming = true);
   ~CallBinding() override;
+
+  v8::Local<v8::Object> local_identity();
+  v8::Local<v8::Object> remote_identity();
 
   void Connect(std::string target, mate::Arguments* args);
   void Answer(mate::Arguments* args);
   void Hangup(mate::Arguments* args);
 
   void Forward(std::string target);
-  void Refer(std::string target);
-  void Replace(mate::Handle<CallBinding> call);
+  v8::Local<v8::Promise> Refer(std::string target);
+  v8::Local<v8::Promise> Replace(mate::Handle<CallBinding> call);
 
-  void Upgrade();
+  v8::Local<v8::Promise> Upgrade(mate::Arguments* args);
 
   void Hold();
   void Unhold();
@@ -68,9 +70,18 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   bool isInProgress();
   bool isEstablished();
   bool isEnded();
+  bool isRefering();
+  bool isReplacing();
+  bool isUpgrading();
 
   bool local_sharing();
   bool remote_sharing();
+
+  bool incoming() { return incoming_; }
+  bool outgoing() { return !incoming_; }
+
+  bool portrait_mode();
+  void SetPortraitMode(bool enable);
 
   void StartShare();
   void StopShare();
@@ -82,14 +93,19 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void SetLocalShareVideoSource(mate::PersistentDictionary source);
 
   void SetRemoteVideoSink(mate::PersistentDictionary sink);
+  void AddRemoteVideoSink(mate::PersistentDictionary sink);
+  void RemoveRemoteVideoSink(mate::PersistentDictionary sink);
+
   void SetRemoteShareVideoSink(mate::PersistentDictionary sink);
+  void AddRemoteShareVideoSink(mate::PersistentDictionary sink);
+  void RemoveRemoteShareVideoSink(mate::PersistentDictionary sink);
+
+  v8::Local<v8::Object> GetInfos();
 
   bool conference_aware();
   void SetConferenceAware(bool enable);
 
   void AsConference();
-
-  void SetUserAgent(mate::Handle<UserAgentBinding> user_agent);
 
   // meeting observer impl
   void OnEvent(yealink::MeetingEventId id) override;
@@ -101,8 +117,8 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void OnShareFrame(const yealink::VideoFrame& frame) override;
 
  private:
-  bool incoming() { return incoming_; }
-  bool outgoing() { return !incoming_; }
+  yealink::AVContentType GetContentType();
+  void ExtractInfo(yealink::MeetingInfo info);
 
   base::WeakPtr<UserAgentBinding> user_agent_;
   base::WeakPtr<yealink::SIPClient> sip_client_;
@@ -113,13 +129,22 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
     void operator()(yealink::Meeting* c) { yealink::ReleaseMeeting(c); }
   };
   std::unique_ptr<yealink::Meeting, MeetingDeleter> meeting_;
-
+  yealink::RoomController* controller_;
   yealink::MeetingInfo meeting_info_;
+
+  mate::PersistentDictionary local_identity_;
+  mate::PersistentDictionary remote_identity_;
+  mate::PersistentDictionary call_info_;
 
   CallState state_ = CallState::kNone;
   bool local_sharing_ = false;
   bool remote_sharing_ = false;
+  bool portrait_mode_ = false;
   bool incoming_ = false;
+
+  std::unique_ptr<Promise> refer_promise_;
+  std::unique_ptr<Promise> replace_promise_;
+  std::unique_ptr<Promise> upgrade_promise_;
 
   std::unique_ptr<VideoSourceAdapter> remote_video_source_;
   std::unique_ptr<VideoSourceAdapter> remote_share_video_source_;

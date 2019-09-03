@@ -252,8 +252,10 @@ void AudioManagerBinding::PlayTone(std::string tone) {
   }
 }
 
-void AudioManagerBinding::StartPlayFile(std::string path) {
-  media_->PlayRingFile(path.c_str(), false);
+void AudioManagerBinding::StartPlayFile(std::string path, mate::Arguments* args) {
+  bool loop = true;
+  args->GetNext(&loop);
+  media_->PlayRingFile(path.c_str(), loop);
 }
 
 void AudioManagerBinding::StopPlayFile() {

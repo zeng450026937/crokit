@@ -42,8 +42,8 @@ struct ContactNode {
 };
 
 struct ContactConfig {
-  std::string workspaceFolder;
-  std::string databaseName;
+  std::string workspace_folder;
+  std::string database_name;
 };
 
 class Contact {
@@ -76,8 +76,10 @@ class LocalContact : public Contact {
   virtual ~LocalContact() override = default;
 };
 
+class ConnectorBinding;
+
 struct CloudContactConfig : public ContactConfig {
-  void* connector;
+  ConnectorBinding* connector;
   std::string server;
 };
 

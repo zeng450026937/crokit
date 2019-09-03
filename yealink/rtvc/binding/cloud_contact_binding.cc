@@ -60,8 +60,17 @@ mate::WrappableBase* CloudContactBinding::New(mate::Arguments* args) {
     return nullptr;
   }
 
-  return new CloudContactBinding(args->isolate(), args->GetThis(),
-                                 connector->GetAccessAgent());
+  CloudContactConfig config;
+  config.connector = connector.get();
+  config.server = "";
+  config.workspace_folder =
+      Context::Instance()->GetWorkspaceFolder().AsUTF8Unsafe();
+
+  dict.Get("workspace_folder", &(config.workspace_folder));
+  dict.Get("database_name", &(config.database_name));
+  dict.Get("server", &(config.server));
+
+  return new CloudContactBinding(args->isolate(), args->GetThis(), config);
 }
 
 // static
@@ -82,13 +91,15 @@ void CloudContactBinding::BuildPrototype(
 
 CloudContactBinding::CloudContactBinding(v8::Isolate* isolate,
                                          v8::Local<v8::Object> wrapper,
-                                         yealink::AccessAgent* access_agent)
-    : access_agent_(access_agent),
+                                         CloudContactConfig config)
+    : config_(std::move(config)),
       contact_manager_(new yealink::CloudContactManager()),
       weak_factory_(this) {
-  DCHECK(access_agent_);
+  DCHECK(config_.connector);
   InitWith(isolate, wrapper);
-  contact_manager_->SetCloudPhoneBookConf(access_agent_, "", ".", "");
+  contact_manager_->SetCloudPhoneBookConf(
+      config_.connector->GetAccessAgent(), config_.server.c_str(),
+      config_.workspace_folder.c_str(), config_.database_name.c_str());
   contact_manager_->AddObserver(this);
 }
 CloudContactBinding::~CloudContactBinding() {

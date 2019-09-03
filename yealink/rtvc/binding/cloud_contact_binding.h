@@ -25,7 +25,7 @@ class CloudContactBinding : public mate::EventEmitter<CloudContactBinding>,
  protected:
   CloudContactBinding(v8::Isolate* isolate,
                       v8::Local<v8::Object> wrapper,
-                      yealink::AccessAgent* access_agent);
+                      CloudContactConfig config);
   ~CloudContactBinding() override;
 
   bool synced();
@@ -56,7 +56,7 @@ class CloudContactBinding : public mate::EventEmitter<CloudContactBinding>,
                 uint64_t limit,
                 std::vector<ContactNode>* result);
 
-  yealink::AccessAgent* access_agent_;
+  CloudContactConfig config_;
   std::unique_ptr<yealink::CloudContactManager> contact_manager_;
 
   std::unique_ptr<Promise> sync_promise_;

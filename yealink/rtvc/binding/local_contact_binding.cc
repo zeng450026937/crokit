@@ -36,7 +36,18 @@ namespace rtvc {
 
 // static
 mate::WrappableBase* LocalContactBinding::New(mate::Arguments* args) {
-  return new LocalContactBinding(args->isolate(), args->GetThis());
+  LocalContactConfig config;
+  config.database_name = "";
+  config.workspace_folder =
+      Context::Instance()->GetWorkspaceFolder().AsUTF8Unsafe();
+
+  mate::Dictionary dict;
+  if (args->GetNext(&dict)) {
+    dict.Get("workspace_folder", &(config.workspace_folder));
+    dict.Get("database_name", &(config.database_name));
+  }
+
+  return new LocalContactBinding(args->isolate(), args->GetThis(), config);
 }
 
 // static
@@ -61,10 +72,14 @@ void LocalContactBinding::BuildPrototype(
 }
 
 LocalContactBinding::LocalContactBinding(v8::Isolate* isolate,
-                                         v8::Local<v8::Object> wrapper)
-    : contact_manager_(new yealink::LocalContactManager()) {
+                                         v8::Local<v8::Object> wrapper,
+                                         LocalContactConfig config)
+
+    : config_(std::move(config)),
+      contact_manager_(new yealink::LocalContactManager()) {
   InitWith(isolate, wrapper);
-  contact_manager_->Init(".", "");
+  contact_manager_->Init(config.workspace_folder.c_str(),
+                         config.database_name.c_str());
 }
 LocalContactBinding::~LocalContactBinding() {}
 

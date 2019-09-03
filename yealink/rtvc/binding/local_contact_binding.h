@@ -21,7 +21,9 @@ class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
                              v8::Local<v8::FunctionTemplate> prototype);
 
  protected:
-  LocalContactBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
+  LocalContactBinding(v8::Isolate* isolate,
+                      v8::Local<v8::Object> wrapper,
+                      LocalContactConfig config);
   ~LocalContactBinding() override;
 
   int64_t Create(mate::Dictionary dict);
@@ -50,6 +52,7 @@ class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
   yealink::Array<yealink::LocalContactExternInfo> ExactFromDict(
       mate::Dictionary dict);
 
+  LocalContactConfig config_;
   std::unique_ptr<LocalContactManager> contact_manager_;
 };
 

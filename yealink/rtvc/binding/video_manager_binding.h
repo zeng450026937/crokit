@@ -45,10 +45,12 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   void ReleaseStream();
 
   void SetLocalVideoSink(mate::PersistentDictionary sink);
-  void RemoveLocalVideoSink(mate::Dictionary sink);
+  void AddLocalVideoSink(mate::PersistentDictionary sink);
+  void RemoveLocalVideoSink(mate::PersistentDictionary sink);
 
   void SetLocalShareVideoSink(mate::PersistentDictionary sink);
-  void RemoveLocalShareVideoSink(mate::Dictionary sink);
+  void AddLocalShareVideoSink(mate::PersistentDictionary sink);
+  void RemoveLocalShareVideoSink(mate::PersistentDictionary sink);
 
  private:
   yealink::Media* media_;

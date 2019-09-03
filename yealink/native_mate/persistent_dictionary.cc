@@ -6,6 +6,11 @@
 
 namespace mate {
 
+// static
+PersistentDictionary PersistentDictionary::CreateEmpty(v8::Isolate* isolate) {
+  return PersistentDictionary(isolate, v8::Object::New(isolate));
+}
+
 PersistentDictionary::PersistentDictionary() {}
 
 PersistentDictionary::PersistentDictionary(v8::Isolate* isolate,
