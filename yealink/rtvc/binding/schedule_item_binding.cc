@@ -188,14 +188,20 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetDetail() {
 
   details_.reset(new ScheduleItemDetail);
 
-  base::PostTaskAndReply(FROM_HERE,
-                         base::BindOnce(&ScheduleItemBinding::DoGetDetail,
-                                        weak_factory_.GetWeakPtr()),
-                         base::BindOnce(
-                             [](Promise promise, ScheduleItemDetail* details) {
-                               std::move(promise).Resolve(*details);
-                             },
-                             std::move(promise), details_.get()));
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleItemBinding::DoGetDetail,
+                     weak_factory_.GetWeakPtr()),
+      base::BindOnce(
+          [](Promise promise,
+             base::WeakPtr<ScheduleItemBinding> schedule_item) {
+            if (schedule_item) {
+              std::move(promise).Resolve(*(schedule_item->details_));
+            } else {
+              std::move(promise).RejectWithErrorMessage("Maybe destroyed.");
+            }
+          },
+          std::move(promise), weak_factory_.GetWeakPtr()));
 
   return handle;
 }
@@ -213,10 +219,15 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetMailTemplate() {
       base::BindOnce(&ScheduleItemBinding::DoGetMailTemplate,
                      weak_factory_.GetWeakPtr()),
       base::BindOnce(
-          [](Promise promise, base::Optional<std::string>* mail_template) {
-            std::move(promise).Resolve(mail_template->value());
+          [](Promise promise,
+             base::WeakPtr<ScheduleItemBinding> schedule_item) {
+            if (schedule_item) {
+              std::move(promise).Resolve(schedule_item->mail_template_.value());
+            } else {
+              std::move(promise).RejectWithErrorMessage("Maybe destroyed.");
+            }
           },
-          std::move(promise), &mail_template_));
+          std::move(promise), weak_factory_.GetWeakPtr()));
 
   return handle;
 }

@@ -10,6 +10,7 @@
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video_manager.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
+#include "yealink/rtvc/binding/video_source_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
 
 namespace yealink {
@@ -52,6 +53,8 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   void AddLocalShareVideoSink(mate::PersistentDictionary sink);
   void RemoveLocalShareVideoSink(mate::PersistentDictionary sink);
 
+  void SetLocalVideoSource(mate::PersistentDictionary source);
+
  private:
   yealink::Media* media_;
 
@@ -63,6 +66,8 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
 
   std::unique_ptr<VideoSourceAdapter> local_video_source_;
   std::unique_ptr<VideoSourceAdapter> local_share_video_source_;
+
+  std::unique_ptr<VideoSourceV8> local_video_source_v8_;
 
   std::map<int, VideoSinkV8*> local_video_sinks_;
   std::map<int, VideoSinkV8*> local_share_video_sinks_;

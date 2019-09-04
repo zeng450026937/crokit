@@ -3,7 +3,6 @@
 
 #include <set>
 
-#include "base/threading/thread_checker.h"
 #include "yealink/libvc/include/media/media_video_frame.h"
 #include "yealink/rtvc/api/video/video_source.h"
 

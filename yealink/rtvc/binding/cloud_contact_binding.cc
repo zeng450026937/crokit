@@ -177,24 +177,14 @@ uint64_t CloudContactBinding::GetNodeChildCounts(std::string nodeId,
   return child.total;
 }
 
-void CloudContactBinding::OnUpdating() {
-  LOG(INFO) << __FUNCTIONW__;
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&CloudContactBinding::OnUpdating,
-                                     base::Unretained(this)));
-    return;
-  }
-}
-void CloudContactBinding::OnUpdateFinished() {
-  LOG(INFO) << __FUNCTIONW__;
+void CloudContactBinding::OnUpdating() {}
 
+void CloudContactBinding::OnUpdateFinished() {
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     context->PostTask(FROM_HERE,
                       base::BindOnce(&CloudContactBinding::OnUpdateFinished,
-                                     base::Unretained(this)));
+                                     weak_factory_.GetWeakPtr()));
     return;
   }
 
@@ -203,16 +193,16 @@ void CloudContactBinding::OnUpdateFinished() {
     promise->Resolve();
   }
 }
-void CloudContactBinding::OnEnableStatusChanged(bool available) {
-  LOG(INFO) << __FUNCTIONW__;
-}
+
+void CloudContactBinding::OnEnableStatusChanged(bool available) {}
+
 void CloudContactBinding::OnNodeChange(
     const Array<CloudNodeChangeNotifyEntity>& changeData) {
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     context->PostTask(FROM_HERE,
                       base::BindOnce(&CloudContactBinding::OnNodeChange,
-                                     base::Unretained(this), changeData));
+                                     weak_factory_.GetWeakPtr(), changeData));
     return;
   }
 

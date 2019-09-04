@@ -71,8 +71,7 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
                  &CallBinding::AddRemoteShareVideoSink)
       .SetMethod("removeRemoteShareVideoSink",
                  &CallBinding::RemoveRemoteShareVideoSink)
-      .SetMethod("getInfos",
-                 &CallBinding::GetInfos)
+      .SetMethod("getInfos", &CallBinding::GetInfos)
       .SetProperty("conferenceAware", &CallBinding::conference_aware,
                    &CallBinding::SetConferenceAware)
       .SetMethod("asConference", &CallBinding::AsConference);
@@ -84,6 +83,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
                          bool incoming)
     : user_agent_(user_agent->GetWeakPtr()),
       sip_client_(user_agent->GetWeakSIPClientPtr()),
+      weak_factory_(this),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
       local_identity_(isolate, v8::Object::New(isolate)),
@@ -101,8 +101,12 @@ CallBinding::CallBinding(v8::Isolate* isolate,
                          bool incoming)
     : user_agent_(user_agent->GetWeakPtr()),
       sip_client_(user_agent->GetWeakSIPClientPtr()),
+      weak_factory_(this),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
+      local_identity_(isolate, v8::Object::New(isolate)),
+      remote_identity_(isolate, v8::Object::New(isolate)),
+      call_info_(isolate, v8::Object::New(isolate)),
       incoming_(incoming),
       remote_video_source_(new VideoSourceAdapter()),
       remote_share_video_source_(new VideoSourceAdapter()) {
@@ -122,6 +126,11 @@ v8::Local<v8::Object> CallBinding::remote_identity() {
 }
 
 void CallBinding::Connect(std::string target, mate::Arguments* args) {
+  if (incoming()) {
+    args->ThrowError("Can not connect target with a incoming call.");
+    return;
+  }
+
   bool has_audio = true;
   bool has_video = true;
   yealink::AVContentType content_type = yealink::AV_VIDEO_AUDIO;
@@ -139,13 +148,23 @@ void CallBinding::Connect(std::string target, mate::Arguments* args) {
   param.strUri = target.c_str();
   param.typAVContent = content_type;
 
-  meeting_->Dail(param);
+  bool ret = meeting_->Dail(param);
+
+  if (!ret) {
+    args->ThrowError("Call is one time use. Create new Call instance instead.");
+    return;
+  }
 
   state_ = CallState::kProgress;
   Emit("progress");
 }
 
 void CallBinding::Answer(mate::Arguments* args) {
+  if (outgoing()) {
+    args->ThrowError("Can not answer with a outgoing call.");
+    return;
+  }
+
   bool has_audio = true;
   bool has_video = true;
   yealink::AVContentType content_type = yealink::AV_VIDEO_AUDIO;
@@ -430,6 +449,7 @@ void CallBinding::ExtractInfo(yealink::MeetingInfo info) {
   call_info_.Set("video", info.isVideoEnabled);
   call_info_.Set("encrypted", info.isMediaEncrypted);
   call_info_.Set("established", info.isEstablished);
+  call_info_.Set("established", !info.isFinished);
   call_info_.Set("finished", info.isFinished);
   call_info_.Set("remoteHold", info.isHoldByRemote);
   call_info_.Set("localHold", info.isHoldByLocal);
@@ -439,37 +459,39 @@ void CallBinding::ExtractInfo(yealink::MeetingInfo info) {
 
   std::string reason;
 
-  switch (info.idFinishEvent) {
-    case yealink::AVCallHandler::FINISH_BY_ERROR:
-      reason = "kError";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_REPLACED:
-      reason = "kReplaced";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_REMOTE_CANCEL:
-      reason = "kRemoteCanceled";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_LOCAL_CANCEL:
-      reason = "kLocalCanceled";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_REMOTE_REFUSE:
-      reason = "kRemoteRefuseed";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_LOCAL_REFUSE:
-      reason = "kLocalRefuseed";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_REFERED:
-      reason = "kRefered";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_REMOTE_HANGUP:
-      reason = "kRemoteHanup";
-      break;
-    case yealink::AVCallHandler::FINISH_BY_LOCAL_HANGUP:
-      reason = "kLocalHanup";
-      break;
-    default:
-      NOTREACHED();
-      break;
+  if (info.isFinished) {
+    switch (info.idFinishEvent) {
+      case yealink::AVCallHandler::FINISH_BY_ERROR:
+        reason = "kError";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_REPLACED:
+        reason = "kReplaced";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_REMOTE_CANCEL:
+        reason = "kRemoteCanceled";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_LOCAL_CANCEL:
+        reason = "kLocalCanceled";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_REMOTE_REFUSE:
+        reason = "kRemoteRefuseed";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_LOCAL_REFUSE:
+        reason = "kLocalRefuseed";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_REFERED:
+        reason = "kRefered";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_REMOTE_HANGUP:
+        reason = "kRemoteHangup";
+        break;
+      case yealink::AVCallHandler::FINISH_BY_LOCAL_HANGUP:
+        reason = "kLocalHangup";
+        break;
+      default:
+        NOTREACHED();
+        break;
+    }
   }
 
   call_info_.Set("reason", reason);
@@ -479,7 +501,7 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE,
-        base::BindOnce(&CallBinding::OnEvent, base::Unretained(this), id));
+        base::BindOnce(&CallBinding::OnEvent, weak_factory_.GetWeakPtr(), id));
     return;
   }
 
@@ -552,8 +574,8 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
 void CallBinding::OnMediaEvent(yealink::MeetingMediaEventId id) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
-        FROM_HERE,
-        base::BindOnce(&CallBinding::OnMediaEvent, base::Unretained(this), id));
+        FROM_HERE, base::BindOnce(&CallBinding::OnMediaEvent,
+                                  weak_factory_.GetWeakPtr(), id));
     return;
   }
 
@@ -608,7 +630,7 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnCallInfoChanged,
-                                  base::Unretained(this), info));
+                                  weak_factory_.GetWeakPtr(), info));
     return;
   }
 
@@ -619,7 +641,7 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnCreateConferenceAfter,
-                                  base::Unretained(this), controller));
+                                  weak_factory_.GetWeakPtr(), controller));
     return;
   }
 
@@ -636,7 +658,7 @@ void CallBinding::OnRealseConferenceBefore(
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnRealseConferenceBefore,
-                                  base::Unretained(this), controller));
+                                  weak_factory_.GetWeakPtr(), controller));
     return;
   }
 
@@ -652,7 +674,7 @@ void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnVideoFrame,
-                                  base::Unretained(this), frame));
+                                  weak_factory_.GetWeakPtr(), frame));
 
     return;
   }
@@ -663,7 +685,7 @@ void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnShareFrame,
-                                  base::Unretained(this), frame));
+                                  weak_factory_.GetWeakPtr(), frame));
 
     return;
   }

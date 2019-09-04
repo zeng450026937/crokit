@@ -47,7 +47,9 @@ void VideoManagerBinding::BuildPrototype(
       .SetMethod("addLocalShareVideoSink",
                  &VideoManagerBinding::AddLocalShareVideoSink)
       .SetMethod("removeLocalShareVideoSink",
-                 &VideoManagerBinding::RemoveLocalShareVideoSink);
+                 &VideoManagerBinding::RemoveLocalShareVideoSink)
+      .SetMethod("setLocalVideoSource",
+                 &VideoManagerBinding::SetLocalVideoSource);
 }
 
 VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate,
@@ -134,13 +136,21 @@ void VideoManagerBinding::SetRotation(int64_t degree, bool is_secondary) {
 };
 
 void VideoManagerBinding::AcquireStream() {
+  if (acquiring_stream_)
+    return;
+
   acquiring_stream_ = true;
+
   if (video_input_device_) {
     media_->SetCamera(video_input_device_->deviceId.c_str(), false);
   }
 }
 void VideoManagerBinding::ReleaseStream() {
+  if (!acquiring_stream_)
+    return;
+
   acquiring_stream_ = false;
+
   media_->SetCamera(nullptr, false);
 }
 
@@ -233,6 +243,15 @@ void VideoManagerBinding::RemoveLocalShareVideoSink(
     delete it->second;
     local_share_video_sinks_.erase(it);
   }
+}
+
+void VideoManagerBinding::SetLocalVideoSource(
+    mate::PersistentDictionary source) {
+  if (source.GetHandle()->IsNullOrUndefined()) {
+    local_video_source_v8_.reset();
+    return;
+  }
+  local_video_source_v8_.reset(new VideoSourceV8(source));
 }
 
 }  // namespace rtvc

@@ -28,8 +28,9 @@ VideoSourceV8::~VideoSourceV8() {
 }
 
 void VideoSourceV8::OnFrame(mate::Dictionary frame) {
+  LOG(INFO) << __FUNCTIONW__;
   // TBD
-  
+
   // VideoFrame frame = VideoFrame::Builder().build();
   // for (VideoSink* sink : sinks_) {
   //   sink->OnFrame(frame);

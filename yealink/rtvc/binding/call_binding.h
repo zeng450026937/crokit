@@ -122,6 +122,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   base::WeakPtr<UserAgentBinding> user_agent_;
   base::WeakPtr<yealink::SIPClient> sip_client_;
+  base::WeakPtrFactory<CallBinding> weak_factory_;
 
   yealink::Media* media_;
 

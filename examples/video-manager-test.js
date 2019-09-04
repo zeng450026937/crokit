@@ -1,30 +1,24 @@
-function test(binding) {
+let videoManager;
+
+async function wait(duration = 1000) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), duration);
+  });
+}
+
+async function test(binding) {
   console.log('video manager test')
 
   const { VideoManager } = binding;
 
-  const videoManager = new VideoManager();
+  videoManager = new VideoManager();
 
   console.log('-- enumerateDevices --');
   videoManager.enumerateDevices();
 
-  console.log('-- enumerateScreenDevices --');
-  videoManager.enumerateScreenDevices();
-
-  console.log('-- enumerateWindowDevices --');
-  videoManager.enumerateWindowDevices();
-
   console.log('-- videoInputDeviceList --');
   const videoInputDeviceList = videoManager.videoInputDeviceList();
   console.log(videoInputDeviceList);
-
-  console.log('-- screenDeviceList --');
-  const screenDeviceList = videoManager.screenDeviceList();
-  console.log(screenDeviceList);
-
-  console.log('-- windowDeviceList --');
-  const windowDeviceList = videoManager.windowDeviceList();
-  console.log(windowDeviceList);
 
   console.log('-- videoInputDevice --');
   const videoInputDevice = videoManager.videoInputDevice;
@@ -71,16 +65,61 @@ function test(binding) {
       console.log(i420Buffer === i420Buffer.getI420());
       console.log(i420Buffer == i420Buffer.getI420());
       console.log(i420Buffer === i420Buffer.getI420());
+
+      // videoManager.videoInputDevice = null;
+      // console.log('video manager test finished.')
     },
   };
 
   videoManager.videoInputDevice = videoInputDeviceList[0];
   videoManager.setLocalVideoSink(sink);
+  await wait(1 * 1000).then(() => {
+    console.log('wait')
+  });
 
-  setTimeout(() => {
-    videoManager.videoInputDevice = null;
-    console.log('video manager test finished.')
-  }, 3000);
+  videoManager.acquireStream();
+
+  await wait(1 * 1000);
+
+  videoManager.releaseStream();
+
+  const videoSource = {
+    sinks: new Set(),
+    addSink(sink) {
+      console.log('add sink', sink);
+      this.sinks.add(sink);
+    },
+    removeSink(sink) {
+      console.log('remove sink', sink);
+      this.sinks.delete(sink);
+    },
+    start() {
+      console.log('start')
+      this.timer = setInterval(() => {
+        console.log('onframe')
+        this.sinks.forEach(sink => sink.onFrame({
+          width: 640,
+          height: 480,
+          buffer: new Uint8Array(),
+        }));
+      }, 1000);
+    },
+    stop() {
+      console.log('stop')
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+    },
+  };
+
+  videoManager.setLocalVideoSource(videoSource);
+
+  videoSource.start();
+
+  await wait(3 * 1000);
+
+  videoSource.stop();
+  videoManager = null;
 }
 
 module.exports = test;

@@ -115,6 +115,8 @@ node_addon("rtvc_binding") {
     "binding/video_source_binding.cc",
     "binding/video_source_adapter.h",
     "binding/video_source_adapter.cc",
+    "binding/video_sink_adapter.h",
+    "binding/video_sink_adapter.cc",
     "binding/video_sink_v8.h",
     "binding/video_sink_v8.cc",
     "binding/video_source_v8.h",
