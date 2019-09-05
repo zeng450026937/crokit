@@ -82,6 +82,10 @@ void ConferenceUserBinding::UpdateUserController(RoomMember* handler) {
   user_controller_ = handler;
 }
 
+RoomMember* ConferenceUserBinding::GetUserController() {
+  return user_controller_;
+}
+
 ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
                                              yealink::RoomMember* controller)
     : weak_factory_(this) {

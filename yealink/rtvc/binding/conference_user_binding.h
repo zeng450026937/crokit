@@ -28,6 +28,7 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
                              v8::Local<v8::FunctionTemplate> prototype);
 
   void UpdateUserController(RoomMember* handler);
+  RoomMember* GetUserController();
 
  protected:
   ConferenceUserBinding(v8::Isolate* isolate, yealink::RoomMember* controller);
