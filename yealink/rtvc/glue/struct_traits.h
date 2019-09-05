@@ -5,12 +5,17 @@
 #include <vector>
 
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/conference_desc.h"
+#include "yealink/rtvc/api/conference_state.h"
+#include "yealink/rtvc/api/conference_user.h"
+#include "yealink/rtvc/api/conference_view.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/schedule_item.h"
 #include "yealink/rtvc/api/ytms_info.h"
 
 #include "yealink/libvc/include/access/access_define.h"
 #include "yealink/libvc/include/contact/cloud_contact_type.h"
+#include "yealink/libvc/include/room/room_data.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/libvc/include/ytms/ytms_define.h"
 
@@ -210,6 +215,281 @@ template <>
 struct StructTraits<ConfigurationInfo> {
   static bool From(ConfigurationInfo& out, const yealink::ConfigFileInfo& val);
 };
+
+// description
+template <>
+struct StructTraits<DescProfile> {
+  static bool From(DescProfile& out,
+                   const yealink::ConferenceDescription::Profile& val);
+};
+
+template <>
+struct StructTraits<DescPosition> {
+  static bool From(DescPosition& out,
+                   const yealink::ConferenceDescription::Banner::Position& val);
+};
+
+template <>
+struct StructTraits<DescBanner> {
+  static bool From(DescBanner& out,
+                   const yealink::ConferenceDescription::Banner& val);
+};
+
+template <>
+struct StructTraits<DescRtmpSessionType> {
+  static bool From(
+      DescRtmpSessionType& out,
+      const yealink::ConferenceDescription::DefaultRtmp::McuSessionType& val);
+};
+
+template <>
+struct StructTraits<DescRtmpFsType> {
+  static bool From(
+      DescRtmpFsType& out,
+      const yealink::ConferenceDescription::DefaultRtmp::MaxVideoFs& val);
+};
+
+template <>
+struct StructTraits<DescDefaultRtmp> {
+  static bool From(DescDefaultRtmp& out,
+                   const yealink::ConferenceDescription::DefaultRtmp& val);
+};
+
+template <>
+struct StructTraits<DescUriPurpose> {
+  static bool From(DescUriPurpose& out,
+                   const yealink::ConferenceDescription::Entry::Purpose& val);
+};
+
+template <>
+struct StructTraits<DescConfUriInfo> {
+  static bool From(DescConfUriInfo& out,
+                   const yealink::ConferenceDescription::Entry& val);
+};
+
+template <>
+struct StructTraits<DescOrganizerInfo> {
+  static bool From(DescOrganizerInfo& out,
+                   const yealink::ConferenceDescription::OrganizerInfo& val);
+};
+
+template <>
+struct StructTraits<DescConferenceType> {
+  static bool From(DescConferenceType& out,
+                   const yealink::ConferenceDescription::ConferenceType& val);
+};
+
+template <>
+struct StructTraits<DescNumberType> {
+  static bool From(
+      DescNumberType& out,
+      const yealink::ConferenceDescription::ConferenceNumberType& val);
+};
+
+template <>
+struct StructTraits<DescAdmissionPolicy> {
+  static bool From(DescAdmissionPolicy& out,
+                   const yealink::ConferenceDescription::AdmissionPolicy& val);
+};
+template <>
+struct StructTraits<DescAttendeeByPass> {
+  static bool From(DescAttendeeByPass& out,
+                   const yealink::ConferenceDescription::AttendeeByPass& val);
+};
+template <>
+struct StructTraits<DescAutoPromote> {
+  static bool From(DescAutoPromote& out,
+                   const yealink::ConferenceDescription::AutoPromote& val);
+};
+
+template <>
+struct StructTraits<DescRecordType> {
+  static bool From(DescRecordType& out,
+                   const yealink::ConferenceDescription::RecordServerType& val);
+};
+template <>
+struct StructTraits<DescRecordPrivilege> {
+  static bool From(DescRecordPrivilege& out,
+                   const yealink::ConferenceDescription::RecordPrivilege& val);
+};
+
+template <>
+struct StructTraits<DescInfo> {
+  static bool From(DescInfo& out, const yealink::ConferenceDescription& val);
+};
+// state
+
+// users
+template <>
+struct StructTraits<RequesrResult> {
+  static bool From(RequesrResult& out, const yealink::ConferenceResult& val);
+};
+
+template <>
+struct StructTraits<ResponseInfo> {
+  static bool From(ResponseInfo& out, const yealink::RequestResult& val);
+};
+
+template <>
+struct StructTraits<UserProtocolType> {
+  static bool From(UserProtocolType& out,
+                   const yealink::MemberInfo::Protocol& val);
+};
+
+template <>
+struct StructTraits<UserPermissionType> {
+  static bool From(UserPermissionType& out,
+                   const yealink::MemberInfo::Roles::PermissionRole& val);
+};
+
+template <>
+struct StructTraits<UserDemoStateType> {
+  static bool From(UserDemoStateType& out,
+                   const yealink::MemberInfo::Roles::DemoStateRole& val);
+};
+
+template <>
+struct StructTraits<PresenterDemoStateType> {
+  static bool From(
+      PresenterDemoStateType& out,
+      const yealink::MemberInfo::Roles::PresenterDemoStateRole& val);
+};
+
+template <>
+struct StructTraits<UserRolesInfo> {
+  static bool From(UserRolesInfo& out, const yealink::MemberInfo::Roles& val);
+};
+
+template <>
+struct StructTraits<UserEndpointSeesionType> {
+  static bool From(UserEndpointSeesionType& out,
+                   const yealink::MemberInfo::Endpoint::SessionType& val);
+};
+
+template <>
+struct StructTraits<UserEndpointStatusType> {
+  static bool From(UserEndpointStatusType& out,
+                   const yealink::MemberInfo::Endpoint::Status& val);
+};
+
+template <>
+struct StructTraits<UserJoinMethod> {
+  static bool From(UserJoinMethod& out,
+                   const yealink::MemberInfo::Endpoint::JoiningMethod& val);
+};
+
+template <>
+struct StructTraits<UserMediaType> {
+  static bool From(UserMediaType& out,
+                   const yealink::MemberInfo::Endpoint::Media::Type& val);
+};
+
+template <>
+struct StructTraits<UserMediaLabelType> {
+  static bool From(UserMediaLabelType& out,
+                   const yealink::MemberInfo::Endpoint::Media::Label& val);
+};
+
+template <>
+struct StructTraits<UserMediaDirectionType> {
+  static bool From(UserMediaDirectionType& out,
+                   const yealink::MemberInfo::Endpoint::Media::Status& val);
+};
+
+template <>
+struct StructTraits<UserMediafilterType> {
+  static bool From(
+      UserMediafilterType& out,
+      const yealink::MemberInfo::Endpoint::Media::MediaFilter& val);
+};
+
+template <>
+struct StructTraits<UserMediaBlockByType> {
+  static bool From(UserMediaBlockByType& out,
+                   const yealink::MemberInfo::Endpoint::Media::BlockBy& val);
+};
+
+template <>
+struct StructTraits<UserMediaInfo> {
+  static bool From(UserMediaInfo& out,
+                   const yealink::MemberInfo::Endpoint::Media& val);
+};
+
+template <>
+struct StructTraits<UserMediaFilterInfo> {
+  static bool From(UserMediaFilterInfo& out,
+                   const yealink::MemberInfo::Endpoint::Media& val);
+};
+
+template <>
+struct StructTraits<UserEndpointInfo> {
+  static bool From(UserEndpointInfo& out,
+                   const yealink::MemberInfo::Endpoint& val);
+};
+
+template <>
+struct StructTraits<UserInfo> {
+  static bool From(UserInfo& out, const yealink::MemberInfo& val);
+};
+
+template <>
+struct StructTraits<UserMediaDataInfo> {
+  static bool From(UserMediaDataInfo& out, const yealink::UserMediaDetail& val);
+};
+
+template <>
+struct StructTraits<UserStatisticsInfo> {
+  static bool From(UserStatisticsInfo& out, const yealink::UserMediaInfo& val);
+};
+
+// view
+template <>
+struct StructTraits<ViewSpeakMode> {
+  static bool From(ViewSpeakMode& out,
+                   const yealink::ConferenceViewSpeakMode& val);
+};
+
+template <>
+struct StructTraits<ViewLayoutType> {
+  static bool From(
+      ViewLayoutType& out,
+      const yealink::ConferenceView::EntityState::VideoLayout& val);
+};
+
+template <>
+struct StructTraits<ViewPresenterLayoutType> {
+  static bool From(
+      ViewPresenterLayoutType& out,
+      const yealink::ConferenceView::EntityState::VideoPresenterLayout& val);
+};
+
+template <>
+struct StructTraits<GetLayoutInfo> {
+  static bool From(GetLayoutInfo& out,
+                   const yealink::ConferenceView::EntityState& val);
+};
+
+template <>
+struct StructTraits<ViewFilterRoleType> {
+  static bool From(ViewFilterRoleType& out,
+                   const yealink::ConferenceView::EntityState::
+                       MediaFiltersRules::InitialFilter::Role& val);
+};
+
+template <>
+struct StructTraits<ViewFilterType> {
+  static bool From(ViewFilterType& out,
+                   const yealink::ConferenceView::EntityState::
+                       MediaFiltersRules::InitialFilter::Filter& val);
+};
+
+template <>
+struct StructTraits<ViewFilterRuleInfo> {
+  static bool From(ViewFilterRuleInfo& out,
+                   const yealink::ConferenceView::EntityState::
+                       MediaFiltersRules::InitialFilter& val);
+};
+
 }  // namespace rtvc
 
 }  // namespace yealink

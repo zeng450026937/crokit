@@ -31,9 +31,9 @@ void ConferenceStateBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceState"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("lock", &ConferenceStateBinding::Lock)
+      .SetProperty("lock", &ConferenceStateBinding::Locked)
       .SetProperty("active", &ConferenceStateBinding::Active)
-      .SetMethod("setLock", &ConferenceStateBinding::SetLock);
+      .SetProperty("rollCallStatus", &ConferenceStateBinding::RollCallStatus);
 }
 
 void ConferenceStateBinding::UpdateRoomController(RoomController* handler) {
@@ -41,51 +41,50 @@ void ConferenceStateBinding::UpdateRoomController(RoomController* handler) {
 }
 
 ConferenceStateBinding::ConferenceStateBinding(v8::Isolate* isolate,
-                                               v8::Local<v8::Object> wrapper) {
+                                               v8::Local<v8::Object> wrapper)
+    : weak_factory_(this) {
   InitWith(isolate, wrapper);
 }
 
 ConferenceStateBinding::ConferenceStateBinding(
     v8::Isolate* isolate,
-    yealink::RoomController* controller) {
+    yealink::RoomController* controller)
+    : weak_factory_(this) {
   Init(isolate);
   room_controller_ = controller;
 }
 
 ConferenceStateBinding::~ConferenceStateBinding() = default;
 
-bool ConferenceStateBinding::Lock() {
-  if(room_controller_)
-    return room_controller_->GetStateComponent().GetConferenceState().locked;
-  else
-    return false;
+v8::Local<v8::Value> ConferenceStateBinding::Active() {
+  bool value;
+
+  if (room_controller_)
+    ConvertFrom(
+        value,
+        room_controller_->GetStateComponent().GetConferenceState().active);
+
+  return mate::ConvertToV8(isolate(), value);
 }
+v8::Local<v8::Value> ConferenceStateBinding::Locked() {
+  bool value;
 
-bool ConferenceStateBinding::Active() {
-  if(room_controller_)
-    return room_controller_->GetStateComponent().GetConferenceState().active;
-  else
-    return false;
+  if (room_controller_)
+    ConvertFrom(
+        value,
+        room_controller_->GetStateComponent().GetConferenceState().locked);
+
+  return mate::ConvertToV8(isolate(), value);
 }
+v8::Local<v8::Value> ConferenceStateBinding::RollCallStatus() {
+  std::string value;
 
-v8::Local<v8::Promise> ConferenceStateBinding::SetLock() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  if (room_controller_)
+    ConvertFrom(value, room_controller_->GetStateComponent()
+                           .GetConferenceState()
+                           .rollCallStatus);
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceStateBinding::DoSetLock,
-                     base::Unretained(this)),
-      base::BindOnce(&ConferenceStateBinding::OnCommandCompeleted,
-                     base::Unretained(this), std::move(promise)));
-
-  return handle;
-}
-
-void ConferenceStateBinding::DoSetLock() {}
-
-void ConferenceStateBinding::OnCommandCompeleted(Promise promise) {
-  std::move(promise).Resolve();
+  return mate::ConvertToV8(isolate(), value);
 }
 
 }  // namespace rtvc

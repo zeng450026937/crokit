@@ -370,6 +370,7 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   // setting controller later(after constructor)
 
   // eg. conference_->SetController(controller_);
+  conference_->SetController(controller);
 
   // emit conference connected event here
   Emit("focusChannelReady");

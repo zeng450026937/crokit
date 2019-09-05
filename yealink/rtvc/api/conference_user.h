@@ -9,6 +9,174 @@ namespace yealink {
 
 namespace rtvc {
 
+enum class RequesrResult {
+  kSuccess,
+  kInvalidParam,
+  kSipFailure,
+  kInvalid,
+};
+
+struct ResponseInfo {
+  int64_t request_id;
+  RequesrResult result;
+};
+
+enum class UserProtocolType {
+  kInvalid,
+  kSIP,
+  kH323,
+  kRTMP,
+};
+
+enum class UserPermissionType {
+  kInvalid,
+  kOrganizer,
+  kPresenter,
+  kAttendee,
+  kCastviewer,
+};
+
+enum class UserDemoStateType {
+  kInvalid,
+  kDemonstrator,
+  kAudience,
+};
+
+enum class PresenterDemoStateType {
+  kInvalid,
+  kDemonstrator,
+  kAudience,
+};
+
+struct UserRolesInfo {
+  UserPermissionType permission;
+  UserDemoStateType demostate;
+  PresenterDemoStateType presenter_demostate;
+};
+
+enum class UserEndpointSeesionType {
+  kInvalid,
+  kFocus,
+  kAudioVideo,
+  kApplicationSharing,
+  kChat,
+  kCoopshare,
+};
+enum class UserEndpointStatusType {
+  kInvalid,
+  kDialingIn,
+  kDialingOut,
+  kOnHold,
+  kConnected,
+  kDisconnected,
+};
+enum class UserJoinMethod {
+  kInvalid,
+  kDialedIn,
+  kDialedOut,
+};
+
+enum class UserMediaType {
+  kInvalid,
+  kAudio,
+  kVideo,
+  kApplication,
+};
+enum class UserMediaLabelType {
+  kInvalid,
+  kMainAudio,
+  kMainVideo,
+  kApplication,
+  kFecc,
+};
+enum class UserMediaDirectionType {
+  kInvalid,
+  kSendRecv,
+  kSendOnly,
+  kRecvOnly,
+  kInactive,
+};
+enum class UserMediafilterType {
+  kInvalid,
+  kBlock,
+  kUnblock,
+  kUnblocking,
+};
+enum class UserMediaBlockByType {
+  kInvalid,
+  kNone,
+  kServer,
+  kClient,
+};
+
+struct UserMediaInfo {
+  std::string id;
+  UserMediaType type;
+  UserMediaLabelType label;
+  UserMediaDirectionType status;
+  UserMediafilterType media_ingress_filter;
+  UserMediaBlockByType media_ingress_block_by;
+  UserMediafilterType media_egress_filter;
+  UserMediaBlockByType media_egress_block_by;
+};
+
+struct UserMediaFilterInfo {
+  UserMediafilterType media_ingress_filter;
+  UserMediaBlockByType media_ingress_block_by;
+  UserMediafilterType media_egress_filter;
+  UserMediaBlockByType media_egress_block_by;
+};
+
+struct UserEndpointInfo {
+  std::string entity;
+  UserEndpointSeesionType session_type;
+  UserEndpointStatusType status;
+  UserJoinMethod joining_method;
+  std::string when;
+  std::string mcu_call_id;
+  std::vector<UserMediaInfo> media;
+};
+
+struct UserInfo {
+  std::string entity;
+  std::string display_text;
+  std::string display_number;
+  std::string display_text_pinyin;
+  std::string uid;
+  UserProtocolType protocol;
+  std::string medium_server_type;
+  std::string ip;
+  std::string phone;
+  std::string request_uri;
+  std::string user_agent;
+  UserRolesInfo roles;
+  std::vector<UserEndpointInfo> endpoint;
+};
+
+struct UserMediaDataInfo {
+  bool enable;
+  std::string ip;
+  std::string codec;
+  int32_t width;
+  int32_t height;
+  int32_t fr;
+  int32_t sample_rate;
+  int32_t bandwidth;
+  int32_t bit_rate;
+  int32_t loss_rate;
+  int32_t packet_lost;
+  int32_t jitter;
+  int32_t rtt;
+};
+
+struct UserStatisticsInfo {
+  std::string mdeia_id;
+  UserMediaLabelType label;
+  UserMediaType type;
+  UserMediaDataInfo send;
+  UserMediaDataInfo recv;
+};
+
 enum class EndpointType {
   kFocus,
   kAudioVideo,
@@ -59,7 +227,7 @@ class ConferenceUser {
   // user camera can be controlled through fecc session
   bool hasFECC();
 
-    // user extended
+  // user extended
   bool isShareAvariable();
   bool isCurrentUser();
   bool isOrganizer();
@@ -103,6 +271,7 @@ class ConferenceRTMPUser : public ConferenceUser {
   RTVC_READONLY_PROPERTY(std::string, rtmp_duration);
   RTVC_READONLY_PROPERTY(std::string, rtmp_last_stop_duration);
   RTVC_READONLY_PROPERTY(std::string, rtmp_last_start_time);
+
  public:
   // user extended
   virtual void Start() = 0;
@@ -121,6 +290,7 @@ class ConferenceRecordUser : public ConferenceUser {
   RTVC_READONLY_PROPERTY(std::string, record_duration);
   RTVC_READONLY_PROPERTY(std::string, record_last_stop_duration);
   RTVC_READONLY_PROPERTY(std::string, record_last_start_time);
+
  public:
   // user extended
   virtual void Start() = 0;

@@ -36,17 +36,15 @@ class ConferenceStateBinding
                          yealink::RoomController* controller);
   ~ConferenceStateBinding() override;
 
-  bool Lock();
-  bool Active();
-
-  v8::Local<v8::Promise> SetLock();
+  v8::Local<v8::Value> Active();
+  v8::Local<v8::Value> Locked();
+  v8::Local<v8::Value> RollCallStatus();
 
  private:
-  void OnCommandCompeleted(Promise promise);
-  void DoSetLock();
 
  private:
   RoomController* room_controller_;
+  base::WeakPtrFactory<ConferenceStateBinding> weak_factory_;
 };
 
 }  // namespace rtvc
