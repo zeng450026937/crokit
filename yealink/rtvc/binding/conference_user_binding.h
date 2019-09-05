@@ -66,8 +66,9 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
   v8::Local<v8::Value> GetVideoFilter();
   v8::Local<v8::Promise> GetStats();
 
-  v8::Local<v8::Promise> SetAudioFilter(UserMediafilterType params);
-  v8::Local<v8::Promise> SetVideoFilter(UserMediafilterType params);
+  v8::Local<v8::Promise> SetAudioIngressFilter(bool isOpen);
+  v8::Local<v8::Promise> SetAudioEgressFilter(bool isOpen);
+  v8::Local<v8::Promise> SetVideoIngressFilter(bool isOpen);
   v8::Local<v8::Promise> SetPermission(UserPermissionType params);
   v8::Local<v8::Promise> SetDemonstrator(UserDemoStateType params);
   v8::Local<v8::Promise> SetPresenterDemonstrator(
@@ -77,11 +78,13 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
   v8::Local<v8::Promise> UnHold();
   v8::Local<v8::Promise> Kick();
   v8::Local<v8::Promise> SetDisplayName(mate::Arguments* args);
+  v8::Local<v8::Promise> SetFocus(bool isFocus);
 
  private:
   void DoGetStats();
-  void DoSetAudioFilter(UserMediafilterType params);
-  void DoSetVideoFilter(UserMediafilterType params);
+  void DoSetAudioIngressFilter(bool isOpen);
+  void DoSetAudioEgressFilter(bool isOpen);
+  void DoSetVideoIngressFilter(bool isOpen);
   void DoSetPermission(UserPermissionType params);
   void DoSetDemonstrator(UserDemoStateType params);
   void DoSetPresenterDemonstrator(PresenterDemoStateType params);
@@ -89,6 +92,7 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
   void DoUnHold();
   void DoKick();
   void DoSetDisplayName(std::string name);
+  void DoSetFocus(bool isFocus);
   void OnCommandCompeleted(Promise promise);
 
  private:

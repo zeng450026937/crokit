@@ -62,8 +62,12 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("getAudioFilter", &ConferenceUserBinding::GetAudioFilter)
       .SetMethod("getVideoFilter", &ConferenceUserBinding::GetVideoFilter)
       .SetMethod("getStats", &ConferenceUserBinding::GetStats)
-      .SetMethod("setAudioFilter", &ConferenceUserBinding::SetAudioFilter)
-      .SetMethod("setVideoFilter", &ConferenceUserBinding::SetVideoFilter)
+      .SetMethod("setAudioIngressFilter",
+                 &ConferenceUserBinding::SetAudioIngressFilter)
+      .SetMethod("setAudioEgressFilter",
+                 &ConferenceUserBinding::SetAudioEgressFilter)
+      .SetMethod("setVideoIngressFilter",
+                 &ConferenceUserBinding::SetVideoIngressFilter)
       .SetMethod("setPermission", &ConferenceUserBinding::SetPermission)
       .SetMethod("setDemonstrator", &ConferenceUserBinding::SetDemonstrator)
       .SetMethod("setPresenterDemonstrator",
@@ -376,51 +380,66 @@ void ConferenceUserBinding::DoGetStats() {
   }
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetAudioFilter(
-    UserMediafilterType params) {
+v8::Local<v8::Promise> ConferenceUserBinding::SetAudioIngressFilter(
+    bool isOpen) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetAudioFilter,
-                     weak_factory_.GetWeakPtr(), params),
+      base::BindOnce(&ConferenceUserBinding::DoSetAudioIngressFilter,
+                     weak_factory_.GetWeakPtr(), isOpen),
       base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise)));
 
   return handle;
 }
 
-void ConferenceUserBinding::DoSetAudioFilter(UserMediafilterType params) {
+void ConferenceUserBinding::DoSetAudioIngressFilter(bool isOpen) {
   if (user_controller_) {
-    if (params == UserMediafilterType::kBlock)
-      user_controller_->SetAudioState(true);
-    else
-      user_controller_->SetAudioState(false);
+    user_controller_->SetAudioState(isOpen);
   }
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetVideoFilter(
-    UserMediafilterType params) {
+v8::Local<v8::Promise> ConferenceUserBinding::SetAudioEgressFilter(
+    bool isOpen) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetVideoFilter,
-                     weak_factory_.GetWeakPtr(), params),
+      base::BindOnce(&ConferenceUserBinding::DoSetAudioEgressFilter,
+                     weak_factory_.GetWeakPtr(), isOpen),
       base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise)));
 
   return handle;
 }
 
-void ConferenceUserBinding::DoSetVideoFilter(UserMediafilterType params) {
+void ConferenceUserBinding::DoSetAudioEgressFilter(bool isOpen) {
   if (user_controller_) {
-    if (params == UserMediafilterType::kBlock)
-      user_controller_->SetVideoState(true);
-    else
-      user_controller_->SetVideoState(false);
+    user_controller_->SetAudioEgressState(isOpen);
+  }
+}
+
+v8::Local<v8::Promise> ConferenceUserBinding::SetVideoIngressFilter(
+    bool isOpen) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ConferenceUserBinding::DoSetVideoIngressFilter,
+                     weak_factory_.GetWeakPtr(), isOpen),
+      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise)));
+
+  return handle;
+}
+
+void ConferenceUserBinding::DoSetVideoIngressFilter(bool isOpen) {
+  if (user_controller_) {
+    user_controller_->SetVideoState(isOpen);
   }
 }
 
@@ -581,6 +600,29 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetDisplayName(
 void ConferenceUserBinding::DoSetDisplayName(std::string name) {
   if (user_controller_) {
     user_controller_->ModifyUserName(name.c_str());
+  }
+}
+
+v8::Local<v8::Promise> ConferenceUserBinding::SetFocus(bool isFocus) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ConferenceUserBinding::DoSetFocus,
+                     weak_factory_.GetWeakPtr(), isFocus),
+      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise)));
+
+  return handle;
+}
+
+void ConferenceUserBinding::DoSetFocus(bool isFocus) {
+  if (user_controller_) {
+    if (isFocus == true)
+      user_controller_->SetFocus(true);
+    else
+      user_controller_->SetFocus(false);
   }
 }
 

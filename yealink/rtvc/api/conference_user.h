@@ -170,7 +170,7 @@ struct UserMediaDataInfo {
 };
 
 struct UserStatisticsInfo {
-  std::string mdeia_id;
+  std::string media_id;
   UserMediaLabelType label;
   UserMediaType type;
   UserMediaDataInfo send;

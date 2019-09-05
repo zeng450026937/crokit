@@ -1183,7 +1183,7 @@ bool StructTraits<UserMediaDataInfo>::From(
 
 bool StructTraits<UserStatisticsInfo>::From(UserStatisticsInfo& out,
                                             const yealink::UserMediaInfo& val) {
-  ConvertFrom(out.mdeia_id, val.mediaId);
+  ConvertFrom(out.media_id, val.mediaId);
   ConvertFrom(out.label, val.label);
   ConvertFrom(out.send, val.send);
   ConvertFrom(out.recv, val.recv);

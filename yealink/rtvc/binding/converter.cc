@@ -2671,7 +2671,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserStatisticsInfo>::ToV8(
     v8::Isolate* isolate,
     const yealink::rtvc::UserStatisticsInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
-  handler.Set("mdeiaId", val.mdeia_id);
+  handler.Set("mediaId", val.media_id);
   handler.Set("label", val.label);
   handler.Set("type", val.type);
   handler.Set("send", val.send);
@@ -2688,7 +2688,7 @@ bool Converter<yealink::rtvc::UserStatisticsInfo>::FromV8(
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
 
-  dict.Get("mdeiaId", &(out->mdeia_id));
+  dict.Get("mediaId", &(out->media_id));
   dict.Get("label", &(out->label));
   dict.Get("send", &(out->send));
   dict.Get("recv", &(out->recv));
