@@ -11,7 +11,7 @@ namespace yealink {
 
 namespace rtvc {
 
-VideoSourceAdapter::VideoSourceAdapter() {}
+VideoSourceAdapter::VideoSourceAdapter() : weak_factory_(this) {}
 VideoSourceAdapter::~VideoSourceAdapter() {}
 
 void VideoSourceAdapter::AddOrUpdateSink(VideoSink* sink) {
@@ -30,7 +30,7 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnVideoFrame,
-                                  base::Unretained(this), frame));
+                                  weak_factory_.GetWeakPtr(), frame));
 
     return;
   }

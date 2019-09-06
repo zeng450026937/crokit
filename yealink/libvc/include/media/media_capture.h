@@ -28,7 +28,7 @@ typedef struct _CaptureFrame
     }
 } CaptureFrame;
 
-class FrameDeliverySink
+class MEDIA_EXPORT FrameDeliverySink
 {
 public:
     enum RotaionMode

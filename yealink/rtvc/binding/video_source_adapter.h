@@ -3,6 +3,7 @@
 
 #include <set>
 
+#include "base/memory/weak_ptr.h"
 #include "yealink/libvc/include/media/media_video_frame.h"
 #include "yealink/rtvc/api/video/video_source.h"
 
@@ -22,6 +23,7 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
 
  protected:
   std::set<VideoSink*> sinks_;
+  base::WeakPtrFactory<VideoSourceAdapter> weak_factory_;
 };
 
 }  // namespace rtvc

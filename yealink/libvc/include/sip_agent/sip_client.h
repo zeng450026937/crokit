@@ -70,6 +70,11 @@ public:
          */
     virtual void RemoveTransport2(const Address2& addrLocal, TransportType typTransport) = 0;
     /**
+         * @brief clean the all transport
+         *
+         */
+    virtual void TransportShutdown() = 0;
+    /**
          * @brief Set the Client Handler object
          * 
          * @param pHandler 

@@ -136,7 +136,7 @@ struct YtmsConfigInfo
         , updateChannel("")
         , customId("")
         , configFileId("")
-        , clientRemarks("")
+        , clientRemarks(nullptr)
         , model("")
         , resolution("")
         , os("")
