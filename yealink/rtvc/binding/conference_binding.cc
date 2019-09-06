@@ -129,6 +129,23 @@ v8::Local<v8::Value> ConferenceBinding::Users() {
 
 void ConferenceBinding::OnConnectSuccess() {
   LOG(INFO) << __FUNCTIONW__;
+
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&ConferenceBinding::OnConnectSuccess,
+                                     weak_factory_.GetWeakPtr()));
+    return;
+  }
+
+  // First Information Update
+  Array<RoomMember> empty;
+  users_->UpdateUsers(empty, empty, empty, true);
+
+  Emit("usersUpdated");
+  Emit("stateUpdated");
+  Emit("viewUpdated");
+  Emit("descriptionUpdated");
 }
 void ConferenceBinding::OnConnectFailure(const char* reason) {
   LOG(INFO) << __FUNCTIONW__;
@@ -188,6 +205,19 @@ void ConferenceBinding::OnUserChange(
     const Array<RoomMember>& modifyMemberList,
     const Array<RoomMember>& deleteMemberList) {
   LOG(INFO) << __FUNCTIONW__;
+
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&ConferenceBinding::OnUserChange,
+                                     weak_factory_.GetWeakPtr(), newMemberList,
+                                     modifyMemberList, deleteMemberList));
+    return;
+  }
+
+  users_->UpdateUsers(newMemberList, modifyMemberList, deleteMemberList, false);
+
+  Emit("usersUpdated");
 }
 void ConferenceBinding::OnGetUserCallStats(
     const RoomMember& member,
