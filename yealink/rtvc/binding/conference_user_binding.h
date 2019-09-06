@@ -22,16 +22,16 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
 
   static mate::Handle<ConferenceUserBinding> Create(
       v8::Isolate* isolate,
-      yealink::RoomMember* controller);
+      yealink::RoomMember& controller);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateUserController(RoomMember* handler);
-  RoomMember* GetUserController();
+  void UpdateUserController(RoomMember& handler);
+  RoomMember GetUserController();
 
  protected:
-  ConferenceUserBinding(v8::Isolate* isolate, yealink::RoomMember* controller);
+  ConferenceUserBinding(v8::Isolate* isolate, yealink::RoomMember& controller);
   ConferenceUserBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceUserBinding() override;
 
@@ -97,7 +97,7 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
   void OnCommandCompeleted(Promise promise);
 
  private:
-  RoomMember* user_controller_;
+  RoomMember user_controller_;
   base::WeakPtrFactory<ConferenceUserBinding> weak_factory_;
 };
 

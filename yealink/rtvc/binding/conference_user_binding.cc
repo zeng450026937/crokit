@@ -20,7 +20,7 @@ mate::WrappableBase* ConferenceUserBinding::New(mate::Arguments* args) {
 
 mate::Handle<ConferenceUserBinding> ConferenceUserBinding::Create(
     v8::Isolate* isolate,
-    yealink::RoomMember* controller) {
+    yealink::RoomMember& controller) {
   return mate::CreateHandle(isolate,
                             new ConferenceUserBinding(isolate, controller));
 }
@@ -78,126 +78,117 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("setDisplayName", &ConferenceUserBinding::SetDisplayName);
 }
 
-void ConferenceUserBinding::UpdateUserController(RoomMember* handler) {
+void ConferenceUserBinding::UpdateUserController(RoomMember& handler) {
   user_controller_ = handler;
 }
 
-RoomMember* ConferenceUserBinding::GetUserController() {
+RoomMember ConferenceUserBinding::GetUserController() {
   return user_controller_;
 }
 
 ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
-                                             yealink::RoomMember* controller)
+                                             yealink::RoomMember& controller)
     : weak_factory_(this) {
   Init(isolate);
   user_controller_ = controller;
 }
 ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
                                              v8::Local<v8::Object> wrapper)
-    : weak_factory_(this) {}
-ConferenceUserBinding::~ConferenceUserBinding() = default;
+    : weak_factory_(this) {
+  InitWith(isolate, wrapper);
+}
+ConferenceUserBinding::~ConferenceUserBinding() {
+  LOG(INFO) << __FUNCTIONW__;
+};
 
 v8::Local<v8::Value> ConferenceUserBinding::Entity() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().entity);
+  ConvertFrom(value, user_controller_.GetMemberInfo().entity);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::DisplayText() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().displayText);
+  ConvertFrom(value, user_controller_.GetMemberInfo().displayText);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::DisplayNumber() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().displayNumber);
+  ConvertFrom(value, user_controller_.GetMemberInfo().displayNumber);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::DisplayTextPinyin() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().displayTextPinyin);
+  ConvertFrom(value, user_controller_.GetMemberInfo().displayTextPinyin);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Uid() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().uid);
+  ConvertFrom(value, user_controller_.GetMemberInfo().uid);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Protocol() {
   UserProtocolType value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().protocol);
+  ConvertFrom(value, user_controller_.GetMemberInfo().protocol);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::MediumServerType() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().mediumServerType);
+  ConvertFrom(value, user_controller_.GetMemberInfo().mediumServerType);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Ip() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().ip);
+  ConvertFrom(value, user_controller_.GetMemberInfo().ip);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Phone() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().phone);
+  ConvertFrom(value, user_controller_.GetMemberInfo().phone);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::RequestUri() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().requestUri);
+  ConvertFrom(value, user_controller_.GetMemberInfo().requestUri);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::UserAgent() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().userAgent);
+  ConvertFrom(value, user_controller_.GetMemberInfo().userAgent);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Roles() {
   std::string value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().displayText);
+  ConvertFrom(value, user_controller_.GetMemberInfo().displayText);
 
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Endpoint() {
   std::vector<UserEndpointInfo> value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().endpointList);
+  ConvertFrom(value, user_controller_.GetMemberInfo().endpointList);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -205,8 +196,7 @@ v8::Local<v8::Value> ConferenceUserBinding::Endpoint() {
 v8::Local<v8::Value> ConferenceUserBinding::IsCurrentUser() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->IsCurrentUser());
+  ConvertFrom(value, user_controller_.IsCurrentUser());
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -214,9 +204,8 @@ v8::Local<v8::Value> ConferenceUserBinding::IsCurrentUser() {
 v8::Local<v8::Value> ConferenceUserBinding::IsRtmp() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().protocol ==
-                           yealink::MemberInfo::Protocol::RTMP);
+  ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
+                         yealink::MemberInfo::Protocol::RTMP);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -224,9 +213,8 @@ v8::Local<v8::Value> ConferenceUserBinding::IsRtmp() {
 v8::Local<v8::Value> ConferenceUserBinding::IsSIP() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().protocol ==
-                           yealink::MemberInfo::Protocol::SIP);
+  ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
+                         yealink::MemberInfo::Protocol::SIP);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -234,11 +222,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsSIP() {
 v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(
-        value,
-        user_controller_->GetMemberInfo().protocol ==
-            yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER);
+  ConvertFrom(
+      value,
+      user_controller_.GetMemberInfo().protocol ==
+          yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -246,11 +233,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
 v8::Local<v8::Value> ConferenceUserBinding::IsPresenter() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(
-        value,
-        user_controller_->GetMemberInfo().protocol ==
-            yealink::MemberInfo::Roles::PermissionRole::PERMISSION_PRESENTER);
+  ConvertFrom(
+      value,
+      user_controller_.GetMemberInfo().protocol ==
+          yealink::MemberInfo::Roles::PermissionRole::PERMISSION_PRESENTER);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -258,11 +244,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsPresenter() {
 v8::Local<v8::Value> ConferenceUserBinding::IsAttendee() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(
-        value,
-        user_controller_->GetMemberInfo().protocol ==
-            yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ATTENDEE);
+  ConvertFrom(
+      value,
+      user_controller_.GetMemberInfo().protocol ==
+          yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ATTENDEE);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -270,11 +255,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsAttendee() {
 v8::Local<v8::Value> ConferenceUserBinding::IsCastViewer() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(
-        value,
-        user_controller_->GetMemberInfo().protocol ==
-            yealink::MemberInfo::Roles::PermissionRole::PERMISSION_CAST_VIEWER);
+  ConvertFrom(
+      value,
+      user_controller_.GetMemberInfo().protocol ==
+          yealink::MemberInfo::Roles::PermissionRole::PERMISSION_CAST_VIEWER);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -282,11 +266,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsCastViewer() {
 v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(
-        value,
-        user_controller_->GetMemberInfo().protocol ==
-            yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_DEMONSTRATOR);
+  ConvertFrom(
+      value,
+      user_controller_.GetMemberInfo().protocol ==
+          yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_DEMONSTRATOR);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -294,10 +277,9 @@ v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
 v8::Local<v8::Value> ConferenceUserBinding::IsPresenterDemonstrator() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->GetMemberInfo().protocol ==
-                           yealink::MemberInfo::Roles::PresenterDemoStateRole::
-                               PRESENTER_DEMONSTRATOR);
+  ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
+                         yealink::MemberInfo::Roles::PresenterDemoStateRole::
+                             PRESENTER_DEMONSTRATOR);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -305,8 +287,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsPresenterDemonstrator() {
 v8::Local<v8::Value> ConferenceUserBinding::IsOnHold() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->IsHoldOn());
+  ConvertFrom(value, user_controller_.IsHoldOn());
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -314,8 +295,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsOnHold() {
 v8::Local<v8::Value> ConferenceUserBinding::IsSharing() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->IsSharing());
+  ConvertFrom(value, user_controller_.IsSharing());
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -323,8 +303,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsSharing() {
 v8::Local<v8::Value> ConferenceUserBinding::IsFocus() {
   bool value;
 
-  if (user_controller_)
-    ConvertFrom(value, user_controller_->IsFocus());
+  ConvertFrom(value, user_controller_.IsFocus());
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -333,15 +312,13 @@ v8::Local<v8::Value> ConferenceUserBinding::GetAudioFilter() {
   UserMediaFilterInfo value;
   yealink::MemberInfo::Endpoint::Media param;
 
-  if (user_controller_) {
-    param.mediaEgressBlockBy =
-        yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-    param.mediaEgressFilter = user_controller_->GetAudioEgressFilter();
-    param.mediaIngressBlockBy = user_controller_->GetAudioIngressBlockBy();
-    param.mediaIngressFilter = user_controller_->GetAudioIngressFilter();
+  param.mediaEgressBlockBy =
+      yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
+  param.mediaEgressFilter = user_controller_.GetAudioEgressFilter();
+  param.mediaIngressBlockBy = user_controller_.GetAudioIngressBlockBy();
+  param.mediaIngressFilter = user_controller_.GetAudioIngressFilter();
 
-    ConvertFrom(value, param);
-  }
+  ConvertFrom(value, param);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -350,16 +327,14 @@ v8::Local<v8::Value> ConferenceUserBinding::GetVideoFilter() {
   UserMediaFilterInfo value;
   yealink::MemberInfo::Endpoint::Media param;
 
-  if (user_controller_) {
-    param.mediaEgressBlockBy =
-        yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-    param.mediaEgressFilter = user_controller_->GetVideoEgressFilter();
-    param.mediaIngressBlockBy =
-        yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-    param.mediaIngressFilter = user_controller_->GetVideoIngressFilter();
+  param.mediaEgressBlockBy =
+      yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
+  param.mediaEgressFilter = user_controller_.GetVideoEgressFilter();
+  param.mediaIngressBlockBy =
+      yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
+  param.mediaIngressFilter = user_controller_.GetVideoIngressFilter();
 
-    ConvertFrom(value, param);
-  }
+  ConvertFrom(value, param);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -379,9 +354,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::GetStats() {
 }
 
 void ConferenceUserBinding::DoGetStats() {
-  if (user_controller_) {
-    user_controller_->GetUserCallStats();
-  }
+  user_controller_.GetUserCallStats();
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetAudioIngressFilter(
@@ -400,9 +373,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetAudioIngressFilter(
 }
 
 void ConferenceUserBinding::DoSetAudioIngressFilter(bool isOpen) {
-  if (user_controller_) {
-    user_controller_->SetAudioState(isOpen);
-  }
+  user_controller_.SetAudioState(isOpen);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetAudioEgressFilter(
@@ -421,9 +392,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetAudioEgressFilter(
 }
 
 void ConferenceUserBinding::DoSetAudioEgressFilter(bool isOpen) {
-  if (user_controller_) {
-    user_controller_->SetAudioEgressState(isOpen);
-  }
+  user_controller_.SetAudioEgressState(isOpen);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetVideoIngressFilter(
@@ -442,9 +411,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetVideoIngressFilter(
 }
 
 void ConferenceUserBinding::DoSetVideoIngressFilter(bool isOpen) {
-  if (user_controller_) {
-    user_controller_->SetVideoState(isOpen);
-  }
+  user_controller_.SetVideoState(isOpen);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetPermission(
@@ -466,9 +433,8 @@ void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
   MemberInfo::Roles::PermissionRole value;
 
   ConvertFrom(params, value);
-  if (user_controller_) {
-    user_controller_->ModifyRole(value);
-  }
+
+  user_controller_.ModifyRole(value);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetDemonstrator(
@@ -487,12 +453,10 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetDemonstrator(
 }
 
 void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
-  if (user_controller_) {
-    if (params == UserDemoStateType::kDemonstrator)
-      user_controller_->SetDemonstrator(true);
-    else
-      user_controller_->SetDemonstrator(false);
-  }
+  if (params == UserDemoStateType::kDemonstrator)
+    user_controller_.SetDemonstrator(true);
+  else
+    user_controller_.SetDemonstrator(false);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetPresenterDemonstrator(
@@ -512,12 +476,10 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetPresenterDemonstrator(
 
 void ConferenceUserBinding::DoSetPresenterDemonstrator(
     PresenterDemoStateType params) {
-  if (user_controller_) {
-    if (params == PresenterDemoStateType::kDemonstrator)
-      user_controller_->SetDemonstrator(true);
-    else
-      user_controller_->SetDemonstrator(false);
-  }
+  if (params == PresenterDemoStateType::kDemonstrator)
+    user_controller_.SetDemonstrator(true);
+  else
+    user_controller_.SetDemonstrator(false);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::Hold() {
@@ -535,9 +497,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::Hold() {
 }
 
 void ConferenceUserBinding::DoHold() {
-  if (user_controller_) {
-    user_controller_->Hold();
-  }
+  user_controller_.Hold();
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::UnHold() {
@@ -555,9 +515,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::UnHold() {
 }
 
 void ConferenceUserBinding::DoUnHold() {
-  if (user_controller_) {
-    user_controller_->SetAccess(true);
-  }
+  user_controller_.SetAccess(true);
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::Kick() {
@@ -575,9 +533,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::Kick() {
 }
 
 void ConferenceUserBinding::DoKick() {
-  if (user_controller_) {
-    user_controller_->KickOut();
-  }
+  user_controller_.KickOut();
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetDisplayName(
@@ -602,9 +558,7 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetDisplayName(
 }
 
 void ConferenceUserBinding::DoSetDisplayName(std::string name) {
-  if (user_controller_) {
-    user_controller_->ModifyUserName(name.c_str());
-  }
+  user_controller_.ModifyUserName(name.c_str());
 }
 
 v8::Local<v8::Promise> ConferenceUserBinding::SetFocus(bool isFocus) {
@@ -622,12 +576,10 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetFocus(bool isFocus) {
 }
 
 void ConferenceUserBinding::DoSetFocus(bool isFocus) {
-  if (user_controller_) {
-    if (isFocus == true)
-      user_controller_->SetFocus(true);
-    else
-      user_controller_->SetFocus(false);
-  }
+  if (isFocus == true)
+    user_controller_.SetFocus(true);
+  else
+    user_controller_.SetFocus(false);
 }
 
 void ConferenceUserBinding::OnCommandCompeleted(Promise promise) {

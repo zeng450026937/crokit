@@ -48,7 +48,7 @@ void ConferenceBinding::BuildPrototype(
 
 void ConferenceBinding::SetController(RoomController* controller) {
   controller_ = controller;
-
+  controller_->AddObserver(this);
   state_->UpdateRoomController(controller);
   description_->UpdateRoomController(controller);
   users_->UpdateRoomController(controller);
