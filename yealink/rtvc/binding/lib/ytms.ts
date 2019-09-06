@@ -25,9 +25,9 @@ export interface TerminalInfo {
   serverAddress: string;
   serverDomain: string;
   serverOutbound: string;
-  enterprise_domain: string;
-  enterprise_id: string;
-  enterprise_name: string;
+  enterpriseDomain: string;
+  enterpriseId: string;
+  enterpriseName: string;
 }
 
 export interface AlarmInfo {
@@ -99,15 +99,15 @@ export interface YTMS {
 
   uploadAlarm(params: AlarmInfo): void,
   uploadFeedBack(params: FeedbackInfo): void,
-  UploadEvent(params: EventInfo): void,
-  UploadConfig(params: string): void,
-  UploadLog(params: UploadLogInfo): void,
+  uploadEvent(params: EventInfo): void,
+  uploadConfig(params: string): void,
+  uploadLog(params: UploadLogInfo): void,
 
   getPackagesInfo(): PackageInfo,
   getConfigFileInfo(): ConfigurationInfo,
 
-  DownloadFile(params: DownloadInfo): void,
+  downloadFile(params: DownloadInfo): void,
 
-  StartCapture(params: NetCaptureInfo): void,
-  StopCapture(params: string): void,
+  startCapture(params: NetCaptureInfo): void,
+  stopCapture(params: string): void,
 }
