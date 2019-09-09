@@ -179,9 +179,9 @@ v8::Local<v8::Value> ConferenceUserBinding::UserAgent() {
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceUserBinding::Roles() {
-  std::string value;
+  UserRolesInfo value;
 
-  ConvertFrom(value, user_controller_.GetMemberInfo().displayText);
+  ConvertFrom(value, user_controller_.GetMemberInfo().roles);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -231,12 +231,14 @@ v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
 }
 
 v8::Local<v8::Value> ConferenceUserBinding::IsPresenter() {
-  bool value;
+  bool value = false;
 
   ConvertFrom(
       value,
-      user_controller_.GetMemberInfo().protocol ==
-          yealink::MemberInfo::Roles::PermissionRole::PERMISSION_PRESENTER);
+      (user_controller_.GetMemberInfo().roles.permissionRole ==
+       yealink::MemberInfo::Roles::PermissionRole::PERMISSION_PRESENTER) ||
+          (user_controller_.GetMemberInfo().roles.permissionRole ==
+           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER));
 
   return mate::ConvertToV8(isolate(), value);
 }
