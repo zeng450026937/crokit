@@ -74,7 +74,8 @@ void ConferenceDescriptionBinding::BuildPrototype(
       .SetMethod("getDefaultRtmp",
                  &ConferenceDescriptionBinding::GetDefaultRtmp)
       .SetMethod("getLock", &ConferenceDescriptionBinding::GetLock)
-      .SetMethod("setLock", &ConferenceDescriptionBinding::SetLock);
+      .SetMethod("setLock", &ConferenceDescriptionBinding::SetLock)
+      .SetMethod("getShareInfo", &ConferenceDescriptionBinding::GetShareInfo);
 }
 
 void ConferenceDescriptionBinding::UpdateRoomController(
