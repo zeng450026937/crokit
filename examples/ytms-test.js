@@ -113,8 +113,7 @@ async function test(binding) {
 
     const config = {
       'path' : 'E:\\file\\',
-      //'deviceId' : '{801CE636-BEFB-4BC1-97B2-AB8EC6F9C4DE}',
-      'deviceId' :'{79C109C4-206C-4C73-987C-2BA6BD334F79}',
+      'deviceId' :'{9D442926-C9DE-4E74-B8DE-7C9FA5DFA117}',
       'sessionId' : id,
     };
 

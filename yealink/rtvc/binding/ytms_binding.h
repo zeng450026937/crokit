@@ -96,6 +96,8 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
   ConfigurationInfo config_info_;
 
   YTMSAgent* ytms_agent_;
+
+  base::WeakPtrFactory<YTMSBinding> weak_factory_;
 };
 
 }  // namespace rtvc
