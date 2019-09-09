@@ -31,7 +31,7 @@ void ConferenceStateBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceState"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("lock", &ConferenceStateBinding::Locked)
+      .SetProperty("locked", &ConferenceStateBinding::Locked)
       .SetProperty("active", &ConferenceStateBinding::Active)
       .SetProperty("rollCallStatus", &ConferenceStateBinding::RollCallStatus);
 }

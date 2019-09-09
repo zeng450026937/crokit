@@ -223,7 +223,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceNumberType() {
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceDescriptionBinding::BookStartTime() {
-  int64_t value;
+  int64_t value = 0;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
@@ -233,7 +233,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::BookStartTime() {
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceDescriptionBinding::BookExpiryTime() {
-  int64_t value;
+  int64_t value = 0;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
@@ -263,7 +263,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::AttendeePin() {
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceDescriptionBinding::MaximumUserCount() {
-  uint32_t value;
+  uint32_t value = 0;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
@@ -283,7 +283,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::AdmissionPolicy() {
   return mate::ConvertToV8(isolate(), value);
 }
 v8::Local<v8::Value> ConferenceDescriptionBinding::LobbyCapable() {
-  bool value;
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()

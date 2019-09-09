@@ -1157,7 +1157,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescProfile>::ToV8(
   std::string profile;
   switch (val) {
     case yealink::rtvc::DescProfile::kConference:
-      profile = "default";
+      profile = "conference";
       break;
     case yealink::rtvc::DescProfile::kTeaching:
       profile = "education";
@@ -1177,7 +1177,7 @@ bool Converter<yealink::rtvc::DescProfile>::FromV8(
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
-  if (in == "default")
+  if (in == "conference")
     *out = yealink::rtvc::DescProfile::kConference;
   else if (in == "education")
     *out = yealink::rtvc::DescProfile::kTeaching;
@@ -1643,7 +1643,7 @@ bool Converter<yealink::rtvc::DescAttendeeByPass>::FromV8(
 v8::Local<v8::Value> Converter<yealink::rtvc::DescAutoPromote>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::DescAutoPromote val) {
-  int res;
+  int res = 0;
   switch (val) {
     case yealink::rtvc::DescAutoPromote::kNone:
       res = 0;
