@@ -6,6 +6,7 @@
 #include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/native_mate/object_template_builder.h"
+#include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/context.h"
 
 namespace yealink {
@@ -75,9 +76,11 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
 
   sip_client_->SetConnectionHandler(this);
   sip_client_->SetAuthHandler(this);
+  sip_client_->SetClientHandler(this);
 }
 UserAgentBinding::~UserAgentBinding() {
   UnRegister();
+  sip_client_->SetClientHandler(nullptr);
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
   Context::Instance()->PostTask(FROM_HERE,
@@ -145,17 +148,15 @@ bool UserAgentBinding::registering() {
 }
 
 void UserAgentBinding::OnConnectFailed(int message) {
-  LOG(INFO) << __FUNCTIONW__;
+  Emit("connectFailed");
 }
 void UserAgentBinding::OnConnected() {
-  LOG(INFO) << __FUNCTIONW__;
+  Emit("connected");
 }
 void UserAgentBinding::OnConnectInterruption(int message) {
-  LOG(INFO) << __FUNCTIONW__;
+  Emit("connectFailed");
 }
-void UserAgentBinding::OnReceivedData() {
-  LOG(INFO) << __FUNCTIONW__;
-}
+void UserAgentBinding::OnReceivedData() {}
 
 yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
   switch (type) {
@@ -185,12 +186,14 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
     case yealink::AEID_SUCCESS:
       register_promise_->Resolve(this);
       registered_ = true;
+      Emit("registered");
       break;
     case yealink::AEID_FAILED:
       // TODO
       // reject error
       register_promise_->Reject();
       registered_ = false;
+      Emit("registerFailed");
       break;
     default:
       NOTREACHED();
@@ -207,7 +210,13 @@ void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
   profile.strPassword = turn.strPassword;
   profile.nUDPPort = turn.nUDPPort;
   profile.nTCPPort = turn.nTCPPort;
-  // Context::Instance()->GetMedia()->SetICEProfile(profile, false);
+  Context::Instance()->GetMedia()->SetICEProfile(profile, false);
+}
+
+void UserAgentBinding::OnOffer(const SIPMessageReadonly& message,
+                               SIPInviteAgent** agent) {
+  auto call = CallBinding::Create(isolate(), this, true);
+  *agent = call->GetMeeting()->MediaCallAgent();
 }
 
 }  // namespace rtvc

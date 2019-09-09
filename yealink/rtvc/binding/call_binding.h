@@ -6,10 +6,10 @@
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/api/call.h"
 #include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
-#include "yealink/rtvc/binding/promise.h"
 
 namespace yealink {
 
@@ -26,6 +26,11 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
       mate::Handle<UserAgentBinding> user_agent,
       bool incoming = true);
 
+  static mate::Handle<CallBinding> Create(
+      v8::Isolate* isolate,
+      UserAgentBinding* user_agent,
+      bool incoming = true);
+
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
@@ -38,6 +43,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
               bool incoming = false);
   CallBinding(v8::Isolate* isolate,
               mate::Handle<UserAgentBinding> user_agent,
+              bool incoming = true);
+  CallBinding(v8::Isolate* isolate,
+              UserAgentBinding* user_agent,
               bool incoming = true);
   ~CallBinding() override;
 

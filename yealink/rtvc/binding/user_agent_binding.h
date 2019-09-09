@@ -16,7 +16,8 @@ namespace rtvc {
 
 class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                          public yealink::ConnectionHandler,
-                         public yealink::AuthHandler {
+                         public yealink::AuthHandler,
+                         public yealink::SIPClientHandler {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -52,6 +53,9 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   void OnAuthEvent(const yealink::AuthEvent& event) override;
   void OnICEProfile(const yealink::AuthICEProfile& turn,
                     const yealink::AuthICEProfile& stun) override;
+
+  // yealink::SIPClientHandler impl
+  void OnOffer(const SIPMessageReadonly& message, SIPInviteAgent** agent) override;
 
  private:
   friend class CallBinding;

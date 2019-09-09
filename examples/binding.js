@@ -10,8 +10,16 @@ if (global.window) {
   window.binding = binding;
 }
 
+const events = require('events');
+const util = require('util');
+
 console.log(binding);
 console.log(binding.version);
+
+const { UserAgent, Call } = binding;
+
+util.inherits(UserAgent, events.EventEmitter);
+util.inherits(Call, events.EventEmitter);
 
 const tests = {
   audioManager : require('./audio-manager-test'),

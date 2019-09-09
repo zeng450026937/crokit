@@ -30,6 +30,15 @@ mate::Handle<CallBinding> CallBinding::Create(
 }
 
 // static
+mate::Handle<CallBinding> CallBinding::Create(
+    v8::Isolate* isolate,
+    UserAgentBinding* user_agent,
+    bool incoming) {
+  return mate::CreateHandle(isolate,
+                            new CallBinding(isolate, user_agent, incoming));
+}
+
+// static
 void CallBinding::BuildPrototype(v8::Isolate* isolate,
                                  v8::Local<v8::FunctionTemplate> prototype) {
   prototype->SetClassName(mate::StringToV8(isolate, "Call"));
@@ -119,6 +128,24 @@ CallBinding::CallBinding(v8::Isolate* isolate,
   meeting_->SetObserver(this);
 }
 
+CallBinding::CallBinding(v8::Isolate* isolate,
+                         UserAgentBinding* user_agent,
+                         bool incoming)
+    : user_agent_(user_agent->GetWeakPtr()),
+      sip_client_(user_agent->GetWeakSIPClientPtr()),
+      weak_factory_(this),
+      media_(Context::Instance()->GetMedia()),
+      meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
+      local_identity_(isolate, v8::Object::New(isolate)),
+      remote_identity_(isolate, v8::Object::New(isolate)),
+      call_info_(isolate, v8::Object::New(isolate)),
+      incoming_(incoming),
+      remote_video_source_(new VideoSourceAdapter()),
+      remote_share_video_source_(new VideoSourceAdapter()) {
+  Init(isolate);
+  meeting_->SetObserver(this);
+}
+
 CallBinding::~CallBinding() {
   meeting_->SetObserver(nullptr);
 }
@@ -183,7 +210,6 @@ void CallBinding::Answer(mate::Arguments* args) {
                                                       : yealink::AV_ONLY_AUDIO;
   }
 
-  meeting_->Early("");
   meeting_->Answer(content_type);
 
   state_ = CallState::kProgress;
@@ -570,6 +596,10 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
     case yealink::MEETING_CREATE:
       break;
     case yealink::MEETING_CONNECTED:
+      if (incoming_ && user_agent_) {
+        meeting_->Early("");
+        user_agent_->Emit("incoming", this);
+      }
       if (state_ != CallState::kProgress) {
         state_ = CallState::kProgress;
         Emit("progress");

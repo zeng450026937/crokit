@@ -22,6 +22,41 @@ async function test(binding, account) {
   console.log('password', userAgent.password);
   console.log('domain', userAgent.domain);
 
+  userAgent.on('incoming', (event, call) => {
+    console.log(event, call);
+    
+    const eventNames = [
+      'progress',
+      'ringing',
+      'redirect',
+      'established',
+      'share:established',
+      'share:finished',
+      'referFailed',
+      'replaceFailed',
+      'refered',
+      'replaced',
+      'finished',
+      'rtc:audioStart',
+      'rtc:audioStop',
+      'rtc:audioBroken',
+      'rtc:videoStart',
+      'rtc:videoStop',
+      'rtc:videoBroken',
+      'rtc:shareRecvStart',
+      'rtc:shareRecvStop',
+      'rtc:shareSendStart',
+      'rtc:shareSendStop',
+      'rtc:shareBroken',
+    ];
+
+    eventNames.forEach((event) => {
+      call.on(event, () => console.log(event));
+    })
+
+    call.answer({video:false});
+  });
+
   // console.log('unregister()');
 
   // userAgent.unregister();
@@ -29,7 +64,7 @@ async function test(binding, account) {
   // delete call;
   // delete userAgent;
 
-  call_test(binding, userAgent);
+  // call_test(binding, userAgent);
 }
 
 module.exports = test;

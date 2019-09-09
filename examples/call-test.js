@@ -1,5 +1,3 @@
-const events = require('events');
-const util = require('util');
 const path = require('path');
 
 async function test(binding, userAgent) {
@@ -60,8 +58,6 @@ async function test(binding, userAgent) {
   // videoManager.setLocalVideoSink(sink);
 
   videoManager.acquireStream();
-
-  util.inherits(Call, events.EventEmitter);
 
   const call = new Call(userAgent);
 
