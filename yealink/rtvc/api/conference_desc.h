@@ -8,11 +8,140 @@
 namespace yealink {
 
 namespace rtvc {
+enum class DescProfile { kInvalid, kConference, kTeaching, kSeminar };
 
-enum class UriPurpose {
+enum class DescPosition { kInvalid, kTop, kMedium, kBottom };
+
+struct DescBanner {
+  bool enabled;
+  std::string display_text;
+  DescPosition position;
+};
+
+enum class DescRtmpSessionType {
+  kInvalid,
+  kAV,
+  kAD,
+  kAVD,
+};
+
+enum class DescRtmpFsType {
+  kInvalid,
+  k360P,
+  k720P,
+  k1080P,
+};
+
+struct DescDefaultRtmp {
+  bool enabled;
+  std::string display_text;
+  DescRtmpSessionType mcu_session_type;
+  DescRtmpFsType max_video_fs;
+  std::string web_share_url;
+};
+
+enum class DescUriPurpose {
+  kInvalid,
   kFocus,
   kAudioVideo,
   kApplicationSharing,
+  kChat,
+  kCoopShare
+};
+
+struct DescConfUriInfo {
+  std::string uri;
+  std::string display_text;
+  DescUriPurpose purpose;
+};
+
+struct DescOrganizerInfo {
+  std::string display_text;
+  std::string uid;
+  std::string username;
+  std::string realm;
+  std::string phone;
+  std::string domain;
+};
+
+enum class DescConferenceType { kInvalid, kVMN, kVGCP, kVGCM, kVSC, kVSCA };
+
+enum class DescNumberType { kInvalid, kMeetNow, kRecurrence, kVMR };
+
+enum class DescAdmissionPolicy {
+  kInvalid,
+  kClosedAuthenticated,
+  KOpenAuthenticated,
+  kAnonumous,
+};
+
+enum class DescAttendeeByPass {
+  kInvalid,
+  kByPassTrue,
+  KByPassFalse,
+};
+
+enum class DescAutoPromote {
+  kInvalid,
+  kNone,
+  kEveryOne,
+  kCompany,
+};
+
+enum class DescRecordType {
+  kInvalid,
+  kYealinkRecord,
+  kThirdParty,
+};
+
+enum class DescRecordPrivilege {
+  kInvalid,
+  kOrganizer,
+  kPresenter,
+  kAttendee,
+};
+
+struct DescSetLockInfo {
+  DescAdmissionPolicy admission_policy;
+  DescAttendeeByPass attendee_by_pass;
+  DescAutoPromote auto_promote;
+};
+
+struct DescGetLockInfo {
+  DescAdmissionPolicy admission_policy;
+  bool attendee_by_pass;
+  DescAutoPromote auto_promote;
+};
+
+struct DescInfo {
+  std::string subject;
+  int64_t start_time;
+  DescBanner banner;
+  DescDefaultRtmp default_rtmp;
+  DescProfile profile;
+  std::string record_id;
+  std::vector<DescConfUriInfo> conf_uris;
+  std::string conference_id;
+  std::string conference_number;
+  DescConferenceType conference_type;
+  DescNumberType conference_number_type;
+  int64_t book_start_time;
+  int64_t book_expiry_time;
+  std::string presenter_pin;
+  std::string attendee_pin;
+  DescAdmissionPolicy admission_policy;
+  bool lobby_capable;
+  bool attendee_by_pass;
+  DescAutoPromote auto_promote;
+  std::string server_mode;
+  bool interactive_broadcast_enabled;
+  std::string enterprise_id;
+  bool video_enable;
+  bool ipcall_enable;
+  bool webrtc_enable;
+  DescRecordType record_server_type;
+  DescRecordPrivilege record_privilege;
+  std::string conf_info_url;
 };
 
 class ConferenceDesc {
@@ -60,7 +189,7 @@ class ConferenceDesc {
   ConferenceDesc() = default;
   ~ConferenceDesc() = default;
 
-  std::string GetUri(UriPurpose purpose) {}
+  std::string GetUri(DescConfUriInfo purpose) {}
 
   std::string GetBanner() {}
   std::string GetPresetBanner() {}
@@ -83,6 +212,9 @@ class ConferenceDesc {
 
   std::string GetSpeechMode() {}
   void SetSpeechMode(std::string speech_mode) {}
+
+  bool GetLock() {}
+  void SetLock() {}
 };
 
 }  // namespace rtvc

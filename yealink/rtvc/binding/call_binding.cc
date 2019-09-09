@@ -88,7 +88,8 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("getInfos", &CallBinding::GetInfos)
       .SetProperty("conferenceAware", &CallBinding::conference_aware,
                    &CallBinding::SetConferenceAware)
-      .SetMethod("asConference", &CallBinding::AsConference);
+      .SetMethod("asConference", &CallBinding::AsConference)
+      .SetProperty("conference", &CallBinding::AsConference);
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -118,6 +119,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       weak_factory_(this),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
+      controller_(nullptr),
       local_identity_(isolate, v8::Object::New(isolate)),
       remote_identity_(isolate, v8::Object::New(isolate)),
       call_info_(isolate, v8::Object::New(isolate)),
@@ -126,6 +128,9 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       remote_share_video_source_(new VideoSourceAdapter()) {
   Init(isolate);
   meeting_->SetObserver(this);
+  controller_ = meeting_->Room();
+  conference_ = ConferenceBinding::Create(isolate, nullptr);
+  v8_conference_.Reset(isolate, conference_.ToV8());
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -136,6 +141,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       weak_factory_(this),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
+      controller_(nullptr),
       local_identity_(isolate, v8::Object::New(isolate)),
       remote_identity_(isolate, v8::Object::New(isolate)),
       call_info_(isolate, v8::Object::New(isolate)),
@@ -144,6 +150,9 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       remote_share_video_source_(new VideoSourceAdapter()) {
   Init(isolate);
   meeting_->SetObserver(this);
+  controller_ = meeting_->Room();
+  conference_ = ConferenceBinding::Create(isolate, nullptr);
+  v8_conference_.Reset(isolate, conference_.ToV8());
 }
 
 CallBinding::~CallBinding() {
@@ -509,8 +518,9 @@ bool CallBinding::conference_aware() {
 }
 void CallBinding::SetConferenceAware(bool enable) {}
 
-void CallBinding::AsConference() {
-  controller_ = meeting_->Room();
+v8::Local<v8::Value> CallBinding::AsConference() {
+  DCHECK(conference_.get());
+  return v8::Local<v8::Value>::New(isolate(), v8_conference_);
 }
 
 yealink::AVContentType CallBinding::GetContentType() {
@@ -729,20 +739,20 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
   Emit("update", call_info_.GetHandle());
 }
 void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
-  if (!Context::Instance()->CalledOnValidThread()) {
-    Context::Instance()->PostTask(
-        FROM_HERE, base::BindOnce(&CallBinding::OnCreateConferenceAfter,
-                                  weak_factory_.GetWeakPtr(), controller));
-    return;
-  }
+  // TODO
+  // ensure conference is not nullptr
 
-  DCHECK(controller);
+  // TBD
+  // maybe alloc conference in constructor()
+
   controller_ = controller;
-  // if (upgrade_promise_) {
-  //   std::unique_ptr<Promise> promise(upgrade_promise_.release());
-  //   promise->Resolve();
-  //   Emit("upgraded");
-  // }
+
+  // add interface on conference binding to allow
+  // setting controller later(after constructor)
+
+  // eg. conference_->SetController(controller_);
+  conference_->SetController(controller);
+
 }
 void CallBinding::OnRealseConferenceBefore(
     yealink::RoomController* controller) {

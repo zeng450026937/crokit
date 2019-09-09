@@ -24,9 +24,6 @@ class ConferenceState {
 
   ConferenceUser* GetSharingUser();
   ConferenceUser* GetForwarder();
-
-  bool GetLock();
-  void SetLock();
 };
 
 }  // namespace rtvc

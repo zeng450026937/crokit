@@ -8,31 +8,113 @@
 namespace yealink {
 namespace rtvc {
 
-enum class FilterType {
-  kAudio,
-  kVideo,
-  kUnknown,
+enum class ViewSpeakMode {
+  kInvalid,
+  kFree,
+  kHandUp,
 };
 
-std::string FilterTypeToString(FilterType type) {
-  switch (type) {
-    case FilterType::kAudio:
-      return "audio";
-    case FilterType::kVideo:
-      return "video";
-  }
+enum class ViewLayoutType {
+  kInvalid,
+  kEquality,
+  kPresentation,
+  kSpeechExcitation,
+  kExclusive,
+};
 
-  return std::string();
-}
+enum class ViewPresenterLayoutType {
+  kInvalid,
+  kEquality,
+  kSpeechExcitation,
+  kExclusive,
+};
 
-FilterType FilterTypeFromString(std::string type) {
-  if (type == "audio")
-    return FilterType::kAudio;
-  if (type == "video")
-    return FilterType::kVideo;
+enum class ViewPurpose {
+  kInvalid,
+  kFocus,
+  kAudioVideo,
+  kChat,
+  kCoopShare,
+  kApplicationSharing,
+};
 
-  return FilterType::kUnknown;
-}
+enum class ViewRole {
+  kInvalid,
+  kDefault,
+  kAttendee,
+};
+
+enum class ViewFilter {
+  kInvalid,
+  kBlock,
+  kUnblock,
+};
+
+struct ViewInitialFilter {
+  ViewRole role;
+  ViewFilter ingressFilter;
+};
+
+struct SetLayoutInfo {
+  ViewLayoutType video_layout;
+  int video_max_view;
+  ViewFilter egressFilter;
+};
+
+struct GetLayoutInfo {
+  ViewSpeakMode speak_mode;
+  ViewLayoutType video_layout;
+  uint32_t video_max_view;
+  ViewPresenterLayoutType video_presenter_layout;
+  uint32_t video_presenter_max_view;
+  uint32_t video_round_number;
+  uint32_t video_round_interval;
+  uint32_t video_speech_ex_sensitivity;
+  bool video_round_enable;
+  bool video_big_round;
+  bool video_speech_ex_enabled;
+  bool video_data_mix_enabled;
+  bool hide_osd_sitename;
+  bool hide_osd_sitestatus;
+};
+
+enum class ViewFilterRoleType {
+  kInvalid,
+  kDefault,
+  kAttendee,
+};
+
+enum class ViewFilterType {
+  kInvalid,
+  kBlock,
+  kUnBlock,
+};
+
+struct ViewFilterRuleInfo {
+  ViewFilterRoleType role;
+  ViewFilterType ingress;
+  ViewFilterType egress;
+};
+
+// std::string ViewFilterTypeToString(ViewFilterType type) {
+//   switch (type) {
+//     case ViewFilterType::kAudio:
+//       return "audio";
+//     case ViewFilterType::kVideo:
+//       return "video";
+//   }
+
+//   return std::string();
+// }
+
+// ViewFilterType ViewFilterTypeFromString(std::string type) {
+//   if (type == "audio")
+//     return ViewFilterType::kAudio;
+//   if (type == "video")
+//     return ViewFilterType::kVideo;
+
+//   return ViewFilterType::kUnknown;
+// }
 
 class ConferenceView {
   RTVC_READONLY_PROPERTY(std::string, entity_view);
@@ -47,14 +129,14 @@ class ConferenceView {
   void GetMediaView();
   void SetMediaView();
 
-  void GetInitialFilters(FilterType type);
-  void SetInitialFilters(FilterType type, std::string property);
+  void GetInitialFilters(ViewFilterType type);
+  void SetInitialFilters(ViewFilterType type, std::string property);
 
-  void GetDefaultFilter(FilterType type);
-  void SetDefaultFilter(FilterType type, std::string property);
+  void GetDefaultFilter(ViewFilterType type);
+  void SetDefaultFilter(ViewFilterType type, std::string property);
 
-  void GetAttendeeFilter(FilterType type);
-  void SetAttendeeFilter(FilterType type, std::string property);
+  void GetAttendeeFilter(ViewFilterType type);
+  void SetAttendeeFilter(ViewFilterType type, std::string property);
 
   void GetLayout();
   void SetLayout();

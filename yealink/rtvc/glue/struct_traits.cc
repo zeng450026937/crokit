@@ -454,11 +454,885 @@ bool StructTraits<PackageInfo>::From(PackageInfo& out,
 
 // static
 bool StructTraits<ConfigurationInfo>::From(ConfigurationInfo& out,
-                                     const yealink::ConfigFileInfo& val) {
+                                           const yealink::ConfigFileInfo& val) {
   ConvertFrom(out.id, val.configId);
   ConvertFrom(out.name, val.configName);
   ConvertFrom(out.url, val.downloadUrl);
   ConvertFrom(out.md5, val.fileMd5);
+
+  return true;
+}
+
+// description
+bool StructTraits<DescProfile>::From(
+    DescProfile& out,
+    const yealink::ConferenceDescription::Profile& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::Profile::CONFERENCE:
+      out = DescProfile::kConference;
+      break;
+    case yealink::ConferenceDescription::Profile::TEACHING:
+      out = DescProfile::kTeaching;
+      break;
+    case yealink::ConferenceDescription::Profile::SEMINAR:
+      out = DescProfile::kSeminar;
+      break;
+    default:
+      out = DescProfile::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescPosition>::From(
+    DescPosition& out,
+    const yealink::ConferenceDescription::Banner::Position& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::Banner::Position::TOP:
+      out = DescPosition::kTop;
+      break;
+    case yealink::ConferenceDescription::Banner::Position::MEDIUM:
+      out = DescPosition::kMedium;
+      break;
+    case yealink::ConferenceDescription::Banner::Position::BOTTOM:
+      out = DescPosition::kBottom;
+      break;
+    default:
+      out = DescPosition::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescBanner>::From(
+    DescBanner& out,
+    const yealink::ConferenceDescription::Banner& val) {
+  ConvertFrom(out.enabled, val.enabled);
+  ConvertFrom(out.display_text, val.displayText);
+  ConvertFrom(out.position, val.position);
+
+  return true;
+}
+
+bool StructTraits<DescRtmpSessionType>::From(
+    DescRtmpSessionType& out,
+    const yealink::ConferenceDescription::DefaultRtmp::McuSessionType& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::DefaultRtmp::McuSessionType::MCU_AV:
+      out = DescRtmpSessionType::kAV;
+      break;
+    case yealink::ConferenceDescription::DefaultRtmp::McuSessionType::MCU_AD:
+      out = DescRtmpSessionType::kAD;
+      break;
+    case yealink::ConferenceDescription::DefaultRtmp::McuSessionType::MCU_AVD:
+      out = DescRtmpSessionType::kAVD;
+      break;
+    default:
+      out = DescRtmpSessionType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescRtmpFsType>::From(
+    DescRtmpFsType& out,
+    const yealink::ConferenceDescription::DefaultRtmp::MaxVideoFs& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::DefaultRtmp::MaxVideoFs::FS_360P:
+      out = DescRtmpFsType::k360P;
+      break;
+    case yealink::ConferenceDescription::DefaultRtmp::MaxVideoFs::FS_720P:
+      out = DescRtmpFsType::k720P;
+      break;
+    case yealink::ConferenceDescription::DefaultRtmp::MaxVideoFs::FS_1080P:
+      out = DescRtmpFsType::k1080P;
+      break;
+    default:
+      out = DescRtmpFsType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescDefaultRtmp>::From(
+    DescDefaultRtmp& out,
+    const yealink::ConferenceDescription::DefaultRtmp& val) {
+  ConvertFrom(out.enabled, val.enabled);
+  ConvertFrom(out.display_text, val.displayText);
+  ConvertFrom(out.mcu_session_type, val.mcuSessionType);
+  ConvertFrom(out.max_video_fs, val.maxVideoFs);
+  ConvertFrom(out.web_share_url, val.webShareUrl);
+
+  return true;
+}
+
+bool StructTraits<DescUriPurpose>::From(
+    DescUriPurpose& out,
+    const yealink::ConferenceDescription::Entry::Purpose& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::Entry::Purpose::FOCUS:
+      out = DescUriPurpose::kFocus;
+      break;
+    case yealink::ConferenceDescription::Entry::Purpose::AUDIO_VIDEO:
+      out = DescUriPurpose::kAudioVideo;
+      break;
+    case yealink::ConferenceDescription::Entry::Purpose::APPLICATION_SHARING:
+      out = DescUriPurpose::kApplicationSharing;
+      break;
+    case yealink::ConferenceDescription::Entry::Purpose::CHAT:
+      out = DescUriPurpose::kChat;
+      break;
+    case yealink::ConferenceDescription::Entry::Purpose::COOPSHARE:
+      out = DescUriPurpose::kCoopShare;
+      break;
+    default:
+      out = DescUriPurpose::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescConfUriInfo>::From(
+    DescConfUriInfo& out,
+    const yealink::ConferenceDescription::Entry& val) {
+  ConvertFrom(out.uri, val.uri);
+  ConvertFrom(out.display_text, val.displayText);
+  ConvertFrom(out.purpose, val.purpose);
+
+  return true;
+}
+
+bool StructTraits<DescOrganizerInfo>::From(
+    DescOrganizerInfo& out,
+    const yealink::ConferenceDescription::OrganizerInfo& val) {
+  ConvertFrom(out.display_text, val.displayText);
+  ConvertFrom(out.uid, val.uid);
+  ConvertFrom(out.username, val.username);
+  ConvertFrom(out.realm, val.realm);
+  ConvertFrom(out.phone, val.phone);
+  ConvertFrom(out.domain, val.domain);
+
+  return true;
+}
+
+bool StructTraits<DescConferenceType>::From(
+    DescConferenceType& out,
+    const yealink::ConferenceDescription::ConferenceType& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::ConferenceType::VGCM:
+      out = DescConferenceType::kVGCM;
+      break;
+    case yealink::ConferenceDescription::ConferenceType::VGCP:
+      out = DescConferenceType::kVGCP;
+      break;
+    case yealink::ConferenceDescription::ConferenceType::VMN:
+      out = DescConferenceType::kVMN;
+      break;
+    case yealink::ConferenceDescription::ConferenceType::VSC:
+      out = DescConferenceType::kVSC;
+      break;
+    case yealink::ConferenceDescription::ConferenceType::VSCA:
+      out = DescConferenceType::kVSCA;
+      break;
+    default:
+      out = DescConferenceType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescNumberType>::From(
+    DescNumberType& out,
+    const yealink::ConferenceDescription::ConferenceNumberType& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::ConferenceNumberType::MEET_NOW:
+      out = DescNumberType::kMeetNow;
+      break;
+    case yealink::ConferenceDescription::ConferenceNumberType::RECURRENCE:
+      out = DescNumberType::kRecurrence;
+      break;
+    case yealink::ConferenceDescription::ConferenceNumberType::VMR:
+      out = DescNumberType::kVMR;
+      break;
+    default:
+      out = DescNumberType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescAdmissionPolicy>::From(
+    DescAdmissionPolicy& out,
+    const yealink::ConferenceDescription::AdmissionPolicy& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::AdmissionPolicy::CLOSED_AUTHENTICATED:
+      out = DescAdmissionPolicy::kClosedAuthenticated;
+      break;
+    case yealink::ConferenceDescription::AdmissionPolicy::OPEN_AUTHENTICATED:
+      out = DescAdmissionPolicy::KOpenAuthenticated;
+      break;
+    case yealink::ConferenceDescription::AdmissionPolicy::ANONYMOUS:
+      out = DescAdmissionPolicy::kAnonumous;
+      break;
+    default:
+      out = DescAdmissionPolicy::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescAttendeeByPass>::From(
+    DescAttendeeByPass& out,
+    const yealink::ConferenceDescription::AttendeeByPass& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::AttendeeByPass::ATTENDEE_BY_PASS_TRUE:
+      out = DescAttendeeByPass::kByPassTrue;
+      break;
+    case yealink::ConferenceDescription::AttendeeByPass::ATTENDEE_BY_PASS_FALSE:
+      out = DescAttendeeByPass::KByPassFalse;
+      break;
+    default:
+      out = DescAttendeeByPass::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescAutoPromote>::From(
+    DescAutoPromote& out,
+    const yealink::ConferenceDescription::AutoPromote& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::AutoPromote::NONE:
+      out = DescAutoPromote::kNone;
+      break;
+    case yealink::ConferenceDescription::AutoPromote::EVERYONE:
+      out = DescAutoPromote::kEveryOne;
+      break;
+    case yealink::ConferenceDescription::AutoPromote::COMPANY:
+      out = DescAutoPromote::kCompany;
+      break;
+    default:
+      out = DescAutoPromote::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescRecordType>::From(
+    DescRecordType& out,
+    const yealink::ConferenceDescription::RecordServerType& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::RecordServerType::YL_RECORD:
+      out = DescRecordType::kYealinkRecord;
+      break;
+    case yealink::ConferenceDescription::RecordServerType::THIRD_PARTY:
+      out = DescRecordType::kThirdParty;
+      break;
+    default:
+      out = DescRecordType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<DescRecordPrivilege>::From(
+    DescRecordPrivilege& out,
+    const yealink::ConferenceDescription::RecordPrivilege& val) {
+  switch (val) {
+    case yealink::ConferenceDescription::RecordPrivilege::ORGANIZER:
+      out = DescRecordPrivilege::kOrganizer;
+      break;
+    case yealink::ConferenceDescription::RecordPrivilege::PRESENTER:
+      out = DescRecordPrivilege::kPresenter;
+      break;
+    case yealink::ConferenceDescription::RecordPrivilege::ATTENDEE:
+      out = DescRecordPrivilege::kAttendee;
+      break;
+    default:
+      out = DescRecordPrivilege::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<DescInfo>::From(DescInfo& out,
+                                  const yealink::ConferenceDescription& val) {
+  ConvertFrom(out.subject, val.subject);
+  ConvertFrom(out.start_time, val.startTime);
+  ConvertFrom(out.banner, val.banner);
+  ConvertFrom(out.default_rtmp, val.defaultRtmp);
+  ConvertFrom(out.profile, val.profile);
+  ConvertFrom(out.record_id, val.recordId);
+  ConvertFrom(out.conf_uris, val.confUris);
+  ConvertFrom(out.conference_id, val.conferenceId);
+  ConvertFrom(out.conference_number, val.conferenceNumber);
+  ConvertFrom(out.conference_type, val.conferenceType);
+  ConvertFrom(out.conference_number_type, val.conferenceNumberType);
+  ConvertFrom(out.book_start_time, val.bookStartTime);
+  ConvertFrom(out.book_expiry_time, val.bookExpiryTime);
+  ConvertFrom(out.presenter_pin, val.presenterPin);
+  ConvertFrom(out.attendee_pin, val.attendeePin);
+  ConvertFrom(out.admission_policy, val.admissionPolicy);
+  ConvertFrom(out.lobby_capable, val.lobbyCapable);
+  ConvertFrom(out.attendee_by_pass, val.attendeeByPass);
+  ConvertFrom(out.auto_promote, val.autoPromote);
+  ConvertFrom(out.server_mode, val.serverMode);
+  ConvertFrom(out.interactive_broadcast_enabled,
+              val.interactiveBroadcastEnabled);
+  ConvertFrom(out.enterprise_id, val.enterpriseId);
+  ConvertFrom(out.video_enable, val.videoEnable);
+  ConvertFrom(out.ipcall_enable, val.ipcallEnable);
+  ConvertFrom(out.webrtc_enable, val.webrtcEnable);
+  ConvertFrom(out.record_server_type, val.recordServerType);
+  ConvertFrom(out.record_privilege, val.recordPrivilege);
+  ConvertFrom(out.conf_info_url, val.confInfoUrl);
+
+  return true;
+}
+
+// state
+
+// users
+bool StructTraits<RequesrResult>::From(RequesrResult& out,
+                                       const yealink::ConferenceResult& val) {
+  switch (val) {
+    case yealink::ConferenceResult::CONFERENCE_SUCCESS:
+      out = RequesrResult::kSuccess;
+      break;
+    case yealink::ConferenceResult::CONFERENCE_SIP_FAILURE:
+      out = RequesrResult::kSipFailure;
+      break;
+    case yealink::ConferenceResult::CONFERENCE_INVALID:
+      out = RequesrResult::kInvalid;
+      break;
+    case yealink::ConferenceResult::CONFERENCE_INVALID_PARAMS:
+      out = RequesrResult::kInvalidParam;
+      break;
+    default:
+      out = RequesrResult::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ResponseInfo>::From(ResponseInfo& out,
+                                      const yealink::RequestResult& val) {
+  ConvertFrom(out.request_id, val.requestId);
+  ConvertFrom(out.result, val.requestResult);
+
+  return true;
+}
+
+bool StructTraits<UserProtocolType>::From(
+    UserProtocolType& out,
+    const yealink::MemberInfo::Protocol& val) {
+  switch (val) {
+    case yealink::MemberInfo::Protocol::H323:
+      out = UserProtocolType::kH323;
+      break;
+    case yealink::MemberInfo::Protocol::SIP:
+      out = UserProtocolType::kSIP;
+      break;
+    case yealink::MemberInfo::Protocol::RTMP:
+      out = UserProtocolType::kRTMP;
+      break;
+    default:
+      out = UserProtocolType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserPermissionType>::From(
+    UserPermissionType& out,
+    const yealink::MemberInfo::Roles::PermissionRole& val) {
+  switch (val) {
+    case yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ATTENDEE:
+      out = UserPermissionType::kAttendee;
+      break;
+    case yealink::MemberInfo::Roles::PermissionRole::PERMISSION_CAST_VIEWER:
+      out = UserPermissionType::kCastviewer;
+      break;
+    case yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER:
+      out = UserPermissionType::kOrganizer;
+      break;
+    case yealink::MemberInfo::Roles::PermissionRole::PERMISSION_PRESENTER:
+      out = UserPermissionType::kPresenter;
+      break;
+    default:
+      out = UserPermissionType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<UserDemoStateType>::From(
+    UserDemoStateType& out,
+    const yealink::MemberInfo::Roles::DemoStateRole& val) {
+  switch (val) {
+    case yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_AUDIENCE:
+      out = UserDemoStateType::kAudience;
+      break;
+    case yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_DEMONSTRATOR:
+      out = UserDemoStateType::kDemonstrator;
+      break;
+    default:
+      out = UserDemoStateType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+bool StructTraits<PresenterDemoStateType>::From(
+    PresenterDemoStateType& out,
+    const yealink::MemberInfo::Roles::PresenterDemoStateRole& val) {
+  switch (val) {
+    case yealink::MemberInfo::Roles::PresenterDemoStateRole::
+        PRESENTER_DEMONSTRATOR:
+      out = PresenterDemoStateType::kDemonstrator;
+      break;
+    case yealink::MemberInfo::Roles::PresenterDemoStateRole::PRESENTER_AUDIENCE:
+      out = PresenterDemoStateType::kAudience;
+      break;
+    default:
+      out = PresenterDemoStateType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserRolesInfo>::From(UserRolesInfo& out,
+                                       const yealink::MemberInfo::Roles& val) {
+  ConvertFrom(out.permission, val.permissionRole);
+  ConvertFrom(out.demostate, val.demoStateRole);
+  ConvertFrom(out.presenter_demostate, val.presenterDemoStateRole);
+
+  return true;
+}
+
+bool StructTraits<UserEndpointSeesionType>::From(
+    UserEndpointSeesionType& out,
+    const yealink::MemberInfo::Endpoint::SessionType& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::SessionType::APPLICATION_SHARING:
+      out = UserEndpointSeesionType::kApplicationSharing;
+      break;
+    case yealink::MemberInfo::Endpoint::SessionType::AUDIO_VIDEO:
+      out = UserEndpointSeesionType::kAudioVideo;
+      break;
+    case yealink::MemberInfo::Endpoint::SessionType::CHAT:
+      out = UserEndpointSeesionType::kChat;
+      break;
+    case yealink::MemberInfo::Endpoint::SessionType::COOPSHARE:
+      out = UserEndpointSeesionType::kCoopshare;
+      break;
+    case yealink::MemberInfo::Endpoint::SessionType::FOCUS:
+      out = UserEndpointSeesionType::kFocus;
+      break;
+    default:
+      out = UserEndpointSeesionType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserEndpointStatusType>::From(
+    UserEndpointStatusType& out,
+    const yealink::MemberInfo::Endpoint::Status& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Status::CONNECTED:
+      out = UserEndpointStatusType::kConnected;
+      break;
+    case yealink::MemberInfo::Endpoint::Status::DIALING_IN:
+      out = UserEndpointStatusType::kDialingIn;
+      break;
+    case yealink::MemberInfo::Endpoint::Status::DIALING_OUT:
+      out = UserEndpointStatusType::kDialingOut;
+      break;
+    case yealink::MemberInfo::Endpoint::Status::DISCONNECTED:
+      out = UserEndpointStatusType::kDisconnected;
+      break;
+    case yealink::MemberInfo::Endpoint::Status::ON_HOLD:
+      out = UserEndpointStatusType::kOnHold;
+      break;
+    default:
+      out = UserEndpointStatusType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserJoinMethod>::From(
+    UserJoinMethod& out,
+    const yealink::MemberInfo::Endpoint::JoiningMethod& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::JoiningMethod::DIALED_IN:
+      out = UserJoinMethod::kDialedIn;
+      break;
+    case yealink::MemberInfo::Endpoint::JoiningMethod::DIALED_OUT:
+      out = UserJoinMethod::kDialedOut;
+      break;
+    default:
+      out = UserJoinMethod::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediaType>::From(
+    UserMediaType& out,
+    const yealink::MemberInfo::Endpoint::Media::Type& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Media::Type::APPLICATION:
+      out = UserMediaType::kApplication;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Type::AUDIO:
+      out = UserMediaType::kAudio;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Type::VIDEO:
+      out = UserMediaType::kVideo;
+      break;
+    default:
+      out = UserMediaType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediaLabelType>::From(
+    UserMediaLabelType& out,
+    const yealink::MemberInfo::Endpoint::Media::Label& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Media::Label::APPLICATIONSHARING:
+      out = UserMediaLabelType::kApplication;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Label::FECC:
+      out = UserMediaLabelType::kFecc;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Label::MAIN_AUDIO:
+      out = UserMediaLabelType::kMainAudio;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Label::MAIN_VIDEO:
+      out = UserMediaLabelType::kMainVideo;
+      break;
+    default:
+      out = UserMediaLabelType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediaDirectionType>::From(
+    UserMediaDirectionType& out,
+    const yealink::MemberInfo::Endpoint::Media::Status& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Media::Status::INACTIVE:
+      out = UserMediaDirectionType::kInactive;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Status::RECV_ONLY:
+      out = UserMediaDirectionType::kRecvOnly;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Status::SEND_ONLY:
+      out = UserMediaDirectionType::kSendOnly;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::Status::SEND_RECV:
+      out = UserMediaDirectionType::kSendRecv;
+      break;
+    default:
+      out = UserMediaDirectionType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediafilterType>::From(
+    UserMediafilterType& out,
+    const yealink::MemberInfo::Endpoint::Media::MediaFilter& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Media::MediaFilter::BLOCK:
+      out = UserMediafilterType::kBlock;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::MediaFilter::UNBLOCK:
+      out = UserMediafilterType::kUnblock;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::MediaFilter::UNBLOCKING:
+      out = UserMediafilterType::kUnblocking;
+      break;
+    default:
+      out = UserMediafilterType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediaBlockByType>::From(
+    UserMediaBlockByType& out,
+    const yealink::MemberInfo::Endpoint::Media::BlockBy& val) {
+  switch (val) {
+    case yealink::MemberInfo::Endpoint::Media::BlockBy::CLIENT:
+      out = UserMediaBlockByType::kClient;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::BlockBy::SERVER:
+      out = UserMediaBlockByType::kServer;
+      break;
+    case yealink::MemberInfo::Endpoint::Media::BlockBy::NONE:
+      out = UserMediaBlockByType::kNone;
+      break;
+    default:
+      out = UserMediaBlockByType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<UserMediaInfo>::From(
+    UserMediaInfo& out,
+    const yealink::MemberInfo::Endpoint::Media& val) {
+  ConvertFrom(out.id, val.id);
+  ConvertFrom(out.type, val.type);
+  ConvertFrom(out.label, val.label);
+  ConvertFrom(out.status, val.status);
+  ConvertFrom(out.media_egress_block_by, val.mediaEgressBlockBy);
+  ConvertFrom(out.media_egress_filter, val.mediaEgressFilter);
+  ConvertFrom(out.media_ingress_block_by, val.mediaIngressBlockBy);
+  ConvertFrom(out.media_ingress_filter, val.mediaIngressFilter);
+
+  return true;
+}
+
+bool StructTraits<UserMediaFilterInfo>::From(
+    UserMediaFilterInfo& out,
+    const yealink::MemberInfo::Endpoint::Media& val) {
+  ConvertFrom(out.media_egress_block_by, val.mediaEgressBlockBy);
+  ConvertFrom(out.media_egress_filter, val.mediaEgressFilter);
+  ConvertFrom(out.media_ingress_block_by, val.mediaIngressBlockBy);
+  ConvertFrom(out.media_ingress_filter, val.mediaIngressFilter);
+
+  return true;
+}
+
+bool StructTraits<UserEndpointInfo>::From(
+    UserEndpointInfo& out,
+    const yealink::MemberInfo::Endpoint& val) {
+  ConvertFrom(out.entity, val.entity);
+  ConvertFrom(out.session_type, val.sessionType);
+  ConvertFrom(out.status, val.status);
+  ConvertFrom(out.joining_method, val.joiningMethod);
+  ConvertFrom(out.when, val.joiningInfo);
+  ConvertFrom(out.mcu_call_id, val.mcuCallId);
+  ConvertFrom(out.media, val.mediaList);
+
+  return true;
+}
+
+bool StructTraits<UserInfo>::From(UserInfo& out,
+                                  const yealink::MemberInfo& val) {
+  ConvertFrom(out.entity, val.entity);
+  ConvertFrom(out.display_text, val.displayText);
+  ConvertFrom(out.display_number, val.displayNumber);
+  ConvertFrom(out.display_text_pinyin, val.displayTextPinyin);
+  ConvertFrom(out.uid, val.uid);
+  ConvertFrom(out.protocol, val.protocol);
+  ConvertFrom(out.medium_server_type, val.mediumServerType);
+  ConvertFrom(out.ip, val.ip);
+  ConvertFrom(out.phone, val.phone);
+  ConvertFrom(out.request_uri, val.requestUri);
+  ConvertFrom(out.user_agent, val.userAgent);
+  ConvertFrom(out.roles, val.roles);
+  ConvertFrom(out.endpoint, val.endpointList);
+
+  return true;
+}
+
+bool StructTraits<UserMediaDataInfo>::From(
+    UserMediaDataInfo& out,
+    const yealink::UserMediaDetail& val) {
+  ConvertFrom(out.enable, val.enable);
+  ConvertFrom(out.ip, val.ip);
+  ConvertFrom(out.codec, val.codec);
+  ConvertFrom(out.width, val.width);
+  ConvertFrom(out.height, val.height);
+  ConvertFrom(out.fr, val.fr);
+  ConvertFrom(out.sample_rate, val.sampleRate);
+  ConvertFrom(out.bandwidth, val.bandwidth);
+  ConvertFrom(out.bit_rate, val.bitRate);
+  ConvertFrom(out.loss_rate, val.lossRate);
+  ConvertFrom(out.packet_lost, val.packetLost);
+  ConvertFrom(out.jitter, val.jitter);
+  ConvertFrom(out.rtt, val.rtt);
+
+  return true;
+}
+
+bool StructTraits<UserStatisticsInfo>::From(UserStatisticsInfo& out,
+                                            const yealink::UserMediaInfo& val) {
+  ConvertFrom(out.media_id, val.mediaId);
+  ConvertFrom(out.label, val.label);
+  ConvertFrom(out.send, val.send);
+  ConvertFrom(out.recv, val.recv);
+  ConvertFrom(out.type, val.type);
+
+  return true;
+}
+
+// view
+bool StructTraits<ViewSpeakMode>::From(
+    ViewSpeakMode& out,
+    const yealink::ConferenceViewSpeakMode& val) {
+  switch (val) {
+    case yealink::ConferenceViewSpeakMode::CONFERENCE_VIEW_SPEAK_MODE_FREE:
+      out = ViewSpeakMode::kFree;
+      break;
+    case yealink::ConferenceViewSpeakMode::CONFERENCE_VIEW_SPEAK_MODE_HAND_UP:
+      out = ViewSpeakMode::kHandUp;
+      break;
+    default:
+      out = ViewSpeakMode::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ViewLayoutType>::From(
+    ViewLayoutType& out,
+    const yealink::ConferenceView::EntityState::VideoLayout& val) {
+  switch (val) {
+    case yealink::ConferenceView::EntityState::VideoLayout::
+        VIDEO_LAYOUT_EQUALITY:
+      out = ViewLayoutType::kEquality;
+      break;
+    case yealink::ConferenceView::EntityState::VideoLayout::
+        VIDEO_LAYOUT_PRESENTATION:
+      out = ViewLayoutType::kPresentation;
+      break;
+    case yealink::ConferenceView::EntityState::VideoLayout::
+        VIDEO_LAYOUT_SPEECH_EXCITATION:
+      out = ViewLayoutType::kSpeechExcitation;
+      break;
+    case yealink::ConferenceView::EntityState::VideoLayout::
+        VIDEO_LAYOUT_EXCLUSIVE:
+      out = ViewLayoutType::kExclusive;
+      break;
+    default:
+      out = ViewLayoutType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ViewPresenterLayoutType>::From(
+    ViewPresenterLayoutType& out,
+    const yealink::ConferenceView::EntityState::VideoPresenterLayout& val) {
+  switch (val) {
+    case yealink::ConferenceView::EntityState::VideoPresenterLayout::
+        VIDEO_PRESENTER_LAYOUT_EQUALITY:
+      out = ViewPresenterLayoutType::kEquality;
+      break;
+    case yealink::ConferenceView::EntityState::VideoPresenterLayout::
+        VIDEO_PRESENTER_LAYOUT_SPEECH_EXCITATION:
+      out = ViewPresenterLayoutType::kSpeechExcitation;
+      break;
+    case yealink::ConferenceView::EntityState::VideoPresenterLayout::
+        VIDEO_PRESENTER_LAYOUT_EXCLUSIVE:
+      out = ViewPresenterLayoutType::kExclusive;
+      break;
+    default:
+      out = ViewPresenterLayoutType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<GetLayoutInfo>::From(
+    GetLayoutInfo& out,
+    const yealink::ConferenceView::EntityState& val) {
+  ConvertFrom(out.speak_mode, val.speakMode);
+  ConvertFrom(out.video_layout, val.videoLayout);
+  ConvertFrom(out.video_max_view, val.videoMaxView);
+  ConvertFrom(out.video_presenter_layout, val.videoPresenterLayout);
+  ConvertFrom(out.video_presenter_max_view, val.videoPresenterMaxView);
+  ConvertFrom(out.video_round_number, val.videoRoundNumber);
+  ConvertFrom(out.video_round_interval, val.videoRoundInterval);
+  ConvertFrom(out.video_speech_ex_sensitivity, val.videoSpeechExSensitivity);
+  ConvertFrom(out.video_round_enable, val.videoRoundEnabled);
+  ConvertFrom(out.video_big_round, val.videoBigRound);
+  ConvertFrom(out.video_speech_ex_enabled, val.videoSpeechExEnabled);
+  ConvertFrom(out.video_data_mix_enabled, val.videoDataMixEnabled);
+  ConvertFrom(out.hide_osd_sitename, val.hideOsdSitename);
+  ConvertFrom(out.hide_osd_sitestatus, val.hideOsdSitestatus);
+
+  return true;
+}
+
+bool StructTraits<ViewFilterRoleType>::From(
+    ViewFilterRoleType& out,
+    const yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Role& val) {
+  switch (val) {
+    case yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Role::ATTENDEE:
+      out = ViewFilterRoleType::kAttendee;
+      break;
+    case yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Role::DEFAULT:
+      out = ViewFilterRoleType::kDefault;
+      break;
+    default:
+      out = ViewFilterRoleType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ViewFilterType>::From(
+    ViewFilterType& out,
+    const yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Filter& val) {
+  switch (val) {
+    case yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Filter::BLOCK:
+      out = ViewFilterType::kBlock;
+      break;
+    case yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter::Filter::UNBLOCK:
+      out = ViewFilterType::kUnBlock;
+      break;
+    default:
+      out = ViewFilterType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ViewFilterRuleInfo>::From(
+    ViewFilterRuleInfo& out,
+    const yealink::ConferenceView::EntityState::MediaFiltersRules::
+        InitialFilter& val) {
+  ConvertFrom(out.role, val.role);
+  ConvertFrom(out.egress, val.egressFilter);
+  ConvertFrom(out.ingress, val.ingressFilter);
 
   return true;
 }
