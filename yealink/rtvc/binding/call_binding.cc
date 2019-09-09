@@ -1,9 +1,14 @@
 #include "yealink/rtvc/binding/call_binding.h"
 
 #include "base/logging.h"
+#include "build/build_config.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
+
+#ifdef OS_WIN
+#include "third_party/webrtc/modules/desktop_capture/win/screen_capture_utils.h"
+#endif
 
 namespace yealink {
 
@@ -309,12 +314,68 @@ void CallBinding::SetPortraitMode(bool enable) {
   meeting_->EnableVideoPortraitMode(enable);
 }
 
-void CallBinding::StartShare() {
+void CallBinding::StartShare(mate::Dictionary dict, mate::Arguments* args) {
+  int64_t window_id = -1;
+  int64_t screen_id = -1;
+  std::string file_path;
+  int64_t width = 1080;
+  int64_t height = 720;
+  int64_t frame_rate = 5;
+
+  dict.Get("window", &window_id);
+  dict.Get("screen", &screen_id);
+  dict.Get("file", &file_path);
+  dict.Get("width", &width);
+  dict.Get("height", &height);
+  dict.Get("frameRate", &frame_rate);
+
+  if (window_id < 0 && screen_id < 0 && !file_path.size()) {
+    args->ThrowError(
+        "Can not start share without any window/screen or image file.");
+    return;
+  }
+
+  if (!file_path.size()) {
+    args->ThrowError("Can not start share without fallback image file.");
+    return;
+  }
+
+  if (screen_id != -1) {
+#ifdef OS_WIN
+    std::wstring device_key;
+    if (!webrtc::IsScreenValid(screen_id, &device_key)) {
+      args->ThrowError("Invalid screen id.");
+      return;
+    }
+    webrtc::DesktopRect screen_rect =
+        webrtc::GetScreenRect(screen_id, device_key);
+    RECT rect;
+    rect.left = screen_rect.left();
+    rect.top = screen_rect.top();
+    rect.right = screen_rect.right();
+    rect.bottom = screen_rect.bottom();
+    width = screen_rect.width();
+    height = screen_rect.height();
+    window_id = reinterpret_cast<intptr_t>(
+        MonitorFromRect(&rect, MONITOR_DEFAULTTONEAREST));
+#endif
+  }
+
   yealink::ShareWindow share_window;
+
+  HWND window = reinterpret_cast<HWND>(window_id);
+  share_window.pHandle = reinterpret_cast<void*>(window);
+  share_window.strCoverImgFile = file_path.c_str();
+  share_window.nScreenWidth = width;
+  share_window.nScreenHeight = height;
+  share_window.nMaxSampleRate = frame_rate;
+
   meeting_->StartSendShare(share_window);
   local_sharing_ = true;
 }
 void CallBinding::StopShare() {
+  if (!local_sharing_)
+    return;
   meeting_->StopSendShare();
   local_sharing_ = false;
 }
@@ -448,7 +509,7 @@ void CallBinding::ExtractInfo(yealink::MeetingInfo info) {
   call_info_.Set("audio", info.isAudioEnabled);
   call_info_.Set("video", info.isVideoEnabled);
   call_info_.Set("encrypted", info.isMediaEncrypted);
-  call_info_.Set("established", info.isEstablished);
+  call_info_.Set("succeed", info.isEstablished);
   call_info_.Set("established", !info.isFinished);
   call_info_.Set("finished", info.isFinished);
   call_info_.Set("remoteHold", info.isHoldByRemote);
@@ -617,7 +678,7 @@ void CallBinding::OnMediaEvent(yealink::MeetingMediaEventId id) {
     case yealink::MEETING_MEDIA_SHARE_BROKEN:
       local_sharing_ = false;
       remote_sharing_ = false;
-      Emit("rtc:shareSendBroken");
+      Emit("rtc:shareBroken");
       break;
     case yealink::MEETING_MEDIA_HOLD_CHANGED:
       break;

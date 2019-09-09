@@ -79,7 +79,7 @@ async function test(binding) {
 
   videoManager.acquireStream();
 
-  await wait(1 * 1000);
+  await wait(3 * 1000);
 
   videoManager.releaseStream();
 

@@ -38,8 +38,8 @@ async function test(binding) {
   const connector = bootstrap.getConnector(id);
 
   useragent_test(binding, {username, password, domain});
-  schedule_test(binding, connector);
-  contact_test(binding, connector);
+  //schedule_test(binding, connector);
+  //contact_test(binding, connector);
 }
 
 module.exports = test;

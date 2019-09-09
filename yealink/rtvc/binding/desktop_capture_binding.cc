@@ -21,6 +21,30 @@ namespace {
 int64_t DeviceIdFromDeviceName(const wchar_t* device_name) {
   return static_cast<int64_t>(base::Hash(base::WideToUTF8(device_name)));
 }
+
+// BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor,
+//                               HDC hdcMonitor,
+//                               LPRECT lprcMonitor,
+//                               LPARAM dwData) {
+//   if (hMonitor != NULL) {
+//     auto list =
+//         reinterpret_cast<std::vector<yealink::rtvc::DesktopMediaList::Source>*>(
+//             dwData);
+//     yealink::rtvc::DesktopMediaList::Source source;
+//     source.id = yealink::rtvc::DesktopMediaID(
+//         yealink::rtvc::DesktopMediaID::TYPE_SCREEN,
+//         reinterpret_cast<yealink::rtvc::DesktopMediaID::Id>(hMonitor));
+//     list->emplace_back(source);
+//   }
+//   return TRUE;
+// }
+
+// // static
+// std::vector<yealink::rtvc::DesktopMediaList::Source> EnumDisplayScreen() {
+//   std::vector<yealink::rtvc::DesktopMediaList::Source> list;
+//   ::EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&list);
+//   return list;
+// }
 }  // namespace
 
 namespace mate {

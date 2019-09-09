@@ -4,7 +4,7 @@
 
 console.log('hello world!')
 
-//require('./binding');
+require('./binding');
 
 document.body.addEventListener('click', () => {
   console.log('hello vscode!')

@@ -83,7 +83,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   bool portrait_mode();
   void SetPortraitMode(bool enable);
 
-  void StartShare();
+  void StartShare(mate::Dictionary dict, mate::Arguments* args);
   void StopShare();
 
   void SetMediaBitrate(int64_t send_bitrate, int64_t recv_bitrate);

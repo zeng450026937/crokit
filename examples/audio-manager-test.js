@@ -14,27 +14,29 @@ async function test(binding) {
   console.log(audioManager.volume)
   audioManager.volume = 1;
   console.log(audioManager.volume)
+  audioManager.volume = 100;
 
   console.log(audioManager.mute)
 
   console.log("enumerateDevices()")
   audioManager.enumerateDevices();
 
-  console.log(audioManager.audioInputDevice)
-  audioManager.audioInputDevice = { deviceId: 'testdeviceid', label: 'testdevice', type: 'kAudioOutput' };
-  console.log(audioManager.audioInputDevice)
-  try {
-  audioManager.audioInputDevice = null;
-  } catch (error) {
-  console.error(error)
-  }
-  console.log(audioManager.audioInputDevice)
-  console.log(audioManager.audioInputDeviceList)
-  console.log(audioManager.audioInputDeviceList())
+  console.log('-- audioInputDeviceList --');
+  const audioInputDeviceList = audioManager.audioInputDeviceList();
+  console.log(audioInputDeviceList);
 
-  // setTimeout(() => {
-  //   videoManager.videoInputDevice = null;
-  // }, 30 * 1000);
+  audioManager.audioInputDevice = audioInputDeviceList[0];
+
+  console.log('-- audioInputDevice --');
+  const audioInputDevice = audioManager.audioInputDevice;
+  console.log(audioInputDevice)
+
+  audioManager.recording = true;
+  console.log(audioManager.recording);
+
+  setInterval(() => {
+    console.log(audioManager.requestAudioVolume());
+  }, 300);
 }
 
 module.exports = test;

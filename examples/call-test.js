@@ -1,21 +1,16 @@
 const events = require('events');
 const util = require('util');
+const path = require('path');
 
 async function test(binding, userAgent) {
   console.log('Call test');
 
-  const { Call, VideoManager } = binding;
+  const { Call, VideoManager, DesktopCapture } = binding;
 
   const videoManager = new VideoManager();
 
   console.log('-- enumerateDevices --');
   videoManager.enumerateDevices();
-
-  console.log('-- enumerateScreenDevices --');
-  videoManager.enumerateScreenDevices();
-
-  console.log('-- enumerateWindowDevices --');
-  videoManager.enumerateWindowDevices();
 
   console.log('-- videoInputDeviceList --');
   const videoInputDeviceList = videoManager.videoInputDeviceList();
@@ -64,18 +59,89 @@ async function test(binding, userAgent) {
   videoManager.videoInputDevice = videoInputDeviceList[0];
   // videoManager.setLocalVideoSink(sink);
 
+  videoManager.acquireStream();
+
   util.inherits(Call, events.EventEmitter);
 
   const call = new Call(userAgent);
 
-  call.connect('sip:223504.1090@onylyun.com');
-  call.setRemoteVideoSink(sink);
+  //call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
+  // call.connect('sip:1001@123456.onylyun.com;transport=tls');
+  call.connect('sip:1090@223504.onylyun.com;transport=tls');
+  //call.setRemoteVideoSink(sink);
 
-  setTimeout(() => {
-    call.hangup();
+  const eventNames = [
+    'progress',
+    'ringing',
+    'redirect',
+    'established',
+    'share:established',
+    'share:finished',
+    'referFailed',
+    'replaceFailed',
+    'refered',
+    'replaced',
+    'finished',
+    'rtc:audioStart',
+    'rtc:audioStop',
+    'rtc:audioBroken',
+    'rtc:videoStart',
+    'rtc:videoStop',
+    'rtc:videoBroken',
+    'rtc:shareRecvStart',
+    'rtc:shareRecvStop',
+    'rtc:shareSendStart',
+    'rtc:shareSendStop',
+    'rtc:shareBroken',
+  ];
+
+  eventNames.forEach((event) => {
+    call.on(event, () => console.log(event));
+  })
+
+  call.on('established', async() => {
+    console.log('established');
+
+    setTimeout(() => {
+      call.hangup();
+    }, 35000);
+  });
+
+  call.on('share:established', async() => {
+    console.log('share:established');
+
+    setTimeout(async() => {
+      const desktopCapture = new DesktopCapture();
+      const list = await desktopCapture.getSources({
+        captureWindow: true,
+        captureScreen: false,
+      });
+
+      console.log(list);
+
+      const picture = path.resolve('./test-picture.png');
+
+      console.log(picture);
+
+      call.startShare({ screen: 3, window: 14747790, file: picture });
+    }, 1000);
+
+    setTimeout(() => {
+      call.stopShare();
+    }, 25000);
+  })
+
+  call.on('finished', () => {
+    console.log('finished');
+    videoManager.releaseStream();
     videoManager.videoInputDevice = null;
     userAgent.unregister();
-  }, 10000);
+  });
+
+  if (global.window) {
+    window.call = call;
+  }
+
 }
 
 module.exports = test;

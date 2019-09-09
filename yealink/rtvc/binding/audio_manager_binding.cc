@@ -63,8 +63,6 @@ void AudioManagerBinding::BuildPrototype(
       .SetProperty("audioOutputDevice", &AudioManagerBinding::audioOutputDevice,
                    &AudioManagerBinding::SetAudioOutputDevice)
       .SetMethod("playTone", &AudioManagerBinding::PlayTone)
-      .SetMethod("startPlayFile", &AudioManagerBinding::StartPlayFile)
-      .SetMethod("stopPlayFile", &AudioManagerBinding::StopPlayFile)
       .SetMethod("requestAudioVolume", &AudioManagerBinding::RequestAudioVolume)
       .SetMethod("builtInAECIsAvailable",
                  &AudioManagerBinding::BuiltInAECIsAvailable)
@@ -250,16 +248,6 @@ void AudioManagerBinding::PlayTone(std::string tone) {
   for (char s : tone) {
     media_->PlayTone(s);
   }
-}
-
-void AudioManagerBinding::StartPlayFile(std::string path, mate::Arguments* args) {
-  bool loop = true;
-  args->GetNext(&loop);
-  media_->PlayRingFile(path.c_str(), loop);
-}
-
-void AudioManagerBinding::StopPlayFile() {
-  media_->StopPlayRing();
 }
 
 uint64_t AudioManagerBinding::RequestAudioVolume() {
