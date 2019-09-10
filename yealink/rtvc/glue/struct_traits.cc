@@ -1337,6 +1337,137 @@ bool StructTraits<ViewFilterRuleInfo>::From(
   return true;
 }
 
+bool StructTraits<StatsAudioCodecType>::From(StatsAudioCodecType& out,
+                                             const yealink::AudioCodecs& val) {
+  switch (val) {
+    case yealink::AudioCodecs::AUDIO_CODEC_AACLC:
+      out = StatsAudioCodecType::kAACLC;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_ARES:
+      out = StatsAudioCodecType::kARES;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_G7221:
+      out = StatsAudioCodecType::kG7221;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_G7221C:
+      out = StatsAudioCodecType::kG72221C;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_G722:
+      out = StatsAudioCodecType::kG722;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_G729:
+      out = StatsAudioCodecType::kG729;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_OPUS:
+      out = StatsAudioCodecType::kOPUS;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_PCMA:
+      out = StatsAudioCodecType::kPCMA;
+      break;
+    case yealink::AudioCodecs::AUDIO_CODEC_PCMU:
+      out = StatsAudioCodecType::kPCMU;
+      break;
+    default:
+      out = StatsAudioCodecType::kNone;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<StatsVideoCodecType>::From(StatsVideoCodecType& out,
+                                             const yealink::VideoCodecs& val) {
+  switch (val) {
+    case yealink::VideoCodecs::VIDEO_CODEC_H264:
+      out = StatsVideoCodecType::kH264;
+      break;
+    case yealink::VideoCodecs::VIDEO_CODEC_H263:
+      out = StatsVideoCodecType::kH263;
+      break;
+    default:
+      out = StatsVideoCodecType::kNone;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<StatsVideoProfileType>::From(
+    StatsVideoProfileType& out,
+    const yealink::VideoCodecProfile& val) {
+  switch (val) {
+    case yealink::VideoCodecProfile::VIDEO_CODEC_PROFILE_BASE:
+      out = StatsVideoProfileType::kBase;
+      break;
+    case yealink::VideoCodecProfile::VIDEO_CODEC_PROFILE_HIGH:
+      out = StatsVideoProfileType::kHigh;
+      break;
+    case yealink::VideoCodecProfile::VIDEO_CODEC_PROFILE_MAIN:
+      out = StatsVideoProfileType::kMain;
+      break;
+    case yealink::VideoCodecProfile::VIDEO_CODEC_PROFILE_MAX:
+      out = StatsVideoProfileType::kMax;
+      break;
+    default:
+      out = StatsVideoProfileType::kNone;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<VideoStatsInfo>::From(VideoStatsInfo& out,
+                                        const yealink::VideoChannelStats& val) {
+  ConvertFrom(out.codec, val.codec);
+  ConvertFrom(out.profile, val.profile);
+  ConvertFrom(out.width, val.width);
+  ConvertFrom(out.height, val.height);
+  ConvertFrom(out.frame_rate, val.frameRate);
+  ConvertFrom(out.bit_rate, val.bitRate);
+  ConvertFrom(out.loss_rate, val.lossRate);
+  ConvertFrom(out.total_loss_packets, val.totalLossPackets);
+  ConvertFrom(out.jitter, val.jitter);
+  ConvertFrom(out.rtt, val.rtt);
+
+  return true;
+}
+
+bool StructTraits<RTCVideoStats>::From(RTCVideoStats& out,
+                                       const yealink::VideoStreamStats& val) {
+  ConvertFrom(out.inbound, val.stRecv);
+  ConvertFrom(out.outbound, val.stSend);
+
+  return true;
+}
+
+bool StructTraits<RTCAudioStats>::From(RTCAudioStats& out,
+                                       const yealink::AudioStreamStats& val) {
+  ConvertFrom(out.inbound.bitrate, val.bitrateR);
+  ConvertFrom(out.inbound.codec, val.codecR);
+  ConvertFrom(out.inbound.samplerate, val.samplerateR);
+  ConvertFrom(out.inbound.loss_rate, val.lossRateR);
+  ConvertFrom(out.inbound.total_lost_packets, val.totalLostPacketsR);
+  ConvertFrom(out.inbound.jitter, val.jitterR);
+  ConvertFrom(out.inbound.delay, val.delayR);
+
+  ConvertFrom(out.outbound.bitrate, val.bitrateS);
+  ConvertFrom(out.outbound.codec, val.codecS);
+  ConvertFrom(out.outbound.samplerate, val.samplerateS);
+  ConvertFrom(out.outbound.loss_rate, val.lossRateS);
+  ConvertFrom(out.outbound.total_lost_packets, val.totalLostPacketsS);
+  ConvertFrom(out.outbound.jitter, val.jitterS);
+  ConvertFrom(out.outbound.delay, val.delayS);
+
+  return true;
+}
+
+bool StructTraits<RTCStats>::From(RTCStats& out,
+                                  const yealink::MediaStreamStats& val) {
+  ConvertFrom(out.audio, val.stAudio);
+  ConvertFrom(out.video, val.stVideo);
+  return true;
+}
+
 }  // namespace rtvc
 
 }  // namespace yealink

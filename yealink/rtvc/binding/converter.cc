@@ -3108,4 +3108,308 @@ bool Converter<yealink::rtvc::ViewFilterRuleInfo>::FromV8(
   return true;
 }
 
+v8::Local<v8::Value> Converter<yealink::rtvc::StatsAudioCodecType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::StatsAudioCodecType val) {
+  std::string res;
+  switch (val) {
+    case yealink::rtvc::StatsAudioCodecType::kAACLC:
+      res = "AACLC";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kARES:
+      res = "ARES";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kG7221:
+      res = "G7221";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kG72221C:
+      res = "G7221C";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kG722:
+      res = "G722";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kG729:
+      res = "G729";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kNone:
+      res = "";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kOPUS:
+      res = "OPUS";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kPCMA:
+      res = "PCMA";
+      break;
+    case yealink::rtvc::StatsAudioCodecType::kPCMU:
+      res = "PCMU";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<yealink::rtvc::StatsAudioCodecType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::StatsAudioCodecType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "AACLC")
+    *out = yealink::rtvc::StatsAudioCodecType::kAACLC;
+  else if (in == "ARES")
+    *out = yealink::rtvc::StatsAudioCodecType::kARES;
+  else if (in == "G7221")
+    *out = yealink::rtvc::StatsAudioCodecType::kG7221;
+  else if (in == "G72221C")
+    *out = yealink::rtvc::StatsAudioCodecType::kG72221C;
+  else if (in == "G722")
+    *out = yealink::rtvc::StatsAudioCodecType::kG722;
+  else if (in == "G729")
+    *out = yealink::rtvc::StatsAudioCodecType::kG729;
+  else if (in == "OPUS")
+    *out = yealink::rtvc::StatsAudioCodecType::kOPUS;
+  else if (in == "PCMA")
+    *out = yealink::rtvc::StatsAudioCodecType::kPCMA;
+  else if (in == "PCMU")
+    *out = yealink::rtvc::StatsAudioCodecType::kPCMU;
+  else {
+    *out = yealink::rtvc::StatsAudioCodecType::kNone;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::StatsVideoCodecType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::StatsVideoCodecType val) {
+  std::string res;
+  switch (val) {
+    case yealink::rtvc::StatsVideoCodecType::kH263:
+      res = "H263";
+      break;
+    case yealink::rtvc::StatsVideoCodecType::kH264:
+      res = "H264";
+      break;
+    case yealink::rtvc::StatsVideoCodecType::kNone:
+      res = "";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<yealink::rtvc::StatsVideoCodecType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::StatsVideoCodecType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "H263")
+    *out = yealink::rtvc::StatsVideoCodecType::kH263;
+  else if (in == "H264")
+    *out = yealink::rtvc::StatsVideoCodecType::kH264;
+  else {
+    *out = yealink::rtvc::StatsVideoCodecType::kNone;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::StatsVideoProfileType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::StatsVideoProfileType val) {
+  std::string res;
+  switch (val) {
+    case yealink::rtvc::StatsVideoProfileType::kBase:
+      res = "base";
+      break;
+    case yealink::rtvc::StatsVideoProfileType::kHigh:
+      res = "high";
+      break;
+    case yealink::rtvc::StatsVideoProfileType::kMain:
+      res = "main";
+      break;
+    case yealink::rtvc::StatsVideoProfileType::kMax:
+      res = "max";
+      break;
+    case yealink::rtvc::StatsVideoProfileType::kNone:
+      res = "";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<yealink::rtvc::StatsVideoProfileType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::StatsVideoProfileType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "base")
+    *out = yealink::rtvc::StatsVideoProfileType::kBase;
+  else if (in == "high")
+    *out = yealink::rtvc::StatsVideoProfileType::kHigh;
+  else if (in == "main")
+    *out = yealink::rtvc::StatsVideoProfileType::kMain;
+  else if (in == "max")
+    *out = yealink::rtvc::StatsVideoProfileType::kMax;
+  else {
+    *out = yealink::rtvc::StatsVideoProfileType::kNone;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::AudioStatsInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::AudioStatsInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("codec", val.codec);
+  handler.Set("bitrate", val.bitrate);
+  handler.Set("samplerate", val.samplerate);
+  handler.Set("lossRate", val.loss_rate);
+  handler.Set("totalLostPackets", val.total_lost_packets);
+  handler.Set("jitter", val.jitter);
+  handler.Set("delay", val.delay);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::AudioStatsInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::AudioStatsInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("codec", &(out->codec));
+  dict.Get("bitrate", &(out->bitrate));
+  dict.Get("samplerate", &(out->samplerate));
+  dict.Get("lossRate", &(out->loss_rate));
+  dict.Get("totalLostPackets", &(out->total_lost_packets));
+  dict.Get("jitter", &(out->jitter));
+  dict.Get("delay", &(out->delay));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::VideoStatsInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::VideoStatsInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("codec", val.codec);
+  handler.Set("profile", val.profile);
+  handler.Set("width", val.width);
+  handler.Set("height", val.height);
+  handler.Set("frameRate", val.frame_rate);
+  handler.Set("bitRate", val.bit_rate);
+  handler.Set("lossRate", val.loss_rate);
+  handler.Set("totalLossPackets", val.total_loss_packets);
+  handler.Set("jitter", val.jitter);
+  handler.Set("rtt", val.rtt);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::VideoStatsInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::VideoStatsInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("codec", &(out->codec));
+  dict.Get("profile", &(out->profile));
+  dict.Get("width", &(out->width));
+  dict.Get("height", &(out->height));
+  dict.Get("frameRate", &(out->frame_rate));
+  dict.Get("bitRate", &(out->bit_rate));
+  dict.Get("lossRate", &(out->loss_rate));
+  dict.Get("totalLossPackets", &(out->total_loss_packets));
+  dict.Get("jitter", &(out->jitter));
+  dict.Get("rtt", &(out->rtt));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RTCVideoStats>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RTCVideoStats& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("inbound", val.inbound);
+  handler.Set("outbound", val.outbound);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RTCVideoStats>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RTCVideoStats* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("inbound", &(out->inbound));
+  dict.Get("outbound", &(out->outbound));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RTCAudioStats>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RTCAudioStats& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("inbound", val.inbound);
+  handler.Set("outbound", val.outbound);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RTCAudioStats>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RTCAudioStats* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("inbound", &(out->inbound));
+  dict.Get("outbound", &(out->outbound));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RTCStats>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RTCStats& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("video", val.video);
+  handler.Set("audio", val.audio);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RTCStats>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                yealink::rtvc::RTCStats* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("video", &(out->video));
+  dict.Get("audio", &(out->audio));
+
+  return true;
+}
+
 }  // namespace mate

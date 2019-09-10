@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference_desc.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"
@@ -15,6 +16,7 @@
 
 #include "yealink/libvc/include/access/access_define.h"
 #include "yealink/libvc/include/contact/cloud_contact_type.h"
+#include "yealink/libvc/include/media/media_api.h"
 #include "yealink/libvc/include/room/room_data.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/libvc/include/ytms/ytms_define.h"
@@ -488,6 +490,42 @@ struct StructTraits<ViewFilterRuleInfo> {
   static bool From(ViewFilterRuleInfo& out,
                    const yealink::ConferenceView::EntityState::
                        MediaFiltersRules::InitialFilter& val);
+};
+
+template <>
+struct StructTraits<StatsAudioCodecType> {
+  static bool From(StatsAudioCodecType& out, const yealink::AudioCodecs& val);
+};
+
+template <>
+struct StructTraits<StatsVideoCodecType> {
+  static bool From(StatsVideoCodecType& out, const yealink::VideoCodecs& val);
+};
+
+template <>
+struct StructTraits<StatsVideoProfileType> {
+  static bool From(StatsVideoProfileType& out,
+                   const yealink::VideoCodecProfile& val);
+};
+
+template <>
+struct StructTraits<VideoStatsInfo> {
+  static bool From(VideoStatsInfo& out, const yealink::VideoChannelStats& val);
+};
+
+template <>
+struct StructTraits<RTCVideoStats> {
+  static bool From(RTCVideoStats& out, const yealink::VideoStreamStats& val);
+};
+
+template <>
+struct StructTraits<RTCAudioStats> {
+  static bool From(RTCAudioStats& out, const yealink::AudioStreamStats& val);
+};
+
+template <>
+struct StructTraits<RTCStats> {
+  static bool From(RTCStats& out, const yealink::MediaStreamStats& val);
 };
 
 }  // namespace rtvc

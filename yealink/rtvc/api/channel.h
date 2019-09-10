@@ -29,6 +29,71 @@ enum class ChannelType {
   kChat,
 };
 
+enum class StatsAudioCodecType {
+  kNone = -1,
+  kARES,
+  kOPUS,
+  kG722,
+  kG7221,
+  kG72221C,
+  kG729,
+  kAACLC,
+  kPCMU,
+  kPCMA
+};
+
+enum class StatsVideoCodecType {
+  kNone = -1,
+  kH263,
+  kH264,
+};
+
+enum class StatsVideoProfileType {
+  kNone = -1,
+  kBase,
+  kMain,
+  kHigh,
+  kMax,
+};
+
+struct AudioStatsInfo {
+  StatsAudioCodecType codec;
+  int bitrate;
+  int samplerate;
+  int loss_rate;
+  int total_lost_packets;
+  int jitter;
+  int delay;
+};
+
+struct VideoStatsInfo {
+  StatsVideoCodecType codec;
+  StatsVideoProfileType profile;
+  int width;
+  int height;
+  int frame_rate;
+  int bit_rate;
+  int loss_rate;
+  int total_loss_packets;
+  int jitter;
+  int rtt;
+};
+
+struct RTCVideoStats {
+  VideoStatsInfo outbound;
+  VideoStatsInfo inbound;
+};
+
+struct RTCAudioStats {
+  AudioStatsInfo outbound;
+  AudioStatsInfo inbound;
+};
+
+struct RTCStats {
+  RTCAudioStats audio;
+  RTCVideoStats video;
+};
+
 class ChannelObserver {
  public:
   // singaling state

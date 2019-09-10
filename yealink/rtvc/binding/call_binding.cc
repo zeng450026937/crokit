@@ -5,6 +5,7 @@
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/glue/struct_traits.h"
 
 #ifdef OS_WIN
 #include "third_party/webrtc/modules/desktop_capture/win/screen_capture_utils.h"
@@ -312,6 +313,12 @@ void CallBinding::Renegotiate() {}
 void CallBinding::GetStats() {
   yealink::MediaStreamStats media_stats = meeting_->AVMediaStats();
   yealink::VideoStreamStats share_stats = meeting_->ShareMediaStats();
+
+  RTCStats v8_media_stats;
+  ConvertFrom(v8_media_stats, media_stats);
+
+  RTCVideoStats v8_share_stats;
+  ConvertFrom(v8_share_stats, share_stats);
 }
 
 v8::Local<v8::Object> CallBinding::GetInfos() {

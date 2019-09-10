@@ -5,6 +5,8 @@
 #include "yealink/native_mate/converter.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/audio_manager.h"
+#include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference_desc.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"
@@ -17,7 +19,6 @@
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_source.h"
 #include "yealink/rtvc/api/ytms_info.h"
-#include "yealink/rtvc/api/audio_manager.h"
 
 #include "yealink/libvc/include/components/base/simplelib/simple_array.hpp"
 #include "yealink/libvc/include/components/base/simplelib/simple_string.hpp"
@@ -795,8 +796,9 @@ struct Converter<yealink::rtvc::UserMediaInfo> {
 
 template <>
 struct Converter<yealink::rtvc::UserMediaFilterInfo> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserMediaFilterInfo& val);
+  static v8::Local<v8::Value> ToV8(
+      v8::Isolate* isolate,
+      const yealink::rtvc::UserMediaFilterInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -835,8 +837,9 @@ struct Converter<yealink::rtvc::UserMediaDataInfo> {
 
 template <>
 struct Converter<yealink::rtvc::UserStatisticsInfo> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserStatisticsInfo& val);
+  static v8::Local<v8::Value> ToV8(
+      v8::Isolate* isolate,
+      const yealink::rtvc::UserStatisticsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -923,6 +926,86 @@ struct Converter<yealink::rtvc::ViewFilterRuleInfo> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::ViewFilterRuleInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::StatsAudioCodecType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::StatsAudioCodecType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::StatsAudioCodecType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::StatsVideoCodecType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::StatsVideoCodecType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::StatsVideoCodecType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::StatsVideoProfileType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::StatsVideoProfileType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::StatsVideoProfileType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::AudioStatsInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::AudioStatsInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::AudioStatsInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::VideoStatsInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::VideoStatsInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::VideoStatsInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RTCVideoStats> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RTCVideoStats& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RTCVideoStats* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RTCAudioStats> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RTCAudioStats& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RTCAudioStats* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RTCStats> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RTCStats& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RTCStats* out);
 };
 
 }  // namespace mate
