@@ -17,7 +17,8 @@ namespace yealink {
 namespace rtvc {
 
 class CallBinding : public mate::EventEmitter<CallBinding>,
-                    public MeetingObserver {
+                    public yealink::MeetingObserver,
+                    public yealink::RoomObserver {
  public:
   static mate::WrappableBase* New(mate::Handle<UserAgentBinding> user_agent,
                                   mate::Arguments* args);
@@ -118,8 +119,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   v8::Local<v8::Value> AsConference();
 
-  // event
-  void OnEstablished();
+  // room observer impl
+  void OnConnectSuccess() override;
+  void OnConnectFailure(const char* reason) override;
 
   // meeting observer impl
   void OnEvent(yealink::MeetingEventId id) override;
@@ -132,7 +134,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
  private:
   yealink::AVContentType GetContentType();
-  void ExtractInfo(yealink::MeetingInfo info);
+  void ExtractCallInfo(yealink::MeetingInfo info);
+  void ExtractConfInfo(yealink::AplloConferenceInvite info);
+  void ExtractInfo();
 
   base::WeakPtr<UserAgentBinding> user_agent_;
   base::WeakPtr<yealink::SIPClient> sip_client_;

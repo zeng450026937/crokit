@@ -61,16 +61,23 @@ async function test(binding, userAgent) {
 
   const call = new Call(userAgent);
 
-  //call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
+  // call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
   // call.connect('sip:1001@123456.onylyun.com;transport=tls');
-  call.connect('sip:1090@223504.onylyun.com;transport=tls');
+  //call.connect('sip:1090@223504.onylyun.com;transport=tls');
+  call.connect('sip:90006@123456.onylyun.com;transport=tls');
   //call.setRemoteVideoSink(sink);
 
   const eventNames = [
     'progress',
+    'trying',
     'ringing',
     'redirect',
     'established',
+    'focus:prepare',
+    'focus:ready',
+    'focus:established',
+    'focus:finished',
+    'share:ready',
     'share:established',
     'share:finished',
     'referFailed',
@@ -95,10 +102,13 @@ async function test(binding, userAgent) {
     call.on(event, () => console.log(event));
   })
 
+  let hangupTimmer;
+  let shareTimer;
+
   call.on('established', async() => {
     console.log('established');
 
-    setTimeout(() => {
+    hangupTimmer = setTimeout(() => {
       call.hangup();
     }, 35000);
   });
@@ -119,16 +129,18 @@ async function test(binding, userAgent) {
 
       console.log(picture);
 
-      call.startShare({ screen: 3, window: 14747790, file: picture });
+      call.startShare({ screen: 0, window: 14747790, file: picture });
     }, 1000);
 
-    setTimeout(() => {
+    shareTimer = setTimeout(() => {
       call.stopShare();
     }, 25000);
   })
 
   call.on('finished', () => {
     console.log('finished');
+    clearTimeout(hangupTimmer);
+    clearTimeout(shareTimer);
     videoManager.releaseStream();
     videoManager.videoInputDevice = null;
     userAgent.unregister();

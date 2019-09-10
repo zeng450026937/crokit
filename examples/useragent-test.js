@@ -24,12 +24,18 @@ async function test(binding, account) {
 
   userAgent.on('incoming', (event, call) => {
     console.log(event, call);
-    
+
     const eventNames = [
       'progress',
+      'trying',
       'ringing',
       'redirect',
       'established',
+      'focus:prepare',
+      'focus:ready',
+      'focus:established',
+      'focus:finished',
+      'share:ready',
       'share:established',
       'share:finished',
       'referFailed',
@@ -54,7 +60,8 @@ async function test(binding, account) {
       call.on(event, () => console.log(event));
     })
 
-    call.answer({video:false});
+    setTimeout(() => call.hangup(), 3000);
+    //call.answer({video:false});
   });
 
   // console.log('unregister()');

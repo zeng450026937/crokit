@@ -104,6 +104,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       weak_factory_(this),
       media_(Context::Instance()->GetMedia()),
       meeting_(yealink::CreateMeeting(*sip_client_, *media_, incoming)),
+      controller_(nullptr),
       local_identity_(isolate, v8::Object::New(isolate)),
       remote_identity_(isolate, v8::Object::New(isolate)),
       call_info_(isolate, v8::Object::New(isolate)),
@@ -112,6 +113,9 @@ CallBinding::CallBinding(v8::Isolate* isolate,
       remote_share_video_source_(new VideoSourceAdapter()) {
   InitWith(isolate, wrapper);
   meeting_->SetObserver(this);
+  controller_ = meeting_->Room();
+  conference_ = ConferenceBinding::Create(isolate, nullptr);
+  v8_conference_.Reset(isolate, conference_.ToV8());
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -546,7 +550,7 @@ yealink::AVContentType CallBinding::GetContentType() {
              : has_video ? yealink::AV_ONLY_VIDEO : yealink::AV_ONLY_AUDIO;
 }
 
-void CallBinding::ExtractInfo(yealink::MeetingInfo info) {
+void CallBinding::ExtractCallInfo(yealink::MeetingInfo info) {
   meeting_info_ = info;
 
   remote_identity_.Set("number", info.strNumber);
@@ -609,6 +613,39 @@ void CallBinding::ExtractInfo(yealink::MeetingInfo info) {
   call_info_.Set("reason", reason);
 }
 
+void CallBinding::ExtractConfInfo(yealink::AplloConferenceInvite info) {
+  mate::Dictionary dict = mate::Dictionary::CreateEmpty(isolate());
+  dict.Set("uri", info.strUri.ConstData());
+  dict.Set("entity", info.strEntity.ConstData());
+  dict.Set("number", info.strNumber.ConstData());
+  dict.Set("subject", info.strSubject.ConstData());
+  dict.Set("uuid", info.strUUID.ConstData());
+  dict.Set("invitee", info.strInviter.ConstData());
+  dict.Set("organizer", info.strOrganizer.ConstData());
+  remote_identity_.Set("conference", dict);
+}
+
+void CallBinding::ExtractInfo() {
+  yealink::MeetingInfo call_info;
+  yealink::AplloConferenceInvite conf_info;
+
+  meeting_->FetchInfo(call_info);
+  ExtractCallInfo(call_info);
+
+  if (meeting_->FetchInviteInfo(conf_info)) {
+    ExtractConfInfo(conf_info);
+  }
+}
+
+void CallBinding::OnConnectSuccess() {
+  Emit("focus:ready");
+  Emit("focus:established");
+}
+
+void CallBinding::OnConnectFailure(const char* reason) {
+  Emit("focus:finished");
+}
+
 void CallBinding::OnEvent(yealink::MeetingEventId id) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
@@ -621,13 +658,17 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
     case yealink::MEETING_CREATE:
       break;
     case yealink::MEETING_CONNECTED:
-      if (incoming_ && user_agent_) {
-        meeting_->Early("");
-        user_agent_->Emit("incoming", this);
+      ExtractInfo();
+      if (outgoing()) {
+        Emit("trying");
       }
       if (state_ != CallState::kProgress) {
         state_ = CallState::kProgress;
         Emit("progress");
+      }
+      if (incoming_ && user_agent_) {
+        meeting_->Early("");
+        user_agent_->Emit("incoming", this);
       }
       break;
     case yealink::MEETING_RING:
@@ -644,6 +685,7 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
       break;
     case yealink::MEETING_SHARE_ESTABLISHED:
       ready_for_share_ = true;
+      Emit("share:ready");
       Emit("share:established");
       break;
     case yealink::MEETING_SHARE_FINISHED:
@@ -751,7 +793,7 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
     return;
   }
 
-  ExtractInfo(info);
+  ExtractCallInfo(info);
   Emit("update", call_info_.GetHandle());
 }
 void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
@@ -762,12 +804,15 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   // maybe alloc conference in constructor()
 
   controller_ = controller;
+  controller_->AddObserver(this);
 
   // add interface on conference binding to allow
   // setting controller later(after constructor)
 
   // eg. conference_->SetController(controller_);
   conference_->SetController(controller);
+
+  Emit("focus:prepare");
 }
 void CallBinding::OnRealseConferenceBefore(
     yealink::RoomController* controller) {
@@ -779,12 +824,11 @@ void CallBinding::OnRealseConferenceBefore(
   }
 
   DCHECK(controller);
+  DCHECK_EQ(controller, controller_);
+  controller_->RemoveObserver(this);
   controller_ = nullptr;
-  // if (upgrade_promise_) {
-  //   std::unique_ptr<Promise> promise(upgrade_promise_.release());
-  //   promise->Resolve();
-  //   Emit("upgradeFailed");
-  // }
+
+  conference_->SetController(nullptr);
 }
 void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
   if (!Context::Instance()->CalledOnValidThread()) {
