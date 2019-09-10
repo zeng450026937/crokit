@@ -1203,6 +1203,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescProfile>::ToV8(
     case yealink::rtvc::DescProfile::kSeminar:
       profile = "seminar";
       break;
+    case yealink::rtvc::DescProfile::kInvalid:
+      profile = "";
+      break;
   }
   return ConvertToV8(isolate, profile);
 }
@@ -1232,19 +1235,22 @@ bool Converter<yealink::rtvc::DescProfile>::FromV8(
 v8::Local<v8::Value> Converter<yealink::rtvc::DescPosition>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::DescPosition val) {
-  std::string profile;
+  std::string position;
   switch (val) {
     case yealink::rtvc::DescPosition::kTop:
-      profile = "top";
+      position = "top";
       break;
     case yealink::rtvc::DescPosition::kMedium:
-      profile = "medium";
+      position = "medium";
       break;
     case yealink::rtvc::DescPosition::kBottom:
-      profile = "bottom";
+      position = "bottom";
+      break;
+    case yealink::rtvc::DescPosition::kInvalid:
+      position = "";
       break;
   }
-  return ConvertToV8(isolate, profile);
+  return ConvertToV8(isolate, position);
 }
 
 bool Converter<yealink::rtvc::DescPosition>::FromV8(
@@ -1309,6 +1315,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescRtmpSessionType>::ToV8(
     case yealink::rtvc::DescRtmpSessionType::kAVD:
       profile = "AVD";
       break;
+    case yealink::rtvc::DescRtmpSessionType::kInvalid:
+      profile = "";
+      break;
   }
   return ConvertToV8(isolate, profile);
 }
@@ -1348,6 +1357,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescRtmpFsType>::ToV8(
       break;
     case yealink::rtvc::DescRtmpFsType::k1080P:
       profile = "1080P";
+      break;
+    case yealink::rtvc::DescRtmpFsType::kInvalid:
+      profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
@@ -1424,6 +1436,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescUriPurpose>::ToV8(
       break;
     case yealink::rtvc::DescUriPurpose::kApplicationSharing:
       profile = "applicationsharing";
+      break;
+    case yealink::rtvc::DescUriPurpose::kInvalid:
+      profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
@@ -1533,6 +1548,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescConferenceType>::ToV8(
     case yealink::rtvc::DescConferenceType::kVSCA:
       res = "VSCA";
       break;
+    case yealink::rtvc::DescConferenceType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1577,6 +1595,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescNumberType>::ToV8(
     case yealink::rtvc::DescNumberType::kVMR:
       res = "vmr";
       break;
+    case yealink::rtvc::DescNumberType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1617,6 +1638,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescAdmissionPolicy>::ToV8(
     case yealink::rtvc::DescAdmissionPolicy::KOpenAuthenticated:
       res = "openAuthenticated";
       break;
+    case yealink::rtvc::DescAdmissionPolicy::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1654,6 +1678,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescAttendeeByPass>::ToV8(
     case yealink::rtvc::DescAttendeeByPass::KByPassFalse:
       res = false;
       break;
+    case yealink::rtvc::DescAttendeeByPass::kInvalid:
+      res = false;
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1681,7 +1708,7 @@ bool Converter<yealink::rtvc::DescAttendeeByPass>::FromV8(
 v8::Local<v8::Value> Converter<yealink::rtvc::DescAutoPromote>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::DescAutoPromote val) {
-  int res = 0;
+  int64_t res = 0;
   switch (val) {
     case yealink::rtvc::DescAutoPromote::kNone:
       res = 0;
@@ -1691,6 +1718,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescAutoPromote>::ToV8(
       break;
     case yealink::rtvc::DescAutoPromote::kCompany:
       res = 32768;
+      break;
+    case yealink::rtvc::DescAutoPromote::kInvalid:
+      res = -1;
       break;
   }
   return ConvertToV8(isolate, res);
@@ -1706,6 +1736,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescRecordType>::ToV8(
       break;
     case yealink::rtvc::DescRecordType::kYealinkRecord:
       res = "ylrecord";
+      break;
+    case yealink::rtvc::DescRecordType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -1745,6 +1778,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescRecordPrivilege>::ToV8(
     case yealink::rtvc::DescRecordPrivilege::kAttendee:
       res = "attendee";
       break;
+    case yealink::rtvc::DescRecordPrivilege::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1775,7 +1811,7 @@ bool Converter<yealink::rtvc::DescAutoPromote>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
     yealink::rtvc::DescAutoPromote* out) {
-  int in;
+  int64_t in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
@@ -2004,6 +2040,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserProtocolType>::ToV8(
     case yealink::rtvc::UserProtocolType::kRTMP:
       res = "RTMP";
       break;
+    case yealink::rtvc::UserProtocolType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2047,6 +2086,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserPermissionType>::ToV8(
     case yealink::rtvc::UserPermissionType::kPresenter:
       res = "presenter";
       break;
+    case yealink::rtvc::UserPermissionType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2086,6 +2128,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserDemoStateType>::ToV8(
     case yealink::rtvc::UserDemoStateType::kDemonstrator:
       res = "demonstrator";
       break;
+    case yealink::rtvc::UserDemoStateType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2120,6 +2165,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::PresenterDemoStateType>::ToV8(
       break;
     case yealink::rtvc::PresenterDemoStateType::kDemonstrator:
       res = "demonstrator";
+      break;
+    case yealink::rtvc::PresenterDemoStateType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -2191,6 +2239,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointSeesionType>::ToV8(
     case yealink::rtvc::UserEndpointSeesionType::kFocus:
       res = "focus";
       break;
+    case yealink::rtvc::UserEndpointSeesionType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2241,6 +2292,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointStatusType>::ToV8(
     case yealink::rtvc::UserEndpointStatusType::kOnHold:
       res = "on-hold";
       break;
+    case yealink::rtvc::UserEndpointStatusType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2282,6 +2336,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserJoinMethod>::ToV8(
     case yealink::rtvc::UserJoinMethod::kDialedOut:
       res = "dialed-out";
       break;
+    case yealink::rtvc::UserJoinMethod::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2319,6 +2376,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaType>::ToV8(
       break;
     case yealink::rtvc::UserMediaType::kVideo:
       res = "video";
+      break;
+    case yealink::rtvc::UserMediaType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -2361,6 +2421,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaLabelType>::ToV8(
       res = "main-audio";
       break;
     case yealink::rtvc::UserMediaLabelType::kMainVideo:
+      res = "main-video";
+      break;
+    case yealink::rtvc::UserMediaLabelType::kInvalid:
       res = "main-video";
       break;
   }
@@ -2408,6 +2471,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaDirectionType>::ToV8(
     case yealink::rtvc::UserMediaDirectionType::kSendRecv:
       res = "sendrecv";
       break;
+    case yealink::rtvc::UserMediaDirectionType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2450,6 +2516,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediafilterType>::ToV8(
     case yealink::rtvc::UserMediafilterType::kUnblocking:
       res = "unblocking";
       break;
+    case yealink::rtvc::UserMediafilterType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2489,6 +2558,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaBlockByType>::ToV8(
       break;
     case yealink::rtvc::UserMediaBlockByType::kServer:
       res = "server";
+      break;
+    case yealink::rtvc::UserMediaBlockByType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -2746,6 +2818,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewSpeakMode>::ToV8(
     case yealink::rtvc::ViewSpeakMode::kHandUp:
       res = "handUp";
       break;
+    case yealink::rtvc::ViewSpeakMode::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2786,6 +2861,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewLayoutType>::ToV8(
       break;
     case yealink::rtvc::ViewLayoutType::kExclusive:
       res = "Exclusive";
+      break;
+    case yealink::rtvc::ViewLayoutType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -2828,6 +2906,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewPresenterLayoutType>::ToV8(
       break;
     case yealink::rtvc::ViewPresenterLayoutType::kExclusive:
       res = "Exclusive";
+      break;
+    case yealink::rtvc::ViewPresenterLayoutType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);
@@ -2937,6 +3018,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterRoleType>::ToV8(
     case yealink::rtvc::ViewFilterRoleType::kAttendee:
       res = "attendee";
       break;
+    case yealink::rtvc::ViewFilterRoleType::kInvalid:
+      res = "";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -2971,6 +3055,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterType>::ToV8(
       break;
     case yealink::rtvc::ViewFilterType::kUnBlock:
       res = "unblock";
+      break;
+    case yealink::rtvc::ViewFilterType::kInvalid:
+      res = "";
       break;
   }
   return ConvertToV8(isolate, res);

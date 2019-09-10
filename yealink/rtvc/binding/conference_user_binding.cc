@@ -224,7 +224,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
 
   ConvertFrom(
       value,
-      user_controller_.GetMemberInfo().protocol ==
+      user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER);
 
   return mate::ConvertToV8(isolate(), value);
@@ -248,7 +248,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsAttendee() {
 
   ConvertFrom(
       value,
-      user_controller_.GetMemberInfo().protocol ==
+      user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ATTENDEE);
 
   return mate::ConvertToV8(isolate(), value);
@@ -259,7 +259,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsCastViewer() {
 
   ConvertFrom(
       value,
-      user_controller_.GetMemberInfo().protocol ==
+      user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_CAST_VIEWER);
 
   return mate::ConvertToV8(isolate(), value);
@@ -270,7 +270,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
 
   ConvertFrom(
       value,
-      user_controller_.GetMemberInfo().protocol ==
+      user_controller_.GetMemberInfo().roles.demoStateRole ==
           yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_DEMONSTRATOR);
 
   return mate::ConvertToV8(isolate(), value);
@@ -279,9 +279,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
 v8::Local<v8::Value> ConferenceUserBinding::IsPresenterDemonstrator() {
   bool value;
 
-  ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
-                         yealink::MemberInfo::Roles::PresenterDemoStateRole::
-                             PRESENTER_DEMONSTRATOR);
+  ConvertFrom(value,
+              user_controller_.GetMemberInfo().roles.presenterDemoStateRole ==
+                  yealink::MemberInfo::Roles::PresenterDemoStateRole::
+                      PRESENTER_DEMONSTRATOR);
 
   return mate::ConvertToV8(isolate(), value);
 }
@@ -432,7 +433,8 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetPermission(
 }
 
 void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
-  MemberInfo::Roles::PermissionRole value;
+  MemberInfo::Roles::PermissionRole value =
+      MemberInfo::Roles::PermissionRole::PERMISSION_INVALID;
 
   ConvertFrom(params, value);
 
