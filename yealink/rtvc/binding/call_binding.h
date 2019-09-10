@@ -72,6 +72,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void Renegotiate();
 
   void GetStats();
+  v8::Local<v8::Object> GetInfos();
 
   void InsertDTMF(std::string tone);
   void SendDTMF(std::string tone);
@@ -82,6 +83,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   bool isRefering();
   bool isReplacing();
   bool isUpgrading();
+  bool isReadyForShare();
+  bool isShareChannelSupported();
+  bool isShareChannelEstablished();
 
   bool local_sharing();
   bool remote_sharing();
@@ -101,15 +105,13 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void SetLocalVideoSource(mate::PersistentDictionary source);
   void SetLocalShareVideoSource(mate::PersistentDictionary source);
 
-  void SetRemoteVideoSink(mate::PersistentDictionary sink);
+  void SetRemoteVideoSink(mate::Arguments* args);
   void AddRemoteVideoSink(mate::PersistentDictionary sink);
   void RemoveRemoteVideoSink(mate::PersistentDictionary sink);
 
-  void SetRemoteShareVideoSink(mate::PersistentDictionary sink);
+  void SetRemoteShareVideoSink(mate::Arguments* args);
   void AddRemoteShareVideoSink(mate::PersistentDictionary sink);
   void RemoveRemoteShareVideoSink(mate::PersistentDictionary sink);
-
-  v8::Local<v8::Object> GetInfos();
 
   bool conference_aware();
   void SetConferenceAware(bool enable);
@@ -155,6 +157,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   bool remote_sharing_ = false;
   bool portrait_mode_ = false;
   bool incoming_ = false;
+  bool ready_for_share_ = false;
 
   std::unique_ptr<Promise> refer_promise_;
   std::unique_ptr<Promise> replace_promise_;

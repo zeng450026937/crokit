@@ -1,7 +1,9 @@
 #include "yealink/rtvc/binding/sip_poller.h"
 
 #include "base/bind.h"
+#include "v8.h"
 #include "yealink/libvc/include/sip_agent/sip_agent_api.h"
+#include "yealink/rtvc/binding/context.h"
 
 namespace yealink {
 
@@ -19,6 +21,7 @@ SIPPoller::~SIPPoller() {}
 void SIPPoller::OnPoll() {
   int reschedule_at = 10;
 
+  v8::HandleScope handle_scope(Context::Instance()->GetIsolate());
   while (sip_client_ && sip_client_->ProcessOnce(0) && reschedule_at) {
     --reschedule_at;
   }

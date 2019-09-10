@@ -30,10 +30,9 @@ mate::Handle<CallBinding> CallBinding::Create(
 }
 
 // static
-mate::Handle<CallBinding> CallBinding::Create(
-    v8::Isolate* isolate,
-    UserAgentBinding* user_agent,
-    bool incoming) {
+mate::Handle<CallBinding> CallBinding::Create(v8::Isolate* isolate,
+                                              UserAgentBinding* user_agent,
+                                              bool incoming) {
   return mate::CreateHandle(isolate,
                             new CallBinding(isolate, user_agent, incoming));
 }
@@ -56,12 +55,17 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("mute", &CallBinding::Mute)
       .SetMethod("unmute", &CallBinding::Unmute)
       .SetMethod("renegotiate", &CallBinding::Renegotiate)
+      .SetMethod("getInfos", &CallBinding::GetInfos)
       .SetProperty("isInProgress", &CallBinding::isInProgress)
       .SetProperty("isEstablished", &CallBinding::isEstablished)
       .SetProperty("isEnded", &CallBinding::isEnded)
       .SetProperty("isRefering", &CallBinding::isRefering)
       .SetProperty("isUpgrading", &CallBinding::isUpgrading)
-      .SetProperty("isEnded", &CallBinding::isEnded)
+      .SetProperty("isReadyForShare", &CallBinding::isReadyForShare)
+      .SetProperty("isShareChannelSupported",
+                   &CallBinding::isShareChannelSupported)
+      .SetProperty("isShareChannelEstablished",
+                   &CallBinding::isShareChannelEstablished)
       .SetProperty("localSharing", &CallBinding::local_sharing)
       .SetProperty("remoteSharing", &CallBinding::remote_sharing)
       .SetProperty("incoming", &CallBinding::incoming)
@@ -85,7 +89,6 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
                  &CallBinding::AddRemoteShareVideoSink)
       .SetMethod("removeRemoteShareVideoSink",
                  &CallBinding::RemoveRemoteShareVideoSink)
-      .SetMethod("getInfos", &CallBinding::GetInfos)
       .SetProperty("conferenceAware", &CallBinding::conference_aware,
                    &CallBinding::SetConferenceAware)
       .SetMethod("asConference", &CallBinding::AsConference)
@@ -307,6 +310,10 @@ void CallBinding::GetStats() {
   yealink::VideoStreamStats share_stats = meeting_->ShareMediaStats();
 }
 
+v8::Local<v8::Object> CallBinding::GetInfos() {
+  return call_info_.GetHandle();
+}
+
 void CallBinding::InsertDTMF(std::string tone) {
   for (char t : tone) {
     meeting_->SendDTMF(t);
@@ -334,6 +341,15 @@ bool CallBinding::isReplacing() {
 }
 bool CallBinding::isUpgrading() {
   return !!upgrade_promise_;
+}
+bool CallBinding::isReadyForShare() {
+  return ready_for_share_;
+}
+bool CallBinding::isShareChannelSupported() {
+  return true;
+}
+bool CallBinding::isShareChannelEstablished() {
+  return ready_for_share_;
 }
 
 bool CallBinding::local_sharing() {
@@ -375,6 +391,20 @@ void CallBinding::StartShare(mate::Dictionary dict, mate::Arguments* args) {
     return;
   }
 
+  HWND window = NULL;
+
+  if (window_id != -1) {
+#ifdef OS_WIN
+    std::wstring device_key;
+    if (webrtc::IsScreenValid(0, &device_key)) {
+      webrtc::DesktopRect screen_rect = webrtc::GetScreenRect(0, device_key);
+      width = screen_rect.width();
+      height = screen_rect.height();
+    }
+    window = reinterpret_cast<HWND>(window_id);
+#endif
+  }
+
   if (screen_id != -1) {
 #ifdef OS_WIN
     std::wstring device_key;
@@ -385,6 +415,7 @@ void CallBinding::StartShare(mate::Dictionary dict, mate::Arguments* args) {
     webrtc::DesktopRect screen_rect =
         webrtc::GetScreenRect(screen_id, device_key);
     RECT rect;
+    memset(&rect, 0, sizeof(RECT));
     rect.left = screen_rect.left();
     rect.top = screen_rect.top();
     rect.right = screen_rect.right();
@@ -392,13 +423,13 @@ void CallBinding::StartShare(mate::Dictionary dict, mate::Arguments* args) {
     width = screen_rect.width();
     height = screen_rect.height();
     window_id = reinterpret_cast<intptr_t>(
-        MonitorFromRect(&rect, MONITOR_DEFAULTTONEAREST));
+        ::MonitorFromRect(&rect, MONITOR_DEFAULTTONEAREST));
+    window = reinterpret_cast<HWND>(window_id);
 #endif
   }
 
   yealink::ShareWindow share_window;
 
-  HWND window = reinterpret_cast<HWND>(window_id);
   share_window.pHandle = reinterpret_cast<void*>(window);
   share_window.strCoverImgFile = file_path.c_str();
   share_window.nScreenWidth = width;
@@ -425,8 +456,9 @@ void CallBinding::SetShareBitrate(int64_t send_bitrate, int64_t recv_bitrate) {
 void CallBinding::SetLocalVideoSource(mate::PersistentDictionary source) {}
 void CallBinding::SetLocalShareVideoSource(mate::PersistentDictionary source) {}
 
-void CallBinding::SetRemoteVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
+void CallBinding::SetRemoteVideoSink(mate::Arguments* args) {
+  mate::PersistentDictionary sink;
+  if (!args->GetNext(&sink)) {
     for (auto it : remote_video_sinks_) {
       remote_video_source_->RemoveSink(it.second);
       delete it.second;
@@ -439,10 +471,6 @@ void CallBinding::SetRemoteVideoSink(mate::PersistentDictionary sink) {
 }
 
 void CallBinding::AddRemoteVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
-    return;
-  }
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = remote_video_sinks_.find(hash);
 
@@ -454,9 +482,6 @@ void CallBinding::AddRemoteVideoSink(mate::PersistentDictionary sink) {
 }
 
 void CallBinding::RemoveRemoteVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined())
-    return;
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = remote_video_sinks_.find(hash);
 
@@ -467,8 +492,9 @@ void CallBinding::RemoveRemoteVideoSink(mate::PersistentDictionary sink) {
   }
 }
 
-void CallBinding::SetRemoteShareVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
+void CallBinding::SetRemoteShareVideoSink(mate::Arguments* args) {
+  mate::PersistentDictionary sink;
+  if (!args->GetNext(&sink)) {
     for (auto it : remote_share_video_sinks_) {
       remote_share_video_source_->RemoveSink(it.second);
       delete it.second;
@@ -481,10 +507,6 @@ void CallBinding::SetRemoteShareVideoSink(mate::PersistentDictionary sink) {
 }
 
 void CallBinding::AddRemoteShareVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
-    return;
-  }
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = remote_share_video_sinks_.find(hash);
 
@@ -496,9 +518,6 @@ void CallBinding::AddRemoteShareVideoSink(mate::PersistentDictionary sink) {
 }
 
 void CallBinding::RemoveRemoteShareVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined())
-    return;
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = remote_share_video_sinks_.find(hash);
 
@@ -507,10 +526,6 @@ void CallBinding::RemoveRemoteShareVideoSink(mate::PersistentDictionary sink) {
     delete it->second;
     remote_share_video_sinks_.erase(it);
   }
-}
-
-v8::Local<v8::Object> CallBinding::GetInfos() {
-  return call_info_.GetHandle();
 }
 
 bool CallBinding::conference_aware() {
@@ -628,6 +643,7 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
       }
       break;
     case yealink::MEETING_SHARE_ESTABLISHED:
+      ready_for_share_ = true;
       Emit("share:established");
       break;
     case yealink::MEETING_SHARE_FINISHED:
@@ -752,7 +768,6 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
 
   // eg. conference_->SetController(controller_);
   conference_->SetController(controller);
-
 }
 void CallBinding::OnRealseConferenceBefore(
     yealink::RoomController* controller) {
