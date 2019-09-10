@@ -16,10 +16,11 @@ const util = require('util');
 console.log(binding);
 console.log(binding.version);
 
-const { UserAgent, Call } = binding;
+const { UserAgent, Call, Conference } = binding;
 
 util.inherits(UserAgent, events.EventEmitter);
 util.inherits(Call, events.EventEmitter);
+util.inherits(Conference, events.EventEmitter);
 
 const tests = {
   audioManager : require('./audio-manager-test'),
