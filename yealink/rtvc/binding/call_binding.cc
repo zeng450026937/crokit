@@ -799,7 +799,11 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
 void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   // TODO
   // ensure conference is not nullptr
-
+  if (conference_.IsEmpty()) {
+    v8::HandleScope handle_scope(isolate());
+    conference_ = ConferenceBinding::Create(isolate(), nullptr);
+    v8_conference_.Reset(isolate(), conference_.ToV8());
+  }
   // TBD
   // maybe alloc conference in constructor()
 

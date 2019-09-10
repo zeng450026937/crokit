@@ -223,6 +223,8 @@ void ConferenceBinding::OnGetUserCallStats(
     const RoomMember& member,
     const Array<yealink::UserMediaInfo>& info) {
   LOG(INFO) << __FUNCTIONW__;
+
+  // TODO
 }
 void ConferenceBinding::OnGetShareInfo(int64_t requestId,
                                        const char* shareInfo) {

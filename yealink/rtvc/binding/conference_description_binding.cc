@@ -438,19 +438,21 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::GetLock() {
   return mate::ConvertToV8(isolate(), params);
 }
 
-v8::Local<v8::Promise> ConferenceDescriptionBinding::SetLock(
+v8::Local<v8::Value> ConferenceDescriptionBinding::SetLock(
     DescSetLockInfo params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceDescriptionBinding::DoSetLock,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceDescriptionBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_)
+    result = room_controller_->GetViewComponent().ModifyConferenceLock(
+        (yealink::ConferenceDescription::AdmissionPolicy)
+            params.admission_policy,
+        (yealink::ConferenceDescription::AttendeeByPass)params.attendee_by_pass,
+        (yealink::ConferenceDescription::AutoPromote)params.auto_promote);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
@@ -462,7 +464,7 @@ void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
         (yealink::ConferenceDescription::AutoPromote)params.auto_promote);
 }
 
-v8::Local<v8::Promise> ConferenceDescriptionBinding::GetShareInfo(
+v8::Local<v8::Value> ConferenceDescriptionBinding::GetShareInfo(
     mate::Arguments* args) {
   std::string lang;
 
@@ -470,18 +472,18 @@ v8::Local<v8::Promise> ConferenceDescriptionBinding::GetShareInfo(
     args->ThrowError("lang is required");
   }
 
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceDescriptionBinding::DoGetShareInfo,
-                     base::Unretained(this), lang),
-      base::BindOnce(&ConferenceDescriptionBinding::OnCommandCompeleted,
-                     base::Unretained(this), std::move(promise)));
+  if (room_controller_)
+    result =
+        room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
+
 void ConferenceDescriptionBinding::DoGetShareInfo(std::string lang) {
   if (room_controller_)
     room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());

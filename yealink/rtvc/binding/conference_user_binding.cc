@@ -267,7 +267,7 @@ v8::Local<v8::Value> ConferenceUserBinding::IsCastViewer() {
 
 v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
   bool value;
-
+  MemberInfo test = user_controller_.GetMemberInfo();
   ConvertFrom(
       value,
       user_controller_.GetMemberInfo().roles.demoStateRole ==
@@ -342,94 +342,77 @@ v8::Local<v8::Value> ConferenceUserBinding::GetVideoFilter() {
   return mate::ConvertToV8(isolate(), value);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::GetStats() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::GetStats() {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoGetStats,
-                     weak_factory_.GetWeakPtr()),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.GetUserCallStats();
+  ConvertFrom(response, result);
 
-  return handle;
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoGetStats() {
   user_controller_.GetUserCallStats();
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetAudioIngressFilter(
-    bool isOpen) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::SetAudioIngressFilter(bool isOpen) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetAudioIngressFilter,
-                     weak_factory_.GetWeakPtr(), isOpen),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.SetAudioState(isOpen);
+  ConvertFrom(response, result);
 
-  return handle;
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetAudioIngressFilter(bool isOpen) {
   user_controller_.SetAudioState(isOpen);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetAudioEgressFilter(
-    bool isOpen) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::SetAudioEgressFilter(bool isOpen) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetAudioEgressFilter,
-                     weak_factory_.GetWeakPtr(), isOpen),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.SetAudioEgressState(isOpen);
+  ConvertFrom(response, result);
 
-  return handle;
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetAudioEgressFilter(bool isOpen) {
   user_controller_.SetAudioEgressState(isOpen);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetVideoIngressFilter(
-    bool isOpen) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::SetVideoIngressFilter(bool isOpen) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetVideoIngressFilter,
-                     weak_factory_.GetWeakPtr(), isOpen),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.SetVideoState(isOpen);
+  ConvertFrom(response, result);
 
-  return handle;
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetVideoIngressFilter(bool isOpen) {
   user_controller_.SetVideoState(isOpen);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetPermission(
+v8::Local<v8::Value> ConferenceUserBinding::SetPermission(
     UserPermissionType params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetPermission,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  MemberInfo::Roles::PermissionRole value =
+      MemberInfo::Roles::PermissionRole::PERMISSION_INVALID;
 
-  return handle;
+  ConvertFrom(params, value);
+
+  result = user_controller_.ModifyRole(value);
+
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
@@ -441,19 +424,19 @@ void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
   user_controller_.ModifyRole(value);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetDemonstrator(
+v8::Local<v8::Value> ConferenceUserBinding::SetDemonstrator(
     UserDemoStateType params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetDemonstrator,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (params == UserDemoStateType::kDemonstrator)
+    result = user_controller_.SetDemonstrator(true);
+  else
+    result = user_controller_.SetDemonstrator(false);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
@@ -463,19 +446,19 @@ void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
     user_controller_.SetDemonstrator(false);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetPresenterDemonstrator(
+v8::Local<v8::Value> ConferenceUserBinding::SetPresenterDemonstrator(
     PresenterDemoStateType params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetPresenterDemonstrator,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (params == PresenterDemoStateType::kDemonstrator)
+    result = user_controller_.SetDemonstrator(true);
+  else
+    result = user_controller_.SetDemonstrator(false);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetPresenterDemonstrator(
@@ -486,97 +469,85 @@ void ConferenceUserBinding::DoSetPresenterDemonstrator(
     user_controller_.SetDemonstrator(false);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::Hold() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::Hold() {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoHold,
-                     weak_factory_.GetWeakPtr()),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.Hold();
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoHold() {
   user_controller_.Hold();
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::UnHold() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::UnHold() {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoUnHold,
-                     weak_factory_.GetWeakPtr()),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.SetAccess(true);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoUnHold() {
   user_controller_.SetAccess(true);
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::Kick() {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::Kick() {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoKick,
-                     weak_factory_.GetWeakPtr()),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  result = user_controller_.KickOut();
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoKick() {
   user_controller_.KickOut();
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetDisplayName(
+v8::Local<v8::Value> ConferenceUserBinding::SetDisplayName(
     mate::Arguments* args) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
-
   std::string name;
 
   if (!args->GetNext(&name)) {
     args->ThrowError("name is required");
   }
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetDisplayName,
-                     weak_factory_.GetWeakPtr(), name),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  return handle;
+  result = user_controller_.ModifyUserName(name.c_str());
+
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetDisplayName(std::string name) {
   user_controller_.ModifyUserName(name.c_str());
 }
 
-v8::Local<v8::Promise> ConferenceUserBinding::SetFocus(bool isFocus) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUserBinding::SetFocus(bool isFocus) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUserBinding::DoSetFocus,
-                     weak_factory_.GetWeakPtr(), isFocus),
-      base::BindOnce(&ConferenceUserBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (isFocus == true)
+    result = user_controller_.SetFocus(true);
+  else
+    result = user_controller_.SetFocus(false);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUserBinding::DoSetFocus(bool isFocus) {

@@ -45,10 +45,10 @@ class ConferenceUsersBinding
   v8::Local<v8::Value> CurrentUser();
   std::vector<v8::Local<v8::Value>> UserList();
 
-  v8::Local<v8::Promise> Invite(mate::Arguments* args);
-  v8::Local<v8::Promise> InviteThird(std::string uri, std::string uid);
-  v8::Local<v8::Promise> InviteBatch(std::vector<std::string> uri);
-  v8::Local<v8::Promise> Allow(std::vector<std::string> entities, bool granted);
+  v8::Local<v8::Value> Invite(mate::Arguments* args);
+  v8::Local<v8::Value> InviteThird(std::string uri, std::string uid);
+  v8::Local<v8::Value> InviteBatch(std::vector<std::string> uri);
+  v8::Local<v8::Value> Allow(std::vector<std::string> entities, bool granted);
 
  private:
   void OnCommandCompeleted(Promise promise);

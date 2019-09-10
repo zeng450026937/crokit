@@ -65,21 +65,21 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
 
   v8::Local<v8::Value> GetAudioFilter();
   v8::Local<v8::Value> GetVideoFilter();
-  v8::Local<v8::Promise> GetStats();
+  v8::Local<v8::Value> GetStats();
 
-  v8::Local<v8::Promise> SetAudioIngressFilter(bool isOpen);
-  v8::Local<v8::Promise> SetAudioEgressFilter(bool isOpen);
-  v8::Local<v8::Promise> SetVideoIngressFilter(bool isOpen);
-  v8::Local<v8::Promise> SetPermission(UserPermissionType params);
-  v8::Local<v8::Promise> SetDemonstrator(UserDemoStateType params);
-  v8::Local<v8::Promise> SetPresenterDemonstrator(
+  v8::Local<v8::Value> SetAudioIngressFilter(bool isOpen);
+  v8::Local<v8::Value> SetAudioEgressFilter(bool isOpen);
+  v8::Local<v8::Value> SetVideoIngressFilter(bool isOpen);
+  v8::Local<v8::Value> SetPermission(UserPermissionType params);
+  v8::Local<v8::Value> SetDemonstrator(UserDemoStateType params);
+  v8::Local<v8::Value> SetPresenterDemonstrator(
       PresenterDemoStateType params);
 
-  v8::Local<v8::Promise> Hold();
-  v8::Local<v8::Promise> UnHold();
-  v8::Local<v8::Promise> Kick();
-  v8::Local<v8::Promise> SetDisplayName(mate::Arguments* args);
-  v8::Local<v8::Promise> SetFocus(bool isFocus);
+  v8::Local<v8::Value> Hold();
+  v8::Local<v8::Value> UnHold();
+  v8::Local<v8::Value> Kick();
+  v8::Local<v8::Value> SetDisplayName(mate::Arguments* args);
+  v8::Local<v8::Value> SetFocus(bool isFocus);
 
  private:
   void DoGetStats();

@@ -35,10 +35,10 @@ class ConferenceViewBinding : public mate::EventEmitter<ConferenceViewBinding> {
   ConferenceViewBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceViewBinding() override;
 
-  v8::Local<v8::Promise> SetLayout(SetLayoutInfo params);
+  v8::Local<v8::Value> SetLayout(SetLayoutInfo params);
   v8::Local<v8::Value> GetLayout();
 
-  v8::Local<v8::Promise> SetInitialFilters(ViewFilterRuleInfo params);
+  v8::Local<v8::Value> SetInitialFilters(ViewFilterRuleInfo params);
   v8::Local<v8::Value> GetInitialFilters();
 
  private:

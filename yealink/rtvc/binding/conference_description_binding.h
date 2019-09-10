@@ -70,8 +70,8 @@ class ConferenceDescriptionBinding
 
   v8::Local<v8::Value> GetDefaultRtmp();
   v8::Local<v8::Value> GetLock();
-  v8::Local<v8::Promise> SetLock(DescSetLockInfo params);
-  v8::Local<v8::Promise> GetShareInfo(mate::Arguments* args);
+  v8::Local<v8::Value> SetLock(DescSetLockInfo params);
+  v8::Local<v8::Value> GetShareInfo(mate::Arguments* args);
 
  private:
   void OnCommandCompeleted(Promise promise);

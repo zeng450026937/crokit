@@ -43,10 +43,11 @@ void ConferenceUsersBinding::UpdateRoomController(RoomController* handler) {
   room_controller_ = handler;
 }
 
-void ConferenceUsersBinding::UpdateUsers(const Array<RoomMember>& newMemberList,
-                                    const Array<RoomMember>& modifyMemberList,
-                                    const Array<RoomMember>& deleteMemberList,
-                                    bool force) {
+void ConferenceUsersBinding::UpdateUsers(
+    const Array<RoomMember>& newMemberList,
+    const Array<RoomMember>& modifyMemberList,
+    const Array<RoomMember>& deleteMemberList,
+    bool force) {
   uint32_t i;
 
   if (force == true) {
@@ -160,24 +161,22 @@ std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::UserList() {
   return userlist;
 }
 
-v8::Local<v8::Promise> ConferenceUsersBinding::Invite(mate::Arguments* args) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
-
+v8::Local<v8::Value> ConferenceUsersBinding::Invite(mate::Arguments* args) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
   std::string uri;
 
   if (!args->GetNext(&uri)) {
     args->ThrowError("uri is required");
   }
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUsersBinding::DoInvite,
-                     weak_factory_.GetWeakPtr(), uri),
-      base::BindOnce(&ConferenceUsersBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_) {
+    result = room_controller_->GetMemberManager().InviteUser(uri.c_str());
+  }
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUsersBinding::DoInvite(std::string uri) {
@@ -186,19 +185,19 @@ void ConferenceUsersBinding::DoInvite(std::string uri) {
   }
 }
 
-v8::Local<v8::Promise> ConferenceUsersBinding::InviteThird(std::string uri,
-                                                           std::string uid) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceUsersBinding::InviteThird(std::string uri,
+                                                         std::string uid) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUsersBinding::DoInviteThird,
-                     weak_factory_.GetWeakPtr(), uri, uid),
-      base::BindOnce(&ConferenceUsersBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_) {
+    result = room_controller_->GetMemberManager().InviteUserWithUuid(
+        uri.c_str(), uid.c_str());
+  }
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
@@ -208,19 +207,20 @@ void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
   }
 }
 
-v8::Local<v8::Promise> ConferenceUsersBinding::InviteBatch(
+v8::Local<v8::Value> ConferenceUsersBinding::InviteBatch(
     std::vector<std::string> uri) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
+  yealink::Array<yealink::SStringA> params;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUsersBinding::DoInviteBatch,
-                     weak_factory_.GetWeakPtr(), uri),
-      base::BindOnce(&ConferenceUsersBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_) {
+    ConvertTo(uri, params);
+    result = room_controller_->GetMemberManager().InviteUserList(params);
+  }
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
@@ -232,20 +232,29 @@ void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
   }
 }
 
-v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
+v8::Local<v8::Value> ConferenceUsersBinding::Allow(
     std::vector<std::string> entities,
     bool granted) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
+  yealink::Array<RoomMember> params;  // todo get member control
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceUsersBinding::DoAllow,
-                     weak_factory_.GetWeakPtr(), entities, granted),
-      base::BindOnce(&ConferenceUsersBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_) {
+    if (granted) {
+      if (entities.size() > 0)
+        result = room_controller_->GetMemberManager().GrantedLobby(params);
+      else
+        result = room_controller_->GetMemberManager().GrantedLobbyAll();
+    } else {
+      if (entities.size() > 0)
+        result = room_controller_->GetMemberManager().DeleteLobby(params);
+      else
+        result = room_controller_->GetMemberManager().DeleteLobbyAll();
+    }
+  }
+  ConvertFrom(response, result);
 
-  return handle;
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,

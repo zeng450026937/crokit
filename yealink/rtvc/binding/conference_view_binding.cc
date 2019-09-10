@@ -54,18 +54,18 @@ ConferenceViewBinding::ConferenceViewBinding(v8::Isolate* isolate,
     : weak_factory_(this) {}
 ConferenceViewBinding::~ConferenceViewBinding() = default;
 
-v8::Local<v8::Promise> ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+v8::Local<v8::Value> ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceViewBinding::DoSetLayout,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceViewBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (room_controller_)
+    result = room_controller_->GetViewComponent().ModifyLayout(
+        (yealink::ConferenceView::EntityState::VideoLayout)params.video_layout,
+        params.video_max_view);
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceViewBinding::DoSetLayout(SetLayoutInfo params) {
@@ -86,19 +86,25 @@ v8::Local<v8::Value> ConferenceViewBinding::GetLayout() {
   return mate::ConvertToV8(isolate(), value);
 }
 
-v8::Local<v8::Promise> ConferenceViewBinding::SetInitialFilters(
+v8::Local<v8::Value> ConferenceViewBinding::SetInitialFilters(
     ViewFilterRuleInfo params) {
-  Promise promise(isolate());
-  v8::Local<v8::Promise> handle = promise.GetHandle();
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
 
-  base::PostTaskAndReply(
-      FROM_HERE,
-      base::BindOnce(&ConferenceViewBinding::DoSetInitialFilters,
-                     weak_factory_.GetWeakPtr(), params),
-      base::BindOnce(&ConferenceViewBinding::OnCommandCompeleted,
-                     weak_factory_.GetWeakPtr(), std::move(promise)));
+  if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
+      params.ingress == yealink::rtvc::ViewFilterType::kBlock) {
+    if (room_controller_)
+      result = room_controller_->GetViewComponent().MuteAll();
+  } else if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
+             params.ingress == yealink::rtvc::ViewFilterType::kUnBlock) {
+    if (room_controller_)
+      result = room_controller_->GetViewComponent().UnMuteAll();
+  } else {
+  }
 
-  return handle;
+  ConvertFrom(response, result);
+
+  return mate::ConvertToV8(isolate(), response);
 }
 
 void ConferenceViewBinding::DoSetInitialFilters(ViewFilterRuleInfo params) {
