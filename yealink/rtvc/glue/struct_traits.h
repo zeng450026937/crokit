@@ -6,6 +6,7 @@
 
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/api/channel.h"
+#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"

@@ -26,46 +26,46 @@ void ConferenceDescriptionBinding::BuildPrototype(
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetProperty("subject", &ConferenceDescriptionBinding::subject)
-      .SetProperty("startTime", &ConferenceDescriptionBinding::StartTime)
-      .SetProperty("banner", &ConferenceDescriptionBinding::Banner)
-      .SetProperty("defaultRtmp", &ConferenceDescriptionBinding::DefaultRtmp)
-      .SetProperty("profile", &ConferenceDescriptionBinding::Profile)
-      .SetProperty("recordId", &ConferenceDescriptionBinding::RecordId)
-      .SetProperty("confUris", &ConferenceDescriptionBinding::ConfUris)
-      .SetProperty("organizer", &ConferenceDescriptionBinding::Organizer)
-      .SetProperty("conferenceId", &ConferenceDescriptionBinding::ConferenceId)
+      .SetProperty("startTime", &ConferenceDescriptionBinding::startTime)
+      .SetProperty("banner", &ConferenceDescriptionBinding::banner)
+      .SetProperty("defaultRtmp", &ConferenceDescriptionBinding::defaultRtmp)
+      .SetProperty("profile", &ConferenceDescriptionBinding::profile)
+      .SetProperty("recordId", &ConferenceDescriptionBinding::recordId)
+      .SetProperty("confUris", &ConferenceDescriptionBinding::confUris)
+      .SetProperty("organizer", &ConferenceDescriptionBinding::organizer)
+      .SetProperty("conferenceId", &ConferenceDescriptionBinding::conferenceId)
       .SetProperty("conferenceNumber",
-                   &ConferenceDescriptionBinding::ConferenceNumber)
+                   &ConferenceDescriptionBinding::conferenceNumber)
       .SetProperty("conferenceType",
-                   &ConferenceDescriptionBinding::ConferenceType)
+                   &ConferenceDescriptionBinding::conferenceType)
       .SetProperty("conferenceNumberType",
-                   &ConferenceDescriptionBinding::ConferenceNumberType)
+                   &ConferenceDescriptionBinding::conferenceNumberType)
       .SetProperty("bookStartTime",
-                   &ConferenceDescriptionBinding::BookStartTime)
+                   &ConferenceDescriptionBinding::bookStartTime)
       .SetProperty("bookExpiryTime",
-                   &ConferenceDescriptionBinding::BookExpiryTime)
-      .SetProperty("presenterPin", &ConferenceDescriptionBinding::PresenterPin)
-      .SetProperty("attendeePin", &ConferenceDescriptionBinding::AttendeePin)
+                   &ConferenceDescriptionBinding::bookExpiryTime)
+      .SetProperty("presenterPin", &ConferenceDescriptionBinding::presenterPin)
+      .SetProperty("attendeePin", &ConferenceDescriptionBinding::attendeePin)
       .SetProperty("maximumUserCount",
-                   &ConferenceDescriptionBinding::MaximumUserCount)
+                   &ConferenceDescriptionBinding::maximumUserCount)
       .SetProperty("admissionPolicy",
-                   &ConferenceDescriptionBinding::AdmissionPolicy)
-      .SetProperty("lobbyCapable", &ConferenceDescriptionBinding::LobbyCapable)
+                   &ConferenceDescriptionBinding::admissionPolicy)
+      .SetProperty("lobbyCapable", &ConferenceDescriptionBinding::lobbyCapable)
       .SetProperty("attendeeByPass",
-                   &ConferenceDescriptionBinding::AttendeeByPass)
-      .SetProperty("autoPromote", &ConferenceDescriptionBinding::AutoPromote)
-      .SetProperty("serverMode", &ConferenceDescriptionBinding::ServerMode)
+                   &ConferenceDescriptionBinding::attendeeByPass)
+      .SetProperty("autoPromote", &ConferenceDescriptionBinding::autoPromote)
+      .SetProperty("serverMode", &ConferenceDescriptionBinding::serverMode)
       .SetProperty("interactiveBroadcastEnabled",
-                   &ConferenceDescriptionBinding::InteractiveBroadcastEnabled)
-      .SetProperty("enterpriseId", &ConferenceDescriptionBinding::EnterpriseId)
-      .SetProperty("videoEnable", &ConferenceDescriptionBinding::VideoEnable)
-      .SetProperty("ipcallEnable", &ConferenceDescriptionBinding::IpcallEnable)
-      .SetProperty("webrtcEnable", &ConferenceDescriptionBinding::WebrtcEnable)
+                   &ConferenceDescriptionBinding::interactiveBroadcastEnabled)
+      .SetProperty("enterpriseId", &ConferenceDescriptionBinding::enterpriseId)
+      .SetProperty("videoEnable", &ConferenceDescriptionBinding::videoEnable)
+      .SetProperty("ipcallEnable", &ConferenceDescriptionBinding::ipcallEnable)
+      .SetProperty("webrtcEnable", &ConferenceDescriptionBinding::webrtcEnable)
       .SetProperty("recordServerType",
-                   &ConferenceDescriptionBinding::RecordServerType)
+                   &ConferenceDescriptionBinding::recordServerType)
       .SetProperty("recordPrivilege",
-                   &ConferenceDescriptionBinding::RecordPrivilege)
-      .SetProperty("confInfoUrl", &ConferenceDescriptionBinding::ConfInfoUrl)
+                   &ConferenceDescriptionBinding::recordPrivilege)
+      .SetProperty("confInfoUrl", &ConferenceDescriptionBinding::confInfoUrl)
       .SetMethod("getDefaultRtmp",
                  &ConferenceDescriptionBinding::GetDefaultRtmp)
       .SetMethod("getLock", &ConferenceDescriptionBinding::GetLock)
@@ -106,7 +106,7 @@ std::string ConferenceDescriptionBinding::subject() {
 
   return subject;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::StartTime() {
+int64_t ConferenceDescriptionBinding::startTime() {
   int64_t value = 0;
 
   if (room_controller_)
@@ -114,9 +114,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::StartTime() {
                            .GetConferenceDescription()
                            .startTime);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::Banner() {
+DescBanner ConferenceDescriptionBinding::banner() {
   DescBanner value;
 
   if (room_controller_)
@@ -124,9 +124,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::Banner() {
                            .GetConferenceDescription()
                            .banner);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::DefaultRtmp() {
+DescDefaultRtmp ConferenceDescriptionBinding::defaultRtmp() {
   DescDefaultRtmp value;
 
   if (room_controller_)
@@ -134,9 +134,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::DefaultRtmp() {
                            .GetConferenceDescription()
                            .defaultRtmp);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::Profile() {
+DescProfile ConferenceDescriptionBinding::profile() {
   DescProfile value = DescProfile::kInvalid;
 
   if (room_controller_)
@@ -144,9 +144,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::Profile() {
                            .GetConferenceDescription()
                            .profile);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::RecordId() {
+std::string ConferenceDescriptionBinding::recordId() {
   std::string value = "";
 
   if (room_controller_)
@@ -154,10 +154,10 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::RecordId() {
                            .GetConferenceDescription()
                            .recordId);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConfUris() {
+std::vector<DescConfUriInfo> ConferenceDescriptionBinding::confUris() {
   std::vector<DescConfUriInfo> value;
 
   if (room_controller_)
@@ -165,10 +165,10 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ConfUris() {
                            .GetConferenceDescription()
                            .confUris);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::Organizer() {
+DescOrganizerInfo ConferenceDescriptionBinding::organizer() {
   DescOrganizerInfo value;
 
   if (room_controller_)
@@ -176,9 +176,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::Organizer() {
                            .GetConferenceDescription()
                            .organizer);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceId() {
+std::string ConferenceDescriptionBinding::conferenceId() {
   std::string value;
 
   if (room_controller_)
@@ -186,9 +186,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceId() {
                            .GetConferenceDescription()
                            .conferenceId);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceNumber() {
+std::string ConferenceDescriptionBinding::conferenceNumber() {
   std::string value;
 
   if (room_controller_)
@@ -196,29 +196,29 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceNumber() {
                            .GetConferenceDescription()
                            .conferenceNumber);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceType() {
-  DescConferenceType value;
+DescConferenceType ConferenceDescriptionBinding::conferenceType() {
+  DescConferenceType value = DescConferenceType::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .conferenceType);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConferenceNumberType() {
-  DescNumberType value;
+DescNumberType ConferenceDescriptionBinding::conferenceNumberType() {
+  DescNumberType value = DescNumberType::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .conferenceNumberType);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::BookStartTime() {
+int64_t ConferenceDescriptionBinding::bookStartTime() {
   int64_t value = 0;
 
   if (room_controller_)
@@ -226,9 +226,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::BookStartTime() {
                            .GetConferenceDescription()
                            .bookStartTime);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::BookExpiryTime() {
+int64_t ConferenceDescriptionBinding::bookExpiryTime() {
   int64_t value = 0;
 
   if (room_controller_)
@@ -236,9 +236,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::BookExpiryTime() {
                            .GetConferenceDescription()
                            .bookExpiryTime);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::PresenterPin() {
+std::string ConferenceDescriptionBinding::presenterPin() {
   std::string value;
 
   if (room_controller_)
@@ -246,9 +246,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::PresenterPin() {
                            .GetConferenceDescription()
                            .presenterPin);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::AttendeePin() {
+std::string ConferenceDescriptionBinding::attendeePin() {
   std::string value;
 
   if (room_controller_)
@@ -256,9 +256,9 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::AttendeePin() {
                            .GetConferenceDescription()
                            .attendeePin);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::MaximumUserCount() {
+uint32_t ConferenceDescriptionBinding::maximumUserCount() {
   uint32_t value = 0;
 
   if (room_controller_)
@@ -266,19 +266,19 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::MaximumUserCount() {
                            .GetConferenceDescription()
                            .maximumUserCount);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::AdmissionPolicy() {
-  DescAdmissionPolicy value;
+DescAdmissionPolicy ConferenceDescriptionBinding::admissionPolicy() {
+  DescAdmissionPolicy value = DescAdmissionPolicy::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .admissionPolicy);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::LobbyCapable() {
+bool ConferenceDescriptionBinding::lobbyCapable() {
   bool value = false;
 
   if (room_controller_)
@@ -286,29 +286,29 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::LobbyCapable() {
                            .GetConferenceDescription()
                            .lobbyCapable);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::AttendeeByPass() {
-  bool value;
+bool ConferenceDescriptionBinding::attendeeByPass() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .attendeeByPass);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::AutoPromote() {
-  DescAutoPromote value;
+DescAutoPromote ConferenceDescriptionBinding::autoPromote() {
+  DescAutoPromote value = DescAutoPromote::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .autoPromote);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ServerMode() {
+std::string ConferenceDescriptionBinding::serverMode() {
   std::string value;
 
   if (room_controller_)
@@ -316,20 +316,19 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ServerMode() {
                            .GetConferenceDescription()
                            .serverMode);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value>
-ConferenceDescriptionBinding::InteractiveBroadcastEnabled() {
-  bool value;
+bool ConferenceDescriptionBinding::interactiveBroadcastEnabled() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .interactiveBroadcastEnabled);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::EnterpriseId() {
+std::string ConferenceDescriptionBinding::enterpriseId() {
   std::string value;
 
   if (room_controller_)
@@ -337,59 +336,59 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::EnterpriseId() {
                            .GetConferenceDescription()
                            .enterpriseId);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::VideoEnable() {
-  bool value;
+bool ConferenceDescriptionBinding::videoEnable() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .videoEnable);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::IpcallEnable() {
-  bool value;
+bool ConferenceDescriptionBinding::ipcallEnable() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .ipcallEnable);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::WebrtcEnable() {
-  bool value;
+bool ConferenceDescriptionBinding::webrtcEnable() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .webrtcEnable);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::RecordServerType() {
-  DescRecordType value;
+DescRecordType ConferenceDescriptionBinding::recordServerType() {
+  DescRecordType value = DescRecordType::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .recordServerType);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::RecordPrivilege() {
-  DescRecordPrivilege value;
+DescRecordPrivilege ConferenceDescriptionBinding::recordPrivilege() {
+  DescRecordPrivilege value = DescRecordPrivilege::kInvalid;
 
   if (room_controller_)
     ConvertFrom(value, room_controller_->GetDescriptionComponent()
                            .GetConferenceDescription()
                            .recordPrivilege);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceDescriptionBinding::ConfInfoUrl() {
+std::string ConferenceDescriptionBinding::confInfoUrl() {
   std::string value;
 
   if (room_controller_)
@@ -397,10 +396,10 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::ConfInfoUrl() {
                            .GetConferenceDescription()
                            .confInfoUrl);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::GetDefaultRtmp() {
+DescDefaultRtmp ConferenceDescriptionBinding::GetDefaultRtmp() {
   DescDefaultRtmp value;
 
   if (room_controller_)
@@ -408,10 +407,10 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::GetDefaultRtmp() {
                            .GetConferenceDescription()
                            .defaultRtmp);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::GetLock() {
+DescGetLockInfo ConferenceDescriptionBinding::GetLock() {
   DescGetLockInfo params;
 
   if (room_controller_) {
@@ -430,11 +429,10 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::GetLock() {
                                          .autoPromote);
   }
 
-  return mate::ConvertToV8(isolate(), params);
+  return params;
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::SetLock(
-    DescSetLockInfo params) {
+ResponseInfo ConferenceDescriptionBinding::SetLock(DescSetLockInfo params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -447,7 +445,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::SetLock(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
@@ -459,8 +457,7 @@ void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
         (yealink::ConferenceDescription::AutoPromote)params.auto_promote);
 }
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::GetShareInfo(
-    mate::Arguments* args) {
+ResponseInfo ConferenceDescriptionBinding::GetShareInfo(mate::Arguments* args) {
   std::string lang;
 
   if (!args->GetNext(&lang)) {
@@ -476,7 +473,7 @@ v8::Local<v8::Value> ConferenceDescriptionBinding::GetShareInfo(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceDescriptionBinding::DoGetShareInfo(std::string lang) {

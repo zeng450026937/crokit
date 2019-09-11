@@ -31,9 +31,9 @@ void ConferenceStateBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceState"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("locked", &ConferenceStateBinding::Locked)
-      .SetProperty("active", &ConferenceStateBinding::Active)
-      .SetProperty("rollCallStatus", &ConferenceStateBinding::RollCallStatus);
+      .SetProperty("locked", &ConferenceStateBinding::locked)
+      .SetProperty("active", &ConferenceStateBinding::active)
+      .SetProperty("rollCallStatus", &ConferenceStateBinding::rollCallStatus);
 }
 
 void ConferenceStateBinding::UpdateRoomController(RoomController* handler) {
@@ -56,27 +56,27 @@ ConferenceStateBinding::ConferenceStateBinding(
 
 ConferenceStateBinding::~ConferenceStateBinding() = default;
 
-v8::Local<v8::Value> ConferenceStateBinding::Active() {
-  bool value;
+bool ConferenceStateBinding::active() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(
         value,
         room_controller_->GetStateComponent().GetConferenceState().active);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceStateBinding::Locked() {
-  bool value;
+bool ConferenceStateBinding::locked() {
+  bool value = false;
 
   if (room_controller_)
     ConvertFrom(
         value,
         room_controller_->GetStateComponent().GetConferenceState().locked);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceStateBinding::RollCallStatus() {
+std::string ConferenceStateBinding::rollCallStatus() {
   std::string value;
 
   if (room_controller_)
@@ -84,7 +84,7 @@ v8::Local<v8::Value> ConferenceStateBinding::RollCallStatus() {
                            .GetConferenceState()
                            .rollCallStatus);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
 }  // namespace rtvc

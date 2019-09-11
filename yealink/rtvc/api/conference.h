@@ -8,6 +8,18 @@ namespace yealink {
 
 namespace rtvc {
 
+enum class RequesrResult {
+  kSuccess,
+  kInvalidParam,
+  kSipFailure,
+  kInvalid,
+};
+
+struct ResponseInfo {
+  int64_t request_id;
+  RequesrResult result;
+};
+
 class ConferenceDescription;
 class ConferenceState;
 class ConferenceView;

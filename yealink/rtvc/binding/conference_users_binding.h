@@ -9,6 +9,7 @@
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_user.h"
 #include "yealink/rtvc/binding/conference_user_binding.h"
 #include "yealink/rtvc/binding/event_emitter.h"
@@ -32,9 +33,9 @@ class ConferenceUsersBinding
 
   void UpdateRoomController(RoomController* handler);
   void UpdateUsers(const Array<RoomMember>& newMemberList,
-              const Array<RoomMember>& modifyMemberList,
-              const Array<RoomMember>& deleteMemberList,
-              bool force);
+                   const Array<RoomMember>& modifyMemberList,
+                   const Array<RoomMember>& deleteMemberList,
+                   bool force);
 
  protected:
   ConferenceUsersBinding(v8::Isolate* isolate,
@@ -45,10 +46,10 @@ class ConferenceUsersBinding
   v8::Local<v8::Value> CurrentUser();
   std::vector<v8::Local<v8::Value>> UserList();
 
-  v8::Local<v8::Value> Invite(mate::Arguments* args);
-  v8::Local<v8::Value> InviteThird(std::string uri, std::string uid);
-  v8::Local<v8::Value> InviteBatch(std::vector<std::string> uri);
-  v8::Local<v8::Value> Allow(std::vector<std::string> entities, bool granted);
+  ResponseInfo Invite(mate::Arguments* args);
+  ResponseInfo InviteThird(std::string uri, std::string uid);
+  ResponseInfo InviteBatch(std::vector<std::string> uri);
+  ResponseInfo Allow(std::vector<std::string> entities, bool granted);
 
  private:
   void OnCommandCompeleted(Promise promise);

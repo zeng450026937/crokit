@@ -11,6 +11,7 @@
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"
 #include "yealink/rtvc/api/conference_view.h"
+#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/device_type.h"
 #include "yealink/rtvc/api/schedule_item.h"

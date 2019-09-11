@@ -36,11 +36,9 @@ class ConferenceStateBinding
                          yealink::RoomController* controller);
   ~ConferenceStateBinding() override;
 
-  v8::Local<v8::Value> Active();
-  v8::Local<v8::Value> Locked();
-  v8::Local<v8::Value> RollCallStatus();
-
- private:
+  bool active();
+  bool locked();
+  std::string rollCallStatus();
 
  private:
   RoomController* room_controller_;

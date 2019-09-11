@@ -161,7 +161,7 @@ std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::UserList() {
   return userlist;
 }
 
-v8::Local<v8::Value> ConferenceUsersBinding::Invite(mate::Arguments* args) {
+ResponseInfo ConferenceUsersBinding::Invite(mate::Arguments* args) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
   std::string uri;
@@ -176,7 +176,7 @@ v8::Local<v8::Value> ConferenceUsersBinding::Invite(mate::Arguments* args) {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUsersBinding::DoInvite(std::string uri) {
@@ -185,8 +185,8 @@ void ConferenceUsersBinding::DoInvite(std::string uri) {
   }
 }
 
-v8::Local<v8::Value> ConferenceUsersBinding::InviteThird(std::string uri,
-                                                         std::string uid) {
+ResponseInfo ConferenceUsersBinding::InviteThird(std::string uri,
+                                                 std::string uid) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -197,7 +197,7 @@ v8::Local<v8::Value> ConferenceUsersBinding::InviteThird(std::string uri,
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
@@ -207,8 +207,7 @@ void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
   }
 }
 
-v8::Local<v8::Value> ConferenceUsersBinding::InviteBatch(
-    std::vector<std::string> uri) {
+ResponseInfo ConferenceUsersBinding::InviteBatch(std::vector<std::string> uri) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
   yealink::Array<yealink::SStringA> params;
@@ -220,7 +219,7 @@ v8::Local<v8::Value> ConferenceUsersBinding::InviteBatch(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
@@ -232,9 +231,8 @@ void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
   }
 }
 
-v8::Local<v8::Value> ConferenceUsersBinding::Allow(
-    std::vector<std::string> entities,
-    bool granted) {
+ResponseInfo ConferenceUsersBinding::Allow(std::vector<std::string> entities,
+                                           bool granted) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
   yealink::Array<RoomMember> params;  // todo get member control
@@ -262,7 +260,7 @@ v8::Local<v8::Value> ConferenceUsersBinding::Allow(
   }
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,

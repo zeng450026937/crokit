@@ -8,15 +8,17 @@
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_user.h"
-#include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
+#include "yealink/rtvc/binding/trackable_object.h"
 
 namespace yealink {
 
 namespace rtvc {
 
-class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
+class ConferenceUserBinding
+    : public mate::TrackableObject<ConferenceUserBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -35,51 +37,50 @@ class ConferenceUserBinding : public mate::EventEmitter<ConferenceUserBinding> {
   ConferenceUserBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceUserBinding() override;
 
-  v8::Local<v8::Value> Entity();
-  v8::Local<v8::Value> DisplayText();
-  v8::Local<v8::Value> DisplayNumber();
-  v8::Local<v8::Value> DisplayTextPinyin();
-  v8::Local<v8::Value> Uid();
-  v8::Local<v8::Value> Protocol();
-  v8::Local<v8::Value> MediumServerType();
-  v8::Local<v8::Value> Ip();
-  v8::Local<v8::Value> Phone();
-  v8::Local<v8::Value> RequestUri();
-  v8::Local<v8::Value> UserAgent();
-  v8::Local<v8::Value> Roles();
-  v8::Local<v8::Value> Endpoint();
+  std::string entity();
+  std::string displayText();
+  std::string displayNumber();
+  std::string displayTextPinyin();
+  std::string uid();
+  UserProtocolType protocol();
+  std::string mediumServerType();
+  std::string ip();
+  std::string phone();
+  std::string requestUri();
+  std::string userAgent();
+  UserRolesInfo roles();
+  std::vector<UserEndpointInfo> endpoint();
 
-  v8::Local<v8::Value> IsCurrentUser();
-  v8::Local<v8::Value> IsRtmp();
-  v8::Local<v8::Value> IsSIP();
-  v8::Local<v8::Value> IsOrganizer();
-  v8::Local<v8::Value> IsPresenter();
-  v8::Local<v8::Value> IsAttendee();
-  v8::Local<v8::Value> IsCastViewer();
-  v8::Local<v8::Value> IsDemonstrator();
-  v8::Local<v8::Value> IsPresenterDemonstrator();
-  v8::Local<v8::Value> IsOnHold();
-  v8::Local<v8::Value> IsSharing();
-  v8::Local<v8::Value> IsFocus();
-  v8::Local<v8::Value> hasFECC();
+  bool IsCurrentUser();
+  bool IsRtmp();
+  bool IsSIP();
+  bool IsOrganizer();
+  bool IsPresenter();
+  bool IsAttendee();
+  bool IsCastViewer();
+  bool IsDemonstrator();
+  bool IsPresenterDemonstrator();
+  bool IsOnHold();
+  bool IsSharing();
+  bool IsFocus();
+  bool hasFECC();
 
-  v8::Local<v8::Value> GetAudioFilter();
-  v8::Local<v8::Value> GetVideoFilter();
-  v8::Local<v8::Value> GetStats();
+  UserMediaFilterInfo GetAudioFilter();
+  UserMediaFilterInfo GetVideoFilter();
+  ResponseInfo GetStats();
 
-  v8::Local<v8::Value> SetAudioIngressFilter(bool isOpen);
-  v8::Local<v8::Value> SetAudioEgressFilter(bool isOpen);
-  v8::Local<v8::Value> SetVideoIngressFilter(bool isOpen);
-  v8::Local<v8::Value> SetPermission(UserPermissionType params);
-  v8::Local<v8::Value> SetDemonstrator(UserDemoStateType params);
-  v8::Local<v8::Value> SetPresenterDemonstrator(
-      PresenterDemoStateType params);
+  ResponseInfo SetAudioIngressFilter(bool isOpen);
+  ResponseInfo SetAudioEgressFilter(bool isOpen);
+  ResponseInfo SetVideoIngressFilter(bool isOpen);
+  ResponseInfo SetPermission(UserPermissionType params);
+  ResponseInfo SetDemonstrator(UserDemoStateType params);
+  ResponseInfo SetPresenterDemonstrator(PresenterDemoStateType params);
 
-  v8::Local<v8::Value> Hold();
-  v8::Local<v8::Value> UnHold();
-  v8::Local<v8::Value> Kick();
-  v8::Local<v8::Value> SetDisplayName(mate::Arguments* args);
-  v8::Local<v8::Value> SetFocus(bool isFocus);
+  ResponseInfo Hold();
+  ResponseInfo UnHold();
+  ResponseInfo Kick();
+  ResponseInfo SetDisplayName(mate::Arguments* args);
+  ResponseInfo SetFocus(bool isFocus);
 
  private:
   void DoGetStats();

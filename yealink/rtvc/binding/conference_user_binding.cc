@@ -13,6 +13,10 @@ namespace yealink {
 
 namespace rtvc {
 
+namespace {
+static std::unordered_map<std::string, int32_t> g_uid_map_;
+}  // namespace
+
 // static
 mate::WrappableBase* ConferenceUserBinding::New(mate::Arguments* args) {
   return new ConferenceUserBinding(args->isolate(), args->GetThis());
@@ -21,6 +25,23 @@ mate::WrappableBase* ConferenceUserBinding::New(mate::Arguments* args) {
 mate::Handle<ConferenceUserBinding> ConferenceUserBinding::Create(
     v8::Isolate* isolate,
     yealink::RoomMember& controller) {
+  auto iter = g_uid_map_.find(controller.GetMemberInfo().entity.ConstData());
+
+  if (iter == g_uid_map_.end()) {
+    return mate::CreateHandle(isolate,
+                              new ConferenceUserBinding(isolate, controller));
+  }
+
+  int32_t weak_map_id = iter->second;
+
+  auto binding = mate::TrackableObject<ConferenceUserBinding>::FromWeakMapID(
+      isolate, weak_map_id);
+
+  if (binding) {
+    binding->UpdateUserController(controller);
+    return mate::CreateHandle(isolate, binding);
+  }
+
   return mate::CreateHandle(isolate,
                             new ConferenceUserBinding(isolate, controller));
 }
@@ -32,20 +53,20 @@ void ConferenceUserBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceUser"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("entity", &ConferenceUserBinding::Entity)
-      .SetProperty("displayText", &ConferenceUserBinding::DisplayText)
-      .SetProperty("displayNumber", &ConferenceUserBinding::DisplayNumber)
+      .SetProperty("entity", &ConferenceUserBinding::entity)
+      .SetProperty("displayText", &ConferenceUserBinding::displayText)
+      .SetProperty("displayNumber", &ConferenceUserBinding::displayNumber)
       .SetProperty("displayTextPinyin",
-                   &ConferenceUserBinding::DisplayTextPinyin)
-      .SetProperty("uid", &ConferenceUserBinding::Uid)
-      .SetProperty("protocol", &ConferenceUserBinding::Protocol)
-      .SetProperty("mediumServerType", &ConferenceUserBinding::MediumServerType)
-      .SetProperty("ip", &ConferenceUserBinding::Ip)
-      .SetProperty("phone", &ConferenceUserBinding::Phone)
-      .SetProperty("requestUri", &ConferenceUserBinding::RequestUri)
-      .SetProperty("userAgent", &ConferenceUserBinding::UserAgent)
-      .SetProperty("roles", &ConferenceUserBinding::Roles)
-      .SetProperty("endpoint", &ConferenceUserBinding::Endpoint)
+                   &ConferenceUserBinding::displayTextPinyin)
+      .SetProperty("uid", &ConferenceUserBinding::uid)
+      .SetProperty("protocol", &ConferenceUserBinding::protocol)
+      .SetProperty("mediumServerType", &ConferenceUserBinding::mediumServerType)
+      .SetProperty("ip", &ConferenceUserBinding::ip)
+      .SetProperty("phone", &ConferenceUserBinding::phone)
+      .SetProperty("requestUri", &ConferenceUserBinding::requestUri)
+      .SetProperty("userAgent", &ConferenceUserBinding::userAgent)
+      .SetProperty("roles", &ConferenceUserBinding::roles)
+      .SetProperty("endpoint", &ConferenceUserBinding::endpoint)
       .SetMethod("isCurrentUser", &ConferenceUserBinding::IsCurrentUser)
       .SetMethod("isRtmp", &ConferenceUserBinding::IsRtmp)
       .SetMethod("isSIP", &ConferenceUserBinding::IsSIP)
@@ -92,6 +113,9 @@ ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
     : weak_factory_(this) {
   Init(isolate);
   user_controller_ = controller;
+
+  g_uid_map_.emplace(user_controller_.GetMemberInfo().entity.ConstData(),
+                     weak_map_id_);
 }
 ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
                                              v8::Local<v8::Object> wrapper)
@@ -100,127 +124,128 @@ ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
 }
 ConferenceUserBinding::~ConferenceUserBinding() {
   LOG(INFO) << __FUNCTIONW__;
+  g_uid_map_.erase(user_controller_.GetMemberInfo().entity.ConstData());
 };
 
-v8::Local<v8::Value> ConferenceUserBinding::Entity() {
+std::string ConferenceUserBinding::entity() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().entity);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::DisplayText() {
+std::string ConferenceUserBinding::displayText() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().displayText);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::DisplayNumber() {
+std::string ConferenceUserBinding::displayNumber() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().displayNumber);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::DisplayTextPinyin() {
+std::string ConferenceUserBinding::displayTextPinyin() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().displayTextPinyin);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Uid() {
+std::string ConferenceUserBinding::uid() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().uid);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Protocol() {
-  UserProtocolType value;
+UserProtocolType ConferenceUserBinding::protocol() {
+  UserProtocolType value = UserProtocolType::kInvalid;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().protocol);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::MediumServerType() {
+std::string ConferenceUserBinding::mediumServerType() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().mediumServerType);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Ip() {
+std::string ConferenceUserBinding::ip() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().ip);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Phone() {
+std::string ConferenceUserBinding::phone() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().phone);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::RequestUri() {
+std::string ConferenceUserBinding::requestUri() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().requestUri);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::UserAgent() {
+std::string ConferenceUserBinding::userAgent() {
   std::string value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().userAgent);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Roles() {
+UserRolesInfo ConferenceUserBinding::roles() {
   UserRolesInfo value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().roles);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
-v8::Local<v8::Value> ConferenceUserBinding::Endpoint() {
+std::vector<UserEndpointInfo> ConferenceUserBinding::endpoint() {
   std::vector<UserEndpointInfo> value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().endpointList);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsCurrentUser() {
+bool ConferenceUserBinding::IsCurrentUser() {
   bool value;
 
   ConvertFrom(value, user_controller_.IsCurrentUser());
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsRtmp() {
+bool ConferenceUserBinding::IsRtmp() {
   bool value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
                          yealink::MemberInfo::Protocol::RTMP);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsSIP() {
+bool ConferenceUserBinding::IsSIP() {
   bool value;
 
   ConvertFrom(value, user_controller_.GetMemberInfo().protocol ==
                          yealink::MemberInfo::Protocol::SIP);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
+bool ConferenceUserBinding::IsOrganizer() {
   bool value;
 
   ConvertFrom(
@@ -228,10 +253,10 @@ v8::Local<v8::Value> ConferenceUserBinding::IsOrganizer() {
       user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsPresenter() {
+bool ConferenceUserBinding::IsPresenter() {
   bool value = false;
 
   ConvertFrom(
@@ -241,78 +266,78 @@ v8::Local<v8::Value> ConferenceUserBinding::IsPresenter() {
           (user_controller_.GetMemberInfo().roles.permissionRole ==
            yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ORGANIZER));
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsAttendee() {
-  bool value;
+bool ConferenceUserBinding::IsAttendee() {
+  bool value = false;
 
   ConvertFrom(
       value,
       user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_ATTENDEE);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsCastViewer() {
-  bool value;
+bool ConferenceUserBinding::IsCastViewer() {
+  bool value = false;
 
   ConvertFrom(
       value,
       user_controller_.GetMemberInfo().roles.permissionRole ==
           yealink::MemberInfo::Roles::PermissionRole::PERMISSION_CAST_VIEWER);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsDemonstrator() {
-  bool value;
+bool ConferenceUserBinding::IsDemonstrator() {
+  bool value = false;
   MemberInfo test = user_controller_.GetMemberInfo();
   ConvertFrom(
       value,
       user_controller_.GetMemberInfo().roles.demoStateRole ==
           yealink::MemberInfo::Roles::DemoStateRole::DEMOSTATE_DEMONSTRATOR);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsPresenterDemonstrator() {
-  bool value;
+bool ConferenceUserBinding::IsPresenterDemonstrator() {
+  bool value = false;
 
   ConvertFrom(value,
               user_controller_.GetMemberInfo().roles.presenterDemoStateRole ==
                   yealink::MemberInfo::Roles::PresenterDemoStateRole::
                       PRESENTER_DEMONSTRATOR);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsOnHold() {
-  bool value;
+bool ConferenceUserBinding::IsOnHold() {
+  bool value = false;
 
   ConvertFrom(value, user_controller_.IsHoldOn());
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsSharing() {
-  bool value;
+bool ConferenceUserBinding::IsSharing() {
+  bool value = false;
 
   ConvertFrom(value, user_controller_.IsSharing());
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::IsFocus() {
-  bool value;
+bool ConferenceUserBinding::IsFocus() {
+  bool value = false;
 
   ConvertFrom(value, user_controller_.IsFocus());
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::GetAudioFilter() {
+UserMediaFilterInfo ConferenceUserBinding::GetAudioFilter() {
   UserMediaFilterInfo value;
   yealink::MemberInfo::Endpoint::Media param;
 
@@ -324,10 +349,10 @@ v8::Local<v8::Value> ConferenceUserBinding::GetAudioFilter() {
 
   ConvertFrom(value, param);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::GetVideoFilter() {
+UserMediaFilterInfo ConferenceUserBinding::GetVideoFilter() {
   UserMediaFilterInfo value;
   yealink::MemberInfo::Endpoint::Media param;
 
@@ -340,67 +365,66 @@ v8::Local<v8::Value> ConferenceUserBinding::GetVideoFilter() {
 
   ConvertFrom(value, param);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::GetStats() {
+ResponseInfo ConferenceUserBinding::GetStats() {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
   result = user_controller_.GetUserCallStats();
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoGetStats() {
   user_controller_.GetUserCallStats();
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetAudioIngressFilter(bool isOpen) {
+ResponseInfo ConferenceUserBinding::SetAudioIngressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
   result = user_controller_.SetAudioState(!isOpen);
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetAudioIngressFilter(bool isOpen) {
   user_controller_.SetAudioState(isOpen);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetAudioEgressFilter(bool isOpen) {
+ResponseInfo ConferenceUserBinding::SetAudioEgressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
   result = user_controller_.SetAudioEgressState(!isOpen);
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetAudioEgressFilter(bool isOpen) {
   user_controller_.SetAudioEgressState(isOpen);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetVideoIngressFilter(bool isOpen) {
+ResponseInfo ConferenceUserBinding::SetVideoIngressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
   result = user_controller_.SetVideoState(!isOpen);
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetVideoIngressFilter(bool isOpen) {
   user_controller_.SetVideoState(isOpen);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetPermission(
-    UserPermissionType params) {
+ResponseInfo ConferenceUserBinding::SetPermission(UserPermissionType params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -411,7 +435,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetPermission(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
@@ -423,8 +447,7 @@ void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
   user_controller_.ModifyRole(value);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetDemonstrator(
-    UserDemoStateType params) {
+ResponseInfo ConferenceUserBinding::SetDemonstrator(UserDemoStateType params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -435,7 +458,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetDemonstrator(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
@@ -445,7 +468,7 @@ void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
     user_controller_.SetDemonstrator(false);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetPresenterDemonstrator(
+ResponseInfo ConferenceUserBinding::SetPresenterDemonstrator(
     PresenterDemoStateType params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
@@ -457,7 +480,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetPresenterDemonstrator(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetPresenterDemonstrator(
@@ -468,7 +491,7 @@ void ConferenceUserBinding::DoSetPresenterDemonstrator(
     user_controller_.SetDemonstrator(false);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::Hold() {
+ResponseInfo ConferenceUserBinding::Hold() {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -476,14 +499,14 @@ v8::Local<v8::Value> ConferenceUserBinding::Hold() {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoHold() {
   user_controller_.Hold();
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::UnHold() {
+ResponseInfo ConferenceUserBinding::UnHold() {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -491,14 +514,14 @@ v8::Local<v8::Value> ConferenceUserBinding::UnHold() {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoUnHold() {
   user_controller_.SetAccess(true);
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::Kick() {
+ResponseInfo ConferenceUserBinding::Kick() {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -506,15 +529,14 @@ v8::Local<v8::Value> ConferenceUserBinding::Kick() {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoKick() {
   user_controller_.KickOut();
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetDisplayName(
-    mate::Arguments* args) {
+ResponseInfo ConferenceUserBinding::SetDisplayName(mate::Arguments* args) {
   std::string name;
 
   if (!args->GetNext(&name)) {
@@ -528,14 +550,14 @@ v8::Local<v8::Value> ConferenceUserBinding::SetDisplayName(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetDisplayName(std::string name) {
   user_controller_.ModifyUserName(name.c_str());
 }
 
-v8::Local<v8::Value> ConferenceUserBinding::SetFocus(bool isFocus) {
+ResponseInfo ConferenceUserBinding::SetFocus(bool isFocus) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -546,7 +568,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetFocus(bool isFocus) {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceUserBinding::DoSetFocus(bool isFocus) {

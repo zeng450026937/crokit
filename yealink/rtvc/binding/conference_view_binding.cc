@@ -54,7 +54,7 @@ ConferenceViewBinding::ConferenceViewBinding(v8::Isolate* isolate,
     : weak_factory_(this) {}
 ConferenceViewBinding::~ConferenceViewBinding() = default;
 
-v8::Local<v8::Value> ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
+ResponseInfo ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
@@ -65,7 +65,7 @@ v8::Local<v8::Value> ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceViewBinding::DoSetLayout(SetLayoutInfo params) {
@@ -75,7 +75,7 @@ void ConferenceViewBinding::DoSetLayout(SetLayoutInfo params) {
         params.video_max_view);
 }
 
-v8::Local<v8::Value> ConferenceViewBinding::GetLayout() {
+GetLayoutInfo ConferenceViewBinding::GetLayout() {
   GetLayoutInfo value;
 
   if (room_controller_)
@@ -83,10 +83,10 @@ v8::Local<v8::Value> ConferenceViewBinding::GetLayout() {
         value,
         room_controller_->GetViewComponent().GetConferenceView().entityState);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
-v8::Local<v8::Value> ConferenceViewBinding::SetInitialFilters(
+ResponseInfo ConferenceViewBinding::SetInitialFilters(
     ViewFilterRuleInfo params) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
@@ -104,7 +104,7 @@ v8::Local<v8::Value> ConferenceViewBinding::SetInitialFilters(
 
   ConvertFrom(response, result);
 
-  return mate::ConvertToV8(isolate(), response);
+  return response;
 }
 
 void ConferenceViewBinding::DoSetInitialFilters(ViewFilterRuleInfo params) {
@@ -120,7 +120,7 @@ void ConferenceViewBinding::DoSetInitialFilters(ViewFilterRuleInfo params) {
   }
 }
 
-v8::Local<v8::Value> ConferenceViewBinding::GetInitialFilters() {
+std::vector<ViewFilterRuleInfo> ConferenceViewBinding::GetInitialFilters() {
   std::vector<ViewFilterRuleInfo> value;
 
   if (room_controller_)
@@ -128,7 +128,7 @@ v8::Local<v8::Value> ConferenceViewBinding::GetInitialFilters() {
                            .GetConferenceView()
                            .entityState.mediaFiltersRules.initialFilters);
 
-  return mate::ConvertToV8(isolate(), value);
+  return value;
 }
 
 void ConferenceViewBinding::OnCommandCompeleted(Promise promise) {
