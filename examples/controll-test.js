@@ -128,6 +128,7 @@ async function test(binding, userAgent) {
     {
       user_test = false;
 
+      console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
       call.conference.users.userList.map((user) => {
         console.warn('this user entity = ', user.entity, 'isPresenter ', user.isPresenter());
         console.warn('isOrganizer ', user.isOrganizer());
@@ -161,7 +162,7 @@ async function test(binding, userAgent) {
           console.warn('setPermission = ', user.setPermission('attendee'));
           console.warn('hold = ', user.hold());
 
-          console.warn('unHold = ', call.conference.users.allow([], true));
+          console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
 
           //console.warn('unHold = ', user.unHold());
           console.warn('setPermission = ', user.setPermission('presenter'));

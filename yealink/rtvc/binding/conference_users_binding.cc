@@ -239,6 +239,14 @@ v8::Local<v8::Value> ConferenceUsersBinding::Allow(
   yealink::rtvc::ResponseInfo response;
   yealink::Array<RoomMember> params;  // todo get member control
 
+  for (int i = 0; i < entities.size(); i++) {
+    auto iter = user_list_.find(entities[i]);
+
+    if (iter != user_list_.end()) {
+      params.Append(iter->second->GetUserController());
+    }
+  }
+
   if (room_controller_) {
     if (granted) {
       if (entities.size() > 0)
