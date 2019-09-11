@@ -32,8 +32,8 @@ void ConferenceViewBinding::BuildPrototype(
       .MakeDestroyable()
       .SetMethod("setLayout", &ConferenceViewBinding::SetLayout)
       .SetMethod("getLayout", &ConferenceViewBinding::GetLayout)
-      .SetMethod("SetInitialFilters", &ConferenceViewBinding::SetInitialFilters)
-      .SetMethod("GetInitialFilters",
+      .SetMethod("setInitialFilters", &ConferenceViewBinding::SetInitialFilters)
+      .SetMethod("getInitialFilters",
                  &ConferenceViewBinding::GetInitialFilters);
 }
 

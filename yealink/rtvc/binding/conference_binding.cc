@@ -224,7 +224,19 @@ void ConferenceBinding::OnGetUserCallStats(
     const Array<yealink::UserMediaInfo>& info) {
   LOG(INFO) << __FUNCTIONW__;
 
-  // TODO
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(FROM_HERE,
+                      base::BindOnce(&ConferenceBinding::OnGetUserCallStats,
+                                     weak_factory_.GetWeakPtr(), member, info));
+    return;
+  }
+
+  std::vector<UserStatisticsInfo> stats;
+
+  ConvertFrom(stats, info);
+
+  Emit("callStatsUpdated", member.GetMemberInfo().entity.ConstData(), mate::ConvertToV8(isolate(), stats));
 }
 void ConferenceBinding::OnGetShareInfo(int64_t requestId,
                                        const char* shareInfo) {
@@ -232,24 +244,14 @@ void ConferenceBinding::OnGetShareInfo(int64_t requestId,
 
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
-    std::string data = shareInfo;
-    char* param = new char[data.size() + 1];
-    strcpy(param, shareInfo);
-
     context->PostTask(
         FROM_HERE,
         base::BindOnce(&ConferenceBinding::OnGetShareInfo,
-                       weak_factory_.GetWeakPtr(), requestId, param));
+                       weak_factory_.GetWeakPtr(), requestId, shareInfo));
     return;
   }
 
-  if (shareInfo) {
-    Emit("shareInfoUpdated", requestId, shareInfo);
-    delete[] shareInfo;
-    shareInfo = nullptr;
-  } else {
-    Emit("shareInfoUpdated", requestId, "");
-  }
+  Emit("shareInfoUpdated", requestId, shareInfo);
 }
 
 }  // namespace rtvc

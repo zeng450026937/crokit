@@ -75,7 +75,8 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("hold", &ConferenceUserBinding::Hold)
       .SetMethod("unHold", &ConferenceUserBinding::UnHold)
       .SetMethod("kick", &ConferenceUserBinding::Kick)
-      .SetMethod("setDisplayName", &ConferenceUserBinding::SetDisplayName);
+      .SetMethod("setDisplayName", &ConferenceUserBinding::SetDisplayName)
+      .SetMethod("setFocus", &ConferenceUserBinding::SetFocus);
 }
 
 void ConferenceUserBinding::UpdateUserController(RoomMember& handler) {
@@ -360,7 +361,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetAudioIngressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
-  result = user_controller_.SetAudioState(isOpen);
+  result = user_controller_.SetAudioState(!isOpen);
   ConvertFrom(response, result);
 
   return mate::ConvertToV8(isolate(), response);
@@ -374,7 +375,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetAudioEgressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
-  result = user_controller_.SetAudioEgressState(isOpen);
+  result = user_controller_.SetAudioEgressState(!isOpen);
   ConvertFrom(response, result);
 
   return mate::ConvertToV8(isolate(), response);
@@ -388,7 +389,7 @@ v8::Local<v8::Value> ConferenceUserBinding::SetVideoIngressFilter(bool isOpen) {
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
-  result = user_controller_.SetVideoState(isOpen);
+  result = user_controller_.SetVideoState(!isOpen);
   ConvertFrom(response, result);
 
   return mate::ConvertToV8(isolate(), response);
@@ -403,10 +404,8 @@ v8::Local<v8::Value> ConferenceUserBinding::SetPermission(
   yealink::RequestResult result;
   yealink::rtvc::ResponseInfo response;
 
-  MemberInfo::Roles::PermissionRole value =
-      MemberInfo::Roles::PermissionRole::PERMISSION_INVALID;
-
-  ConvertFrom(params, value);
+  yealink::MemberInfo::Roles::PermissionRole value =
+      (yealink::MemberInfo::Roles::PermissionRole)params;
 
   result = user_controller_.ModifyRole(value);
 
