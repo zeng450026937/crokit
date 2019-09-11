@@ -55,7 +55,7 @@ void ConferenceUsersBinding::UpdateUsers(
         room_controller_->GetMemberManager().GetMemberList();
     RoomMember owner = room_controller_->GetMemberManager().GetOwner();
 
-    v8::HandleScope handle_scope(isolate());
+    // v8::HandleScope handle_scope(isolate());
 
     current_user_ = ConferenceUserBinding::Create(isolate(), owner);
     v8_current_user_.Reset(isolate(), current_user_.ToV8());
@@ -83,7 +83,7 @@ void ConferenceUsersBinding::UpdateUsers(
         ConvertFrom(entity, newMemberList[i].GetMemberInfo().entity);
         yealink::RoomMember member = newMemberList[i];
 
-        v8::HandleScope handle_scope(isolate());
+        // v8::HandleScope handle_scope(isolate());
         mate::Handle<ConferenceUserBinding> new_user =
             ConferenceUserBinding::Create(isolate(), member);
         v8::Global<v8::Value> v8_new_user;

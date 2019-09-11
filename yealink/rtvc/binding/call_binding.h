@@ -25,11 +25,6 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   static mate::Handle<CallBinding> Create(
       v8::Isolate* isolate,
-      mate::Handle<UserAgentBinding> user_agent,
-      bool incoming = true);
-
-  static mate::Handle<CallBinding> Create(
-      v8::Isolate* isolate,
       UserAgentBinding* user_agent,
       bool incoming = true);
 
@@ -43,9 +38,6 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
               v8::Local<v8::Object> wrapper,
               mate::Handle<UserAgentBinding> user_agent,
               bool incoming = false);
-  CallBinding(v8::Isolate* isolate,
-              mate::Handle<UserAgentBinding> user_agent,
-              bool incoming = true);
   CallBinding(v8::Isolate* isolate,
               UserAgentBinding* user_agent,
               bool incoming = true);

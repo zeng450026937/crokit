@@ -45,11 +45,11 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   void AcquireStream();
   void ReleaseStream();
 
-  void SetLocalVideoSink(mate::PersistentDictionary sink);
+  void SetLocalVideoSink(mate::Arguments* args);
   void AddLocalVideoSink(mate::PersistentDictionary sink);
   void RemoveLocalVideoSink(mate::PersistentDictionary sink);
 
-  void SetLocalShareVideoSink(mate::PersistentDictionary sink);
+  void SetLocalShareVideoSink(mate::Arguments* args);
   void AddLocalShareVideoSink(mate::PersistentDictionary sink);
   void RemoveLocalShareVideoSink(mate::PersistentDictionary sink);
 

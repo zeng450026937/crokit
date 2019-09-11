@@ -70,51 +70,6 @@ async function test(binding, userAgent) {
   let hangupTimmer;
   let shareTimer;
 
-  // call.on('established', async() => {
-  //   console.log('established');
-
-  //   hangupTimmer = setTimeout(() => {
-  //     call.hangup();
-  //   }, 35000);
-  // });
-
-  // call.on('share:established', async() => {
-  //   console.log('share:established');
-
-  //   setTimeout(async() => {
-  //     const desktopCapture = new DesktopCapture();
-  //     const list = await desktopCapture.getSources({
-  //       captureWindow: true,
-  //       captureScreen: false,
-  //     });
-
-  //     console.log(list);
-
-  //     const picture = path.resolve('./test-picture.png');
-
-  //     console.log(picture);
-
-  //     call.startShare({ screen: 0, window: 14747790, file: picture });
-  //   }, 1000);
-
-  //   shareTimer = setTimeout(() => {
-  //     call.stopShare();
-  //   }, 25000);
-  // })
-
-  // call.on('finished', () => {
-  //   console.log('finished');
-  //   clearTimeout(hangupTimmer);
-  //   clearTimeout(shareTimer);
-  //   videoManager.releaseStream();
-  //   videoManager.videoInputDevice = null;
-  //   userAgent.unregister();
-  // });
-
-  // if (global.window) {
-  //   window.call = call;
-  // }
-
   let user_test = true;
   call.conference.on('usersUpdated', (arg1, arg2) => {
     console.warn('start start start start start');

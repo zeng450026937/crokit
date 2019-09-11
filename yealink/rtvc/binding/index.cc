@@ -74,6 +74,12 @@ void Initialize(v8::Local<v8::Object> exports,
                        ->GetFunction(context)
                        .ToLocalChecked());
 
+  ConferenceBinding::SetConstructor(isolate,
+                              base::BindRepeating(&ConferenceBinding::New));
+  dict.Set("Conference", ConferenceBinding::GetConstructor(isolate)
+                            ->GetFunction(context)
+                            .ToLocalChecked());
+
   AudioManagerBinding::SetConstructor(
       isolate, base::BindRepeating(&AudioManagerBinding::New));
   dict.Set("AudioManager", AudioManagerBinding::GetConstructor(isolate)
@@ -120,12 +126,6 @@ void Initialize(v8::Local<v8::Object> exports,
   dict.Set("YTMS", YTMSBinding::GetConstructor(isolate)
                        ->GetFunction(context)
                        .ToLocalChecked());
-
-  ConferenceBinding::SetConstructor(isolate,
-                              base::BindRepeating(&ConferenceBinding::New));
-  dict.Set("Conference", ConferenceBinding::GetConstructor(isolate)
-                            ->GetFunction(context)
-                            .ToLocalChecked());
 }
 
 }  // namespace
