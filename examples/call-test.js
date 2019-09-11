@@ -1,4 +1,5 @@
 const path = require('path');
+const conference_test = require('./conference-test');
 
 async function test(binding, userAgent) {
   console.log('Call test');
@@ -99,7 +100,7 @@ async function test(binding, userAgent) {
   ];
 
   eventNames.forEach((event) => {
-    call.on(event, () => console.log(event));
+    call.on(event, () => console.log('call event: ' + event));
   })
 
   let hangupTimmer;
@@ -150,70 +151,7 @@ async function test(binding, userAgent) {
     window.call = call;
   }
 
-  call.conference.on('usersUpdated', (arg1, arg2) => {
-    console.warn('start start start start start');
-    console.warn('usersUpdated', call.conference);
-    console.warn('usersUpdated users:', call.conference.users);
-    console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
-    console.warn('usersUpdated userList:', call.conference.users.userList);
-    console.warn('usersUpdated userList.length:', call.conference.users.userList.length);
-
-    call.conference.users.userList.map((user) => {
-      console.warn('this user entity = ', user.entity, 'isPresenter ', user.isPresenter());
-      console.warn('isOrganizer ', user.isOrganizer());
-      console.warn('isPresenter ', user.isPresenter());
-      console.warn('isAttendee ', user.isAttendee());
-      console.warn('isCastViewer ', user.isCastViewer());
-      console.warn('isAttendee ', user.isAttendee());
-      console.warn('isDemonstrator ', user.isDemonstrator());
-      console.warn('isPresenterDemonstrator ', user.isPresenterDemonstrator());
-      console.warn('isOnHold ', user.isOnHold());
-      console.warn('isSharing ', user.isSharing());
-      console.warn('isFocus ', user.isFocus());
-      console.warn('getAudioFilter = ', user.getAudioFilter());
-      console.warn('getAudioFilter = ', user.getVideoFilter());
-    });
-
-    console.warn('end end end end end');
-   });
-
-  call.conference.on('descriptionUpdated', (arg1, arg2) => {
-    console.warn('descriptionUpdated desc:', call.conference.description);
-    console.warn('descriptionUpdated startTime:', call.conference.description.startTime);
-    console.warn('descriptionUpdated defaultRtmp:', call.conference.description.defaultRtmp);
-    console.warn('descriptionUpdated lobbyCapable:', call.conference.description.lobbyCapable);
-
-    console.warn('descriptionUpdated getLock:', call.conference.description.getLock());
-    console.warn('descriptionUpdated getDefaultRtmp:', call.conference.description.getDefaultRtmp());
-    console.warn('descriptionUpdated getShareInfo:', call.conference.description.getShareInfo('zh'));
-
-    console.warn('descriptionUpdated setLock:', call.conference.description.setLock({
-      'admissionPolicy' : 'openAuthenticated'
-    }));
-  });
-
-  call.conference.on('viewUpdated', () => {
-    console.warn('*******************************************');
-    console.warn('viewUpdated view:', call.conference.view);
-
-    console.warn('viewUpdated getLayout:', call.conference.view.getLayout());
-    console.warn('viewUpdated GetInitialFilters:', call.conference.view.GetInitialFilters());
-    console.warn('*******************************************');
-  });
-
-  call.conference.on('stateUpdated', () => {
-    console.warn('stateUpdated state:', call.conference.state);
-  });
-
-  call.conference.on('shareInfoUpdated', (arg1, arg2, arg3) => {
-    console.warn('shareInfoUpdated:', arg1, arg2, arg3);
-  });
-
-  setTimeout(() => {
-
-  }, 1000 * 1000);
-
-
+  await conference_test(call.conference);
 }
 
 module.exports = test;

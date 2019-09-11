@@ -11,11 +11,6 @@ namespace yealink {
 
 namespace rtvc {
 
-// static
-mate::WrappableBase* ConferenceDescriptionBinding::New(mate::Arguments* args) {
-  return new ConferenceDescriptionBinding(args->isolate(), args->GetThis());
-}
-
 mate::Handle<ConferenceDescriptionBinding> ConferenceDescriptionBinding::Create(
     v8::Isolate* isolate,
     yealink::RoomController* controller) {
@@ -30,7 +25,7 @@ void ConferenceDescriptionBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceDescription"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("subject", &ConferenceDescriptionBinding::Subject)
+      .SetProperty("subject", &ConferenceDescriptionBinding::subject)
       .SetProperty("startTime", &ConferenceDescriptionBinding::StartTime)
       .SetProperty("banner", &ConferenceDescriptionBinding::Banner)
       .SetProperty("defaultRtmp", &ConferenceDescriptionBinding::DefaultRtmp)
@@ -101,15 +96,15 @@ ConferenceDescriptionBinding::ConferenceDescriptionBinding(
 
 ConferenceDescriptionBinding::~ConferenceDescriptionBinding() = default;
 
-v8::Local<v8::Value> ConferenceDescriptionBinding::Subject() {
-  std::string value = "";
+std::string ConferenceDescriptionBinding::subject() {
+  std::string subject = "";
 
   if (room_controller_)
-    ConvertFrom(value, room_controller_->GetDescriptionComponent()
-                           .GetConferenceDescription()
-                           .subject);
+    ConvertFrom(subject, room_controller_->GetDescriptionComponent()
+                             .GetConferenceDescription()
+                             .subject);
 
-  return mate::ConvertToV8(isolate(), value);
+  return subject;
 }
 v8::Local<v8::Value> ConferenceDescriptionBinding::StartTime() {
   int64_t value = 0;

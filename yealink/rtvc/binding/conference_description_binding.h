@@ -6,12 +6,11 @@
 #include "yealink/libvc/include/room/room_description_component.h"
 #include "yealink/libvc/include/room/room_observer.h"
 #include "yealink/native_mate/handle.h"
-#include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
-#include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
+
 namespace yealink {
 
 namespace rtvc {
@@ -19,8 +18,6 @@ namespace rtvc {
 class ConferenceDescriptionBinding
     : public mate::Wrappable<ConferenceDescriptionBinding> {
  public:
-  static mate::WrappableBase* New(mate::Arguments* args);
-
   static mate::Handle<ConferenceDescriptionBinding> Create(
       v8::Isolate* isolate,
       yealink::RoomController* controller);
@@ -37,7 +34,7 @@ class ConferenceDescriptionBinding
                                yealink::RoomController* controller);
   ~ConferenceDescriptionBinding() override;
 
-  v8::Local<v8::Value> Subject();
+  std::string subject();
   v8::Local<v8::Value> StartTime();
   v8::Local<v8::Value> Banner();
   v8::Local<v8::Value> DefaultRtmp();

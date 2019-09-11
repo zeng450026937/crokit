@@ -154,8 +154,9 @@ void VideoManagerBinding::ReleaseStream() {
   media_->SetCamera(nullptr, false);
 }
 
-void VideoManagerBinding::SetLocalVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
+void VideoManagerBinding::SetLocalVideoSink(mate::Arguments* args) {
+  mate::PersistentDictionary sink;
+  if (!args->GetNext(&sink)) {
     for (auto it : local_video_sinks_) {
       local_video_source_->RemoveSink(it.second);
       delete it.second;
@@ -168,9 +169,6 @@ void VideoManagerBinding::SetLocalVideoSink(mate::PersistentDictionary sink) {
 };
 
 void VideoManagerBinding::AddLocalVideoSink(mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined())
-    return;
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = local_video_sinks_.find(hash);
 
@@ -183,9 +181,6 @@ void VideoManagerBinding::AddLocalVideoSink(mate::PersistentDictionary sink) {
 
 void VideoManagerBinding::RemoveLocalVideoSink(
     mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined())
-    return;
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = local_video_sinks_.find(hash);
 
@@ -197,8 +192,9 @@ void VideoManagerBinding::RemoveLocalVideoSink(
 }
 
 void VideoManagerBinding::SetLocalShareVideoSink(
-    mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
+    mate::Arguments* args) {
+  mate::PersistentDictionary sink;
+  if (!args->GetNext(&sink)) {
     for (auto it : local_share_video_sinks_) {
       local_share_video_source_->RemoveSink(it.second);
       delete it.second;
@@ -208,18 +204,10 @@ void VideoManagerBinding::SetLocalShareVideoSink(
   }
 
   AddLocalShareVideoSink(sink);
-  int hash = sink.GetHandle()->GetIdentityHash();
-  VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-  local_share_video_source_->AddOrUpdateSink(sink_v8);
-  local_share_video_sinks_.emplace(hash, sink_v8);
 };
 
 void VideoManagerBinding::AddLocalShareVideoSink(
     mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined()) {
-    return;
-  }
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = local_share_video_sinks_.find(hash);
 
@@ -232,9 +220,6 @@ void VideoManagerBinding::AddLocalShareVideoSink(
 
 void VideoManagerBinding::RemoveLocalShareVideoSink(
     mate::PersistentDictionary sink) {
-  if (sink.GetHandle()->IsNullOrUndefined())
-    return;
-
   int hash = sink.GetHandle()->GetIdentityHash();
   auto it = local_share_video_sinks_.find(hash);
 

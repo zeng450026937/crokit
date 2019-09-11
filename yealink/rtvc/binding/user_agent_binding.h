@@ -59,6 +59,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
 
  private:
   friend class CallBinding;
+  friend class ConferenceBinding;
 
   base::WeakPtr<UserAgentBinding> GetWeakPtr() {
     return weak_factory_.GetWeakPtr();

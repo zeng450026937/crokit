@@ -3,8 +3,10 @@
 #include "base/logging.h"
 #include "base/strings/string_number_conversions.h"
 #include "base/task/post_task.h"
+#include "base/unguessable_token.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/conference_state_binding.h"
+#include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
@@ -13,8 +15,10 @@ namespace yealink {
 namespace rtvc {
 
 // static
-mate::WrappableBase* ConferenceBinding::New(mate::Arguments* args) {
-  return new ConferenceBinding(args->isolate(), args->GetThis());
+mate::WrappableBase* ConferenceBinding::New(
+    mate::Handle<UserAgentBinding> user_agent,
+    mate::Arguments* args) {
+  return new ConferenceBinding(args->isolate(), args->GetThis(), user_agent);
 }
 
 mate::Handle<ConferenceBinding> ConferenceBinding::Create(
@@ -33,10 +37,10 @@ void ConferenceBinding::BuildPrototype(
       .MakeDestroyable()
       .SetMethod("connect", &ConferenceBinding::Connect)
       .SetMethod("disconnect", &ConferenceBinding::Disconnect)
-      .SetProperty("description", &ConferenceBinding::Description)
-      .SetProperty("view", &ConferenceBinding::View)
-      .SetProperty("state", &ConferenceBinding::State)
-      .SetProperty("users", &ConferenceBinding::Users)
+      .SetProperty("description", &ConferenceBinding::description)
+      .SetProperty("view", &ConferenceBinding::view)
+      .SetProperty("state", &ConferenceBinding::state)
+      .SetProperty("users", &ConferenceBinding::users)
       .SetProperty("isInProgress", &ConferenceBinding::isInProgress)
       .SetProperty("isEstablished", &ConferenceBinding::isEstablished)
       .SetProperty("isEnded", &ConferenceBinding::isEnded)
@@ -46,41 +50,123 @@ void ConferenceBinding::BuildPrototype(
                    &ConferenceBinding::isChatChannelEstablished);
 }
 
-void ConferenceBinding::SetController(RoomController* controller) {
-  controller_ = controller;
-  controller_->AddObserver(this);
-  state_->UpdateRoomController(controller);
-  description_->UpdateRoomController(controller);
-  users_->UpdateRoomController(controller);
-  view_->UpdateRoomController(controller);
-}
-
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
-                                     v8::Local<v8::Object> wrapper)
-    : controller_(nullptr), weak_factory_(this) {
+                                     v8::Local<v8::Object> wrapper,
+                                     mate::Handle<UserAgentBinding> user_agent)
+    : locally_generated_controller_(true),
+      controller_(nullptr),
+      user_agent_(user_agent->GetWeakPtr()),
+      sip_client_(user_agent->GetWeakSIPClientPtr()),
+      weak_factory_(this) {
   InitWith(isolate, wrapper);
+
+  description_ =
+      ConferenceDescriptionBinding::Create(isolate, controller_.get());
+  v8_description_.Reset(isolate, description_.ToV8());
+
+  view_ = ConferenceViewBinding::Create(isolate, controller_.get());
+  v8_view_.Reset(isolate, view_.ToV8());
+
+  state_ = ConferenceStateBinding::Create(isolate, controller_.get());
+  v8_state_.Reset(isolate, state_.ToV8());
+
+  users_ = ConferenceUsersBinding::Create(isolate, controller_.get());
+  v8_users_.Reset(isolate, users_.ToV8());
 }
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
                                      yealink::RoomController* controller)
-    : controller_(controller), weak_factory_(this) {
+    : locally_generated_controller_(false),
+      controller_(controller),
+      weak_factory_(this) {
   Init(isolate);
 
-  description_ = ConferenceDescriptionBinding::Create(isolate, controller_);
+  description_ =
+      ConferenceDescriptionBinding::Create(isolate, controller_.get());
   v8_description_.Reset(isolate, description_.ToV8());
-  view_ = ConferenceViewBinding::Create(isolate, controller_);
+
+  view_ = ConferenceViewBinding::Create(isolate, controller_.get());
   v8_view_.Reset(isolate, view_.ToV8());
-  state_ = ConferenceStateBinding::Create(isolate, controller_);
+
+  state_ = ConferenceStateBinding::Create(isolate, controller_.get());
   v8_state_.Reset(isolate, state_.ToV8());
-  users_ = ConferenceUsersBinding::Create(isolate, controller_);
+
+  users_ = ConferenceUsersBinding::Create(isolate, controller_.get());
   v8_users_.Reset(isolate, users_.ToV8());
 }
 
 ConferenceBinding::~ConferenceBinding() {
-  LOG(INFO) << __FUNCTIONW__;
+  if (!locally_generated_controller_)
+    controller_.release();
 }
 
-void ConferenceBinding::Connect() {}
-void ConferenceBinding::Disconnect() {}
+void ConferenceBinding::SetController(RoomController* controller) {
+  locally_generated_controller_ = false;
+
+  if (controller_)
+    controller_->RemoveObserver(this);
+
+  controller_.reset(controller);
+
+  if (controller_)
+    controller_->AddObserver(this);
+
+  state_->UpdateRoomController(controller_.get());
+  description_->UpdateRoomController(controller_.get());
+  users_->UpdateRoomController(controller_.get());
+  view_->UpdateRoomController(controller_.get());
+}
+
+void ConferenceBinding::SetController(
+    std::unique_ptr<RoomController> controller) {
+  if (controller_)
+    controller_->RemoveObserver(this);
+
+  controller_ = std::move(controller);
+
+  if (controller_)
+    controller_->AddObserver(this);
+
+  state_->UpdateRoomController(controller_.get());
+  description_->UpdateRoomController(controller_.get());
+  users_->UpdateRoomController(controller_.get());
+  view_->UpdateRoomController(controller_.get());
+}
+
+void ConferenceBinding::Connect(mate::Dictionary dict, mate::Arguments* args) {
+  DCHECK(sip_client_);
+
+  std::string uri;
+  std::string entity;
+  std::string conversation_id = base::UnguessableToken::Create().ToString();
+
+  if (!dict.Get("uri", &uri) || !dict.Get("entity", &entity)) {
+    args->ThrowError("Conference uri & entitiy is required.");
+    return;
+  }
+  dict.Get("conversationId", &conversation_id);
+
+  yealink::RoomController::ConferenceParam params;
+  params.conferenceUri = uri.c_str();
+  params.conferenceEntity = entity.c_str();
+
+  std::unique_ptr<yealink::RoomController> controller(
+      new yealink::RoomController());
+
+  controller->Join(sip_client_.get(), params);
+
+  SetController(std::move(controller));
+  conversation_id_ = conversation_id;
+}
+
+void ConferenceBinding::Disconnect(mate::Arguments* args) {
+  bool endnow = false;
+  args->GetNext(&endnow);
+
+  if (endnow)
+    controller_->Close();
+  else
+    controller_->Leave("");
+}
 
 bool ConferenceBinding::isInProgress() {
   return false;
@@ -98,38 +184,36 @@ bool ConferenceBinding::isChatChannelEstablished() {
   return false;
 }
 
-v8::Local<v8::Value> ConferenceBinding::Description() {
+v8::Local<v8::Value> ConferenceBinding::description() {
   DCHECK(description_.get());
   if (v8_description_.IsEmpty()) {
-    v8_description_.Reset(isolate(), description_.ToV8());
+    return v8::Null(isolate());
   }
   return v8::Local<v8::Value>::New(isolate(), v8_description_);
 }
-v8::Local<v8::Value> ConferenceBinding::View() {
+v8::Local<v8::Value> ConferenceBinding::view() {
   DCHECK(view_.get());
   if (v8_view_.IsEmpty()) {
-    v8_view_.Reset(isolate(), view_.ToV8());
+    return v8::Null(isolate());
   }
   return v8::Local<v8::Value>::New(isolate(), v8_view_);
 }
-v8::Local<v8::Value> ConferenceBinding::State() {
+v8::Local<v8::Value> ConferenceBinding::state() {
   DCHECK(state_.get());
   if (v8_state_.IsEmpty()) {
-    v8_state_.Reset(isolate(), state_.ToV8());
+    return v8::Null(isolate());
   }
   return v8::Local<v8::Value>::New(isolate(), v8_state_);
 }
-v8::Local<v8::Value> ConferenceBinding::Users() {
+v8::Local<v8::Value> ConferenceBinding::users() {
   DCHECK(users_.get());
   if (v8_users_.IsEmpty()) {
-    v8_users_.Reset(isolate(), users_.ToV8());
+    return v8::Null(isolate());
   }
   return v8::Local<v8::Value>::New(isolate(), v8_users_);
 }
 
 void ConferenceBinding::OnConnectSuccess() {
-  LOG(INFO) << __FUNCTIONW__;
-
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     context->PostTask(FROM_HERE,
@@ -142,61 +226,56 @@ void ConferenceBinding::OnConnectSuccess() {
   Array<RoomMember> empty;
   users_->UpdateUsers(empty, empty, empty, true);
 
-  Emit("usersUpdated");
-  Emit("stateUpdated");
-  Emit("viewUpdated");
-  Emit("descriptionUpdated");
+  Emit("connected");
 }
-void ConferenceBinding::OnConnectFailure(const char* reason) {
-  LOG(INFO) << __FUNCTIONW__;
+void ConferenceBinding::OnConnectFailure(const char* c_reason) {
+  conversation_id_ = "";
+
+  std::string reason(c_reason);
+  if (reason.size() != 0) {
+    Emit("connectFailed");
+  } else {
+    Emit("disconnected");
+    Emit("finished");
+  }
 }
-void ConferenceBinding::OnResponse(const ResponseResult& response) {
-  LOG(INFO) << __FUNCTIONW__;
+void ConferenceBinding::OnResponse(const yealink::ResponseResult& response) {
+  // int64_t request_id = response.requestId;
+  // ResponseResult::Status request_status = response.status;
+
+  // auto it = pending_requests_.find(request_id);
+
+  // if (it == pending_requests_.end())
+  //   return;
+
+  // switch (request_status) {
+  //   case ResponseResult::Status::SUCCESS:
+  //     std::move(it->second).Resolve();
+  //     break;
+  //   case ResponseResult::Status::FAILURE:
+  //     std::move(it->second).Reject();
+  //     break;
+  //   case ResponseResult::Status::PENDING:
+  //   case ResponseResult::Status::INVALID:
+  //   default:
+  //     return;
+  // }
+
+  // pending_requests_.erase(it);
 }
 void ConferenceBinding::OnSubscriptionDisconnect() {
-  LOG(INFO) << __FUNCTIONW__;
+  controller_->ReconnectSubscriptionForce();
 }
 void ConferenceBinding::OnConferenceDescriptionChange(
     const yealink::ConferenceDescription& desc) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    context->PostTask(
-        FROM_HERE,
-        base::BindOnce(&ConferenceBinding::OnConferenceDescriptionChange,
-                       weak_factory_.GetWeakPtr(), desc));
-    return;
-  }
-
   Emit("descriptionUpdated");
 }
 void ConferenceBinding::OnConferenceStateChange(
     const yealink::ConferenceState& state) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    context->PostTask(
-        FROM_HERE, base::BindOnce(&ConferenceBinding::OnConferenceStateChange,
-                                  weak_factory_.GetWeakPtr(), state));
-    return;
-  }
-
   Emit("stateUpdated");
 }
 void ConferenceBinding::OnConferenceViewChange(
     const yealink::ConferenceView& view) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&ConferenceBinding::OnConferenceViewChange,
-                                     weak_factory_.GetWeakPtr(), view));
-    return;
-  }
-
   Emit("viewUpdated");
 }
 
@@ -204,20 +283,11 @@ void ConferenceBinding::OnUserChange(
     const Array<RoomMember>& newMemberList,
     const Array<RoomMember>& modifyMemberList,
     const Array<RoomMember>& deleteMemberList) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    context->PostTask(FROM_HERE,
-                      base::BindOnce(&ConferenceBinding::OnUserChange,
-                                     weak_factory_.GetWeakPtr(), newMemberList,
-                                     modifyMemberList, deleteMemberList));
-    return;
-  }
-
   users_->UpdateUsers(newMemberList, modifyMemberList, deleteMemberList, false);
-
   Emit("usersUpdated");
+  Emit("user:added");
+  Emit("user:updated");
+  Emit("user:removed");
 }
 void ConferenceBinding::OnGetUserCallStats(
     const RoomMember& member,
@@ -228,28 +298,7 @@ void ConferenceBinding::OnGetUserCallStats(
 }
 void ConferenceBinding::OnGetShareInfo(int64_t requestId,
                                        const char* shareInfo) {
-  LOG(INFO) << __FUNCTIONW__;
-
-  Context* context = Context::Instance();
-  if (!context->CalledOnValidThread()) {
-    std::string data = shareInfo;
-    char* param = new char[data.size() + 1];
-    strcpy(param, shareInfo);
-
-    context->PostTask(
-        FROM_HERE,
-        base::BindOnce(&ConferenceBinding::OnGetShareInfo,
-                       weak_factory_.GetWeakPtr(), requestId, param));
-    return;
-  }
-
-  if (shareInfo) {
-    Emit("shareInfoUpdated", requestId, shareInfo);
-    delete[] shareInfo;
-    shareInfo = nullptr;
-  } else {
-    Emit("shareInfoUpdated", requestId, "");
-  }
+  Emit("shareInfoUpdated", requestId, std::string(shareInfo));
 }
 
 }  // namespace rtvc
