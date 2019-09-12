@@ -15,6 +15,65 @@ namespace yealink {
 
 namespace rtvc {
 
+class CallBinding::UpgradeDelegate : public yealink::MeetingObserver {
+ public:
+  UpgradeDelegate(yealink::Meeting* pending_meeting,
+                  base::OnceClosure success_callback,
+                  base::OnceClosure fail_callback)
+      : pending_meeting_(pending_meeting),
+        success_callback_(std::move(success_callback)),
+        fail_callback_(std::move(fail_callback)),
+        weak_factory_(this) {
+    observer_ = pending_meeting_->GetObserver();
+    pending_meeting_->SetObserver(this);
+  }
+  ~UpgradeDelegate() { pending_meeting_->SetObserver(observer_); }
+
+  bool GetResult() { return result_; }
+
+  void Cancel() {
+    if (completed_)
+      return;
+    yealink::SIPCode code = yealink::SIPCode::SIP_BUSY_HERE;
+    pending_meeting_->Hangup(code, "Canceled");
+  }
+
+ protected:
+  void OnEvent(yealink::MeetingEventId id) override {
+    if (!Context::Instance()->CalledOnValidThread()) {
+      Context::Instance()->PostTask(
+          FROM_HERE, base::BindOnce(&UpgradeDelegate::OnEvent,
+                                    weak_factory_.GetWeakPtr(), id));
+      return;
+    }
+
+    switch (id) {
+      case yealink::MEETING_ESTABLISHED:
+        std::move(success_callback_).Run();
+        result_ = true;
+        break;
+      case yealink::MEETING_FINISHED:
+        std::move(fail_callback_).Run();
+        result_ = false;
+        break;
+      default:
+        return;
+    }
+
+    completed_ = true;
+    pending_meeting_->SetObserver(observer_);
+  }
+
+ private:
+  bool completed_ = false;
+  bool result_ = false;
+  yealink::MeetingObserver* observer_;
+  yealink::Meeting* pending_meeting_;
+  base::OnceClosure success_callback_;
+  base::OnceClosure fail_callback_;
+  base::WeakPtrFactory<UpgradeDelegate> weak_factory_;
+};
+
 // static
 mate::WrappableBase* CallBinding::New(mate::Handle<UserAgentBinding> user_agent,
                                       mate::Arguments* args) {
@@ -252,15 +311,44 @@ v8::Local<v8::Promise> CallBinding::Replace(mate::Handle<CallBinding> call) {
 }
 
 v8::Local<v8::Promise> CallBinding::Upgrade(mate::Arguments* args) {
-  return Promise::ResolvedPromise(isolate());
-  // if (!upgrade_promise_) {
-  //   upgrade_promise_.reset(new Promise(isolate()));
-  //   DCHECK(meeting_info_.isEstablished);
-  //   DCHECK(!meeting_info_.isFinished);
-  //   meeting_->CreateAplloConference(GetContentType());
-  // }
+  bool has_audio = true;
+  bool has_video = true;
+  mate::Dictionary dict;
+  if (args->GetNext(&dict)) {
+    dict.Get("audio", &has_audio);
+    dict.Get("video", &has_video);
+  }
+  if (outgoing() && state_ == CallState::kNone) {
+    meeting_->CreateAplloConference(GetContentType(has_audio, has_video));
+    return Promise::ResolvedPromise(isolate());
+  }
+  if (state_ != CallState::kEstablished) {
+    return Promise::RejectedPromise(
+        isolate(), "Can not upgrade a call while it's not established.");
+  }
 
-  // return upgrade_promise_->GetHandle();
+  if (!upgrade_promise_) {
+    upgrade_promise_.reset(new Promise(isolate()));
+
+    meeting_->SetObserver(nullptr);
+
+    pending_meeting_.reset(
+        yealink::CreateMeeting(*sip_client_, *media_, false));
+    pending_meeting_->SetObserver(this);
+    pending_meeting_->CreateAplloConference(GetContentType(
+        meeting_info_.isAudioEnabled, meeting_info_.isVideoEnabled));
+
+    meeting_->SetObserver(this);
+
+    upgrade_delegate_.reset(
+        new UpgradeDelegate(pending_meeting_.get(),
+                            base::BindOnce(&CallBinding::OnUpgradeSucceed,
+                                           weak_factory_.GetWeakPtr()),
+                            base::BindOnce(&CallBinding::OnUpgradeFailed,
+                                           weak_factory_.GetWeakPtr())));
+  }
+
+  return upgrade_promise_->GetHandle();
 }
 
 void CallBinding::Hold() {
@@ -520,9 +608,18 @@ v8::Local<v8::Value> CallBinding::AsConference() {
   return v8::Local<v8::Value>::New(isolate(), v8_conference_);
 }
 
-yealink::AVContentType CallBinding::GetContentType() {
-  bool has_audio = meeting_info_.isAudioEnabled;
-  bool has_video = meeting_info_.isVideoEnabled;
+void CallBinding::OnUpgradeSucceed() {
+  meeting_->TransferToCall(pending_meeting_.get());
+}
+void CallBinding::OnUpgradeFailed() {
+  if (upgrade_promise_) {
+    std::unique_ptr<Promise> promise(upgrade_promise_.release());
+    promise->Resolve("upgradeFailed");
+  }
+}
+
+yealink::AVContentType CallBinding::GetContentType(bool has_audio,
+                                                   bool has_video) {
   return has_audio && has_video
              ? yealink::AV_VIDEO_AUDIO
              : has_video ? yealink::AV_ONLY_VIDEO : yealink::AV_ONLY_AUDIO;
@@ -682,6 +779,11 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
         promise->Reject();
         Emit("replaceFailed");
       }
+      if (upgrade_promise_) {
+        std::unique_ptr<Promise> promise(upgrade_promise_.release());
+        promise->Resolve();
+        Emit("upgradeFailed");
+      }
       break;
     case yealink::MEETING_REFER_DONE:
       if (refer_promise_) {
@@ -689,18 +791,44 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
         promise->Resolve();
         Emit("refered");
       }
-      break;
-    case yealink::MEETING_REPLACED:
       if (replace_promise_) {
         std::unique_ptr<Promise> promise(replace_promise_.release());
-        promise->Resolve();
+        promise->Reject();
         Emit("replaced");
       }
+      if (upgrade_promise_) {
+        std::unique_ptr<Promise> promise(upgrade_promise_.release());
+        promise->Resolve();
+        meeting_.swap(pending_meeting_);
+        Emit("upgraded");
+        Context::Instance()->PostTask(FROM_HERE,
+                                      base::BindOnce(
+                                          [](base::WeakPtr<CallBinding> call) {
+                                            call->pending_meeting_.reset();
+                                          },
+                                          weak_factory_.GetWeakPtr()));
+      }
+      break;
+    case yealink::MEETING_REPLACED:
+      Emit("replaced");
       break;
     case yealink::MEETING_FINISHED:
-      if (state_ != CallState::kTerminated) {
+      if (upgrade_promise_) {
+        std::unique_ptr<Promise> promise(upgrade_promise_.release());
+        promise->Resolve();
+        Emit("upgradeFailed");
+      }
+      if (!upgrade_delegate_ && state_ != CallState::kTerminated) {
         state_ = CallState::kTerminated;
         Emit("finished");
+      }
+      if (upgrade_delegate_) {
+        state_ = upgrade_delegate_->GetResult() ? CallState::kEstablished
+                                                : CallState::kTerminated;
+        upgrade_delegate_.reset();
+      }
+      if (pending_meeting_) {
+        pending_meeting_->SetObserver(nullptr);
       }
       break;
     default:
@@ -716,51 +844,57 @@ void CallBinding::OnMediaEvent(yealink::MeetingMediaEventId id) {
     return;
   }
 
+  std::string event_name;
+
   switch (id) {
     case yealink::MEETING_MEDIA_AUDIO_START:
-      Emit("rtc:audioStart");
+      event_name = "rtc:audioStart";
       break;
     case yealink::MEETING_MEDIA_AUDIO_STOPED:
-      Emit("rtc:audioStop");
+      event_name = "rtc:audioStop";
       break;
     case yealink::MEETING_MEDIA_AUDIO_BROKEN:
-      Emit("rtc:audioBroken");
+      event_name = "rtc:audioBroken";
       break;
     case yealink::MEETING_MEDIA_VIDEO_START:
-      Emit("rtc:videoStart");
+      event_name = "rtc:videoStart";
       break;
     case yealink::MEETING_MEDIA_VIDEO_STOPED:
-      Emit("rtc:videoStop");
+      event_name = "rtc:videoStop";
       break;
     case yealink::MEETING_MEDIA_VIDEO_BROKEN:
-      Emit("rtc:videoBroken");
+      event_name = "rtc:videoBroken";
       break;
     case yealink::MEETING_MEDIA_SHARE_RECV_START:
       remote_sharing_ = true;
-      Emit("rtc:shareRecvStart");
+      event_name = "rtc:shareRecvStart";
       break;
     case yealink::MEETING_MEDIA_SHARE_RECV_STOPED:
       remote_sharing_ = false;
-      Emit("rtc:shareRecvStop");
+      event_name = "rtc:shareRecvStop";
       break;
     case yealink::MEETING_MEDIA_SHARE_SEND_START:
       local_sharing_ = true;
-      Emit("rtc:shareSendStart");
+      event_name = "rtc:shareSendStart";
       break;
     case yealink::MEETING_MEDIA_SHARE_SEND_STOPED:
       local_sharing_ = false;
-      Emit("rtc:shareSendStop");
+      event_name = "rtc:shareSendStop";
       break;
     case yealink::MEETING_MEDIA_SHARE_BROKEN:
       local_sharing_ = false;
       remote_sharing_ = false;
-      Emit("rtc:shareBroken");
+      event_name = "rtc:shareBroken";
       break;
     case yealink::MEETING_MEDIA_HOLD_CHANGED:
       break;
     default:
       NOTREACHED();
       break;
+  }
+
+  if (event_name.size() && state_ != CallState::kNone) {
+    Emit(event_name);
   }
 }
 void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {

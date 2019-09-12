@@ -1,4 +1,5 @@
 const path = require('path');
+const conference_test = require('./conference-test');
 
 async function test(binding, userAgent) {
   console.log('Call test');
@@ -63,8 +64,8 @@ async function test(binding, userAgent) {
 
   // call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
   // call.connect('sip:1001@123456.onylyun.com;transport=tls');
-  //call.connect('sip:1090@223504.onylyun.com;transport=tls');
-  call.connect('sip:90006@123456.onylyun.com;transport=tls');
+  call.connect('sip:1090@223504.onylyun.com;transport=tls');
+  //call.connect('sip:90006@123456.onylyun.com;transport=tls');
   //call.setRemoteVideoSink(sink);
 
   const eventNames = [
@@ -84,6 +85,8 @@ async function test(binding, userAgent) {
     'replaceFailed',
     'refered',
     'replaced',
+    'upgraded',
+    'upgradeFailed',
     'finished',
     'rtc:audioStart',
     'rtc:audioStop',
@@ -99,8 +102,10 @@ async function test(binding, userAgent) {
   ];
 
   eventNames.forEach((event) => {
-    call.on(event, () => console.log(event));
-  })
+    call.on(event, () => console.log('call event: ' + event));
+  });
+
+  // call.upgrade();
 
   let hangupTimmer;
   let shareTimer;
@@ -108,11 +113,14 @@ async function test(binding, userAgent) {
   call.on('established', async() => {
     console.log('established');
 
+    // call.upgrade();
+
     hangupTimmer = setTimeout(() => {
       call.hangup();
-    }, 35000);
+    }, 15000);
   });
 
+  // call.on('upgraded', async() => {
   call.on('share:established', async() => {
     console.log('share:established');
 
@@ -130,11 +138,11 @@ async function test(binding, userAgent) {
       console.log(picture);
 
       call.startShare({ screen: 0, window: 14747790, file: picture });
-    }, 1000);
+    }, 1500);
 
     shareTimer = setTimeout(() => {
       call.stopShare();
-    }, 25000);
+    }, 10000);
   })
 
   call.on('finished', () => {
@@ -149,6 +157,8 @@ async function test(binding, userAgent) {
   if (global.window) {
     window.call = call;
   }
+
+  // await conference_test(call.conference);
 }
 
 module.exports = test;

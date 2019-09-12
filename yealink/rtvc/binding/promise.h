@@ -89,6 +89,20 @@ class Promise {
     return resolved.GetHandle();
   }
 
+  static v8::Local<v8::Promise> RejectedPromise(v8::Isolate* isolate) {
+    Promise rejected(isolate);
+    rejected.Reject();
+    return rejected.GetHandle();
+  }
+
+  template <typename T>
+  static v8::Local<v8::Promise> RejectedPromise(v8::Isolate* isolate,
+                                                T result) {
+    Promise rejected(isolate);
+    rejected.Reject(result);
+    return rejected.GetHandle();
+  }
+
   v8::Local<v8::Promise> GetHandle() const;
 
   v8::Maybe<bool> Resolve() {
