@@ -24,12 +24,13 @@ mate::WrappableBase* ConferenceUserBinding::New(mate::Arguments* args) {
 
 mate::Handle<ConferenceUserBinding> ConferenceUserBinding::Create(
     v8::Isolate* isolate,
-    yealink::RoomMember& controller) {
+    yealink::RoomMember& controller,
+    std::unordered_map<std::string, Promise>* handler) {
   auto iter = g_uid_map_.find(controller.GetMemberInfo().entity.ConstData());
 
   if (iter == g_uid_map_.end()) {
-    return mate::CreateHandle(isolate,
-                              new ConferenceUserBinding(isolate, controller));
+    return mate::CreateHandle(
+        isolate, new ConferenceUserBinding(isolate, controller, handler));
   }
 
   int32_t weak_map_id = iter->second;
@@ -39,11 +40,12 @@ mate::Handle<ConferenceUserBinding> ConferenceUserBinding::Create(
 
   if (binding) {
     binding->UpdateUserController(controller);
+    binding->UpdateStatsPendingHandler(handler);
     return mate::CreateHandle(isolate, binding);
   }
 
-  return mate::CreateHandle(isolate,
-                            new ConferenceUserBinding(isolate, controller));
+  return mate::CreateHandle(
+      isolate, new ConferenceUserBinding(isolate, controller, handler));
 }
 
 // static
@@ -108,11 +110,19 @@ RoomMember ConferenceUserBinding::GetUserController() {
   return user_controller_;
 }
 
-ConferenceUserBinding::ConferenceUserBinding(v8::Isolate* isolate,
-                                             yealink::RoomMember& controller)
+void ConferenceUserBinding::UpdateStatsPendingHandler(
+    std::unordered_map<std::string, Promise>* handler) {
+  stats_pending_requests_ = handler;
+}
+
+ConferenceUserBinding::ConferenceUserBinding(
+    v8::Isolate* isolate,
+    yealink::RoomMember& controller,
+    std::unordered_map<std::string, Promise>* handler)
     : weak_factory_(this) {
   Init(isolate);
   user_controller_ = controller;
+  stats_pending_requests_ = handler;
 
   g_uid_map_.emplace(user_controller_.GetMemberInfo().entity.ConstData(),
                      weak_map_id_);
@@ -371,10 +381,15 @@ UserMediaFilterInfo ConferenceUserBinding::GetVideoFilter() {
 v8::Local<v8::Promise> ConferenceUserBinding::GetStats() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-
   user_controller_.GetUserCallStats();
 
-  std::move(promise).Resolve();
+  if (stats_pending_requests_) {
+    stats_pending_requests_->emplace(
+        std::string(user_controller_.GetMemberInfo().entity.ConstData()),
+        std::move(promise));
+  } else {
+    std::move(promise).Resolve();
+  }
 
   return handle;
 }

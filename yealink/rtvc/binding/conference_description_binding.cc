@@ -4,7 +4,9 @@
 #include "base/strings/string_number_conversions.h"
 #include "base/task/post_task.h"
 #include "yealink/native_mate/object_template_builder.h"
+#include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
 namespace yealink {
@@ -78,20 +80,24 @@ void ConferenceDescriptionBinding::UpdateRoomController(
   room_controller_ = handler;
 }
 
+void ConferenceDescriptionBinding::UpdatePendingHandler(
+    std::unordered_map<int64_t, Promise>* handler) {
+  pending_requests_ = handler;
+}
+
 ConferenceDescriptionBinding::ConferenceDescriptionBinding(
     v8::Isolate* isolate,
     v8::Local<v8::Object> wrapper)
-    : weak_factory_(this) {
+    : weak_factory_(this), pending_requests_(nullptr) {
   InitWith(isolate, wrapper);
 }
 
 ConferenceDescriptionBinding::ConferenceDescriptionBinding(
     v8::Isolate* isolate,
     yealink::RoomController* controller)
-    : weak_factory_(this) {
+    : weak_factory_(this), pending_requests_(nullptr) {
   Init(isolate);
   room_controller_ = controller;
-  // state_ = ConferenceStateBinding::Create(isolate, controller);
 }
 
 ConferenceDescriptionBinding::~ConferenceDescriptionBinding() = default;
@@ -468,10 +474,17 @@ v8::Local<v8::Promise> ConferenceDescriptionBinding::GetShareInfo(
     args->ThrowError("lang is required");
   }
 
-  if (room_controller_)
-    room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());
+  yealink::RequestResult result;
 
-  std::move(promise).Resolve();
+  if (room_controller_)
+    result =
+        room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());
+
+  if (pending_requests_) {
+    pending_requests_->emplace(result.requestId, std::move(promise));
+  } else {
+    std::move(promise).Resolve();
+  }
 
   return handle;
 }

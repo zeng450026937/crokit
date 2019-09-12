@@ -36,6 +36,7 @@ class ConferenceUsersBinding
                    const Array<RoomMember>& modifyMemberList,
                    const Array<RoomMember>& deleteMemberList,
                    bool force);
+  void UpdateStatsPendingHandler(std::unordered_map<std::string, Promise>* handler);
 
  protected:
   ConferenceUsersBinding(v8::Isolate* isolate,
@@ -72,6 +73,7 @@ class ConferenceUsersBinding
   RoomController* room_controller_;
 
   base::WeakPtrFactory<ConferenceUsersBinding> weak_factory_;
+  std::unordered_map<std::string, Promise>* stats_pending_requests_;
 };
 
 }  // namespace rtvc

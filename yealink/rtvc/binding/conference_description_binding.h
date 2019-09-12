@@ -1,6 +1,7 @@
 #ifndef YEALINK_RTVC_BINDING_CONFERENCE_DESCRIPTION_BINDING_H_
 #define YEALINK_RTVC_BINDING_CONFERENCE_DESCRIPTION_BINDING_H_
 
+#include <unordered_map>
 #include "yealink/libvc/include/room/room_controller.h"
 #include "yealink/libvc/include/room/room_data.h"
 #include "yealink/libvc/include/room/room_description_component.h"
@@ -26,6 +27,7 @@ class ConferenceDescriptionBinding
                              v8::Local<v8::FunctionTemplate> prototype);
 
   void UpdateRoomController(RoomController* handler);
+  void UpdatePendingHandler(std::unordered_map<int64_t, Promise>* handler);
 
  protected:
   ConferenceDescriptionBinding(v8::Isolate* isolate,
@@ -78,6 +80,7 @@ class ConferenceDescriptionBinding
  private:
   RoomController* room_controller_;
   base::WeakPtrFactory<ConferenceDescriptionBinding> weak_factory_;
+  std::unordered_map<int64_t, Promise>* pending_requests_;
 };
 
 }  // namespace rtvc

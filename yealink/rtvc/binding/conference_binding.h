@@ -1,6 +1,8 @@
 #ifndef YEALINK_RTVC_BINDING_CONFERENCE_BINDING_H_
 #define YEALINK_RTVC_BINDING_CONFERENCE_BINDING_H_
 
+#include <unordered_map>
+#include "yealink/libvc/include/meeting/meeting_api.h"
 #include "yealink/libvc/include/room/room_controller.h"
 #include "yealink/libvc/include/room/room_data.h"
 #include "yealink/libvc/include/room/room_member.h"
@@ -16,6 +18,7 @@
 #include "yealink/rtvc/binding/conference_users_binding.h"
 #include "yealink/rtvc/binding/conference_view_binding.h"
 #include "yealink/rtvc/binding/event_emitter.h"
+#include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 
 namespace yealink {
@@ -99,6 +102,7 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   base::WeakPtrFactory<ConferenceBinding> weak_factory_;
 
   std::unordered_map<int64_t, Promise> pending_requests_;
+  std::unordered_map<std::string, Promise> stats_pending_requests_;
 };
 
 }  // namespace rtvc

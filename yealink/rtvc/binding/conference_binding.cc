@@ -114,6 +114,9 @@ void ConferenceBinding::SetController(RoomController* controller) {
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
+
+  description_->UpdatePendingHandler(&pending_requests_);
+  users_->UpdateStatsPendingHandler(&stats_pending_requests_);
 }
 
 void ConferenceBinding::SetController(
@@ -130,6 +133,9 @@ void ConferenceBinding::SetController(
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
+
+  description_->UpdatePendingHandler(&pending_requests_);
+  users_->UpdateStatsPendingHandler(&stats_pending_requests_);
 }
 
 void ConferenceBinding::Connect(mate::Dictionary dict, mate::Arguments* args) {
@@ -296,12 +302,31 @@ void ConferenceBinding::OnGetUserCallStats(
 
   ConvertFrom(stats, info);
 
-  Emit("callStatsUpdated", member.GetMemberInfo().entity.ConstData(),
-       mate::ConvertToV8(isolate(), stats));
+  auto it = stats_pending_requests_.find(
+      std::string(member.GetMemberInfo().entity.ConstData()));
+
+  if (it == stats_pending_requests_.end())
+    return;
+
+  std::move(it->second).Resolve(mate::ConvertToV8(isolate(), stats));
+
+  stats_pending_requests_.erase(it);
+
+  // Emit("callStatsUpdated", member.GetMemberInfo().entity.ConstData(),
+  //      mate::ConvertToV8(isolate(), stats));
 }
 void ConferenceBinding::OnGetShareInfo(int64_t requestId,
                                        const char* shareInfo) {
-  Emit("shareInfoUpdated", requestId, std::string(shareInfo));
+  auto it = pending_requests_.find(requestId);
+
+  if (it == pending_requests_.end())
+    return;
+
+  std::move(it->second).Resolve(std::string(shareInfo));
+
+  pending_requests_.erase(it);
+
+  // Emit("shareInfoUpdated", requestId, std::string(shareInfo));
 }
 
 }  // namespace rtvc

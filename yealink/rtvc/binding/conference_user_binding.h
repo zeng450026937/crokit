@@ -1,6 +1,7 @@
 #ifndef YEALINK_RTVC_BINDING_CONFERENCE_USER_BINDING_H_
 #define YEALINK_RTVC_BINDING_CONFERENCE_USER_BINDING_H_
 
+#include <unordered_map>
 #include "yealink/libvc/include/room/room_controller.h"
 #include "yealink/libvc/include/room/room_member.h"
 #include "yealink/libvc/include/room/room_member_manager.h"
@@ -24,16 +25,21 @@ class ConferenceUserBinding
 
   static mate::Handle<ConferenceUserBinding> Create(
       v8::Isolate* isolate,
-      yealink::RoomMember& controller);
+      yealink::RoomMember& controller,
+      std::unordered_map<std::string, Promise>* handler);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
   void UpdateUserController(RoomMember& handler);
   RoomMember GetUserController();
+  void UpdateStatsPendingHandler(
+      std::unordered_map<std::string, Promise>* handler);
 
  protected:
-  ConferenceUserBinding(v8::Isolate* isolate, yealink::RoomMember& controller);
+  ConferenceUserBinding(v8::Isolate* isolate,
+                        yealink::RoomMember& controller,
+                        std::unordered_map<std::string, Promise>* handler);
   ConferenceUserBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceUserBinding() override;
 
@@ -74,7 +80,8 @@ class ConferenceUserBinding
   v8::Local<v8::Promise> SetVideoIngressFilter(bool isOpen);
   v8::Local<v8::Promise> SetPermission(UserPermissionType params);
   v8::Local<v8::Promise> SetDemonstrator(UserDemoStateType params);
-  v8::Local<v8::Promise> SetPresenterDemonstrator(PresenterDemoStateType params);
+  v8::Local<v8::Promise> SetPresenterDemonstrator(
+      PresenterDemoStateType params);
 
   v8::Local<v8::Promise> Hold();
   v8::Local<v8::Promise> UnHold();
@@ -100,6 +107,7 @@ class ConferenceUserBinding
  private:
   RoomMember user_controller_;
   base::WeakPtrFactory<ConferenceUserBinding> weak_factory_;
+  std::unordered_map<std::string, Promise>* stats_pending_requests_;
 };
 
 }  // namespace rtvc

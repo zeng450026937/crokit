@@ -43,6 +43,11 @@ void ConferenceUsersBinding::UpdateRoomController(RoomController* handler) {
   room_controller_ = handler;
 }
 
+void ConferenceUsersBinding::UpdateStatsPendingHandler(
+    std::unordered_map<std::string, Promise>* handler) {
+  stats_pending_requests_ = handler;
+}
+
 void ConferenceUsersBinding::UpdateUsers(
     const Array<RoomMember>& newMemberList,
     const Array<RoomMember>& modifyMemberList,
@@ -57,7 +62,8 @@ void ConferenceUsersBinding::UpdateUsers(
 
     // v8::HandleScope handle_scope(isolate());
 
-    current_user_ = ConferenceUserBinding::Create(isolate(), owner);
+    current_user_ = ConferenceUserBinding::Create(isolate(), owner,
+                                                  stats_pending_requests_);
     v8_current_user_.Reset(isolate(), current_user_.ToV8());
 
     for (i = 0; i < memberList.Size(); i++) {
@@ -67,7 +73,8 @@ void ConferenceUsersBinding::UpdateUsers(
       add_list_.push_back(entity);
 
       mate::Handle<ConferenceUserBinding> new_user =
-          ConferenceUserBinding::Create(isolate(), memberList[i]);
+          ConferenceUserBinding::Create(isolate(), memberList[i],
+                                        stats_pending_requests_);
       v8::Global<v8::Value> v8_new_user;
       v8_new_user.Reset(isolate(), new_user.ToV8());
 
@@ -85,7 +92,8 @@ void ConferenceUsersBinding::UpdateUsers(
 
         // v8::HandleScope handle_scope(isolate());
         mate::Handle<ConferenceUserBinding> new_user =
-            ConferenceUserBinding::Create(isolate(), member);
+            ConferenceUserBinding::Create(isolate(), member,
+                                          stats_pending_requests_);
         v8::Global<v8::Value> v8_new_user;
         v8_new_user.Reset(isolate(), new_user.ToV8());
 
@@ -130,13 +138,13 @@ void ConferenceUsersBinding::UpdateUsers(
 ConferenceUsersBinding::ConferenceUsersBinding(
     v8::Isolate* isolate,
     yealink::RoomController* controller)
-    : weak_factory_(this) {
+    : weak_factory_(this), stats_pending_requests_(nullptr) {
   Init(isolate);
   room_controller_ = controller;
 }
 ConferenceUsersBinding::ConferenceUsersBinding(v8::Isolate* isolate,
                                                v8::Local<v8::Object> wrapper)
-    : weak_factory_(this) {}
+    : weak_factory_(this), stats_pending_requests_(nullptr) {}
 ConferenceUsersBinding::~ConferenceUsersBinding() = default;
 
 v8::Local<v8::Value> ConferenceUsersBinding::CurrentUser() {

@@ -101,8 +101,15 @@ async function test(binding, userAgent) {
         console.warn('getAudioFilter = ', user.getVideoFilter());
 
         setInterval(() => {
-          console.warn('getAudioFilter = ', user.getStats());
-        }, 5000);
+          user.getStats()
+            .then((result) => {
+              console.warn('getStats success = ', result);
+            })
+            .catch((e) => {
+              console.warn('getStats fail = ', e);
+            });
+
+        }, 10000);
 
         console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(false));
         console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(true));
@@ -146,8 +153,8 @@ async function test(binding, userAgent) {
     console.warn('descriptionUpdated getShareInfo:');
 
     call.conference.description.getShareInfo('zh')
-      .then(() => {
-        console.warn('getShareInfo success');
+      .then((result) => {
+        console.warn('getShareInfo success', result);
       })
       .catch(() => {
         console.warn('getShareInfo fail');
