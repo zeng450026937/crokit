@@ -143,21 +143,43 @@ async function test(binding, userAgent) {
 
     console.warn('descriptionUpdated getLock:', call.conference.description.getLock());
     console.warn('descriptionUpdated getDefaultRtmp:', call.conference.description.getDefaultRtmp());
-    console.warn('descriptionUpdated getShareInfo:', call.conference.description.getShareInfo('zh'));
+    console.warn('descriptionUpdated getShareInfo:');
+
+    call.conference.description.getShareInfo('zh')
+      .then(() => {
+        console.warn('getShareInfo success');
+      })
+      .catch(() => {
+        console.warn('getShareInfo fail');
+      })
 
     if(desc_test == true)
     {
       desc_test = false;
 
       // lock
-      console.warn('descriptionUpdated setLock:', call.conference.description.setLock({
+      call.conference.description.setLock({
         'admissionPolicy' : 'openAuthenticated'
-      }));
+      })
+      .then(() => {
+        console.warn('descriptionUpdated setLock lock success');
+      })
+      .catch((e) => {
+        console.warn('descriptionUpdated setLock lock fail');
+      });
+
+
 
       // unlock
-      console.warn('descriptionUpdated setLock:', call.conference.description.setLock({
+      call.conference.description.setLock({
         'admissionPolicy' : 'anonymous'
-      }));
+      })
+      .then(() => {
+        console.warn('descriptionUpdated setLock unlock success');
+      })
+      .catch((e) => {
+        console.warn('descriptionUpdated setLock unlock fail');
+      });
     }
   });
 
@@ -174,25 +196,37 @@ async function test(binding, userAgent) {
     {
       view_test = false;
 
-      console.warn('viewUpdated GetInitialFilters:', call.conference.view.setLayout(
-        {
+      call.conference.view.setLayout({
           'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
-        }
-      ));
+        })
+      .then(() => {
+        console.warn('viewUpdated GetInitialFilters success', );
+      })
+      .catch(() => {
+        console.warn('viewUpdated GetInitialFilters fail', );
+      })
 
-      console.warn('viewUpdated SetInitialFilters:', call.conference.view.setInitialFilters(
-        {
-          'role' : 'default',
-          'ingress' : 'block'
-        }
-      ));
+      call.conference.view.setInitialFilters({
+        'role' : 'default',
+        'ingress' : 'block'
+      })
+      .then(() => {
+        console.warn('viewUpdated setInitialFilters success', );
+      })
+      .catch(() => {
+        console.warn('viewUpdated setInitialFilters fail', );
+      })
 
-      console.warn('viewUpdated SetInitialFilters:', call.conference.view.setInitialFilters(
-        {
-          'role' : 'default',
-          'ingress' : 'unblock'
-        }
-      ));
+      call.conference.view.setInitialFilters({
+        'role' : 'default',
+        'ingress' : 'unblock'
+      })
+      .then(() => {
+        console.warn('viewUpdated setInitialFilters success', );
+      })
+      .catch(() => {
+        console.warn('viewUpdated setInitialFilters fail', );
+      })
     }
   });
 

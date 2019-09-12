@@ -161,9 +161,9 @@ std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::UserList() {
   return userlist;
 }
 
-ResponseInfo ConferenceUsersBinding::Invite(mate::Arguments* args) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUsersBinding::Invite(mate::Arguments* args) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
   std::string uri;
 
   if (!args->GetNext(&uri)) {
@@ -171,12 +171,12 @@ ResponseInfo ConferenceUsersBinding::Invite(mate::Arguments* args) {
   }
 
   if (room_controller_) {
-    result = room_controller_->GetMemberManager().InviteUser(uri.c_str());
+    room_controller_->GetMemberManager().InviteUser(uri.c_str());
   }
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUsersBinding::DoInvite(std::string uri) {
@@ -185,19 +185,19 @@ void ConferenceUsersBinding::DoInvite(std::string uri) {
   }
 }
 
-ResponseInfo ConferenceUsersBinding::InviteThird(std::string uri,
-                                                 std::string uid) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUsersBinding::InviteThird(std::string uri,
+                                                           std::string uid) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (room_controller_) {
-    result = room_controller_->GetMemberManager().InviteUserWithUuid(
-        uri.c_str(), uid.c_str());
+    room_controller_->GetMemberManager().InviteUserWithUuid(uri.c_str(),
+                                                            uid.c_str());
   }
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
@@ -207,19 +207,20 @@ void ConferenceUsersBinding::DoInviteThird(std::string uri, std::string uid) {
   }
 }
 
-ResponseInfo ConferenceUsersBinding::InviteBatch(std::vector<std::string> uri) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUsersBinding::InviteBatch(
+    std::vector<std::string> uri) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
   yealink::Array<yealink::SStringA> params;
 
   if (room_controller_) {
     ConvertTo(uri, params);
-    result = room_controller_->GetMemberManager().InviteUserList(params);
+    room_controller_->GetMemberManager().InviteUserList(params);
   }
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
@@ -231,10 +232,11 @@ void ConferenceUsersBinding::DoInviteBatch(std::vector<std::string> uri) {
   }
 }
 
-ResponseInfo ConferenceUsersBinding::Allow(std::vector<std::string> entities,
-                                           bool granted) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
+    std::vector<std::string> entities,
+    bool granted) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
   yealink::Array<RoomMember> params;  // todo get member control
 
   for (int i = 0; i < entities.size(); i++) {
@@ -248,19 +250,19 @@ ResponseInfo ConferenceUsersBinding::Allow(std::vector<std::string> entities,
   if (room_controller_) {
     if (granted) {
       if (entities.size() > 0)
-        result = room_controller_->GetMemberManager().GrantedLobby(params);
+        room_controller_->GetMemberManager().GrantedLobby(params);
       else
-        result = room_controller_->GetMemberManager().GrantedLobbyAll();
+        room_controller_->GetMemberManager().GrantedLobbyAll();
     } else {
       if (entities.size() > 0)
-        result = room_controller_->GetMemberManager().DeleteLobby(params);
+        room_controller_->GetMemberManager().DeleteLobby(params);
       else
-        result = room_controller_->GetMemberManager().DeleteLobbyAll();
+        room_controller_->GetMemberManager().DeleteLobbyAll();
     }
   }
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,

@@ -368,74 +368,82 @@ UserMediaFilterInfo ConferenceUserBinding::GetVideoFilter() {
   return value;
 }
 
-ResponseInfo ConferenceUserBinding::GetStats() {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::GetStats() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.GetUserCallStats();
-  ConvertFrom(response, result);
+  user_controller_.GetUserCallStats();
 
-  return response;
+  std::move(promise).Resolve();
+
+  return handle;
 }
 
 void ConferenceUserBinding::DoGetStats() {
   user_controller_.GetUserCallStats();
 }
 
-ResponseInfo ConferenceUserBinding::SetAudioIngressFilter(bool isOpen) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetAudioIngressFilter(
+    bool isOpen) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.SetAudioState(!isOpen);
-  ConvertFrom(response, result);
+  user_controller_.SetAudioState(!isOpen);
 
-  return response;
+  std::move(promise).Resolve();
+
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetAudioIngressFilter(bool isOpen) {
   user_controller_.SetAudioState(isOpen);
 }
 
-ResponseInfo ConferenceUserBinding::SetAudioEgressFilter(bool isOpen) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetAudioEgressFilter(
+    bool isOpen) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.SetAudioEgressState(!isOpen);
-  ConvertFrom(response, result);
+  user_controller_.SetAudioEgressState(!isOpen);
 
-  return response;
+  std::move(promise).Resolve();
+
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetAudioEgressFilter(bool isOpen) {
   user_controller_.SetAudioEgressState(isOpen);
 }
 
-ResponseInfo ConferenceUserBinding::SetVideoIngressFilter(bool isOpen) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetVideoIngressFilter(
+    bool isOpen) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.SetVideoState(!isOpen);
-  ConvertFrom(response, result);
+  user_controller_.SetVideoState(!isOpen);
 
-  return response;
+  std::move(promise).Resolve();
+
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetVideoIngressFilter(bool isOpen) {
   user_controller_.SetVideoState(isOpen);
 }
 
-ResponseInfo ConferenceUserBinding::SetPermission(UserPermissionType params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetPermission(
+    UserPermissionType params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   yealink::MemberInfo::Roles::PermissionRole value =
       (yealink::MemberInfo::Roles::PermissionRole)params;
 
-  result = user_controller_.ModifyRole(value);
+  user_controller_.ModifyRole(value);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
@@ -447,18 +455,19 @@ void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
   user_controller_.ModifyRole(value);
 }
 
-ResponseInfo ConferenceUserBinding::SetDemonstrator(UserDemoStateType params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetDemonstrator(
+    UserDemoStateType params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (params == UserDemoStateType::kDemonstrator)
-    result = user_controller_.SetDemonstrator(true);
+    user_controller_.SetDemonstrator(true);
   else
-    result = user_controller_.SetDemonstrator(false);
+    user_controller_.SetDemonstrator(false);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
@@ -468,19 +477,19 @@ void ConferenceUserBinding::DoSetDemonstrator(UserDemoStateType params) {
     user_controller_.SetDemonstrator(false);
 }
 
-ResponseInfo ConferenceUserBinding::SetPresenterDemonstrator(
+v8::Local<v8::Promise> ConferenceUserBinding::SetPresenterDemonstrator(
     PresenterDemoStateType params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (params == PresenterDemoStateType::kDemonstrator)
-    result = user_controller_.SetDemonstrator(true);
+    user_controller_.SetDemonstrator(true);
   else
-    result = user_controller_.SetDemonstrator(false);
+    user_controller_.SetDemonstrator(false);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetPresenterDemonstrator(
@@ -491,84 +500,84 @@ void ConferenceUserBinding::DoSetPresenterDemonstrator(
     user_controller_.SetDemonstrator(false);
 }
 
-ResponseInfo ConferenceUserBinding::Hold() {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::Hold() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.Hold();
+  user_controller_.Hold();
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoHold() {
   user_controller_.Hold();
 }
 
-ResponseInfo ConferenceUserBinding::UnHold() {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::UnHold() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.SetAccess(true);
+  user_controller_.SetAccess(true);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoUnHold() {
   user_controller_.SetAccess(true);
 }
 
-ResponseInfo ConferenceUserBinding::Kick() {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::Kick() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  result = user_controller_.KickOut();
+  user_controller_.KickOut();
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoKick() {
   user_controller_.KickOut();
 }
 
-ResponseInfo ConferenceUserBinding::SetDisplayName(mate::Arguments* args) {
+v8::Local<v8::Promise> ConferenceUserBinding::SetDisplayName(
+    mate::Arguments* args) {
   std::string name;
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (!args->GetNext(&name)) {
     args->ThrowError("name is required");
   }
 
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+  user_controller_.ModifyUserName(name.c_str());
 
-  result = user_controller_.ModifyUserName(name.c_str());
+  std::move(promise).Resolve();
 
-  ConvertFrom(response, result);
-
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetDisplayName(std::string name) {
   user_controller_.ModifyUserName(name.c_str());
 }
 
-ResponseInfo ConferenceUserBinding::SetFocus(bool isFocus) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceUserBinding::SetFocus(bool isFocus) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (isFocus == true)
-    result = user_controller_.SetFocus(true);
+    user_controller_.SetFocus(true);
   else
-    result = user_controller_.SetFocus(false);
+    user_controller_.SetFocus(false);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceUserBinding::DoSetFocus(bool isFocus) {

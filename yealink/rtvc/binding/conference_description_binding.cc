@@ -432,20 +432,21 @@ DescGetLockInfo ConferenceDescriptionBinding::GetLock() {
   return params;
 }
 
-ResponseInfo ConferenceDescriptionBinding::SetLock(DescSetLockInfo params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceDescriptionBinding::SetLock(
+    DescSetLockInfo params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (room_controller_)
-    result = room_controller_->GetViewComponent().ModifyConferenceLock(
+    room_controller_->GetViewComponent().ModifyConferenceLock(
         (yealink::ConferenceDescription::AdmissionPolicy)
             params.admission_policy,
         (yealink::ConferenceDescription::AttendeeByPass)params.attendee_by_pass,
         (yealink::ConferenceDescription::AutoPromote)params.auto_promote);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
@@ -457,23 +458,22 @@ void ConferenceDescriptionBinding::DoSetLock(DescSetLockInfo params) {
         (yealink::ConferenceDescription::AutoPromote)params.auto_promote);
 }
 
-ResponseInfo ConferenceDescriptionBinding::GetShareInfo(mate::Arguments* args) {
+v8::Local<v8::Promise> ConferenceDescriptionBinding::GetShareInfo(
+    mate::Arguments* args) {
   std::string lang;
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (!args->GetNext(&lang)) {
     args->ThrowError("lang is required");
   }
 
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
-
   if (room_controller_)
-    result =
-        room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());
+    room_controller_->GetDescriptionComponent().GetShareInfo(lang.c_str());
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceDescriptionBinding::DoGetShareInfo(std::string lang) {

@@ -67,8 +67,8 @@ class ConferenceDescriptionBinding
 
   DescDefaultRtmp GetDefaultRtmp();
   DescGetLockInfo GetLock();
-  ResponseInfo SetLock(DescSetLockInfo params);
-  ResponseInfo GetShareInfo(mate::Arguments* args);
+  v8::Local<v8::Promise> SetLock(DescSetLockInfo params);
+  v8::Local<v8::Promise> GetShareInfo(mate::Arguments* args);
 
  private:
   void OnCommandCompeleted(Promise promise);

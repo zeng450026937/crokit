@@ -54,18 +54,18 @@ ConferenceViewBinding::ConferenceViewBinding(v8::Isolate* isolate,
     : weak_factory_(this) {}
 ConferenceViewBinding::~ConferenceViewBinding() = default;
 
-ResponseInfo ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+v8::Local<v8::Promise> ConferenceViewBinding::SetLayout(SetLayoutInfo params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (room_controller_)
-    result = room_controller_->GetViewComponent().ModifyLayout(
+    room_controller_->GetViewComponent().ModifyLayout(
         (yealink::ConferenceView::EntityState::VideoLayout)params.video_layout,
         params.video_max_view);
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceViewBinding::DoSetLayout(SetLayoutInfo params) {
@@ -86,25 +86,25 @@ GetLayoutInfo ConferenceViewBinding::GetLayout() {
   return value;
 }
 
-ResponseInfo ConferenceViewBinding::SetInitialFilters(
+v8::Local<v8::Promise> ConferenceViewBinding::SetInitialFilters(
     ViewFilterRuleInfo params) {
-  yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
 
   if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
       params.ingress == yealink::rtvc::ViewFilterType::kBlock) {
     if (room_controller_)
-      result = room_controller_->GetViewComponent().MuteAll();
+      room_controller_->GetViewComponent().MuteAll();
   } else if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
              params.ingress == yealink::rtvc::ViewFilterType::kUnBlock) {
     if (room_controller_)
-      result = room_controller_->GetViewComponent().UnMuteAll();
+      room_controller_->GetViewComponent().UnMuteAll();
   } else {
   }
 
-  ConvertFrom(response, result);
+  std::move(promise).Resolve();
 
-  return response;
+  return handle;
 }
 
 void ConferenceViewBinding::DoSetInitialFilters(ViewFilterRuleInfo params) {

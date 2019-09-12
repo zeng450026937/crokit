@@ -67,20 +67,20 @@ class ConferenceUserBinding
 
   UserMediaFilterInfo GetAudioFilter();
   UserMediaFilterInfo GetVideoFilter();
-  ResponseInfo GetStats();
+  v8::Local<v8::Promise> GetStats();
 
-  ResponseInfo SetAudioIngressFilter(bool isOpen);
-  ResponseInfo SetAudioEgressFilter(bool isOpen);
-  ResponseInfo SetVideoIngressFilter(bool isOpen);
-  ResponseInfo SetPermission(UserPermissionType params);
-  ResponseInfo SetDemonstrator(UserDemoStateType params);
-  ResponseInfo SetPresenterDemonstrator(PresenterDemoStateType params);
+  v8::Local<v8::Promise> SetAudioIngressFilter(bool isOpen);
+  v8::Local<v8::Promise> SetAudioEgressFilter(bool isOpen);
+  v8::Local<v8::Promise> SetVideoIngressFilter(bool isOpen);
+  v8::Local<v8::Promise> SetPermission(UserPermissionType params);
+  v8::Local<v8::Promise> SetDemonstrator(UserDemoStateType params);
+  v8::Local<v8::Promise> SetPresenterDemonstrator(PresenterDemoStateType params);
 
-  ResponseInfo Hold();
-  ResponseInfo UnHold();
-  ResponseInfo Kick();
-  ResponseInfo SetDisplayName(mate::Arguments* args);
-  ResponseInfo SetFocus(bool isFocus);
+  v8::Local<v8::Promise> Hold();
+  v8::Local<v8::Promise> UnHold();
+  v8::Local<v8::Promise> Kick();
+  v8::Local<v8::Promise> SetDisplayName(mate::Arguments* args);
+  v8::Local<v8::Promise> SetFocus(bool isFocus);
 
  private:
   void DoGetStats();
