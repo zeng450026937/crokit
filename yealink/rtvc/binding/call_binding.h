@@ -23,10 +23,9 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   static mate::WrappableBase* New(mate::Handle<UserAgentBinding> user_agent,
                                   mate::Arguments* args);
 
-  static mate::Handle<CallBinding> Create(
-      v8::Isolate* isolate,
-      UserAgentBinding* user_agent,
-      bool incoming = true);
+  static mate::Handle<CallBinding> Create(v8::Isolate* isolate,
+                                          UserAgentBinding* user_agent,
+                                          bool incoming = true);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
@@ -34,6 +33,8 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   yealink::Meeting* GetMeeting() { return meeting_.get(); };
 
  protected:
+  class UpgradeDelegate;
+
   CallBinding(v8::Isolate* isolate,
               v8::Local<v8::Object> wrapper,
               mate::Handle<UserAgentBinding> user_agent,
@@ -125,7 +126,11 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void OnShareFrame(const yealink::VideoFrame& frame) override;
 
  private:
-  yealink::AVContentType GetContentType();
+  void OnUpgradeSucceed();
+  void OnUpgradeFailed();
+
+  yealink::AVContentType GetContentType(bool has_audio = true,
+                                        bool has_video = true);
   void ExtractCallInfo(yealink::MeetingInfo info);
   void ExtractConfInfo(yealink::AplloConferenceInvite info);
   void ExtractInfo();
@@ -137,9 +142,14 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   yealink::Media* media_;
 
   struct MeetingDeleter {
-    void operator()(yealink::Meeting* c) { yealink::ReleaseMeeting(c); }
+    void operator()(yealink::Meeting* c) {
+      c->SetObserver(nullptr);
+      yealink::ReleaseMeeting(c);
+    }
   };
   std::unique_ptr<yealink::Meeting, MeetingDeleter> meeting_;
+  std::unique_ptr<yealink::Meeting, MeetingDeleter> pending_meeting_;
+  std::unique_ptr<UpgradeDelegate> upgrade_delegate_;
   yealink::RoomController* controller_;
 
   yealink::MeetingInfo meeting_info_;
