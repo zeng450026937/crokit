@@ -36,8 +36,13 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   std::string password();
   std::string domain();
 
+  void Start();
+  void Stop();
+
+  bool running();
+
   v8::Local<v8::Promise> Register();
-  void UnRegister();
+  void UnRegister(mate::Arguments* args);
 
   bool registered();
   bool registering();

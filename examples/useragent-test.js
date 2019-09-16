@@ -7,10 +7,10 @@ async function test(binding, account) {
   const { username, password, domain } = account;
 
   const userAgent = new UserAgent({
-    username,
-    password,
-    domain,
+    username, password, domain,
   });
+
+  userAgent.start();
 
   console.log('register()')
 
@@ -71,7 +71,10 @@ async function test(binding, account) {
   // delete call;
   // delete userAgent;
 
-  call_test(binding, userAgent);
+  await call_test(binding, userAgent);
+
+  console.log('stop')
+  userAgent.stop();
 }
 
 module.exports = test;

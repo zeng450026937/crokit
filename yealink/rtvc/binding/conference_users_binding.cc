@@ -247,7 +247,7 @@ v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
   v8::Local<v8::Promise> handle = promise.GetHandle();
   yealink::Array<RoomMember> params;  // todo get member control
 
-  for (int i = 0; i < entities.size(); i++) {
+  for (int i = 0; i < (int)entities.size(); i++) {
     auto iter = user_list_.find(entities[i]);
 
     if (iter != user_list_.end()) {

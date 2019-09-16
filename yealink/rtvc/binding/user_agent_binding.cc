@@ -24,13 +24,10 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   mate::Dictionary options;
 
   if (!args->GetNext(&options)) {
-    args->ThrowError();
-    return nullptr;
+    options.Get("username", &config.username);
+    options.Get("password", &config.password);
+    options.Get("domain", &config.domain);
   }
-
-  options.Get("username", &config.username);
-  options.Get("password", &config.password);
-  options.Get("domain", &config.domain);
 
   return new UserAgentBinding(args->isolate(), args->GetThis(), config);
 }
@@ -46,6 +43,9 @@ void UserAgentBinding::BuildPrototype(
       .SetProperty("username", &UserAgentBinding::username)
       .SetProperty("password", &UserAgentBinding::password)
       .SetProperty("domain", &UserAgentBinding::domain)
+      .SetMethod("start", &UserAgentBinding::Start)
+      .SetMethod("stop", &UserAgentBinding::Stop)
+      .SetProperty("running", &UserAgentBinding::running)
       .SetMethod("register", &UserAgentBinding::Register)
       .SetMethod("unregister", &UserAgentBinding::UnRegister)
       .SetProperty("registered", &UserAgentBinding::registered);
@@ -79,7 +79,7 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
   sip_client_->SetClientHandler(this);
 }
 UserAgentBinding::~UserAgentBinding() {
-  UnRegister();
+  Stop();
   sip_client_->SetClientHandler(nullptr);
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
@@ -105,13 +105,29 @@ std::string UserAgentBinding::domain() {
   return config_.domain;
 }
 
+void UserAgentBinding::Start() {
+  if (running())
+    return;
+  sip_poller_.reset(new SIPPoller(Context::Instance()->GetTaskRunner(),
+                                  sip_client_weak_factory_.GetWeakPtr()));
+}
+void UserAgentBinding::Stop() {
+  if (!running())
+    return;
+  mate::Arguments args;
+  UnRegister(&args);
+  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
+                                                   sip_poller_.release());
+}
+bool UserAgentBinding::running() {
+  return !!sip_poller_;
+}
+
 v8::Local<v8::Promise> UserAgentBinding::Register() {
   DCHECK(sip_client_);
 
   if (!register_promise_) {
     register_promise_.reset(new Promise(isolate()));
-    sip_poller_.reset(new SIPPoller(Context::Instance()->GetTaskRunner(),
-                                    sip_client_weak_factory_.GetWeakPtr()));
 
     yealink::ConnectionParam params;
     params.addrHost = config_.domain.c_str();
@@ -120,24 +136,29 @@ v8::Local<v8::Promise> UserAgentBinding::Register() {
     params.proxyPort = 0;
 
     sip_client_->Connect(params);
+
+    Start();
   }
 
   return register_promise_->GetHandle();
 }
 
-void UserAgentBinding::UnRegister() {
+void UserAgentBinding::UnRegister(mate::Arguments* args) {
   if (!registered() && !registering())
     return;
 
+  bool stop_running = false;
+
+  args->GetNext(&stop_running);
+
   DCHECK(sip_client_);
-  DCHECK(sip_poller_);
 
   sip_client_->Disconnect();
-  Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
-                                                   sip_poller_.release());
-
   register_promise_.reset();
   registered_ = false;
+
+  if (stop_running)
+    Stop();
 }
 
 bool UserAgentBinding::registered() {
