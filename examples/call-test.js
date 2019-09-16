@@ -1,5 +1,6 @@
 const path = require('path');
 const conference_test = require('./conference-test');
+const utils = require('./test-utils');
 
 async function test(binding, userAgent) {
   console.log('Call test');
@@ -66,7 +67,8 @@ async function test(binding, userAgent) {
   // call.connect('sip:1001@123456.onylyun.com;transport=tls');
   call.connect('sip:1090@223504.onylyun.com;transport=tls');
   //call.connect('sip:90006@123456.onylyun.com;transport=tls');
-  //call.setRemoteVideoSink(sink);
+  //call.connect('sip:123456.99999**@onylyun.com;transport=tcp');
+  // call.setRemoteVideoSink(sink);
 
   const eventNames = [
     'progress',
@@ -85,6 +87,7 @@ async function test(binding, userAgent) {
     'replaceFailed',
     'refered',
     'replaced',
+    'update',
     'upgraded',
     'upgradeFailed',
     'finished',
@@ -109,6 +112,8 @@ async function test(binding, userAgent) {
 
   let hangupTimmer;
   let shareTimer;
+
+  call.on('update', (event, info) => console.log(info));
 
   call.on('established', async() => {
     console.log('established');
@@ -158,6 +163,9 @@ async function test(binding, userAgent) {
     window.call = call;
   }
 
+  await utils.wait(10000000);
+
+  // const conference = call.asConference();
   // await conference_test(call.conference);
 }
 

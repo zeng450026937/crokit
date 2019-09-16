@@ -800,6 +800,8 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
         std::unique_ptr<Promise> promise(upgrade_promise_.release());
         promise->Resolve();
         meeting_.swap(pending_meeting_);
+        // update room controller
+        OnCreateConferenceAfter(meeting_->Room());
         Emit("upgraded");
         Context::Instance()->PostTask(FROM_HERE,
                                       base::BindOnce(
@@ -827,6 +829,8 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
                                                 : CallState::kTerminated;
         upgrade_delegate_.reset();
       }
+      // pending_meeting_ is the finished meeting, as it's refered
+      // and we swap it
       if (pending_meeting_) {
         pending_meeting_->SetObserver(nullptr);
       }
@@ -909,6 +913,11 @@ void CallBinding::OnCallInfoChanged(const yealink::MeetingInfo& info) {
   Emit("update", call_info_.GetHandle());
 }
 void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
+  if (!controller) {
+    conference_->SetController(controller);
+    return;
+  }
+
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&CallBinding::OnCreateConferenceAfter,
@@ -920,6 +929,8 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
     conference_ = ConferenceBinding::Create(isolate(), nullptr);
     v8_conference_.Reset(isolate(), conference_.ToV8());
   }
+
+  DCHECK(controller);
 
   controller_ = controller;
   controller_->AddObserver(this);
