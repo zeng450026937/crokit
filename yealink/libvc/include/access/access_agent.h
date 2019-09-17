@@ -94,6 +94,24 @@ public:
     virtual bool RemoveObserverHandler(AccessObserver* observer) = 0;
 
     /**
+         * @brief tell the server to send a sms verify code
+         * 
+         * @param server : schedule server address
+		 * @param phoneNumber 
+         * @return true if server return success,otherwise false
+         */
+    virtual bool SendMobileLoginVerifyCode(const char* server, const char* phoneNumber, AccessProcess* process) = 0;
+
+    /**
+         * @brief tell the server to send a sms verify code
+         * 
+         * @param server : access server address
+		 * @param phoneNumber 
+         * @return true if server return success,otherwise false
+         */
+    virtual bool UnscheduledSendMobileLoginVerifyCode(const char* server, const char* phoneNumber, AccessProcess* process) = 0;
+
+    /**
          * @brief login access service by schedule service
          * 
          * @param server : schedule server address
@@ -101,7 +119,7 @@ public:
 		 * @param password 
          * @return SStringA
          */
-    virtual Array<LoginUserInfo> LoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
+    virtual LoginUserInfos LoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief login access service direct
@@ -111,7 +129,7 @@ public:
 		 * @param password 
          * @return SStringA
          */
-    virtual Array<LoginUserInfo> UnscheduledLoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
+    virtual LoginUserInfos UnscheduledLoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief start access push service, after invoke LoginAccessService()
@@ -142,6 +160,21 @@ public:
          * @return ScheduleMetaInfo
          */
     virtual ScheduleMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
+
+    /**
+         * @brief get LoginUserInfo by account id
+         * 
+         * @param account id 
+         * @return ScheduleMetaInfo
+         */
+    virtual LoginUserInfo GetLoginUserInfoById(const char* id) = 0;
+
+    /**
+         * @brief get invite info of current account party
+         * 
+         * @return PartyInviteInfo
+         */
+    virtual PartyInviteInfo GetPartyInviteInfo(AccessProcess* process) = 0;
 
     /**
          * @brief set device display language

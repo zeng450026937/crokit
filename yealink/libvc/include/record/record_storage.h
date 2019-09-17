@@ -32,13 +32,23 @@ public:
     virtual bool ClearRecord() = 0;
 
     /**
-         * @brief Delete Call Record by uuid
+         * @brief Delete Call Record by id
          * 
-         * @param number : user's uuid
+         * @param id : Record info id
          * @return true - success
 		 *         false - failed
          */
     virtual bool DeleteRecord(int64_t id) = 0;
+
+    /**
+         * @brief Delete Call Records by id
+         * 
+         * @param ids : Record info id array
+         * @param count : Array size
+         * @return true - success
+		 *         false - failed
+         */
+    virtual bool DeleteRecords(const int64_t* ids, int count) = 0;
 
     /**
          * @brief Query Call Record
@@ -68,6 +78,13 @@ public:
 		 *         false - failed
          */
     virtual bool UpdateDisplayName(const char* number, const char* name) = 0;
+
+    /**
+         * @brief Get the record row count
+         * 
+         * @return int - row count
+         */
+    virtual int GetRecordCount() = 0;
 };
 } // namespace yealink
 #endif

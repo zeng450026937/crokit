@@ -89,6 +89,22 @@ public:
     }
     /**
      * @brief 
+     * @param rtmpState 
+     */
+    virtual void OnRtmpStateChange(const RoomRtmpState& rtmpState)
+    {
+        (void)rtmpState;
+    }
+    /**
+     * @brief 
+     * @param recordUsers 
+     */
+    virtual void OnRecordUsersChange(const RoomRecordUsers& recordUsers)
+    {
+        (void)recordUsers;
+    }
+    /**
+     * @brief 
      * @param memberList 
      */
     virtual void OnUsersLoadAll(const Array<RoomMember>& memberList)

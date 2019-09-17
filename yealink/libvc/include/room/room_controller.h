@@ -7,13 +7,16 @@
 
 #ifndef __ROOM_CONTROLLER_H__
 #define __ROOM_CONTROLLER_H__
+#include "access/access_agent.h"
 #include "room/room_define.h"
-#include "room/room_observer.h"
 #include "room/room_description_component.h"
-#include "room/room_state_component.h"
 #include "room/room_member_manager.h"
+#include "room/room_observer.h"
+#include "room/room_state_component.h"
 #include "room/room_view_component.h"
 #include "sip_agent/sip_client.h"
+#include "room_rtmp_component.h"
+#include "room_record_component.h"
 
 namespace yealink
 {
@@ -72,6 +75,11 @@ public:
      * @param conversationId 
      */
     void SetConversationId(const char* conversationId);
+    /**
+     * @brief set access agent, before join
+     * @param agent 
+     */
+    void SetAccessAgent(AccessAgent* agent);
     /**
      * @brief 
      * @param observer 
@@ -148,6 +156,8 @@ public:
      * @return 
      */
     RoomViewComponent GetViewComponent();
+    RoomRtmpComponent GetRtmpComponent();
+    RoomRecordComponent GetRecordComponent();
 
 private:
     RoomController(void* data);

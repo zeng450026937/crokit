@@ -107,7 +107,7 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   info.server = server_.c_str();
   info.username = username_.c_str();
   info.password = password_.c_str();
-  ConvertFrom(*result, access_agent_->LoginAccessService(info, nullptr));
+  ConvertFrom(*result, access_agent_->LoginAccessService(info, nullptr).accountInfos);
 }
 
 }  // namespace rtvc

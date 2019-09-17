@@ -27,6 +27,7 @@ struct AccountInfo
     SStringA extension;
     SStringA uid;
     SStringA principle;
+    SStringA encryptedCredential;
 };
 
 struct PartyInfo
@@ -75,15 +76,31 @@ struct LoginUserInfo
     SStringA token;
 };
 
+struct LoginUserInfos
+{
+    Array<LoginUserInfo> accountInfos;
+    SStringA principle;
+    SStringA realm;
+    SStringA type;
+    SStringA algorithm;
+    SStringA credential;
+};
+
 struct LoginInfo
 {
     const char* server;
     const char* username;
-    const char* password;
+    const char* password; //正常密码、短信验证码、LoginUserInfos中的ha1摘要credential
+    bool isSmsVerify; //是否短信验证
+    const char* algorithm; //摘要算法，通常为空，验证码自动登录时填LoginUserInfos中的algorithm
+    const char* realm; //暂时没用到，先填空
     LoginInfo()
         : server("")
         , username("")
         , password("")
+        , isSmsVerify(false)
+        , algorithm("")
+        , realm("")
     {
     }
 };
@@ -115,6 +132,16 @@ struct ScheduleMetaInfo
         , scheduleVersion("")
         , build("")
         , version("")
+    {
+    }
+};
+
+struct PartyInviteInfo
+{
+    SStringA url;
+    int applicants;
+    PartyInviteInfo()
+        : applicants(0)
     {
     }
 };

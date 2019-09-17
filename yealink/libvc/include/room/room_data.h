@@ -21,7 +21,22 @@ enum ConferenceResult
     CONFERENCE_INVALID_PARAMS,
     CONFERENCE_SIP_FAILURE,
     CONFERENCE_INVALID,
+    CONFERENCE_HTTP_FAILURE
+};
 
+/**
+ * @brief 
+ */
+struct RoomHttpResult
+{
+    RoomHttpResult()
+        : result(CONFERENCE_INVALID)
+        , bizCode(-1)
+    {
+    }
+
+    ConferenceResult result;
+    int32_t bizCode;
 };
 
 /**
@@ -606,6 +621,79 @@ struct ConferenceView
     SStringA subTitle;
     Array<EntityView> entityViews;
     EntityState entityState;
+};
+
+enum RoomRtmpStatus
+{
+    ROOM_RTMP_STATUS_INVALID,
+    ROOM_RTMP_STATUS_STARTING,
+    ROOM_RTMP_STATUS_START,
+    ROOM_RTMP_STATUS_STOPPING,
+    ROOM_RTMP_STATUS_STOP,
+    ROOM_RTMP_STATUS_PAUSING,
+    ROOM_RTMP_STATUS_PAUSE,
+    ROOM_RTMP_STATUS_RESUMING,
+    ROOM_RTMP_STATUS_RESUME
+};
+
+struct RoomRtmpUserInfo
+{
+    RoomRtmpUserInfo()
+        : isDefault(false)
+        , rtmpStatus(ROOM_RTMP_STATUS_INVALID)
+        , rtmpLastStopDuration(0)
+        , rtmpLastStartTime(0)
+    {
+    }
+
+    SStringA entity;
+    bool isDefault;
+    RoomRtmpStatus rtmpStatus;
+    int64_t rtmpLastStopDuration;
+    int64_t rtmpLastStartTime;
+};
+
+struct RoomRtmpState
+{
+    RoomRtmpState()
+        : rtmpEnable(false)
+    {
+    }
+
+    bool rtmpEnable;
+    Array<RoomRtmpUserInfo> users;
+};
+
+enum RoomRecordStatus
+{
+    ROOM_RECORD_STATUS_INVALID,
+    ROOM_RECORD_STATUS_STARTING,
+    ROOM_RECORD_STATUS_START,
+    ROOM_RECORD_STATUS_STOPPING,
+    ROOM_RECORD_STATUS_STOP,
+    ROOM_RECORD_STATUS_PAUSING,
+    ROOM_RECORD_STATUS_PAUSE,
+    ROOM_RECORD_STATUS_RESUMING,
+    ROOM_RECORD_STATUS_RESUME
+};
+
+struct RoomRecordUserInfo
+{
+    RoomRecordUserInfo()
+        : recordStatus(ROOM_RECORD_STATUS_INVALID)
+        , recordLastStopDuration(0)
+        , recordLastStartTime(0)
+    {
+    }
+
+    RoomRecordStatus recordStatus;
+    int64_t recordLastStopDuration;
+    int64_t recordLastStartTime;
+};
+
+struct RoomRecordUsers
+{
+    RoomRecordUserInfo user;
 };
 
 struct UserMediaDetail
