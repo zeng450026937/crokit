@@ -23,7 +23,7 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   UserAgent::Config config;
   mate::Dictionary options;
 
-  if (!args->GetNext(&options)) {
+  if (args->GetNext(&options)) {
     options.Get("username", &config.username);
     options.Get("password", &config.password);
     options.Get("domain", &config.domain);
