@@ -18,6 +18,7 @@ class UserAgent {
     std::string password;
     std::string ha1;
     std::string domain;
+    std::string display_name;
   };
 
   virtual ~UserAgent() = default;

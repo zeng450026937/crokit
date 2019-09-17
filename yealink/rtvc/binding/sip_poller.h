@@ -17,13 +17,13 @@ class SIPPoller {
             base::WeakPtr<yealink::SIPClient> sip_client);
   ~SIPPoller();
 
- private:
   void OnPoll();
 
+ private:
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
   base::WeakPtr<yealink::SIPClient> sip_client_;
   base::WeakPtrFactory<SIPPoller> weak_factory_;
-  
+
   DISALLOW_COPY_AND_ASSIGN(SIPPoller);
 };
 

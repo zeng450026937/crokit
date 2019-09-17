@@ -228,7 +228,9 @@ void CallBinding::Connect(std::string target, mate::Arguments* args) {
   bool ret = meeting_->Dail(param);
 
   if (!ret) {
-    args->ThrowError("Call is one time use. Create new Call instance instead.");
+    args->ThrowError("Call is one time use. Create new Call instance instead."
+    " Or maybe target uri is incorrect."
+    " Or tcp(5061)/udp(5060) port is occupied");
     return;
   }
 

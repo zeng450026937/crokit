@@ -27,6 +27,7 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
     options.Get("username", &config.username);
     options.Get("password", &config.password);
     options.Get("domain", &config.domain);
+    options.Get("displayName", &config.display_name);
   }
 
   return new UserAgentBinding(args->isolate(), args->GetThis(), config);
@@ -79,7 +80,6 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
   sip_client_->SetClientHandler(this);
 }
 UserAgentBinding::~UserAgentBinding() {
-  Stop();
   sip_client_->SetClientHandler(nullptr);
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
@@ -89,6 +89,7 @@ UserAgentBinding::~UserAgentBinding() {
                                       yealink::RealseSIPClient(sip_client);
                                     },
                                     sip_client_));
+  Stop();
 };
 
 std::string UserAgentBinding::workspace_folder() {
@@ -168,6 +169,11 @@ bool UserAgentBinding::registering() {
   return !registered_ && register_promise_;
 }
 
+bool UserAgentBinding::OnCertificateError(
+    yealink::ConnectCertificateCode code) {
+  Emit("certificateError", (int64_t)code);
+  return true;  // ignore error
+}
 void UserAgentBinding::OnConnectFailed(int message) {
   Emit("connectFailed");
 }
@@ -180,6 +186,8 @@ void UserAgentBinding::OnConnectInterruption(int message) {
 void UserAgentBinding::OnReceivedData() {}
 
 yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
+  bool is_ha1 = !!config_.ha1.size();
+
   switch (type) {
     case yealink::AUTH_PARAM_USERNAME:
       return yealink::SByteData(
@@ -187,11 +195,13 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
           config_.username.size());
     case yealink::AUTH_PARAM_PASSWORD:
       return yealink::SByteData(
-          reinterpret_cast<const unsigned char*>(config_.password.c_str()),
+          reinterpret_cast<const unsigned char*>(
+              is_ha1 ? config_.ha1.c_str() : config_.password.c_str()),
           config_.password.size());
     case yealink::AUTH_PARAM_PASSWORD_IS_A1HASH:
-      return yealink::SByteData(
-          reinterpret_cast<const unsigned char*>(&falsy_value), 1);
+      return yealink::SByteData(reinterpret_cast<const unsigned char*>(
+                                    is_ha1 ? &truthy_value : &falsy_value),
+                                1);
     case yealink::AUTH_PARAM_DISPLAY_NAME:
       break;
     default:
@@ -210,18 +220,19 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
       Emit("registered");
       break;
     case yealink::AEID_FAILED:
-      // TODO
-      // reject error
       register_promise_->Reject();
       registered_ = false;
       Emit("registerFailed");
+      break;
+    case yealink::AEID_UPDATED:
+      Emit("reconnectNeeded");
       break;
     default:
       NOTREACHED();
       break;
   }
 
-  isolate()->RunMicrotasks();
+  // isolate()->RunMicrotasks();
 }
 void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
                                     const yealink::AuthICEProfile& stun) {
