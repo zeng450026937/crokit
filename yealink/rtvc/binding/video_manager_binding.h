@@ -53,7 +53,7 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   void AddLocalShareVideoSink(mate::PersistentDictionary sink);
   void RemoveLocalShareVideoSink(mate::PersistentDictionary sink);
 
-  void SetLocalVideoSource(mate::PersistentDictionary source);
+  void SetLocalVideoSource(mate::Arguments* args);
 
  private:
   yealink::Media* media_;
@@ -68,9 +68,6 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
   std::unique_ptr<VideoSourceAdapter> local_share_video_source_;
 
   std::unique_ptr<VideoSourceV8> local_video_source_v8_;
-
-  std::map<int, VideoSinkV8*> local_video_sinks_;
-  std::map<int, VideoSinkV8*> local_share_video_sinks_;
 
   DISALLOW_COPY_AND_ASSIGN(VideoManagerBinding);
 };

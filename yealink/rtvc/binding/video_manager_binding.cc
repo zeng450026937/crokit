@@ -62,6 +62,16 @@ VideoManagerBinding::VideoManagerBinding(v8::Isolate* isolate,
 }
 VideoManagerBinding::~VideoManagerBinding() {
   media_->SetVideoCameraDeviceRender(nullptr);
+
+  for (auto it : local_video_source_->sinks()) {
+    RemoveLocalVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
+  }
+  local_video_source_->RemoveAllSinks();
+
+  for (auto it : local_share_video_source_->sinks()) {
+    RemoveLocalShareVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
+  }
+  local_share_video_source_->RemoveAllSinks();
 }
 
 void VideoManagerBinding::EnumerateDevices() {
@@ -157,11 +167,10 @@ void VideoManagerBinding::ReleaseStream() {
 void VideoManagerBinding::SetLocalVideoSink(mate::Arguments* args) {
   mate::PersistentDictionary sink;
   if (!args->GetNext(&sink)) {
-    for (auto it : local_video_sinks_) {
-      local_video_source_->RemoveSink(it.second);
-      delete it.second;
+    for (auto it : local_video_source_->sinks()) {
+      RemoveLocalVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
     }
-    local_video_sinks_.clear();
+    local_video_source_->RemoveAllSinks();
     return;
   }
 
@@ -169,37 +178,41 @@ void VideoManagerBinding::SetLocalVideoSink(mate::Arguments* args) {
 };
 
 void VideoManagerBinding::AddLocalVideoSink(mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = local_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it == local_video_sinks_.end()) {
-    VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-    local_video_source_->AddOrUpdateSink(sink_v8);
-    local_video_sinks_.emplace(hash, sink_v8);
+  if (!sink.GetHidden("hash", &hash)) {
+    sink_v8 = new VideoSinkV8(sink);
+    sink.SetHidden("hash", reinterpret_cast<intptr_t>(sink_v8));
+  } else {
+    sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
   }
+
+  local_video_source_->AddOrUpdateSink(sink_v8);
 }
 
 void VideoManagerBinding::RemoveLocalVideoSink(
     mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = local_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it != local_video_sinks_.end()) {
-    local_video_source_->RemoveSink(it->second);
-    delete it->second;
-    local_video_sinks_.erase(it);
-  }
+  if (!sink.GetHidden("hash", &hash))
+    return;
+
+  sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
+  sink_v8->GetHandle().DeletePrivate("hash");
+  local_video_source_->RemoveSink(sink_v8);
+
+  delete sink_v8;
 }
 
-void VideoManagerBinding::SetLocalShareVideoSink(
-    mate::Arguments* args) {
+void VideoManagerBinding::SetLocalShareVideoSink(mate::Arguments* args) {
   mate::PersistentDictionary sink;
   if (!args->GetNext(&sink)) {
-    for (auto it : local_share_video_sinks_) {
-      local_share_video_source_->RemoveSink(it.second);
-      delete it.second;
+    for (auto it : local_share_video_source_->sinks()) {
+      RemoveLocalShareVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
     }
-    local_share_video_sinks_.clear();
+    local_share_video_source_->RemoveAllSinks();
     return;
   }
 
@@ -208,31 +221,37 @@ void VideoManagerBinding::SetLocalShareVideoSink(
 
 void VideoManagerBinding::AddLocalShareVideoSink(
     mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = local_share_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it == local_share_video_sinks_.end()) {
-    VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-    local_share_video_source_->AddOrUpdateSink(sink_v8);
-    local_share_video_sinks_.emplace(hash, sink_v8);
+  if (!sink.GetHidden("hash", &hash)) {
+    sink_v8 = new VideoSinkV8(sink);
+    sink.SetHidden("hash", reinterpret_cast<intptr_t>(sink_v8));
+  } else {
+    sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
   }
+
+  local_share_video_source_->AddOrUpdateSink(sink_v8);
 };
 
 void VideoManagerBinding::RemoveLocalShareVideoSink(
     mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = local_share_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it != local_share_video_sinks_.end()) {
-    local_share_video_source_->RemoveSink(it->second);
-    delete it->second;
-    local_share_video_sinks_.erase(it);
-  }
+  if (!sink.GetHidden("hash", &hash))
+    return;
+
+  sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
+  sink_v8->GetHandle().DeletePrivate("hash");
+  local_share_video_source_->RemoveSink(sink_v8);
+
+  delete sink_v8;
 }
 
-void VideoManagerBinding::SetLocalVideoSource(
-    mate::PersistentDictionary source) {
-  if (source.GetHandle()->IsNullOrUndefined()) {
+void VideoManagerBinding::SetLocalVideoSource(mate::Arguments* args) {
+  mate::PersistentDictionary source;
+  if (!args->GetNext(&source)) {
     local_video_source_v8_.reset();
     return;
   }

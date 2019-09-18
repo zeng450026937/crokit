@@ -2,7 +2,7 @@ let videoManager;
 
 async function wait(duration = 1000) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
+    setTimeout(resolve, duration);
   });
 }
 
@@ -31,7 +31,7 @@ async function test(binding) {
   const sink = {
     onFrame(frame) {
       console.log('onFrame', frame.width, frame.height)
-
+      return;
       console.log(frame);
       console.log(frame.width);
       console.log(frame.height);
@@ -72,14 +72,21 @@ async function test(binding) {
   };
 
   videoManager.videoInputDevice = videoInputDeviceList[0];
+  console.log('setLocalVideoSink')
   videoManager.setLocalVideoSink(sink);
-  await wait(1 * 1000).then(() => {
-    console.log('wait')
-  });
+  await wait(1 * 1000);
 
   videoManager.acquireStream();
 
-  await wait(3 * 1000);
+  await wait(1 * 1000);
+
+  console.log('removeLocalVideoSink')
+  videoManager.removeLocalVideoSink(sink)
+  await wait(1 * 1000);
+
+  console.log('addLocalVideoSink')
+  videoManager.addLocalVideoSink(sink);
+  await wait(1 * 1000);
 
   videoManager.releaseStream();
 
@@ -119,6 +126,8 @@ async function test(binding) {
   await wait(3 * 1000);
 
   videoSource.stop();
+
+  videoManager.destroy();
   videoManager = null;
 }
 

@@ -172,9 +172,6 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   std::unique_ptr<VideoSourceAdapter> remote_video_source_;
   std::unique_ptr<VideoSourceAdapter> remote_share_video_source_;
 
-  std::map<int, VideoSinkV8*> remote_video_sinks_;
-  std::map<int, VideoSinkV8*> remote_share_video_sinks_;
-
   v8::Global<v8::Value> v8_conference_;
   mate::Handle<ConferenceBinding> conference_;
 };

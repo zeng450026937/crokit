@@ -193,6 +193,16 @@ CallBinding::CallBinding(v8::Isolate* isolate,
 
 CallBinding::~CallBinding() {
   meeting_->SetObserver(nullptr);
+
+  for (auto it : remote_video_source_->sinks()) {
+    RemoveRemoteVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
+  }
+  remote_video_source_->RemoveAllSinks();
+
+  for (auto it : remote_share_video_source_->sinks()) {
+    RemoveRemoteShareVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
+  }
+  remote_share_video_source_->RemoveAllSinks();
 }
 
 v8::Local<v8::Object> CallBinding::local_identity() {
@@ -228,9 +238,10 @@ void CallBinding::Connect(std::string target, mate::Arguments* args) {
   bool ret = meeting_->Dail(param);
 
   if (!ret) {
-    args->ThrowError("Call is one time use. Create new Call instance instead."
-    " Or maybe target uri is incorrect."
-    " Or tcp(5061)/udp(5060) port is occupied");
+    args->ThrowError(
+        "Call is one time use. Create new Call instance instead."
+        " Or maybe target uri is incorrect."
+        " Or tcp(5061)/udp(5060) port is occupied");
     return;
   }
 
@@ -529,11 +540,10 @@ void CallBinding::SetLocalShareVideoSource(mate::PersistentDictionary source) {}
 void CallBinding::SetRemoteVideoSink(mate::Arguments* args) {
   mate::PersistentDictionary sink;
   if (!args->GetNext(&sink)) {
-    for (auto it : remote_video_sinks_) {
-      remote_video_source_->RemoveSink(it.second);
-      delete it.second;
+    for (auto it : remote_video_source_->sinks()) {
+      RemoveRemoteVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
     }
-    remote_video_sinks_.clear();
+    remote_video_source_->RemoveAllSinks();
     return;
   }
 
@@ -541,35 +551,40 @@ void CallBinding::SetRemoteVideoSink(mate::Arguments* args) {
 }
 
 void CallBinding::AddRemoteVideoSink(mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = remote_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it == remote_video_sinks_.end()) {
-    VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-    remote_video_source_->AddOrUpdateSink(sink_v8);
-    remote_video_sinks_.emplace(hash, sink_v8);
+  if (!sink.GetHidden("hash", &hash)) {
+    sink_v8 = new VideoSinkV8(sink);
+    sink.SetHidden("hash", reinterpret_cast<intptr_t>(sink_v8));
+  } else {
+    sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
   }
+
+  remote_video_source_->AddOrUpdateSink(sink_v8);
 }
 
 void CallBinding::RemoveRemoteVideoSink(mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = remote_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it != remote_video_sinks_.end()) {
-    remote_video_source_->RemoveSink(it->second);
-    delete it->second;
-    remote_video_sinks_.erase(it);
-  }
+  if (!sink.GetHidden("hash", &hash))
+    return;
+
+  sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
+  sink_v8->GetHandle().DeletePrivate("hash");
+  remote_video_source_->RemoveSink(sink_v8);
+
+  delete sink_v8;
 }
 
 void CallBinding::SetRemoteShareVideoSink(mate::Arguments* args) {
   mate::PersistentDictionary sink;
   if (!args->GetNext(&sink)) {
-    for (auto it : remote_share_video_sinks_) {
-      remote_share_video_source_->RemoveSink(it.second);
-      delete it.second;
+    for (auto it : remote_share_video_source_->sinks()) {
+      RemoveRemoteShareVideoSink(static_cast<VideoSinkV8*>(it)->GetHandle());
     }
-    remote_share_video_sinks_.clear();
+    remote_share_video_source_->RemoveAllSinks();
     return;
   }
 
@@ -577,25 +592,31 @@ void CallBinding::SetRemoteShareVideoSink(mate::Arguments* args) {
 }
 
 void CallBinding::AddRemoteShareVideoSink(mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = remote_share_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it == remote_share_video_sinks_.end()) {
-    VideoSinkV8* sink_v8 = new VideoSinkV8(sink);
-    remote_share_video_source_->AddOrUpdateSink(sink_v8);
-    remote_share_video_sinks_.emplace(hash, sink_v8);
+  if (!sink.GetHidden("hash", &hash)) {
+    sink_v8 = new VideoSinkV8(sink);
+    sink.SetHidden("hash", reinterpret_cast<intptr_t>(sink_v8));
+  } else {
+    sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
   }
+
+  remote_share_video_source_->AddOrUpdateSink(sink_v8);
 }
 
 void CallBinding::RemoveRemoteShareVideoSink(mate::PersistentDictionary sink) {
-  int hash = sink.GetHandle()->GetIdentityHash();
-  auto it = remote_share_video_sinks_.find(hash);
+  intptr_t hash;
+  VideoSinkV8* sink_v8;
 
-  if (it != remote_share_video_sinks_.end()) {
-    remote_share_video_source_->RemoveSink(it->second);
-    delete it->second;
-    remote_share_video_sinks_.erase(it);
-  }
+  if (!sink.GetHidden("hash", &hash))
+    return;
+
+  sink_v8 = reinterpret_cast<VideoSinkV8*>(hash);
+  sink_v8->GetHandle().DeletePrivate("hash");
+  remote_share_video_source_->RemoveSink(sink_v8);
+
+  delete sink_v8;
 }
 
 bool CallBinding::conference_aware() {

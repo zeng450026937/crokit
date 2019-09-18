@@ -21,6 +21,10 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
 
   void OnVideoFrame(const yealink::VideoFrame& frame) override;
 
+  std::set<VideoSink*> sinks() { return sinks_; }
+
+  void RemoveAllSinks() { sinks_.clear(); }
+
  protected:
   std::set<VideoSink*> sinks_;
   base::WeakPtrFactory<VideoSourceAdapter> weak_factory_;

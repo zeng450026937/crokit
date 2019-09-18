@@ -118,6 +118,14 @@ class Dictionary {
     return !result.IsNothing() && result.FromJust();
   }
 
+  bool DeletePrivate(const base::StringPiece& key) {
+    v8::Local<v8::Private> privateKey =
+        v8::Private::ForApi(isolate_, StringToV8(isolate_, key));
+    v8::Maybe<bool> result =
+        GetHandle()->DeletePrivate(isolate_->GetCurrentContext(), privateKey);
+    return !result.IsNothing() && result.FromJust();
+  }
+
   bool IsEmpty() const { return isolate() == NULL; }
 
   virtual v8::Local<v8::Object> GetHandle() const;
