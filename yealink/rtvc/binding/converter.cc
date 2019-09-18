@@ -1630,7 +1630,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescAdmissionPolicy>::ToV8(
   std::string res;
   switch (val) {
     case yealink::rtvc::DescAdmissionPolicy::kClosedAuthenticated:
-      res = "closedAuthenticate";
+      res = "closedAuthenticated";
       break;
     case yealink::rtvc::DescAdmissionPolicy::kAnonumous:
       res = "anonymous";
@@ -1653,7 +1653,7 @@ bool Converter<yealink::rtvc::DescAdmissionPolicy>::FromV8(
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
-  if (in == "closedAuthenticate")
+  if (in == "closedAuthenticated")
     *out = yealink::rtvc::DescAdmissionPolicy::kClosedAuthenticated;
   else if (in == "anonymous")
     *out = yealink::rtvc::DescAdmissionPolicy::kAnonumous;
