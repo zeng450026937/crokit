@@ -82,6 +82,7 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("isOnHold", &ConferenceUserBinding::IsOnHold)
       .SetMethod("isSharing", &ConferenceUserBinding::IsSharing)
       .SetMethod("isFocus", &ConferenceUserBinding::IsFocus)
+      .SetMethod("hasFECC", &ConferenceUserBinding::HasFECC)
       .SetMethod("getAudioFilter", &ConferenceUserBinding::GetAudioFilter)
       .SetMethod("getVideoFilter", &ConferenceUserBinding::GetVideoFilter)
       .SetMethod("getStats", &ConferenceUserBinding::GetStats)
@@ -343,6 +344,32 @@ bool ConferenceUserBinding::IsFocus() {
   bool value = false;
 
   ConvertFrom(value, user_controller_.IsFocus());
+
+  return value;
+}
+
+bool ConferenceUserBinding::HasFECC() {
+  std::vector<UserEndpointInfo> endpoints;
+  std::vector<UserMediaInfo> medias;
+  bool value = false;
+  int i = 0;
+
+  ConvertFrom(endpoints, user_controller_.GetMemberInfo().endpointList);
+
+  if (endpoints.size() > 0) {
+    for (i = 0; i < endpoints.size(); i++) {
+      if (endpoints[i].session_type == UserEndpointSeesionType::kAudioVideo) {
+        medias = endpoints[i].media;
+        break;
+      }
+    }
+
+    for (i = 0; i < medias.size(); i++) {
+      if (medias[i].label == UserMediaLabelType::kFecc) {
+        value = true;
+      }
+    }
+  }
 
   return value;
 }
