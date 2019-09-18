@@ -207,7 +207,7 @@ void ConferenceBinding::CreateConference(mate::Dictionary dict,
   dict.Get("conversationId", &conversation_id);
 
   yealink::RequestResult result;
-  yealink::rtvc::ResponseInfo response;
+  // yealink::rtvc::ResponseInfo response;
   yealink::Array<yealink::SStringA> params;
 
   std::unique_ptr<yealink::RoomController> controller(

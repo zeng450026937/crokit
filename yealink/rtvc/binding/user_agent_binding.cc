@@ -16,6 +16,9 @@ namespace rtvc {
 namespace {
 unsigned char falsy_value = 0;
 unsigned char truthy_value = 0;
+char* default_useragent = "Yealink VCD-H5";
+char* default_client_info = "Yealink VCD-H5";
+char* default_sitename = "Yealink VCD-H5";
 }  // namespace
 
 // static
@@ -23,11 +26,23 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   UserAgent::Config config;
   mate::Dictionary options;
 
+  config.useragent = default_useragent;
+  config.client_info = default_client_info;
+  config.sitename = default_sitename;
+
   if (args->GetNext(&options)) {
     options.Get("username", &config.username);
     options.Get("password", &config.password);
     options.Get("domain", &config.domain);
     options.Get("displayName", &config.display_name);
+    options.Get("userAgent", &config.useragent);
+    options.Get("clientInfo", &config.client_info);
+    options.Get("sitename", &config.sitename);
+    options.Get("tlsPort", &config.tls_port);
+    options.Get("tcpPort", &config.tcp_port);
+    options.Get("udpPort", &config.udp_port);
+    options.Get("ipv4Only", &config.ipv4_only);
+    options.Get("ipv6Only", &config.ipv6_only);
   }
 
   return new UserAgentBinding(args->isolate(), args->GetThis(), config);
@@ -41,9 +56,14 @@ void UserAgentBinding::BuildPrototype(
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetProperty("workspaceFolder", &UserAgentBinding::workspace_folder)
-      .SetProperty("username", &UserAgentBinding::username)
-      .SetProperty("password", &UserAgentBinding::password)
-      .SetProperty("domain", &UserAgentBinding::domain)
+      .SetProperty("username", &UserAgentBinding::username,
+                   &UserAgentBinding::SetUsername)
+      .SetProperty("password", &UserAgentBinding::password,
+                   &UserAgentBinding::SetPassword)
+      .SetProperty("domain", &UserAgentBinding::domain,
+                   &UserAgentBinding::SetDomain)
+      .SetMethod("set", &UserAgentBinding::Set)
+      .SetMethod("get", &UserAgentBinding::Get)
       .SetMethod("start", &UserAgentBinding::Start)
       .SetMethod("stop", &UserAgentBinding::Stop)
       .SetProperty("running", &UserAgentBinding::running)
@@ -61,19 +81,30 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
       weak_factory_(this) {
   InitWith(isolate, wrapper);
 
-  // TODO
-  // move all settings to config
-  sip_client_->SetUserAgent("Yealink VCD");
-  sip_client_->SetClientInfo("Yealink VCD");
-  sip_client_->SetSiteName("Yealink VCD");
+  sip_client_->SetUserAgent(config_.useragent.c_str());
+  sip_client_->SetClientInfo(config_.client_info.c_str());
+  sip_client_->SetSiteName(config_.sitename.c_str());
 
   yealink::Address local_address;
-  local_address.port = 5061;
-  local_address.family = yealink::AF_IP_UNSPEC;
-  sip_client_->AddTransport(local_address, yealink::TLS);
-  local_address.port = 5060;
-  sip_client_->AddTransport(local_address, yealink::TCP);
-  sip_client_->AddTransport(local_address, yealink::UDP);
+  local_address.family =
+      config_.ipv4_only
+          ? yealink::AF_IPV4
+          : config_.ipv6_only ? yealink::AF_IPV6 : yealink::AF_IP_UNSPEC;
+
+  local_address.port = config_.tls_port;
+  while (!sip_client_->AddTransport(local_address, yealink::TLS)) {
+    local_address.port++;
+  }
+
+  local_address.port = config_.tcp_port;
+  while (!sip_client_->AddTransport(local_address, yealink::TCP)) {
+    local_address.port++;
+  }
+
+  local_address.port = config_.udp_port;
+  while (!sip_client_->AddTransport(local_address, yealink::UDP)) {
+    local_address.port++;
+  }
 
   sip_client_->SetConnectionHandler(this);
   sip_client_->SetAuthHandler(this);
@@ -106,6 +137,50 @@ std::string UserAgentBinding::domain() {
   return config_.domain;
 }
 
+void UserAgentBinding::SetUsername(std::string username) {
+  config_.username = username;
+}
+void UserAgentBinding::SetPassword(std::string password) {
+  config_.password = password;
+}
+void UserAgentBinding::SetDomain(std::string domain) {
+  config_.domain = domain;
+}
+
+void UserAgentBinding::Set(std::string key, mate::Arguments* args) {
+  if (key == "username") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.username = value;
+    }
+  } else if (key == "password") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.password = value;
+    }
+  } else if (key == "domain") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.domain = value;
+    }
+  } else {
+    args->ThrowError("Unknown setting key");
+  }
+}
+v8::Local<v8::Value> UserAgentBinding::Get(std::string key,
+                                           mate::Arguments* args) {
+  if (key == "username") {
+    return mate::ConvertToV8(isolate(), config_.username);
+  } else if (key == "password") {
+    return mate::ConvertToV8(isolate(), config_.password);
+  } else if (key == "domain") {
+    return mate::ConvertToV8(isolate(), config_.domain);
+  } else {
+    args->ThrowError("Unknown setting key");
+    return v8::Null(isolate());
+  }
+}
+
 void UserAgentBinding::Start() {
   if (running())
     return;
@@ -115,8 +190,13 @@ void UserAgentBinding::Start() {
 void UserAgentBinding::Stop() {
   if (!running())
     return;
-  mate::Arguments args;
-  UnRegister(&args);
+
+  if (registered() || registering()) {
+    sip_client_->Disconnect();
+    register_promise_.reset();
+    registered_ = false;
+  }
+
   Context::Instance()->GetTaskRunner()->DeleteSoon(FROM_HERE,
                                                    sip_poller_.release());
 }

@@ -19,6 +19,14 @@ class UserAgent {
     std::string ha1;
     std::string domain;
     std::string display_name;
+    std::string useragent;
+    std::string client_info;
+    std::string sitename;
+    int64_t tls_port = 5061;
+    int64_t tcp_port = 5060;
+    int64_t udp_port = 5060;
+    bool ipv4_only = false;
+    bool ipv6_only = false;
   };
 
   virtual ~UserAgent() = default;

@@ -36,6 +36,13 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   std::string password();
   std::string domain();
 
+  void SetUsername(std::string username);
+  void SetPassword(std::string password);
+  void SetDomain(std::string domain);
+
+  void Set(std::string key, mate::Arguments* args);
+  v8::Local<v8::Value> Get(std::string key, mate::Arguments* args);
+
   void Start();
   void Stop();
 
@@ -61,7 +68,8 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                     const yealink::AuthICEProfile& stun) override;
 
   // yealink::SIPClientHandler impl
-  void OnOffer(const SIPMessageReadonly& message, SIPInviteAgent** agent) override;
+  void OnOffer(const SIPMessageReadonly& message,
+               SIPInviteAgent** agent) override;
 
  private:
   friend class CallBinding;

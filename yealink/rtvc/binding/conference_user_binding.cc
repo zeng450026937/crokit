@@ -351,7 +351,7 @@ bool ConferenceUserBinding::IsFocus() {
 
 bool ConferenceUserBinding::IsConnected() {
   bool value = false;
-  int i = 0;
+  size_t i = 0;
   std::vector<UserEndpointInfo> endpoints;
 
   ConvertFrom(endpoints, user_controller_.GetMemberInfo().endpointList);
@@ -374,7 +374,7 @@ bool ConferenceUserBinding::HasFECC() {
   std::vector<UserEndpointInfo> endpoints;
   std::vector<UserMediaInfo> medias;
   bool value = false;
-  int i = 0;
+  size_t i = 0;
 
   ConvertFrom(endpoints, user_controller_.GetMemberInfo().endpointList);
 

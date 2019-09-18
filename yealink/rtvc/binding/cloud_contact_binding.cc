@@ -66,8 +66,8 @@ mate::WrappableBase* CloudContactBinding::New(mate::Arguments* args) {
   config.workspace_folder =
       Context::Instance()->GetWorkspaceFolder().AsUTF8Unsafe();
 
-  dict.Get("workspace_folder", &(config.workspace_folder));
-  dict.Get("database_name", &(config.database_name));
+  dict.Get("workspaceFolder", &(config.workspace_folder));
+  dict.Get("databaseName", &(config.database_name));
   dict.Get("server", &(config.server));
 
   return new CloudContactBinding(args->isolate(), args->GetThis(), config);

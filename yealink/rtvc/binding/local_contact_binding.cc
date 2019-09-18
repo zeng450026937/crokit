@@ -43,8 +43,8 @@ mate::WrappableBase* LocalContactBinding::New(mate::Arguments* args) {
 
   mate::Dictionary dict;
   if (args->GetNext(&dict)) {
-    dict.Get("workspace_folder", &(config.workspace_folder));
-    dict.Get("database_name", &(config.database_name));
+    dict.Get("workspaceFolder", &(config.workspace_folder));
+    dict.Get("databaseName", &(config.database_name));
   }
 
   return new LocalContactBinding(args->isolate(), args->GetThis(), config);
@@ -78,8 +78,8 @@ LocalContactBinding::LocalContactBinding(v8::Isolate* isolate,
     : config_(std::move(config)),
       contact_manager_(new yealink::LocalContactManager()) {
   InitWith(isolate, wrapper);
-  contact_manager_->Init(config.workspace_folder.c_str(),
-                         config.database_name.c_str());
+  contact_manager_->Init(config_.workspace_folder.c_str(),
+                         config_.database_name.c_str());
 }
 LocalContactBinding::~LocalContactBinding() {}
 
