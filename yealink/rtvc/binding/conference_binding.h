@@ -13,6 +13,8 @@
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/binding/conference_description_binding.h"
+#include "yealink/rtvc/binding/conference_record_binding.h"
+#include "yealink/rtvc/binding/conference_rtmp_binding.h"
 #include "yealink/rtvc/binding/conference_state_binding.h"
 #include "yealink/rtvc/binding/conference_user_binding.h"
 #include "yealink/rtvc/binding/conference_users_binding.h"
@@ -52,6 +54,7 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
 
   void Connect(mate::Dictionary dict, mate::Arguments* args);
   void Disconnect(mate::Arguments* args);
+  void CreateConference(mate::Dictionary dict, mate::Arguments* args);
 
   bool isInProgress();
   bool isEstablished();
@@ -63,6 +66,8 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   v8::Local<v8::Value> view();
   v8::Local<v8::Value> state();
   v8::Local<v8::Value> users();
+  v8::Local<v8::Value> rtmp();
+  v8::Local<v8::Value> record();
 
   // room observer impl
   void OnConnectSuccess() override;
@@ -73,6 +78,8 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
       const yealink::ConferenceDescription& desc) override;
   void OnConferenceStateChange(const yealink::ConferenceState& state) override;
   void OnConferenceViewChange(const yealink::ConferenceView& view) override;
+  void OnRtmpStateChange(const RoomRtmpState& rtmpState) override;
+  void OnRecordUsersChange(const RoomRecordUsers& recordUsers) override;
   void OnUserChange(const Array<RoomMember>& newMemberList,
                     const Array<RoomMember>& modifyMemberList,
                     const Array<RoomMember>& deleteMemberList) override;
@@ -96,6 +103,12 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
 
   v8::Global<v8::Value> v8_users_;
   mate::Handle<ConferenceUsersBinding> users_;
+
+  v8::Global<v8::Value> v8_rtmp_;
+  mate::Handle<ConferenceRtmpBinding> rtmp_;
+
+  v8::Global<v8::Value> v8_record_;
+  mate::Handle<ConferenceRecordBinding> record_;
 
   base::WeakPtr<UserAgentBinding> user_agent_;
   base::WeakPtr<yealink::SIPClient> sip_client_;

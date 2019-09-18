@@ -7,11 +7,13 @@
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/api/audio_manager.h"
 #include "yealink/rtvc/api/channel.h"
+#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
+#include "yealink/rtvc/api/conference_record.h"
+#include "yealink/rtvc/api/conference_rtmp.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"
 #include "yealink/rtvc/api/conference_view.h"
-#include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/api/device_type.h"
 #include "yealink/rtvc/api/schedule_item.h"
@@ -656,6 +658,16 @@ struct Converter<yealink::rtvc::ResponseInfo> {
 };
 
 template <>
+struct Converter<yealink::rtvc::HttpResponseInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::HttpResponseInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::HttpResponseInfo* out);
+};
+
+template <>
 struct Converter<yealink::rtvc::UserProtocolType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    yealink::rtvc::UserProtocolType val);
@@ -845,6 +857,66 @@ struct Converter<yealink::rtvc::UserStatisticsInfo> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      yealink::rtvc::UserStatisticsInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RecordStatusType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::RecordStatusType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RecordStatusType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RecordUserInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RecordUserInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RecordUserInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RecordUsers> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RecordUsers& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RecordUsers* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RtmpStatusType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   yealink::rtvc::RtmpStatusType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RtmpStatusType* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RtmpUserInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RtmpUserInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RtmpUserInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::RtmpInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RtmpInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RtmpInfo* out);
 };
 
 // view

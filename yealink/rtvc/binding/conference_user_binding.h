@@ -69,7 +69,8 @@ class ConferenceUserBinding
   bool IsOnHold();
   bool IsSharing();
   bool IsFocus();
-  bool hasFECC();
+  bool HasFECC();
+  bool IsConnected();
 
   UserMediaFilterInfo GetAudioFilter();
   UserMediaFilterInfo GetVideoFilter();

@@ -830,6 +830,14 @@ bool StructTraits<ResponseInfo>::From(ResponseInfo& out,
   return true;
 }
 
+bool StructTraits<HttpResponseInfo>::From(HttpResponseInfo& out,
+                                          const yealink::RoomHttpResult& val) {
+  ConvertFrom(out.biz_code, val.bizCode);
+  ConvertFrom(out.result, val.result);
+
+  return true;
+}
+
 bool StructTraits<UserProtocolType>::From(
     UserProtocolType& out,
     const yealink::MemberInfo::Protocol& val) {
@@ -1188,6 +1196,113 @@ bool StructTraits<UserStatisticsInfo>::From(UserStatisticsInfo& out,
   ConvertFrom(out.send, val.send);
   ConvertFrom(out.recv, val.recv);
   ConvertFrom(out.type, val.type);
+
+  return true;
+}
+
+bool StructTraits<RecordStatusType>::From(
+    RecordStatusType& out,
+    const yealink::RoomRecordStatus& val) {
+  switch (val) {
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_PAUSE:
+      out = RecordStatusType::kPause;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_PAUSING:
+      out = RecordStatusType::kPausing;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_RESUME:
+      out = RecordStatusType::kResume;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_RESUMING:
+      out = RecordStatusType::kResuming;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_START:
+      out = RecordStatusType::kStart;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_STARTING:
+      out = RecordStatusType::kStarting;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_STOP:
+      out = RecordStatusType::kStop;
+      break;
+    case yealink::RoomRecordStatus::ROOM_RECORD_STATUS_STOPPING:
+      out = RecordStatusType::kStopping;
+      break;
+    default:
+      out = RecordStatusType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<RecordUserInfo>::From(
+    RecordUserInfo& out,
+    const yealink::RoomRecordUserInfo& val) {
+  ConvertFrom(out.record_last_start_time, val.recordLastStartTime);
+  ConvertFrom(out.record_last_stop_duration, val.recordLastStopDuration);
+  ConvertFrom(out.record_status, val.recordStatus);
+
+  return true;
+}
+
+bool StructTraits<RecordUsers>::From(RecordUsers& out,
+                                     const yealink::RoomRecordUsers& val) {
+  ConvertFrom(out.user, val.user);
+
+  return true;
+}
+
+bool StructTraits<RtmpStatusType>::From(RtmpStatusType& out,
+                                        const yealink::RoomRtmpStatus& val) {
+  switch (val) {
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_PAUSE:
+      out = RtmpStatusType::kPause;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_PAUSING:
+      out = RtmpStatusType::kPausing;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_RESUME:
+      out = RtmpStatusType::kResume;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_RESUMING:
+      out = RtmpStatusType::kResuming;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_START:
+      out = RtmpStatusType::kStart;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_STARTING:
+      out = RtmpStatusType::kStarting;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_STOP:
+      out = RtmpStatusType::kStop;
+      break;
+    case yealink::RoomRtmpStatus::ROOM_RTMP_STATUS_STOPPING:
+      out = RtmpStatusType::kStopping;
+      break;
+    default:
+      out = RtmpStatusType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<RtmpUserInfo>::From(RtmpUserInfo& out,
+                                      const yealink::RoomRtmpUserInfo& val) {
+  ConvertFrom(out.entity, val.entity);
+  ConvertFrom(out.is_default, val.isDefault);
+  ConvertFrom(out.rtmp_last_start_time, val.rtmpLastStartTime);
+  ConvertFrom(out.rtmp_last_stop_duration, val.rtmpLastStopDuration);
+  ConvertFrom(out.rtmp_status, val.rtmpStatus);
+
+  return true;
+}
+
+bool StructTraits<RtmpInfo>::From(RtmpInfo& out,
+                                   const yealink::RoomRtmpState& val) {
+  ConvertFrom(out.enable, val.rtmpEnable);
+  ConvertFrom(out.users, val.users);
 
   return true;
 }
