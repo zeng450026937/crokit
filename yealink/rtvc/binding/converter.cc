@@ -1976,6 +1976,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RequesrResult>::ToV8(
     case yealink::rtvc::RequesrResult::kInvalid:
       res = "invalid";
       break;
+    case yealink::rtvc::RequesrResult::kHttpFailure:
+      res = "http failure";
+      break;
   }
   return ConvertToV8(isolate, res);
 }
@@ -1994,6 +1997,8 @@ bool Converter<yealink::rtvc::RequesrResult>::FromV8(
     *out = yealink::rtvc::RequesrResult::kInvalidParam;
   else if (in == "sip failure")
     *out = yealink::rtvc::RequesrResult::kSipFailure;
+  else if (in == "http failure")
+    *out = yealink::rtvc::RequesrResult::kHttpFailure;
   else {
     *out = yealink::rtvc::RequesrResult::kInvalid;
     return false;
@@ -2021,6 +2026,30 @@ bool Converter<yealink::rtvc::ResponseInfo>::FromV8(
     return false;
 
   dict.Get("requestId", &(out->request_id));
+  dict.Get("result", &(out->result));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::HttpResponseInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::HttpResponseInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("bizCode", val.biz_code);
+  handler.Set("result", val.result);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::HttpResponseInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::HttpResponseInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("bizCode", &(out->biz_code));
   dict.Get("result", &(out->result));
 
   return true;
@@ -2800,8 +2829,250 @@ bool Converter<yealink::rtvc::UserStatisticsInfo>::FromV8(
 
   dict.Get("mediaId", &(out->media_id));
   dict.Get("label", &(out->label));
+  dict.Get("type", &(out->type));
   dict.Get("send", &(out->send));
   dict.Get("recv", &(out->recv));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RecordStatusType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::RecordStatusType val) {
+  std::string res;
+  switch (val) {
+    case yealink::rtvc::RecordStatusType::kInvalid:
+      res = "";
+      break;
+    case yealink::rtvc::RecordStatusType::kPause:
+      res = "pause";
+      break;
+    case yealink::rtvc::RecordStatusType::kPausing:
+      res = "pausing";
+      break;
+    case yealink::rtvc::RecordStatusType::kResume:
+      res = "resume";
+      break;
+    case yealink::rtvc::RecordStatusType::kResuming:
+      res = "resuming";
+      break;
+    case yealink::rtvc::RecordStatusType::kStart:
+      res = "start";
+      break;
+    case yealink::rtvc::RecordStatusType::kStarting:
+      res = "starting";
+      break;
+    case yealink::rtvc::RecordStatusType::kStop:
+      res = "stop";
+      break;
+    case yealink::rtvc::RecordStatusType::kStopping:
+      res = "stopping";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<yealink::rtvc::RecordStatusType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RecordStatusType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "pause")
+    *out = yealink::rtvc::RecordStatusType::kPause;
+  else if (in == "pausing")
+    *out = yealink::rtvc::RecordStatusType::kPausing;
+  else if (in == "resume")
+    *out = yealink::rtvc::RecordStatusType::kResume;
+  else if (in == "resuming")
+    *out = yealink::rtvc::RecordStatusType::kResuming;
+  else if (in == "start")
+    *out = yealink::rtvc::RecordStatusType::kStart;
+  else if (in == "starting")
+    *out = yealink::rtvc::RecordStatusType::kStarting;
+  else if (in == "stop")
+    *out = yealink::rtvc::RecordStatusType::kStop;
+  else if (in == "stopping")
+    *out = yealink::rtvc::RecordStatusType::kStopping;
+  else {
+    *out = yealink::rtvc::RecordStatusType::kInvalid;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RecordUserInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RecordUserInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("recordLastStartTime", val.record_last_start_time);
+  handler.Set("recordLastStopDuration", val.record_last_stop_duration);
+  handler.Set("recordStatus", val.record_status);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RecordUserInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RecordUserInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("recordLastStartTime", &(out->record_last_start_time));
+  dict.Get("recordLastStopDuration", &(out->record_last_stop_duration));
+  dict.Get("recordStatus", &(out->record_status));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RecordUsers>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RecordUsers& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("user", val.user);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RecordUsers>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RecordUsers* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("user", &(out->user));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RtmpStatusType>::ToV8(
+    v8::Isolate* isolate,
+    yealink::rtvc::RtmpStatusType val) {
+  std::string res;
+  switch (val) {
+    case yealink::rtvc::RtmpStatusType::kInvalid:
+      res = "";
+      break;
+    case yealink::rtvc::RtmpStatusType::kPause:
+      res = "pause";
+      break;
+    case yealink::rtvc::RtmpStatusType::kPausing:
+      res = "pausing";
+      break;
+    case yealink::rtvc::RtmpStatusType::kResume:
+      res = "resume";
+      break;
+    case yealink::rtvc::RtmpStatusType::kResuming:
+      res = "resuming";
+      break;
+    case yealink::rtvc::RtmpStatusType::kStart:
+      res = "start";
+      break;
+    case yealink::rtvc::RtmpStatusType::kStarting:
+      res = "starting";
+      break;
+    case yealink::rtvc::RtmpStatusType::kStop:
+      res = "stop";
+      break;
+    case yealink::rtvc::RtmpStatusType::kStopping:
+      res = "stopping";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<yealink::rtvc::RtmpStatusType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RtmpStatusType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "pause")
+    *out = yealink::rtvc::RtmpStatusType::kPause;
+  else if (in == "pausing")
+    *out = yealink::rtvc::RtmpStatusType::kPausing;
+  else if (in == "resume")
+    *out = yealink::rtvc::RtmpStatusType::kResume;
+  else if (in == "resuming")
+    *out = yealink::rtvc::RtmpStatusType::kResuming;
+  else if (in == "start")
+    *out = yealink::rtvc::RtmpStatusType::kStart;
+  else if (in == "starting")
+    *out = yealink::rtvc::RtmpStatusType::kStarting;
+  else if (in == "stop")
+    *out = yealink::rtvc::RtmpStatusType::kStop;
+  else if (in == "stopping")
+    *out = yealink::rtvc::RtmpStatusType::kStopping;
+  else {
+    *out = yealink::rtvc::RtmpStatusType::kInvalid;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RtmpUserInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RtmpUserInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("entity", val.entity);
+  handler.Set("isDefault", val.is_default);
+  handler.Set("rtmpStatus", val.rtmp_status);
+  handler.Set("rtmpLastStopDuration", val.rtmp_last_start_time);
+  handler.Set("rtmpLastStartTime", val.rtmp_last_stop_duration);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RtmpUserInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RtmpUserInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("entity", &(out->entity));
+  dict.Get("isDefault", &(out->is_default));
+  dict.Get("rtmpStatus", &(out->rtmp_status));
+  dict.Get("rtmpLastStopDuration", &(out->rtmp_last_start_time));
+  dict.Get("rtmpLastStartTime", &(out->rtmp_last_stop_duration));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::RtmpInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RtmpInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("enable", val.enable);
+  handler.Set("users", val.users);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RtmpInfo>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                yealink::rtvc::RtmpInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("enable", &(out->enable));
+  dict.Get("users", &(out->users));
 
   return true;
 }

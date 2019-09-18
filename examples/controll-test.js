@@ -72,169 +72,171 @@ async function test(binding, userAgent) {
 
   let user_test = true;
   call.conference.on('usersUpdated', (arg1, arg2) => {
-    console.warn('start start start start start');
-    console.warn('usersUpdated', call.conference);
-    console.warn('usersUpdated users:', call.conference.users);
-    console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
-    console.warn('usersUpdated userList:', call.conference.users.userList);
-    console.warn('usersUpdated userList.length:', call.conference.users.userList.length);
+    // console.warn('usersUpdated users:', call.conference.users);
+    // console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
+    // console.warn('usersUpdated userList:', call.conference.users.userList);
+    // console.warn('usersUpdated userList.length:', call.conference.users.userList.length);
 
-    if(user_test == true)
-    {
-      user_test = false;
+    // if(user_test == true)
+    // {
+    //   user_test = false;
 
-      console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
-      call.conference.users.userList.map((user) => {
-        console.warn('this user entity = ', user.entity, 'isPresenter ', user.isPresenter());
-        console.warn('isOrganizer ', user.isOrganizer());
-        console.warn('isCurrentUser ', user.isCurrentUser());
-        console.warn('isPresenter ', user.isPresenter());
-        console.warn('isAttendee ', user.isAttendee());
-        console.warn('isCastViewer ', user.isCastViewer());
-        console.warn('isAttendee ', user.isAttendee());
-        console.warn('isDemonstrator ', user.isDemonstrator());
-        console.warn('isPresenterDemonstrator ', user.isPresenterDemonstrator());
-        console.warn('isOnHold ', user.isOnHold());
-        console.warn('isSharing ', user.isSharing());
-        console.warn('isFocus ', user.isFocus());
-        console.warn('getAudioFilter = ', user.getAudioFilter());
-        console.warn('getAudioFilter = ', user.getVideoFilter());
+    //   //console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
+    //   call.conference.users.userList.map((user) => {
+    //     console.warn('this user entity = ', user.entity, 'isPresenter ', user.isPresenter());
+    //     console.warn('isOrganizer ', user.isOrganizer());
+    //     console.warn('isCurrentUser ', user.isCurrentUser());
+    //     console.warn('isPresenter ', user.isPresenter());
+    //     console.warn('isAttendee ', user.isAttendee());
+    //     console.warn('isCastViewer ', user.isCastViewer());
+    //     console.warn('isAttendee ', user.isAttendee());
+    //     console.warn('isDemonstrator ', user.isDemonstrator());
+    //     console.warn('isPresenterDemonstrator ', user.isPresenterDemonstrator());
+    //     console.warn('isOnHold ', user.isOnHold());
+    //     console.warn('isSharing ', user.isSharing());
+    //     console.warn('isFocus ', user.isFocus());
+    //     console.warn('getAudioFilter = ', user.getAudioFilter());
+    //     console.warn('getAudioFilter = ', user.getVideoFilter());
 
-        setInterval(() => {
-          user.getStats()
-            .then((result) => {
-              console.warn('getStats success = ', result);
-            })
-            .catch((e) => {
-              console.warn('getStats fail = ', e);
-            });
+    //     setInterval(() => {
+    //       user.getStats()
+    //         .then((result) => {
+    //           console.warn('getStats success = ', result);
+    //         })
+    //         .catch((e) => {
+    //           console.warn('getStats fail = ', e);
+    //         });
 
-        }, 10000);
+    //     }, 10000);
 
-        console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(false));
-        console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(true));
-        console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(false));
-        console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(true));
-        console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(false));
-        console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(true));
-        console.warn('SetDisplayName = ', user.setDisplayName('lalaal'));
+    //     console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(false));
+    //     console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(true));
+    //     console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(false));
+    //     console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(true));
+    //     console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(false));
+    //     console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(true));
+    //     console.warn('SetDisplayName = ', user.setDisplayName('lalaal'));
 
-        if(user.isCurrentUser() == false)
-        {
-          console.warn('setPermission = ', user.setPermission('attendee'));
-          console.warn('hold = ', user.hold());
+    //     if(user.isCurrentUser() == false)
+    //     {
+    //       console.warn('setPermission = ', user.setPermission('attendee'));
+    //       console.warn('hold = ', user.hold());
 
-          console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
+    //       console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
 
-          //console.warn('unHold = ', user.unHold());
-          console.warn('setPermission = ', user.setPermission('presenter'));
-        }
+    //       //console.warn('unHold = ', user.unHold());
+    //       console.warn('setPermission = ', user.setPermission('presenter'));
+    //     }
 
-        console.warn('SetVideoIngressFilter = ', user.setFocus(true));
-        console.warn('SetVideoIngressFilter = ', user.setFocus(false));
+    //     console.warn('SetVideoIngressFilter = ', user.setFocus(true));
+    //     console.warn('SetVideoIngressFilter = ', user.setFocus(false));
 
-        //console.warn('kick = ', user.kick());
-      });
-    }
-
-
-    console.warn('end end end end end');
+    //     //console.warn('kick = ', user.kick());
+    //   });
+    // }
    });
 
   let desc_test = true;
   call.conference.on('descriptionUpdated', (arg1, arg2) => {
     console.warn('descriptionUpdated desc:', call.conference.description);
-    console.warn('descriptionUpdated startTime:', call.conference.description.startTime);
-    console.warn('descriptionUpdated defaultRtmp:', call.conference.description.defaultRtmp);
-    console.warn('descriptionUpdated lobbyCapable:', call.conference.description.lobbyCapable);
+    // console.warn('descriptionUpdated startTime:', call.conference.description.startTime);
+    // console.warn('descriptionUpdated defaultRtmp:', call.conference.description.defaultRtmp);
+    // console.warn('descriptionUpdated lobbyCapable:', call.conference.description.lobbyCapable);
 
-    console.warn('descriptionUpdated getLock:', call.conference.description.getLock());
-    console.warn('descriptionUpdated getDefaultRtmp:', call.conference.description.getDefaultRtmp());
-    console.warn('descriptionUpdated getShareInfo:');
+    // console.warn('descriptionUpdated getLock:', call.conference.description.getLock());
+    // console.warn('descriptionUpdated getDefaultRtmp:', call.conference.description.getDefaultRtmp());
 
-    call.conference.description.getShareInfo('zh')
-      .then((result) => {
-        console.warn('getShareInfo success', result);
-      })
-      .catch(() => {
-        console.warn('getShareInfo fail');
-      })
+    console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
+
 
     if(desc_test == true)
     {
       desc_test = false;
 
+      // console.warn('descriptionUpdated getShareInfo:');
+      // call.conference.description.getShareInfo('zh')
+      // .then((result) => {
+      //   console.warn('getShareInfo success', result);
+      // })
+      // .catch(() => {
+      //   console.warn('getShareInfo fail');
+      // })
+
+      console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
+
       // lock
-      call.conference.description.setLock({
-        'admissionPolicy' : 'openAuthenticated'
-      })
-      .then(() => {
-        console.warn('descriptionUpdated setLock lock success');
-      })
-      .catch((e) => {
-        console.warn('descriptionUpdated setLock lock fail');
-      });
+      // call.conference.description.setLock({
+      //   'admissionPolicy' : 'closedAuthenticated', // closedAuthenticated | openAuthenticated
+      //   'attendeeByPass'  : false
+      // })
+      // .then(() => {
+      //   console.warn('descriptionUpdated setLock lock success');
+      //   console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
+      // })
+      // .catch((e) => {
+      //   console.warn('descriptionUpdated setLock lock fail');
+      // });
 
 
 
       // unlock
-      call.conference.description.setLock({
-        'admissionPolicy' : 'anonymous'
-      })
-      .then(() => {
-        console.warn('descriptionUpdated setLock unlock success');
-      })
-      .catch((e) => {
-        console.warn('descriptionUpdated setLock unlock fail');
-      });
+      // call.conference.description.setLock({
+      //   'admissionPolicy' : 'anonymous'
+      // })
+      // .then(() => {
+      //   console.warn('descriptionUpdated setLock unlock success');
+      // })
+      // .catch((e) => {
+      //   console.warn('descriptionUpdated setLock unlock fail');
+      // });
     }
   });
 
   let view_test = true;
   call.conference.on('viewUpdated', () => {
-    console.warn('*******************************************');
-    console.warn('viewUpdated view:', call.conference.view);
+    // console.warn('*******************************************');
+    // console.warn('viewUpdated view:', call.conference.view);
 
-    console.warn('viewUpdated getLayout:', call.conference.view.getLayout());
-    console.warn('viewUpdated getInitialFilters:', call.conference.view.getInitialFilters());
-    console.warn('*******************************************');
+    // console.warn('viewUpdated getLayout:', call.conference.view.getLayout());
+    // console.warn('viewUpdated getInitialFilters:', call.conference.view.getInitialFilters());
+    // console.warn('*******************************************');
 
-    if(view_test == true)
-    {
-      view_test = false;
+    // if(view_test == true)
+    // {
+    //   view_test = false;
 
-      call.conference.view.setLayout({
-          'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
-        })
-      .then(() => {
-        console.warn('viewUpdated GetInitialFilters success', );
-      })
-      .catch(() => {
-        console.warn('viewUpdated GetInitialFilters fail', );
-      })
+    //   call.conference.view.setLayout({
+    //       'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
+    //     })
+    //   .then(() => {
+    //     console.warn('viewUpdated GetInitialFilters success', );
+    //   })
+    //   .catch(() => {
+    //     console.warn('viewUpdated GetInitialFilters fail', );
+    //   })
 
-      call.conference.view.setInitialFilters({
-        'role' : 'default',
-        'ingress' : 'block'
-      })
-      .then(() => {
-        console.warn('viewUpdated setInitialFilters success', );
-      })
-      .catch(() => {
-        console.warn('viewUpdated setInitialFilters fail', );
-      })
+    //   call.conference.view.setInitialFilters({
+    //     'role' : 'default',
+    //     'ingress' : 'block'
+    //   })
+    //   .then(() => {
+    //     console.warn('viewUpdated setInitialFilters success', );
+    //   })
+    //   .catch(() => {
+    //     console.warn('viewUpdated setInitialFilters fail', );
+    //   })
 
-      call.conference.view.setInitialFilters({
-        'role' : 'default',
-        'ingress' : 'unblock'
-      })
-      .then(() => {
-        console.warn('viewUpdated setInitialFilters success', );
-      })
-      .catch(() => {
-        console.warn('viewUpdated setInitialFilters fail', );
-      })
-    }
+    //   call.conference.view.setInitialFilters({
+    //     'role' : 'default',
+    //     'ingress' : 'unblock'
+    //   })
+    //   .then(() => {
+    //     console.warn('viewUpdated setInitialFilters success', );
+    //   })
+    //   .catch(() => {
+    //     console.warn('viewUpdated setInitialFilters fail', );
+    //   })
+    // }
   });
 
   let state_test = true;
@@ -247,16 +249,32 @@ async function test(binding, userAgent) {
     }
   });
 
-  call.conference.on('shareInfoUpdated', (arg1, arg2, arg3) => {
-    console.warn('#######################################');
-    console.warn('shareInfoUpdated:', arg1, arg2, arg3);
-    console.warn('#######################################');
+  call.conference.on('recordUpdated', () => {
+    console.warn('recordUpdated ', call.conference.record);
+
+    console.warn('recordUpdated getRecordStatus', call.conference.record.getRecordStatus());
+
+    // call.conference.record.setRecordStatus('start') // start / stop / pause / resume
+    //   .then((result) => {
+    //     console.warn(result);
+    //   })
+    //   .catch((e) => {
+    //     console.warn(e);
+    //   })
   });
 
-  call.conference.on('callStatsUpdated', (arg1, arg2, arg3) => {
-    console.warn('#######################################');
-    console.warn('callStatsUpdated:', arg1, arg2, arg3);
-    console.warn('#######################################');
+  call.conference.on('rtmpUpdated', () => {
+    console.warn('rtmpUpdated ', call.conference.rtmp);
+
+    console.warn('rtmpUpdated getRtmpStatus', call.conference.rtmp.getRtmpStatus());
+
+    // call.conference.rtmp.setRtmpStatus('start') // start / stop / pause / resume
+    //   .then((result) => {
+    //     console.warn(result);
+    //   })
+    //   .catch((e) => {
+    //     console.warn(e);
+    //   })
   });
 
   setTimeout(() => {

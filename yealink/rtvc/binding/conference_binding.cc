@@ -37,10 +37,13 @@ void ConferenceBinding::BuildPrototype(
       .MakeDestroyable()
       .SetMethod("connect", &ConferenceBinding::Connect)
       .SetMethod("disconnect", &ConferenceBinding::Disconnect)
+      .SetMethod("create", &ConferenceBinding::CreateConference)
       .SetProperty("description", &ConferenceBinding::description)
       .SetProperty("view", &ConferenceBinding::view)
       .SetProperty("state", &ConferenceBinding::state)
       .SetProperty("users", &ConferenceBinding::users)
+      .SetProperty("rtmp", &ConferenceBinding::rtmp)
+      .SetProperty("record", &ConferenceBinding::record)
       .SetProperty("isInProgress", &ConferenceBinding::isInProgress)
       .SetProperty("isEstablished", &ConferenceBinding::isEstablished)
       .SetProperty("isEnded", &ConferenceBinding::isEnded)
@@ -72,6 +75,12 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
 
   users_ = ConferenceUsersBinding::Create(isolate, controller_.get());
   v8_users_.Reset(isolate, users_.ToV8());
+
+  rtmp_ = ConferenceRtmpBinding::Create(isolate, controller_.get());
+  v8_rtmp_.Reset(isolate, rtmp_.ToV8());
+
+  record_ = ConferenceRecordBinding::Create(isolate, controller_.get());
+  v8_record_.Reset(isolate, record_.ToV8());
 }
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
                                      yealink::RoomController* controller)
@@ -92,6 +101,12 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
 
   users_ = ConferenceUsersBinding::Create(isolate, controller_.get());
   v8_users_.Reset(isolate, users_.ToV8());
+
+  rtmp_ = ConferenceRtmpBinding::Create(isolate, controller_.get());
+  v8_rtmp_.Reset(isolate, rtmp_.ToV8());
+
+  record_ = ConferenceRecordBinding::Create(isolate, controller_.get());
+  v8_record_.Reset(isolate, record_.ToV8());
 }
 
 ConferenceBinding::~ConferenceBinding() {
@@ -114,6 +129,8 @@ void ConferenceBinding::SetController(RoomController* controller) {
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
+  rtmp_->UpdateRoomController(controller_.get());
+  record_->UpdateRoomController(controller_.get());
 
   description_->UpdatePendingHandler(&pending_requests_);
   users_->UpdateStatsPendingHandler(&stats_pending_requests_);
@@ -133,6 +150,8 @@ void ConferenceBinding::SetController(
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
+  rtmp_->UpdateRoomController(controller_.get());
+  record_->UpdateRoomController(controller_.get());
 
   description_->UpdatePendingHandler(&pending_requests_);
   users_->UpdateStatsPendingHandler(&stats_pending_requests_);
@@ -172,6 +191,38 @@ void ConferenceBinding::Disconnect(mate::Arguments* args) {
     controller_->Close();
   else
     controller_->Leave("");
+}
+
+void ConferenceBinding::CreateConference(mate::Dictionary dict,
+                                         mate::Arguments* args) {
+  DCHECK(sip_client_);
+
+  std::string conversation_id = base::UnguessableToken::Create().ToString();
+  std::string subject;
+
+  if (!dict.Get("subject", &subject)) {
+    args->ThrowError("Conference subject & type is required.");
+    return;
+  }
+  dict.Get("conversationId", &conversation_id);
+
+  yealink::RequestResult result;
+  yealink::rtvc::ResponseInfo response;
+  yealink::Array<yealink::SStringA> params;
+
+  std::unique_ptr<yealink::RoomController> controller(
+      new yealink::RoomController());
+
+  ConferenceResult ret;
+
+  controller->Init();
+  controller->SetConversationId(conversation_id.c_str());
+
+  ret =
+      controller->CreateTempMeeting(sip_client_.get(), subject.c_str(), params);
+
+  SetController(std::move(controller));
+  conversation_id_ = conversation_id;
 }
 
 bool ConferenceBinding::isInProgress() {
@@ -218,6 +269,20 @@ v8::Local<v8::Value> ConferenceBinding::users() {
   }
   return v8::Local<v8::Value>::New(isolate(), v8_users_);
 }
+v8::Local<v8::Value> ConferenceBinding::rtmp() {
+  DCHECK(rtmp_.get());
+  if (v8_rtmp_.IsEmpty()) {
+    return v8::Null(isolate());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_rtmp_);
+}
+v8::Local<v8::Value> ConferenceBinding::record() {
+  DCHECK(record_.get());
+  if (v8_record_.IsEmpty()) {
+    return v8::Null(isolate());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_record_);
+}
 
 void ConferenceBinding::OnConnectSuccess() {
   Context* context = Context::Instance();
@@ -233,6 +298,13 @@ void ConferenceBinding::OnConnectSuccess() {
   users_->UpdateUsers(empty, empty, empty, true);
 
   Emit("connected");
+
+  Emit("descriptionUpdated");
+  Emit("stateUpdated");
+  Emit("usersUpdated");
+  Emit("viewUpdated");
+  Emit("rtmpUpdated");
+  Emit("recordUpdated");
 }
 void ConferenceBinding::OnConnectFailure(const char* c_reason) {
   conversation_id_ = "";
@@ -283,6 +355,13 @@ void ConferenceBinding::OnConferenceStateChange(
 void ConferenceBinding::OnConferenceViewChange(
     const yealink::ConferenceView& view) {
   Emit("viewUpdated");
+}
+void ConferenceBinding::OnRtmpStateChange(const RoomRtmpState& rtmpState) {
+  Emit("rtmpUpdated");
+}
+void ConferenceBinding::OnRecordUsersChange(
+    const RoomRecordUsers& recordUsers) {
+  Emit("recordUpdated");
 }
 
 void ConferenceBinding::OnUserChange(

@@ -8,6 +8,8 @@
 #include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
+#include "yealink/rtvc/api/conference_record.h"
+#include "yealink/rtvc/api/conference_rtmp.h"
 #include "yealink/rtvc/api/conference_state.h"
 #include "yealink/rtvc/api/conference_user.h"
 #include "yealink/rtvc/api/conference_view.h"
@@ -334,6 +336,11 @@ struct StructTraits<ResponseInfo> {
 };
 
 template <>
+struct StructTraits<HttpResponseInfo> {
+  static bool From(HttpResponseInfo& out, const yealink::RoomHttpResult& val);
+};
+
+template <>
 struct StructTraits<UserProtocolType> {
   static bool From(UserProtocolType& out,
                    const yealink::MemberInfo::Protocol& val);
@@ -443,6 +450,36 @@ struct StructTraits<UserMediaDataInfo> {
 template <>
 struct StructTraits<UserStatisticsInfo> {
   static bool From(UserStatisticsInfo& out, const yealink::UserMediaInfo& val);
+};
+
+template <>
+struct StructTraits<RecordStatusType> {
+  static bool From(RecordStatusType& out, const yealink::RoomRecordStatus& val);
+};
+
+template <>
+struct StructTraits<RecordUserInfo> {
+  static bool From(RecordUserInfo& out, const yealink::RoomRecordUserInfo& val);
+};
+
+template <>
+struct StructTraits<RecordUsers> {
+  static bool From(RecordUsers& out, const yealink::RoomRecordUsers& val);
+};
+
+template <>
+struct StructTraits<RtmpStatusType> {
+  static bool From(RtmpStatusType& out, const yealink::RoomRtmpStatus& val);
+};
+
+template <>
+struct StructTraits<RtmpUserInfo> {
+  static bool From(RtmpUserInfo& out, const yealink::RoomRtmpUserInfo& val);
+};
+
+template <>
+struct StructTraits<RtmpInfo> {
+  static bool From(RtmpInfo& out, const yealink::RoomRtmpState& val);
 };
 
 // view

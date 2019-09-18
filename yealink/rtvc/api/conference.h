@@ -13,10 +13,16 @@ enum class RequesrResult {
   kInvalidParam,
   kSipFailure,
   kInvalid,
+  kHttpFailure
 };
 
 struct ResponseInfo {
   int64_t request_id;
+  RequesrResult result;
+};
+
+struct HttpResponseInfo {
+  int32_t biz_code;
   RequesrResult result;
 };
 
