@@ -36,7 +36,14 @@ class ConferenceUsersBinding
                    const Array<RoomMember>& modifyMemberList,
                    const Array<RoomMember>& deleteMemberList,
                    bool force);
-  void UpdateStatsPendingHandler(std::unordered_map<std::string, Promise>* handler);
+  void UpdateStatsPendingHandler(
+      std::unordered_map<std::string, Promise>* handler);
+
+  v8::Local<v8::Value> currentUser();
+  std::vector<v8::Local<v8::Value>> userList();
+  std::vector<v8::Local<v8::Value>> addedUser();
+  std::vector<v8::Local<v8::Value>> deletedUser();
+  std::vector<v8::Local<v8::Value>> updatedUser();
 
  protected:
   ConferenceUsersBinding(v8::Isolate* isolate,
@@ -44,13 +51,11 @@ class ConferenceUsersBinding
   ConferenceUsersBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceUsersBinding() override;
 
-  v8::Local<v8::Value> CurrentUser();
-  std::vector<v8::Local<v8::Value>> UserList();
-
   v8::Local<v8::Promise> Invite(mate::Arguments* args);
   v8::Local<v8::Promise> InviteThird(std::string uri, std::string uid);
   v8::Local<v8::Promise> InviteBatch(std::vector<std::string> uri);
   v8::Local<v8::Promise> Allow(std::vector<std::string> entities, bool granted);
+  v8::Local<v8::Promise> HandUp(bool agreed);
 
  private:
   void OnCommandCompeleted(Promise promise);
@@ -59,16 +64,13 @@ class ConferenceUsersBinding
   void DoInviteBatch(std::vector<std::string> uri);
   void DoAllow(std::vector<std::string> entities, bool granted);
 
-  v8::Global<v8::Value> v8_current_user_;
-  mate::Handle<ConferenceUserBinding> current_user_;
-
   std::unordered_map<std::string, mate::Handle<ConferenceUserBinding>>
       user_list_;
   std::unordered_map<std::string, v8::Global<v8::Value>> v8_user_list_;
 
-  std::vector<std::string> update_list_;
-  std::vector<std::string> delete_list_;
-  std::vector<std::string> add_list_;
+  std::unordered_map<std::string, v8::Global<v8::Value>> v8_updated_list_;
+  std::unordered_map<std::string, v8::Global<v8::Value>> v8_deleted_list_;
+  std::unordered_map<std::string, v8::Global<v8::Value>> v8_added_list_;
 
   RoomController* room_controller_;
 

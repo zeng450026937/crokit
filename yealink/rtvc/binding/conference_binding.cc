@@ -301,7 +301,6 @@ void ConferenceBinding::OnConnectSuccess() {
 
   Emit("descriptionUpdated");
   Emit("stateUpdated");
-  Emit("usersUpdated");
   Emit("viewUpdated");
   Emit("rtmpUpdated");
   Emit("recordUpdated");
@@ -369,10 +368,17 @@ void ConferenceBinding::OnUserChange(
     const Array<RoomMember>& modifyMemberList,
     const Array<RoomMember>& deleteMemberList) {
   users_->UpdateUsers(newMemberList, modifyMemberList, deleteMemberList, false);
+
   Emit("usersUpdated");
-  Emit("user:added");
-  Emit("user:updated");
-  Emit("user:removed");
+
+  if ((int)newMemberList.Size() > 0)
+    Emit("user:added");
+
+  if ((int)modifyMemberList.Size() > 0)
+    Emit("user:updated");
+
+  if ((int)deleteMemberList.Size() > 0)
+    Emit("user:removed");
 }
 void ConferenceBinding::OnGetUserCallStats(
     const RoomMember& member,

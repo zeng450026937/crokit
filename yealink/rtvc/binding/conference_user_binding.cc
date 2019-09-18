@@ -232,7 +232,7 @@ std::vector<UserEndpointInfo> ConferenceUserBinding::endpoint() {
 }
 
 bool ConferenceUserBinding::IsCurrentUser() {
-  bool value;
+  bool value = false;
 
   ConvertFrom(value, user_controller_.IsCurrentUser());
 

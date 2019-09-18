@@ -31,8 +31,11 @@ void ConferenceUsersBinding::BuildPrototype(
   prototype->SetClassName(mate::StringToV8(isolate, "ConferenceUsers"));
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
-      .SetProperty("currentUser", &ConferenceUsersBinding::CurrentUser)
-      .SetProperty("userList", &ConferenceUsersBinding::UserList)
+      .SetProperty("currentUser", &ConferenceUsersBinding::currentUser)
+      .SetProperty("userList", &ConferenceUsersBinding::userList)
+      .SetProperty("addedUser", &ConferenceUsersBinding::addedUser)
+      .SetProperty("deletedUser", &ConferenceUsersBinding::deletedUser)
+      .SetProperty("updatedUser", &ConferenceUsersBinding::updatedUser)
       .SetMethod("invite", &ConferenceUsersBinding::Invite)
       .SetMethod("inviteThird", &ConferenceUsersBinding::InviteThird)
       .SetMethod("inviteBatch", &ConferenceUsersBinding::InviteBatch)
@@ -55,22 +58,19 @@ void ConferenceUsersBinding::UpdateUsers(
     bool force) {
   uint32_t i;
 
+  v8_added_list_.clear();
+  v8_updated_list_.clear();
+  v8_deleted_list_.clear();
+
   if (force == true) {
     Array<RoomMember> memberList =
         room_controller_->GetMemberManager().GetMemberList();
     RoomMember owner = room_controller_->GetMemberManager().GetOwner();
 
     // v8::HandleScope handle_scope(isolate());
-
-    current_user_ = ConferenceUserBinding::Create(isolate(), owner,
-                                                  stats_pending_requests_);
-    v8_current_user_.Reset(isolate(), current_user_.ToV8());
-
     for (i = 0; i < memberList.Size(); i++) {
       std::string entity;
       ConvertFrom(entity, memberList[i].GetMemberInfo().entity);
-
-      add_list_.push_back(entity);
 
       mate::Handle<ConferenceUserBinding> new_user =
           ConferenceUserBinding::Create(isolate(), memberList[i],
@@ -80,11 +80,13 @@ void ConferenceUsersBinding::UpdateUsers(
 
       user_list_.emplace(entity, new_user);
       v8_user_list_.emplace(entity, std::move(v8_new_user));
+
+      v8::Global<v8::Value> v8_add_user;
+      v8_add_user.Reset(isolate(), new_user.ToV8());
+      v8_added_list_.emplace(entity, std::move(v8_add_user));
     }
   } else {
     if (newMemberList.Size() > 0) {
-      add_list_.clear();
-
       for (i = 0; i < newMemberList.Size(); i++) {
         std::string entity;
         ConvertFrom(entity, newMemberList[i].GetMemberInfo().entity);
@@ -96,39 +98,50 @@ void ConferenceUsersBinding::UpdateUsers(
                                           stats_pending_requests_);
         v8::Global<v8::Value> v8_new_user;
         v8_new_user.Reset(isolate(), new_user.ToV8());
-
         user_list_.emplace(entity, new_user);
         v8_user_list_.emplace(entity, std::move(v8_new_user));
 
-        add_list_.push_back(entity);
+        v8::Global<v8::Value> v8_add_user;
+        v8_add_user.Reset(isolate(), new_user.ToV8());
+        v8_added_list_.emplace(entity, std::move(v8_add_user));
       }
     }
 
     if (modifyMemberList.Size() > 0) {
-      update_list_.clear();
-
       for (i = 0; i < modifyMemberList.Size(); i++) {
         std::string entity;
+        yealink::RoomMember member = modifyMemberList[i];
+
         ConvertFrom(entity, modifyMemberList[i].GetMemberInfo().entity);
 
-        update_list_.push_back(entity);
+        mate::Handle<ConferenceUserBinding> update_user =
+            ConferenceUserBinding::Create(isolate(), member,
+                                          stats_pending_requests_);
+        v8::Global<v8::Value> v8_update_user;
+        v8_update_user.Reset(isolate(), update_user.ToV8());
+
+        v8_updated_list_.emplace(entity, std::move(v8_update_user));
       }
     }
 
     if (deleteMemberList.Size() > 0) {
-      delete_list_.clear();
-
       for (i = 0; i < deleteMemberList.Size(); i++) {
         std::string entity;
         ConvertFrom(entity, deleteMemberList[i].GetMemberInfo().entity);
+
+        yealink::RoomMember member = deleteMemberList[i];
+        mate::Handle<ConferenceUserBinding> delete_user =
+            ConferenceUserBinding::Create(isolate(), member,
+                                          stats_pending_requests_);
+        v8::Global<v8::Value> v8_delete_user;
+        v8_delete_user.Reset(isolate(), delete_user.ToV8());
+        v8_deleted_list_.emplace(entity, std::move(v8_delete_user));
 
         auto iter = user_list_.find(entity);
 
         if (iter != user_list_.end()) {
           user_list_.erase(entity);
           v8_user_list_.erase(entity);
-
-          delete_list_.push_back(entity);
         }
       }
     }
@@ -147,21 +160,70 @@ ConferenceUsersBinding::ConferenceUsersBinding(v8::Isolate* isolate,
     : weak_factory_(this), stats_pending_requests_(nullptr) {}
 ConferenceUsersBinding::~ConferenceUsersBinding() = default;
 
-v8::Local<v8::Value> ConferenceUsersBinding::CurrentUser() {
-  DCHECK(current_user_.get());
+v8::Local<v8::Value> ConferenceUsersBinding::currentUser() {
+  std::string entity;
+  v8::Global<v8::Value> value;
 
-  if (v8_current_user_.IsEmpty()) {
-    v8_current_user_.Reset(isolate(), current_user_.ToV8());
+  if (room_controller_) {
+    ConvertFrom(
+        entity,
+        room_controller_->GetMemberManager().GetOwner().GetMemberInfo().entity);
   }
-  return v8::Local<v8::Value>::New(isolate(), v8_current_user_);
+
+  auto iter = v8_user_list_.find(entity);
+
+  if (iter != v8_user_list_.end()) {
+    return v8::Local<v8::Value>::New(isolate(), iter->second);
+  }
+
+  return v8::Local<v8::Value>::New(isolate(), value);
 }
 
-std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::UserList() {
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::userList() {
   std::vector<v8::Local<v8::Value>> userlist;
 
   auto iter = v8_user_list_.begin();
 
   while (iter != v8_user_list_.end()) {
+    userlist.push_back(v8::Local<v8::Value>::New(isolate(), iter->second));
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::addedUser() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = v8_added_list_.begin();
+
+  while (iter != v8_added_list_.end()) {
+    userlist.push_back(v8::Local<v8::Value>::New(isolate(), iter->second));
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::deletedUser() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = v8_deleted_list_.begin();
+
+  while (iter != v8_deleted_list_.end()) {
+    userlist.push_back(v8::Local<v8::Value>::New(isolate(), iter->second));
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::updatedUser() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = v8_updated_list_.begin();
+
+  while (iter != v8_updated_list_.end()) {
     userlist.push_back(v8::Local<v8::Value>::New(isolate(), iter->second));
     ++iter;
   }
@@ -245,7 +307,7 @@ v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
     bool granted) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  yealink::Array<RoomMember> params;  // todo get member control
+  yealink::Array<RoomMember> params;
 
   for (int i = 0; i < (int)entities.size(); i++) {
     auto iter = user_list_.find(entities[i]);
@@ -291,6 +353,26 @@ void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,
     }
   }
 }
+
+// v8::Local<v8::Promise> ConferenceUsersBinding::HandUp(bool agreed) {
+//   Promise promise(isolate());
+//   v8::Local<v8::Promise> handle = promise.GetHandle();
+//   HttpResponseInfo response;
+
+//   if (room_controller_) {
+//     if (agreed == true) {
+//       ConvertFrom(response,
+//                   room_controller_->GetMemberManager().RejectAllHandUp());
+//     } else {
+//       ConvertFrom(response,
+//                   room_controller_->GetMemberManager().RejectAllHandUp());
+//     }
+//   } else {
+//     std::move(promise).Reject();
+//   }
+
+//   return handle;
+// }
 
 void ConferenceUsersBinding::OnCommandCompeleted(Promise promise) {
   std::move(promise).Resolve(true);
