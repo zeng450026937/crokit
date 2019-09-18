@@ -299,11 +299,11 @@ void ConferenceBinding::OnConnectSuccess() {
 
   Emit("connected");
 
-  Emit("descriptionUpdated");
-  Emit("stateUpdated");
-  Emit("viewUpdated");
-  Emit("rtmpUpdated");
-  Emit("recordUpdated");
+  Emit("descriptionUpdated", description());
+  Emit("stateUpdated", state());
+  Emit("viewUpdated", view());
+  Emit("rtmpUpdated", rtmp());
+  Emit("recordUpdated", record());
 }
 void ConferenceBinding::OnConnectFailure(const char* c_reason) {
   conversation_id_ = "";
@@ -344,23 +344,22 @@ void ConferenceBinding::OnSubscriptionDisconnect() {
   controller_->ReconnectSubscriptionForce();
 }
 void ConferenceBinding::OnConferenceDescriptionChange(
-    const yealink::ConferenceDescription& desc) {
-  Emit("descriptionUpdated");
+    const yealink::ConferenceDescription&) {
+  Emit("descriptionUpdated", description());
 }
 void ConferenceBinding::OnConferenceStateChange(
-    const yealink::ConferenceState& state) {
-  Emit("stateUpdated");
+    const yealink::ConferenceState&) {
+  Emit("stateUpdated", state());
 }
-void ConferenceBinding::OnConferenceViewChange(
-    const yealink::ConferenceView& view) {
-  Emit("viewUpdated");
+void ConferenceBinding::OnConferenceViewChange(const yealink::ConferenceView&) {
+  Emit("viewUpdated", view());
 }
-void ConferenceBinding::OnRtmpStateChange(const RoomRtmpState& rtmpState) {
-  Emit("rtmpUpdated");
+void ConferenceBinding::OnRtmpStateChange(const RoomRtmpState&) {
+  Emit("rtmpUpdated", rtmp());
 }
 void ConferenceBinding::OnRecordUsersChange(
-    const RoomRecordUsers& recordUsers) {
-  Emit("recordUpdated");
+    const RoomRecordUsers&) {
+  Emit("recordUpdated", record());
 }
 
 void ConferenceBinding::OnUserChange(
@@ -369,16 +368,16 @@ void ConferenceBinding::OnUserChange(
     const Array<RoomMember>& deleteMemberList) {
   users_->UpdateUsers(newMemberList, modifyMemberList, deleteMemberList, false);
 
-  Emit("usersUpdated");
+  Emit("usersUpdated", users());
 
   if ((int)newMemberList.Size() > 0)
-    Emit("user:added");
+    Emit("user:added", users_->addedUser());
 
   if ((int)modifyMemberList.Size() > 0)
-    Emit("user:updated");
+    Emit("user:updated", users_->updatedUser());
 
   if ((int)deleteMemberList.Size() > 0)
-    Emit("user:removed");
+    Emit("user:removed", users_->deletedUser());
 }
 void ConferenceBinding::OnGetUserCallStats(
     const RoomMember& member,
