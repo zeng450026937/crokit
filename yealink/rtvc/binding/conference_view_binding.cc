@@ -131,6 +131,23 @@ std::vector<ViewFilterRuleInfo> ConferenceViewBinding::GetInitialFilters() {
   return value;
 }
 
+// v8::Local<v8::Promise> ConferenceViewBinding::SetSpeakMode(
+//     ViewSpeakMode params) {
+//   Promise promise(isolate());
+//   v8::Local<v8::Promise> handle = promise.GetHandle();
+//   HttpResponseInfo response;
+
+//   if (room_controller_) {
+//     ConvertFrom(response, room_controller_->GetViewComponent().SetSpeakMode(
+//                               (yealink::ConferenceViewSpeakMode)params));
+//     std::move(promise).Resolve(response);
+//   } else {
+//     std::move(promise).Reject();
+//   }
+
+//   return handle;
+// }
+
 void ConferenceViewBinding::OnCommandCompeleted(Promise promise) {
   std::move(promise).Resolve(true);
 }
