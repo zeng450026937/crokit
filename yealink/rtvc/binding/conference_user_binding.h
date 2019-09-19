@@ -36,6 +36,15 @@ class ConferenceUserBinding
   void UpdateStatsPendingHandler(
       std::unordered_map<std::string, Promise>* handler);
 
+  std::string entity();
+  bool IsOrganizer();
+  bool IsPresenter();
+  bool IsAttendee();
+  bool IsCastViewer();
+  bool IsDemonstrator();
+  bool IsPresenterDemonstrator();
+  bool IsOnHold();
+
  protected:
   ConferenceUserBinding(v8::Isolate* isolate,
                         yealink::RoomMember& controller,
@@ -43,7 +52,6 @@ class ConferenceUserBinding
   ConferenceUserBinding(v8::Isolate* isolate, v8::Local<v8::Object> wrapper);
   ~ConferenceUserBinding() override;
 
-  std::string entity();
   std::string displayText();
   std::string displayNumber();
   std::string displayTextPinyin();
@@ -60,13 +68,6 @@ class ConferenceUserBinding
   bool IsCurrentUser();
   bool IsRtmp();
   bool IsSIP();
-  bool IsOrganizer();
-  bool IsPresenter();
-  bool IsAttendee();
-  bool IsCastViewer();
-  bool IsDemonstrator();
-  bool IsPresenterDemonstrator();
-  bool IsOnHold();
   bool IsSharing();
   bool IsFocus();
   bool HasFECC();

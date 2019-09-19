@@ -36,6 +36,11 @@ void ConferenceUsersBinding::BuildPrototype(
       .SetProperty("addedUser", &ConferenceUsersBinding::addedUser)
       .SetProperty("deletedUser", &ConferenceUsersBinding::deletedUser)
       .SetProperty("updatedUser", &ConferenceUsersBinding::updatedUser)
+      .SetProperty("presenters", &ConferenceUsersBinding::presenters)
+      .SetProperty("attendees", &ConferenceUsersBinding::attendees)
+      .SetProperty("onHoldUsers", &ConferenceUsersBinding::onHoldUsers)
+      .SetProperty("demonstrators", &ConferenceUsersBinding::demonstrators)
+      .SetProperty("castviewers", &ConferenceUsersBinding::castviewers)
       .SetMethod("invite", &ConferenceUsersBinding::Invite)
       .SetMethod("inviteThird", &ConferenceUsersBinding::InviteThird)
       .SetMethod("inviteBatch", &ConferenceUsersBinding::InviteBatch)
@@ -225,6 +230,116 @@ std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::updatedUser() {
 
   while (iter != v8_updated_list_.end()) {
     userlist.push_back(v8::Local<v8::Value>::New(isolate(), iter->second));
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::presenters() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = user_list_.begin();
+
+  while (iter != user_list_.end()) {
+    mate::Handle<ConferenceUserBinding> user = iter->second;
+
+    if (user->IsPresenter() == true && user->IsOnHold() == false) {
+      auto v8_iter = v8_user_list_.find(user->entity());
+
+      if (v8_iter != v8_user_list_.end()) {
+        userlist.push_back(
+            v8::Local<v8::Value>::New(isolate(), v8_iter->second));
+      }
+    }
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::attendees() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = user_list_.begin();
+
+  while (iter != user_list_.end()) {
+    mate::Handle<ConferenceUserBinding> user = iter->second;
+
+    if (user->IsAttendee() == true && user->IsOnHold() == false) {
+      auto v8_iter = v8_user_list_.find(user->entity());
+
+      if (v8_iter != v8_user_list_.end()) {
+        userlist.push_back(
+            v8::Local<v8::Value>::New(isolate(), v8_iter->second));
+      }
+    }
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::onHoldUsers() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = user_list_.begin();
+
+  while (iter != user_list_.end()) {
+    mate::Handle<ConferenceUserBinding> user = iter->second;
+
+    if (user->IsOnHold() == true) {
+      auto v8_iter = v8_user_list_.find(user->entity());
+
+      if (v8_iter != v8_user_list_.end()) {
+        userlist.push_back(
+            v8::Local<v8::Value>::New(isolate(), v8_iter->second));
+      }
+    }
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::demonstrators() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = user_list_.begin();
+
+  while (iter != user_list_.end()) {
+    mate::Handle<ConferenceUserBinding> user = iter->second;
+
+    if (user->IsDemonstrator() == true && user->IsOnHold() == false) {
+      auto v8_iter = v8_user_list_.find(user->entity());
+
+      if (v8_iter != v8_user_list_.end()) {
+        userlist.push_back(
+            v8::Local<v8::Value>::New(isolate(), v8_iter->second));
+      }
+    }
+    ++iter;
+  }
+
+  return userlist;
+}
+
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::castviewers() {
+  std::vector<v8::Local<v8::Value>> userlist;
+
+  auto iter = user_list_.begin();
+
+  while (iter != user_list_.end()) {
+    mate::Handle<ConferenceUserBinding> user = iter->second;
+
+    if (user->IsCastViewer() == true && user->IsOnHold() == false) {
+      auto v8_iter = v8_user_list_.find(user->entity());
+
+      if (v8_iter != v8_user_list_.end()) {
+        userlist.push_back(
+            v8::Local<v8::Value>::New(isolate(), v8_iter->second));
+      }
+    }
     ++iter;
   }
 

@@ -16,9 +16,9 @@ namespace rtvc {
 namespace {
 unsigned char falsy_value = 0;
 unsigned char truthy_value = 0;
-char* default_useragent = "Yealink VCD-H5";
-char* default_client_info = "Yealink VCD-H5";
-char* default_sitename = "Yealink VCD-H5";
+char* default_useragent = (char*)"Yealink VCD-H5";
+char* default_client_info = (char*)"Yealink VCD-H5";
+char* default_sitename = (char*)"Yealink VCD-H5";
 }  // namespace
 
 // static
