@@ -22,7 +22,9 @@ char* default_sitename = (char*)"Yealink VCD-H5";
 }  // namespace
 
 // static
-mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
+mate::WrappableBase* UserAgentBinding::New(
+    mate::Handle<ConnectorBinding> connector,
+    mate::Arguments* args) {
   UserAgent::Config config;
   mate::Dictionary options;
 
@@ -45,7 +47,8 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
     options.Get("ipv6Only", &config.ipv6_only);
   }
 
-  return new UserAgentBinding(args->isolate(), args->GetThis(), config);
+  return new UserAgentBinding(args->isolate(), args->GetThis(),
+                              connector->GetAccessAgent(), config);
 }
 
 // static
@@ -74,10 +77,12 @@ void UserAgentBinding::BuildPrototype(
 
 UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
+                                   yealink::AccessAgent* access_agent,
                                    UserAgent::Config config)
     : config_(std::move(config)),
       sip_client_(yealink::CreateSIPClient()),
       sip_client_weak_factory_(sip_client_),
+      access_agent_(access_agent),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
 
@@ -327,7 +332,7 @@ void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
 
 void UserAgentBinding::OnOffer(const SIPMessageReadonly& message,
                                SIPInviteAgent** agent) {
-  auto call = CallBinding::Create(isolate(), this, true);
+  auto call = CallBinding::Create(isolate(), this, access_agent_);
   *agent = call->GetMeeting()->MediaCallAgent();
 }
 

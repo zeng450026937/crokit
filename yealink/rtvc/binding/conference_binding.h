@@ -35,7 +35,8 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
 
   static mate::Handle<ConferenceBinding> Create(
       v8::Isolate* isolate,
-      yealink::RoomController* controller);
+      yealink::RoomController* controller,
+      UserAgentBinding* user_agent);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
@@ -49,7 +50,9 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   ConferenceBinding(v8::Isolate* isolate,
                     v8::Local<v8::Object> wrapper,
                     mate::Handle<UserAgentBinding> user_agent);
-  ConferenceBinding(v8::Isolate* isolate, yealink::RoomController* controller);
+  ConferenceBinding(v8::Isolate* isolate,
+                    yealink::RoomController* controller,
+                    UserAgentBinding* user_agent);
   ~ConferenceBinding() override;
 
   void Connect(mate::Dictionary dict, mate::Arguments* args);

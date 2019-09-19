@@ -37,7 +37,7 @@ async function test(binding) {
 
   const connector = bootstrap.getConnector(id);
 
-  useragent_test(binding, {username, password, domain});
+  useragent_test(binding, connector, {username, password, domain});
   //schedule_test(binding, connector);
   //contact_test(binding, connector);
 }

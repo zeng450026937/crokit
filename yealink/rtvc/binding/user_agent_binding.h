@@ -4,6 +4,7 @@
 #include "base/memory/weak_ptr.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/user_agent.h"
+#include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/sip_poller.h"
@@ -19,14 +20,18 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                          public yealink::AuthHandler,
                          public yealink::SIPClientHandler {
  public:
-  static mate::WrappableBase* New(mate::Arguments* args);
+  static mate::WrappableBase* New(mate::Handle<ConnectorBinding> connector,
+                                  mate::Arguments* args);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
+  AccessAgent* GetAccessAgent() { return access_agent_; }
+
  protected:
   UserAgentBinding(v8::Isolate* isolate,
                    v8::Local<v8::Object> wrapper,
+                   yealink::AccessAgent* access_agent,
                    UserAgent::Config config);
   ~UserAgentBinding() override;
 
@@ -90,6 +95,8 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   yealink::SIPClient* sip_client_;
   base::WeakPtrFactory<yealink::SIPClient> sip_client_weak_factory_;
   std::unique_ptr<SIPPoller> sip_poller_;
+
+  yealink::AccessAgent* access_agent_;
 
   base::WeakPtrFactory<UserAgentBinding> weak_factory_;
 };

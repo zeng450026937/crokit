@@ -23,9 +23,10 @@ mate::WrappableBase* ConferenceBinding::New(
 
 mate::Handle<ConferenceBinding> ConferenceBinding::Create(
     v8::Isolate* isolate,
-    yealink::RoomController* controller) {
-  return mate::CreateHandle(isolate,
-                            new ConferenceBinding(isolate, controller));
+    yealink::RoomController* controller,
+    UserAgentBinding* user_agent) {
+  return mate::CreateHandle(
+      isolate, new ConferenceBinding(isolate, controller, user_agent));
 }
 
 // static
@@ -83,9 +84,11 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
   v8_record_.Reset(isolate, record_.ToV8());
 }
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
-                                     yealink::RoomController* controller)
+                                     yealink::RoomController* controller,
+                                     UserAgentBinding* user_agent)
     : locally_generated_controller_(false),
       controller_(controller),
+      user_agent_(user_agent->GetWeakPtr()),
       weak_factory_(this) {
   Init(isolate);
 
@@ -177,6 +180,8 @@ void ConferenceBinding::Connect(mate::Dictionary dict, mate::Arguments* args) {
   std::unique_ptr<yealink::RoomController> controller(
       new yealink::RoomController());
 
+  controller->SetAccessAgent(user_agent_->GetAccessAgent());
+
   controller->Join(sip_client_.get(), params);
 
   SetController(std::move(controller));
@@ -216,6 +221,7 @@ void ConferenceBinding::CreateConference(mate::Dictionary dict,
   ConferenceResult ret;
 
   controller->Init();
+  controller->SetAccessAgent(user_agent_->GetAccessAgent());
   controller->SetConversationId(conversation_id.c_str());
 
   ret =
@@ -357,8 +363,7 @@ void ConferenceBinding::OnConferenceViewChange(const yealink::ConferenceView&) {
 void ConferenceBinding::OnRtmpStateChange(const RoomRtmpState&) {
   Emit("rtmpUpdated", rtmp());
 }
-void ConferenceBinding::OnRecordUsersChange(
-    const RoomRecordUsers&) {
+void ConferenceBinding::OnRecordUsersChange(const RoomRecordUsers&) {
   Emit("recordUpdated", record());
 }
 

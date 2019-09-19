@@ -165,7 +165,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
   InitWith(isolate, wrapper);
   meeting_->SetObserver(this);
   controller_ = meeting_->Room();
-  conference_ = ConferenceBinding::Create(isolate, nullptr);
+  conference_ = ConferenceBinding::Create(isolate, nullptr, user_agent_.get());
   v8_conference_.Reset(isolate, conference_.ToV8());
 }
 
@@ -187,7 +187,7 @@ CallBinding::CallBinding(v8::Isolate* isolate,
   Init(isolate);
   meeting_->SetObserver(this);
   controller_ = meeting_->Room();
-  conference_ = ConferenceBinding::Create(isolate, nullptr);
+  conference_ = ConferenceBinding::Create(isolate, nullptr, user_agent_.get());
   v8_conference_.Reset(isolate, conference_.ToV8());
 }
 
@@ -949,7 +949,7 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   }
   // ensure conference is not nullptr
   if (conference_.IsEmpty()) {
-    conference_ = ConferenceBinding::Create(isolate(), nullptr);
+    conference_ = ConferenceBinding::Create(isolate(), nullptr, user_agent_.get());
     v8_conference_.Reset(isolate(), conference_.ToV8());
   }
 
@@ -957,6 +957,7 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
 
   controller_ = controller;
   controller_->AddObserver(this);
+  controller_->SetAccessAgent(user_agent_->GetAccessAgent());
 
   // add interface on conference binding to allow
   // setting controller later(after constructor)

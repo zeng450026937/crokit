@@ -1,12 +1,13 @@
 const call_test = require('./call-test');
+const control_test = require('./controll-test');
 
-async function test(binding, account) {
+async function test(binding, connector, account) {
   console.log('UserAgent test');
 
   const { UserAgent } = binding;
   const { username, password, domain } = account;
 
-  const userAgent = new UserAgent({
+  const userAgent = new UserAgent(connector, {
     username, password, domain,
   });
 
