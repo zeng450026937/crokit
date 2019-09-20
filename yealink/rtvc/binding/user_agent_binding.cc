@@ -309,9 +309,22 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
       registered_ = false;
       Emit("registerFailed");
       break;
-    case yealink::AEID_UPDATED:
-      Emit("reconnectNeeded");
+    case yealink::AEID_UPDATED: {
+      size_t i;
+      int bizCode = 900599; // default unknown code
+      std::string strScheme;
+
+      for (i = 0; i < event.reasons.Size(); i++) {
+        strScheme = event.reasons[i].strScheme.ConstData();
+        if (strScheme.find("APOLLO-BIZ", 0) != -1) {
+          bizCode = event.reasons[i].nCode;
+          break;
+        }
+      }
+
+      Emit("reconnectNeeded", bizCode);
       break;
+    }
     default:
       NOTREACHED();
       break;

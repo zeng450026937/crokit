@@ -65,6 +65,10 @@ async function test(binding, connector, account) {
     //call.answer({video:false});
   });
 
+  userAgent.on('reconnectNeeded', (event, code) => {
+    console.warn('reconnectNeeded code = ', code);
+  });
+
   // console.log('unregister()');
 
   // userAgent.unregister();
