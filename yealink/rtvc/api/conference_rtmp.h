@@ -30,6 +30,7 @@ struct RtmpUserInfo {
 
 struct RtmpInfo {
   bool enable;
+  int32_t biz_code;
   std::vector<RtmpUserInfo> users;
 };
 

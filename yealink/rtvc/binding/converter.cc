@@ -2937,6 +2937,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RecordUsers>::ToV8(
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("user", val.user);
+  handler.Set("bizCode", val.biz_code);
 
   return handler.GetHandle();
 }
@@ -2950,6 +2951,7 @@ bool Converter<yealink::rtvc::RecordUsers>::FromV8(
     return false;
 
   dict.Get("user", &(out->user));
+  dict.Get("bizCode", &(out->biz_code));
 
   return true;
 }
@@ -3059,6 +3061,7 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RtmpInfo>::ToV8(
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("enable", val.enable);
+  handler.Set("bizCode", val.biz_code);
   handler.Set("users", val.users);
 
   return handler.GetHandle();
@@ -3072,6 +3075,7 @@ bool Converter<yealink::rtvc::RtmpInfo>::FromV8(v8::Isolate* isolate,
     return false;
 
   dict.Get("enable", &(out->enable));
+  dict.Get("bizCode", &(out->biz_code));
   dict.Get("users", &(out->users));
 
   return true;

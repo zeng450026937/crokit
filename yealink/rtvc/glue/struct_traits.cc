@@ -1249,6 +1249,7 @@ bool StructTraits<RecordUserInfo>::From(
 bool StructTraits<RecordUsers>::From(RecordUsers& out,
                                      const yealink::RoomRecordUsers& val) {
   ConvertFrom(out.user, val.user);
+  ConvertFrom(out.biz_code, val.bizCode);
 
   return true;
 }
@@ -1300,8 +1301,9 @@ bool StructTraits<RtmpUserInfo>::From(RtmpUserInfo& out,
 }
 
 bool StructTraits<RtmpInfo>::From(RtmpInfo& out,
-                                   const yealink::RoomRtmpState& val) {
+                                  const yealink::RoomRtmpState& val) {
   ConvertFrom(out.enable, val.rtmpEnable);
+  ConvertFrom(out.biz_code, val.bizCode);
   ConvertFrom(out.users, val.users);
 
   return true;

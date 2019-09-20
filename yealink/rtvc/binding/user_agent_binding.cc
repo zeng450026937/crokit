@@ -289,6 +289,10 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
                                 1);
     case yealink::AUTH_PARAM_DISPLAY_NAME:
       break;
+    case yealink::AUTH_PARAM_CLIENT_ID:
+      break;
+    case yealink::AUTH_PARAM_SUBJECT_ID:
+      break;
     default:
       NOTREACHED();
       break;

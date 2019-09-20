@@ -3,7 +3,11 @@ const path = require('path');
 async function test(binding, userAgent) {
   console.log('Call test');
 
-  const { Call, VideoManager, DesktopCapture } = binding;
+  const {
+    Call,
+    VideoManager,
+    DesktopCapture
+  } = binding;
 
   const videoManager = new VideoManager();
 
@@ -15,8 +19,7 @@ async function test(binding, userAgent) {
   console.log(videoInputDeviceList);
 
   const sink = {
-    onFrame(frame) {
-    },
+    onFrame(frame) {},
   };
 
   videoManager.videoInputDevice = videoInputDeviceList[0];
@@ -70,75 +73,112 @@ async function test(binding, userAgent) {
   let hangupTimmer;
   let shareTimer;
 
+  // call.conference.on('user:added', (func, users) => {
+  //   console.warn('user:added', users);
+  // });
+
+  // call.conference.on('user:updated', (func, users) => {
+  //   console.warn('user:updated', users);
+  // });
+
+  // call.conference.on('user:removed', (func, users) => {
+  //   console.warn('user:removed', users);
+  // });
+
   let user_test = true;
   call.conference.on('usersUpdated', (arg1, arg2) => {
     // console.warn('usersUpdated users:', call.conference.users);
     // console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
+    // console.warn('usersUpdated currentUser.entity:', call.conference.users.currentUser.entity);
     // console.warn('usersUpdated userList:', call.conference.users.userList);
     // console.warn('usersUpdated userList.length:', call.conference.users.userList.length);
 
-    // if(user_test == true)
-    // {
-    //   user_test = false;
+    console.warn('usersUpdated addedUser:', call.conference.users.addedUser, call.conference.users.addedUser.length);
+    console.warn('usersUpdated deletedUser:', call.conference.users.deletedUser, call.conference.users.deletedUser.length);
+    console.warn('usersUpdated updatedUser:', call.conference.users.updatedUser, call.conference.users.updatedUser.length);
+    console.warn('usersUpdated presenters:', call.conference.users.presenters, call.conference.users.presenters.length);
+    console.warn('usersUpdated attendees:', call.conference.users.attendees, call.conference.users.attendees.length);
+    console.warn('usersUpdated onHoldUsers:', call.conference.users.onHoldUsers, call.conference.users.onHoldUsers.length);
+    console.warn('usersUpdated demonstrators:', call.conference.users.demonstrators, call.conference.users.demonstrators.length);
+    console.warn('usersUpdated castviewers:', call.conference.users.castviewers, call.conference.users.castviewers.length);
 
-    //   //console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
-    //   call.conference.users.userList.map((user) => {
-    //     console.warn('this user entity = ', user.entity, 'isPresenter ', user.isPresenter());
-    //     console.warn('isOrganizer ', user.isOrganizer());
-    //     console.warn('isCurrentUser ', user.isCurrentUser());
-    //     console.warn('isPresenter ', user.isPresenter());
-    //     console.warn('isAttendee ', user.isAttendee());
-    //     console.warn('isCastViewer ', user.isCastViewer());
-    //     console.warn('isAttendee ', user.isAttendee());
-    //     console.warn('isDemonstrator ', user.isDemonstrator());
-    //     console.warn('isPresenterDemonstrator ', user.isPresenterDemonstrator());
-    //     console.warn('isOnHold ', user.isOnHold());
-    //     console.warn('isSharing ', user.isSharing());
-    //     console.warn('isFocus ', user.isFocus());
-    //     console.warn('getAudioFilter = ', user.getAudioFilter());
-    //     console.warn('getAudioFilter = ', user.getVideoFilter());
+    if (user_test == true) {
+      user_test = true;
 
-    //     setInterval(() => {
-    //       user.getStats()
-    //         .then((result) => {
-    //           console.warn('getStats success = ', result);
-    //         })
-    //         .catch((e) => {
-    //           console.warn('getStats fail = ', e);
-    //         });
+      // setInterval(() => {
+      //   //console.warn('usersUpdated setInterval currentUser.entity:', call.conference.users.currentUser.entity);
+      // }, 500);
 
-    //     }, 10000);
+      //console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
 
-    //     console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(false));
-    //     console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(true));
-    //     console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(false));
-    //     console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(true));
-    //     console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(false));
-    //     console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(true));
-    //     console.warn('SetDisplayName = ', user.setDisplayName('lalaal'));
+      call.conference.users.handUp(false) // reject all handup users
+        .then((res) => {
+          console.warn(res);
+        })
+        .catch((e) => {
+          console.warn(e);
+        })
 
-    //     if(user.isCurrentUser() == false)
-    //     {
-    //       console.warn('setPermission = ', user.setPermission('attendee'));
-    //       console.warn('hold = ', user.hold());
+      call.conference.users.userList.map((user) => {
+        // console.warn('this user entity = ', user.entity);
 
-    //       console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
+        // console.warn('this user isConnected = ', user.isConnected());
+        // console.warn('isPresenter ', user.isPresenter());
+        // console.warn('isOrganizer ', user.isOrganizer());
+        // console.warn('isCurrentUser ', user.isCurrentUser());
+        // console.warn('isPresenter ', user.isPresenter());
+        // console.warn('isAttendee ', user.isAttendee());
+        // console.warn('isCastViewer ', user.isCastViewer());
+        // console.warn('isAttendee ', user.isAttendee());
+        // console.warn('isDemonstrator ', user.isDemonstrator());
+        // console.warn('isPresenterDemonstrator ', user.isPresenterDemonstrator());
+        // console.warn('isOnHold ', user.isOnHold());
+        // console.warn('isSharing ', user.isSharing());
+        // console.warn('isFocus ', user.isFocus());
+        // console.warn('getAudioFilter = ', user.getAudioFilter());
+        // console.warn('getAudioFilter = ', user.getVideoFilter());
 
-    //       //console.warn('unHold = ', user.unHold());
-    //       console.warn('setPermission = ', user.setPermission('presenter'));
-    //     }
+        // setInterval(() => {
+        //   user.getStats()
+        //     .then((result) => {
+        //       console.warn('getStats success = ', result);
+        //     })
+        //     .catch((e) => {
+        //       console.warn('getStats fail = ', e);
+        //     });
 
-    //     console.warn('SetVideoIngressFilter = ', user.setFocus(true));
-    //     console.warn('SetVideoIngressFilter = ', user.setFocus(false));
+        // }, 10000);
 
-    //     //console.warn('kick = ', user.kick());
-    //   });
-    // }
-   });
+        // console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(false));
+        // console.warn('SetAudioIngressFilter = ', user.setAudioIngressFilter(true));
+        // console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(false));
+        // console.warn('SetAudioEgressFilter = ', user.setAudioEgressFilter(true));
+        // console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(false));
+        // console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(true));
+        // console.warn('SetDisplayName = ', user.setDisplayName('lalaal'));
+
+        // if(user.isCurrentUser() == false)
+        // {
+        //   console.warn('setPermission = ', user.setPermission('attendee'));
+        //   console.warn('hold = ', user.hold());
+
+        //   console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
+
+        //   //console.warn('unHold = ', user.unHold());
+        //   console.warn('setPermission = ', user.setPermission('presenter'));
+        // }
+
+        // console.warn('SetVideoIngressFilter = ', user.setFocus(true));
+        // console.warn('SetVideoIngressFilter = ', user.setFocus(false));
+
+        //console.warn('kick = ', user.kick());
+      });
+    }
+  });
 
   let desc_test = true;
   call.conference.on('descriptionUpdated', (arg1, arg2) => {
-    console.warn('descriptionUpdated desc:', call.conference.description);
+    // console.warn('descriptionUpdated desc:', call.conference.description);
     // console.warn('descriptionUpdated startTime:', call.conference.description.startTime);
     // console.warn('descriptionUpdated defaultRtmp:', call.conference.description.defaultRtmp);
     // console.warn('descriptionUpdated lobbyCapable:', call.conference.description.lobbyCapable);
@@ -146,11 +186,9 @@ async function test(binding, userAgent) {
     // console.warn('descriptionUpdated getLock:', call.conference.description.getLock());
     // console.warn('descriptionUpdated getDefaultRtmp:', call.conference.description.getDefaultRtmp());
 
-    console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
+    // console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
 
-
-    if(desc_test == true)
-    {
+    if (desc_test == true) {
       desc_test = false;
 
       // console.warn('descriptionUpdated getShareInfo:');
@@ -162,7 +200,7 @@ async function test(binding, userAgent) {
       //   console.warn('getShareInfo fail');
       // })
 
-      console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
+      // console.warn('descriptionUpdated attendeeByPass:', call.conference.description.attendeeByPass);
 
       // lock
       // call.conference.description.setLock({
@@ -201,9 +239,17 @@ async function test(binding, userAgent) {
     // console.warn('viewUpdated getInitialFilters:', call.conference.view.getInitialFilters());
     // console.warn('*******************************************');
 
-    // if(view_test == true)
-    // {
-    //   view_test = false;
+    if(view_test == true)
+    {
+      view_test = false;
+
+      call.conference.view.setSpeakMode('free') // handUp | free
+        .then((res) => {
+          console.warn(res);
+        })
+        .catch((e) =>{
+          console.warn(e);
+        })
 
     //   call.conference.view.setLayout({
     //       'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
@@ -236,23 +282,22 @@ async function test(binding, userAgent) {
     //   .catch(() => {
     //     console.warn('viewUpdated setInitialFilters fail', );
     //   })
-    // }
+    }
   });
 
   let state_test = true;
   call.conference.on('stateUpdated', () => {
-    console.warn('stateUpdated state:', call.conference.state);
+    // console.warn('stateUpdated state:', call.conference.state);
 
-    if(state_test == true)
-    {
-      state_test = false;
-    }
+    // if(state_test == true)
+    // {
+    //   state_test = false;
+    // }
   });
 
   call.conference.on('recordUpdated', () => {
-    console.warn('recordUpdated ', call.conference.record);
-
-    console.warn('recordUpdated getRecordStatus', call.conference.record.getRecordStatus());
+    // console.warn('recordUpdated ', call.conference.record);
+    // console.warn('recordUpdated getRecordStatus', call.conference.record.getRecordStatus());
 
     // call.conference.record.setRecordStatus('start') // start / stop / pause / resume
     //   .then((result) => {
@@ -264,13 +309,21 @@ async function test(binding, userAgent) {
   });
 
   call.conference.on('rtmpUpdated', () => {
-    console.warn('rtmpUpdated ', call.conference.rtmp);
+    // console.warn('rtmpUpdated ', call.conference.rtmp);
 
-    console.warn('rtmpUpdated getRtmpStatus', call.conference.rtmp.getRtmpStatus());
+    // console.warn('rtmpUpdated getRtmpStatus', call.conference.rtmp.getRtmpStatus());
 
     // call.conference.rtmp.setRtmpStatus('start') // start / stop / pause / resume
     //   .then((result) => {
     //     console.warn(result);
+    //   })
+    //   .catch((e) => {
+    //     console.warn(e);
+    //   })
+
+    // call.conference.rtmp.setRtmpStatus('start')
+    //   .then((func, res) => {
+    //     console.warn('setRtmpStatus = ', res);
     //   })
     //   .catch((e) => {
     //     console.warn(e);

@@ -44,7 +44,8 @@ void ConferenceUsersBinding::BuildPrototype(
       .SetMethod("invite", &ConferenceUsersBinding::Invite)
       .SetMethod("inviteThird", &ConferenceUsersBinding::InviteThird)
       .SetMethod("inviteBatch", &ConferenceUsersBinding::InviteBatch)
-      .SetMethod("allow", &ConferenceUsersBinding::Allow);
+      .SetMethod("allow", &ConferenceUsersBinding::Allow)
+      .SetMethod("handUp", &ConferenceUsersBinding::HandUp);
 }
 
 void ConferenceUsersBinding::UpdateRoomController(RoomController* handler) {
@@ -469,25 +470,26 @@ void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,
   }
 }
 
-// v8::Local<v8::Promise> ConferenceUsersBinding::HandUp(bool agreed) {
-//   Promise promise(isolate());
-//   v8::Local<v8::Promise> handle = promise.GetHandle();
-//   HttpResponseInfo response;
+v8::Local<v8::Promise> ConferenceUsersBinding::HandUp(bool agreed) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  HttpResponseInfo response;
 
-//   if (room_controller_) {
-//     if (agreed == true) {
-//       ConvertFrom(response,
-//                   room_controller_->GetMemberManager().RejectAllHandUp());
-//     } else {
-//       ConvertFrom(response,
-//                   room_controller_->GetMemberManager().RejectAllHandUp());
-//     }
-//   } else {
-//     std::move(promise).Reject();
-//   }
+  if (room_controller_) {
+    if (agreed == true) {
+      // do nothing, server not support
+      std::move(promise).Resolve();
+    } else {
+      ConvertFrom(response,
+                  room_controller_->GetMemberManager().RejectAllHandUp());
+      std::move(promise).Resolve(response);
+    }
+  } else {
+    std::move(promise).Reject();
+  }
 
-//   return handle;
-// }
+  return handle;
+}
 
 void ConferenceUsersBinding::OnCommandCompeleted(Promise promise) {
   std::move(promise).Resolve(true);

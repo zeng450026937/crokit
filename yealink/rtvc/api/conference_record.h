@@ -27,6 +27,7 @@ struct RecordUserInfo {
 };
 
 struct RecordUsers {
+  int32_t biz_code;
   RecordUserInfo user;
 };
 

@@ -33,8 +33,8 @@ void ConferenceViewBinding::BuildPrototype(
       .SetMethod("setLayout", &ConferenceViewBinding::SetLayout)
       .SetMethod("getLayout", &ConferenceViewBinding::GetLayout)
       .SetMethod("setInitialFilters", &ConferenceViewBinding::SetInitialFilters)
-      .SetMethod("getInitialFilters",
-                 &ConferenceViewBinding::GetInitialFilters);
+      .SetMethod("getInitialFilters", &ConferenceViewBinding::GetInitialFilters)
+      .SetMethod("setSpeakMode", &ConferenceViewBinding::SetSpeakMode);
 }
 
 void ConferenceViewBinding::UpdateRoomController(RoomController* handler) {
@@ -131,22 +131,22 @@ std::vector<ViewFilterRuleInfo> ConferenceViewBinding::GetInitialFilters() {
   return value;
 }
 
-// v8::Local<v8::Promise> ConferenceViewBinding::SetSpeakMode(
-//     ViewSpeakMode params) {
-//   Promise promise(isolate());
-//   v8::Local<v8::Promise> handle = promise.GetHandle();
-//   HttpResponseInfo response;
+v8::Local<v8::Promise> ConferenceViewBinding::SetSpeakMode(
+    ViewSpeakMode params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  HttpResponseInfo response;
 
-//   if (room_controller_) {
-//     ConvertFrom(response, room_controller_->GetViewComponent().SetSpeakMode(
-//                               (yealink::ConferenceViewSpeakMode)params));
-//     std::move(promise).Resolve(response);
-//   } else {
-//     std::move(promise).Reject();
-//   }
+  if (room_controller_) {
+    ConvertFrom(response, room_controller_->GetViewComponent().SetSpeakMode(
+                              (yealink::ConferenceViewSpeakMode)params));
+    std::move(promise).Resolve(response);
+  } else {
+    std::move(promise).Reject();
+  }
 
-//   return handle;
-// }
+  return handle;
+}
 
 void ConferenceViewBinding::OnCommandCompeleted(Promise promise) {
   std::move(promise).Resolve(true);
