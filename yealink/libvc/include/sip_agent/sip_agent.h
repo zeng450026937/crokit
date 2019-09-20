@@ -12,9 +12,10 @@
 
 namespace yealink
 {
-class SIPAgent
+class SIP_AGENT_API SIPAgent
 {
 public:
+    virtual ~SIPAgent(){};
     /**
          * @brief 
          * 

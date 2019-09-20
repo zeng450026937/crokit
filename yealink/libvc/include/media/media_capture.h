@@ -31,6 +31,8 @@ typedef struct _CaptureFrame
 class MEDIA_EXPORT FrameDeliverySink
 {
 public:
+    virtual ~FrameDeliverySink() = default;
+
     enum RotaionMode
     {
         RM_0,
@@ -62,6 +64,7 @@ public:
 class MediaCapture
 {
 public:
+    virtual ~MediaCapture() = default;
     virtual bool ConnectSink(FrameDeliverySink* sink) = 0;
     virtual void DisconnectSink(FrameDeliverySink* sink) = 0;
     virtual bool SetBestResolution(int nWidth, int nHeight) = 0;

@@ -59,6 +59,12 @@ public:
      * @return 
      */
     RequestResult CancelFocus();
+    /**
+     * @brief set speak mode
+     * @param speakMode speak mode of conference
+     * @return 
+     */
+    RoomHttpResult SetSpeakMode(ConferenceViewSpeakMode speakMode);
 };
 } // namespace yealink
 #endif // __ROOM_VIEW_COMPONENT_H__

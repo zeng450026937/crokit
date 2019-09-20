@@ -8,7 +8,7 @@
 #ifndef __VSET_DEFINE_H__
 #    define __VSET_DEFINE_H__
 
-#    ifdef _WIN32
+#    if defined(_WIN32) && defined(vc_sdk_native_EXPORTS)
 #        ifdef EXPORT_SYMPOLS
 #            define VSET_EXPORT __declspec(dllexport)
 #        else

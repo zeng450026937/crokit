@@ -16,7 +16,7 @@ public:
     Timer(const Timer& t);
     ~Timer();
 
-    void StartTimer(int interval, std::function<void()> task);
+    void StartTimer(int interval, const std::function<void()>& task);
     void Expire();
 
     template<typename callable, class... arguments>

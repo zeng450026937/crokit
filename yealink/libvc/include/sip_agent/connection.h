@@ -79,6 +79,7 @@ public:
 class SIP_AGENT_API Connnection
 {
 public:
+    virtual ~Connnection(){};
     /**
          * @brief Set the auth handler object.Remove the handler 
          * by setting the parameter NULL.

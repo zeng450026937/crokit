@@ -125,7 +125,7 @@ public:
 class YTMS_AGENT_API YTMSAgent
 {
 public:
-    ~YTMSAgent()
+    virtual ~YTMSAgent()
     {
     }
     /**

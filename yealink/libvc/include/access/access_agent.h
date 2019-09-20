@@ -43,6 +43,15 @@ public:
      * @param  
      */
     virtual void SetTransferStatus(int up, int uptotal, int dn, int dntotal){};
+
+    /**
+     * @brief
+     * @param
+     */
+    virtual int GetTimeoutSeconds()
+    {
+        return 0;
+    };
 };
 
 class AccessObserver
@@ -69,12 +78,21 @@ public:
     {
         (void)content;
     };
+
+    /**
+     * @brief 
+     * @param content 
+     */
+    virtual void OnPushMessage(const char* content)
+    {
+        (void)content;
+    };
 };
 
 class ACCESS_AGENT_API AccessAgent
 {
 public:
-    ~AccessAgent()
+    virtual ~AccessAgent()
     {
     }
     /**
@@ -110,6 +128,49 @@ public:
          * @return true if server return success,otherwise false
          */
     virtual bool UnscheduledSendMobileLoginVerifyCode(const char* server, const char* phoneNumber, AccessProcess* process) = 0;
+
+    /**
+         * @brief tell the server to bind push token
+         * 
+         * @param server : access server address
+		 * @param BindPushInfo 
+         * @return true if server return success,otherwise false
+         */
+    virtual bool BindPushToken(const BindPushInfo& pushInfo, AccessProcess* process) = 0;
+
+    /**
+         * @brief get wechat state
+         * 
+         * @param server : access server address
+         * @return true if server return success,otherwise false
+         */
+    virtual SStringA GetWechatState(const char* server, AccessProcess* process) = 0;
+
+    /**
+         * @brief get wechat state
+         * 
+         * @param server : server address
+         * @return true if server return success,otherwise false
+         */
+    virtual SStringA UnscheduledGetWechatState(const char* server, AccessProcess* process) = 0;
+
+    /**
+         * @brief  post wechat auth callback
+         * 
+         * @param server : access server address
+		 * @param WechatAuthInfo 
+         * @return 
+         */
+    virtual void PostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
+
+    /**
+         * @brief  post wechat auth callback
+         * 
+         * @param server : server address
+		 * @param WechatAuthInfo 
+         * @return 
+         */
+    virtual void UnscheduledPostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief login access service by schedule service

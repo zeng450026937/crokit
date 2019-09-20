@@ -28,6 +28,8 @@ typedef struct _SIPReasonInfo
 class SIPMessageReadonly
 {
 public:
+    virtual ~SIPMessageReadonly(){};
+
     enum HeadLine
     {
         HEAD_CONTENT_LENGTH, ///Header() will be return unsigned int

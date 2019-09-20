@@ -22,6 +22,24 @@ enum HttpMethod
     HTTP_PUT
 };
 
+struct BindPushInfo
+{
+    const char* token;
+    bool bind;
+    int tenantId;
+    const char* clientId;
+    const char* i18nLanguage;
+    const char* thirdPartyToken;
+    const char* service;
+};
+
+struct WechatAuthInfo
+{
+    const char* code;
+    const char* state;
+    const char* source;
+};
+
 struct AccountInfo
 {
     SStringA extension;
@@ -58,6 +76,9 @@ struct SubjectInfo
     SStringA name;
     SStringA namePinyinForSearch;
     int type;
+    SStringA title;
+    int gender;
+    Array<int> roles;
 };
 
 struct TurnServerInfo
@@ -76,14 +97,34 @@ struct LoginUserInfo
     SStringA token;
 };
 
-struct LoginUserInfos
+//登录返回的账号鉴权信息
+struct LoginAuthInfo
 {
-    Array<LoginUserInfo> accountInfos;
     SStringA principle;
     SStringA realm;
     SStringA type;
     SStringA algorithm;
     SStringA credential;
+};
+
+struct WechatUserInfo
+{
+    SStringA thirdPartyId; // 微信用户的 unionid,用于后续绑定流程
+    SStringA nickName; // 微信用户的昵称
+    SStringA countryCode; // 微信用户所属国家的区域编码
+};
+
+struct LoginUserInfos
+{
+    Array<LoginUserInfo> accountInfos;
+    LoginAuthInfo authInfo;
+};
+
+struct WechatAuthCallbackInfo
+{
+    Array<LoginUserInfo> accountInfos;
+    LoginAuthInfo authInfo;
+    WechatUserInfo wechatUserInfo;
 };
 
 struct LoginInfo

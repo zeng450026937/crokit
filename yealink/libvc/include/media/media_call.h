@@ -76,6 +76,7 @@ enum MediaEvent
 class MediaCallObserver
 {
 public:
+    virtual ~MediaCallObserver() = default;
     virtual void OnSdpGathered(const char* strSdp) = 0;
     virtual void OnMediaEvent(MediaEvent eventId, int extSize = 0, void* extData = nullptr) = 0;
     virtual void OnICEFailed() = 0;

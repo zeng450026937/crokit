@@ -123,6 +123,7 @@ public:
 class Meeting
 {
 public:
+    virtual ~Meeting(){};
     virtual void SetObserver(MeetingObserver* pObserver) = 0;
     virtual MeetingObserver* GetObserver() = 0;
     virtual void FetchInfo(MeetingInfo& info) = 0;

@@ -75,6 +75,11 @@ public:
      * @return 
      */
     RequestResult DeleteLobbyAll();
+    /**
+     * @brief 
+     * @return 
+     */
+    RoomHttpResult RejectAllHandUp();
 };
 } // namespace yealink
 #endif // __ROOM_MEMBER_MANAGER_H__

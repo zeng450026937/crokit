@@ -657,10 +657,12 @@ struct RoomRtmpState
 {
     RoomRtmpState()
         : rtmpEnable(false)
+        , bizCode(0)
     {
     }
 
     bool rtmpEnable;
+    int32_t bizCode;
     Array<RoomRtmpUserInfo> users;
 };
 
@@ -693,6 +695,12 @@ struct RoomRecordUserInfo
 
 struct RoomRecordUsers
 {
+    RoomRecordUsers()
+        : bizCode(0)
+    {
+    }
+
+    int32_t bizCode;
     RoomRecordUserInfo user;
 };
 

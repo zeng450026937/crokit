@@ -154,6 +154,7 @@ enum AudioMode
 class MediaObserver
 {
 public:
+    virtual ~MediaObserver() = default;
     virtual void OnVideoEvent() = 0;
     virtual void OnAudioEvent() = 0;
 };

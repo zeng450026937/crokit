@@ -2,7 +2,7 @@
 
 #include <sstream>
 #include <memory>
-#include <assert.h>
+#include <cassert>
 #include "components/log/log_api.h"
 
 namespace yealink

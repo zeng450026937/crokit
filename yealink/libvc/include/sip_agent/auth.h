@@ -26,6 +26,8 @@ enum AuthParamType
     AUTH_PARAM_PASSWORD,
     AUTH_PARAM_PASSWORD_IS_A1HASH,
     AUTH_PARAM_DISPLAY_NAME,
+    AUTH_PARAM_CLIENT_ID,
+    AUTH_PARAM_SUBJECT_ID,
 };
 
 typedef struct _AuthEvent

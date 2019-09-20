@@ -17,6 +17,7 @@ public:
 class SIPServiceAgent
 {
 public:
+    virtual ~SIPServiceAgent(){};
     virtual bool SendService(const char* strContent, const char* strContentType) = 0;
 
 public:
