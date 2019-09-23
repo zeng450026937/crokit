@@ -86,7 +86,8 @@ void CloudContactBinding::BuildPrototype(
       .SetMethod("sync", &CloudContactBinding::Sync)
       .SetMethod("search", &CloudContactBinding::Search)
       .SetMethod("getNode", &CloudContactBinding::GetNode)
-      .SetMethod("getNodeChild", &CloudContactBinding::GetNodeChild);
+      .SetMethod("getNodeChild", &CloudContactBinding::GetNodeChild)
+      .SetMethod("getNodeByNumber", &CloudContactBinding::GetNodeByNumber);
 }
 
 CloudContactBinding::CloudContactBinding(v8::Isolate* isolate,
@@ -175,6 +176,12 @@ uint64_t CloudContactBinding::GetNodeChildCounts(std::string nodeId,
   yealink::CloudSubNodeInfo child = contact_manager_->GetSubNodeInfo(
       nodeId.c_str(), recursive, 0, 0, yealink::CC_NODE_ALL);
   return child.total;
+}
+
+ContactNode CloudContactBinding::GetNodeByNumber(std::string number) {
+  ContactNode node;
+  ConvertFrom(node, contact_manager_->GetCloudNodeInfoByNumber(number.c_str()));
+  return node;
 }
 
 void CloudContactBinding::OnUpdating() {}
