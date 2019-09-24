@@ -284,7 +284,7 @@ v8::Local<v8::Promise> YTMSBinding::Start() {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoStart, weak_factory_.GetWeakPtr(), observer),
+      base::BindOnce(&YTMSBinding::DoStart, base::Unretained(this), observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
 
@@ -301,7 +301,7 @@ v8::Local<v8::Promise> YTMSBinding::Update(TerminalInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUpdate, weak_factory_.GetWeakPtr(), params,
+      base::BindOnce(&YTMSBinding::DoUpdate, base::Unretained(this), params,
                      observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -354,7 +354,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadAlarm(AlarmInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadAlarm, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoUploadAlarm, base::Unretained(this),
                      params, observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -381,10 +381,10 @@ v8::Local<v8::Promise> YTMSBinding::UploadFeedBack(FeedbackInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadFeedBack, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoUploadFeedBack, base::Unretained(this),
                      params, observer),
-      base::BindOnce(&YTMSBinding::OnProcessCompeleted, weak_factory_.GetWeakPtr(),
-                     std::move(promise), observer));
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), observer));
 
   return handle;
 }
@@ -410,7 +410,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadEvent(EventInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadEvent, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoUploadEvent, base::Unretained(this),
                      params, observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -441,7 +441,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadConfig(mate::Arguments* args) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadConfig, weak_factory_.GetWeakPtr(), body,
+      base::BindOnce(&YTMSBinding::DoUploadConfig, base::Unretained(this), body,
                      observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -460,7 +460,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadLog(UploadLogInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoUploadLog, weak_factory_.GetWeakPtr(), params,
+      base::BindOnce(&YTMSBinding::DoUploadLog, base::Unretained(this), params,
                      observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -483,7 +483,7 @@ v8::Local<v8::Promise> YTMSBinding::GetPackagesInfo() {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoGetPackagesInfo, weak_factory_.GetWeakPtr()),
+      base::BindOnce(&YTMSBinding::DoGetPackagesInfo, base::Unretained(this)),
       base::BindOnce(&YTMSBinding::OnGetPackagesCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise)));
 
@@ -503,7 +503,7 @@ v8::Local<v8::Promise> YTMSBinding::GetConfigFileInfo() {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoGetConfigFileInfo, weak_factory_.GetWeakPtr()),
+      base::BindOnce(&YTMSBinding::DoGetConfigFileInfo, base::Unretained(this)),
       base::BindOnce(&YTMSBinding::OnGetConfigCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise)));
 
@@ -524,7 +524,7 @@ v8::Local<v8::Promise> YTMSBinding::DownloadFile(DownloadInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoDownloadFile, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoDownloadFile, base::Unretained(this),
                      params, observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -550,7 +550,7 @@ v8::Local<v8::Promise> YTMSBinding::StartCapture(NetCaptureInfo params) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoStartCapture, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoStartCapture, base::Unretained(this),
                      params, observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
@@ -582,7 +582,7 @@ v8::Local<v8::Promise> YTMSBinding::StopCapture(mate::Arguments* args) {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&YTMSBinding::DoStopCapture, weak_factory_.GetWeakPtr(),
+      base::BindOnce(&YTMSBinding::DoStopCapture, base::Unretained(this),
                      sessionId, observer),
       base::BindOnce(&YTMSBinding::OnProcessCompeleted,
                      weak_factory_.GetWeakPtr(), std::move(promise), observer));
