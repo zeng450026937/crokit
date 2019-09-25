@@ -49,6 +49,7 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
 
   v8::Local<v8::Promise> DownloadFile(DownloadInfo params);
 
+  std::vector<std::string> GetCaptureDevice();
   v8::Local<v8::Promise> StartCapture(NetCaptureInfo params);
   v8::Local<v8::Promise> StopCapture(mate::Arguments* args);
 

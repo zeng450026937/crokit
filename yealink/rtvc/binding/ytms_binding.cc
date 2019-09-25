@@ -41,6 +41,7 @@ void YTMSBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("getPackagesInfo", &YTMSBinding::GetPackagesInfo)
       .SetMethod("getConfigFileInfo", &YTMSBinding::GetConfigFileInfo)
       .SetMethod("downloadFile", &YTMSBinding::DownloadFile)
+      .SetMethod("getCaptureDevice", &YTMSBinding::GetCaptureDevice)
       .SetMethod("startCapture", &YTMSBinding::StartCapture)
       .SetMethod("stopCapture", &YTMSBinding::StopCapture);
 }
@@ -540,6 +541,15 @@ void YTMSBinding::DoDownloadFile(DownloadInfo params,
   config.storeName = params.file_name.c_str();
 
   ytms_agent_->DownloadFile(config, observer);
+}
+
+std::vector<std::string> YTMSBinding::GetCaptureDevice() {
+  std::vector<std::string> deviceInfo;
+
+  // Todo update sdk to support
+  // ConvertFrom(deviceInfo, ytms_agent_->GetCaptureDevices());
+
+  return deviceInfo;
 }
 
 // start capture
