@@ -28,6 +28,7 @@ enum AuthParamType
     AUTH_PARAM_DISPLAY_NAME,
     AUTH_PARAM_CLIENT_ID,
     AUTH_PARAM_SUBJECT_ID,
+    AUTH_PARAM_GRUU,
 };
 
 typedef struct _AuthEvent

@@ -1,7 +1,7 @@
 #ifndef _ACCESS_AGENT_H
 #define _ACCESS_AGENT_H
 
-#include "access_define.h"
+#include "access/access_define.h"
 
 namespace yealink
 {
@@ -161,7 +161,7 @@ public:
 		 * @param WechatAuthInfo 
          * @return 
          */
-    virtual void PostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
+    virtual WechatAuthCallbackInfo PostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief  post wechat auth callback
@@ -170,7 +170,7 @@ public:
 		 * @param WechatAuthInfo 
          * @return 
          */
-    virtual void UnscheduledPostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
+    virtual WechatAuthCallbackInfo UnscheduledPostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief login access service by schedule service
@@ -220,7 +220,7 @@ public:
          * @param process 
          * @return ScheduleMetaInfo
          */
-    virtual ScheduleMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
+    virtual SchedulerMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
 
     /**
          * @brief get LoginUserInfo by account id

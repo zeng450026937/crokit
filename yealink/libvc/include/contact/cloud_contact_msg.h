@@ -47,6 +47,9 @@ public:
     {
         (void)changeData;
     }
+    virtual void OnLoadFail()
+    {
+    }
 };
 
 typedef bool (*cleanCacheCb)(void*);

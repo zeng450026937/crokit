@@ -28,9 +28,19 @@ struct BindPushInfo
     bool bind;
     int tenantId;
     const char* clientId;
-    const char* i18nLanguage;
+    const char* language;
     const char* thirdPartyToken;
     const char* service;
+    BindPushInfo()
+        : token("")
+        , bind(true)
+        , tenantId(0)
+        , clientId("")
+        , language("")
+        , thirdPartyToken("")
+        , service("")
+    {
+    }
 };
 
 struct WechatAuthInfo
@@ -94,6 +104,8 @@ struct LoginUserInfo
     PermissionInfo permission;
     SubjectInfo subject;
     TurnServerInfo turnServer;
+    bool hasRegister; // 是否注册个人账号，因为软终端现在还未限制云账号登录，对于未注册的云账号登录时可能需要根据此字段限制一些功能
+    bool upgraded; // 账号是否已创建企业，false：没有创建企业；true：已经创建企业
     SStringA token;
 };
 
@@ -160,7 +172,7 @@ struct HttpRequestParam
     }
 };
 
-struct ScheduleMetaInfo
+struct SchedulerMetaInfo
 {
     SStringA phonebookVersion;
     Array<SStringA> phonebookSupport;
@@ -168,11 +180,17 @@ struct ScheduleMetaInfo
     Array<SStringA> scheduleSupport;
     SStringA build;
     SStringA version;
-    ScheduleMetaInfo()
+    SStringA webHost;
+    SStringA serviceAccount;
+    SStringA experienceAccount;
+    SchedulerMetaInfo()
         : phonebookVersion("")
         , scheduleVersion("")
         , build("")
         , version("")
+        , webHost("")
+        , serviceAccount("")
+        , experienceAccount("")
     {
     }
 };
