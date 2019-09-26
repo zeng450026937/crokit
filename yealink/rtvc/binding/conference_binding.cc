@@ -180,7 +180,8 @@ void ConferenceBinding::Connect(mate::Dictionary dict, mate::Arguments* args) {
   std::unique_ptr<yealink::RoomController> controller(
       new yealink::RoomController());
 
-  controller->SetAccessAgent(user_agent_->GetAccessAgent());
+  if (user_agent_.get())
+    controller->SetAccessAgent(user_agent_->GetAccessAgent());
 
   controller->Join(sip_client_.get(), params);
 
@@ -221,8 +222,10 @@ void ConferenceBinding::CreateConference(mate::Dictionary dict,
   ConferenceResult ret;
 
   controller->Init();
-  controller->SetAccessAgent(user_agent_->GetAccessAgent());
   controller->SetConversationId(conversation_id.c_str());
+
+  if (user_agent_.get())
+    controller->SetAccessAgent(user_agent_->GetAccessAgent());
 
   ret =
       controller->CreateTempMeeting(sip_client_.get(), subject.c_str(), params);

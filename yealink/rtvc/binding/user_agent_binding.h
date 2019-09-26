@@ -20,13 +20,10 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                          public yealink::AuthHandler,
                          public yealink::SIPClientHandler {
  public:
-  static mate::WrappableBase* New(mate::Handle<ConnectorBinding> connector,
-                                  mate::Arguments* args);
+  static mate::WrappableBase* New(mate::Arguments* args);
 
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
-
-  AccessAgent* GetAccessAgent() { return access_agent_; }
 
  protected:
   UserAgentBinding(v8::Isolate* isolate,
@@ -44,6 +41,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   void SetUsername(std::string username);
   void SetPassword(std::string password);
   void SetDomain(std::string domain);
+  void SetConnector(mate::Handle<ConnectorBinding> connector);
 
   void Set(std::string key, mate::Arguments* args);
   v8::Local<v8::Value> Get(std::string key, mate::Arguments* args);
@@ -86,6 +84,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   base::WeakPtr<yealink::SIPClient> GetWeakSIPClientPtr() {
     return sip_client_weak_factory_.GetWeakPtr();
   }
+  AccessAgent* GetAccessAgent() { return access_agent_; }
 
   UserAgent::Config config_;
 

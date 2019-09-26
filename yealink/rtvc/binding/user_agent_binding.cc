@@ -22,11 +22,11 @@ char* default_sitename = (char*)"Yealink VCD-H5";
 }  // namespace
 
 // static
-mate::WrappableBase* UserAgentBinding::New(
-    mate::Handle<ConnectorBinding> connector,
-    mate::Arguments* args) {
+mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   UserAgent::Config config;
   mate::Dictionary options;
+  mate::Handle<ConnectorBinding> connector;
+  yealink::AccessAgent* access_agent = nullptr;
 
   config.useragent = default_useragent;
   config.client_info = default_client_info;
@@ -45,10 +45,15 @@ mate::WrappableBase* UserAgentBinding::New(
     options.Get("udpPort", &config.udp_port);
     options.Get("ipv4Only", &config.ipv4_only);
     options.Get("ipv6Only", &config.ipv6_only);
+    options.Get("connector", &connector);
   }
 
-  return new UserAgentBinding(args->isolate(), args->GetThis(),
-                              connector->GetAccessAgent(), config);
+  if (!connector.IsEmpty()) {
+    access_agent = connector->GetAccessAgent();
+  }
+
+  return new UserAgentBinding(args->isolate(), args->GetThis(), access_agent,
+                              config);
 }
 
 // static
@@ -72,7 +77,8 @@ void UserAgentBinding::BuildPrototype(
       .SetProperty("running", &UserAgentBinding::running)
       .SetMethod("register", &UserAgentBinding::Register)
       .SetMethod("unregister", &UserAgentBinding::UnRegister)
-      .SetProperty("registered", &UserAgentBinding::registered);
+      .SetProperty("registered", &UserAgentBinding::registered)
+      .SetMethod("setConnector", &UserAgentBinding::SetConnector);
 }
 
 UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
@@ -150,6 +156,11 @@ void UserAgentBinding::SetPassword(std::string password) {
 }
 void UserAgentBinding::SetDomain(std::string domain) {
   config_.domain = domain;
+}
+
+void UserAgentBinding::SetConnector(mate::Handle<ConnectorBinding> connector) {
+  if (!connector.IsEmpty())
+    access_agent_ = connector->GetAccessAgent();
 }
 
 void UserAgentBinding::Set(std::string key, mate::Arguments* args) {
@@ -293,6 +304,8 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
       break;
     case yealink::AUTH_PARAM_SUBJECT_ID:
       break;
+    case yealink::AUTH_PARAM_GRUU:
+      break;
     default:
       NOTREACHED();
       break;
@@ -315,7 +328,7 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
       break;
     case yealink::AEID_UPDATED: {
       size_t i;
-      int bizCode = 900599; // default unknown code
+      int bizCode = 900599;  // default unknown code
       std::string strScheme;
 
       for (i = 0; i < event.reasons.Size(); i++) {
