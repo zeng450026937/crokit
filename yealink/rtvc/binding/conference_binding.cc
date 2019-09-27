@@ -123,7 +123,10 @@ void ConferenceBinding::SetController(RoomController* controller) {
   if (controller_)
     controller_->RemoveObserver(this);
 
-  controller_.reset(controller);
+  if (controller)
+    controller_ = std::make_unique<RoomController>(*controller);
+  else
+    controller_.reset();
 
   if (controller_)
     controller_->AddObserver(this);
