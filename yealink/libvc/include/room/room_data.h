@@ -39,6 +39,36 @@ struct RoomHttpResult
     int32_t bizCode;
 };
 
+struct RoomImResult
+{
+    RoomImResult()
+        : bizCode(0)
+        , imEntity(0)
+        , imTimestamp(0)
+    {
+    }
+
+    int32_t bizCode;
+    int64_t imEntity;
+    int64_t imTimestamp;
+};
+
+struct RoomImMessage
+{
+    bool isPrivate;
+    SStringA imContext;
+    int64_t imTimestamp;
+    int64_t imVersion;
+    SStringA senderEntity;
+    SStringA senderDisplayText;
+};
+
+struct RoomImMessageList
+{
+    int32_t bizCode;
+    Array<RoomImMessage> imInfos;
+};
+
 /**
  * @brief 
  */

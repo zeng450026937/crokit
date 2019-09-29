@@ -31,6 +31,12 @@ public:
      * @return 
      */
     RoomMember GetOwner() const;
+    /**
+     * @brief 
+     * @param entity 
+     * @return 
+     */
+    RoomMember FindUser(const char* entity) const;
 
 public:
     /* setter interface */
@@ -80,6 +86,25 @@ public:
      * @return 
      */
     RoomHttpResult RejectAllHandUp();
+    /**
+     * @brief send im message to single member
+     * @param member member who be sent message
+     * @param context context of message
+     * @return result for send message, bizCode == 900200 is success
+     */
+    RoomImResult SendImInfo(const RoomMember& member, const char* context);
+    /**
+     * @brief send im message to all member
+     * @param context context context of message
+     * @return result for send message, bizCode == 900200 is success
+     */
+    RoomImResult SendImInfoToAll(const char* context);
+    /**
+     * @brief get all im message, and subscribe this notify
+     * @param count max count of message
+     * @return 
+     */
+    RoomImMessageList GetAllImInfo(int32_t count);
 };
 } // namespace yealink
 #endif // __ROOM_MEMBER_MANAGER_H__
