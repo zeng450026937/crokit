@@ -18,6 +18,8 @@ class UserAgentImpl : public UserAgent {
   std::string username() override;
   std::string password() override;
   std::string domain() override;
+  std::string proxyServer() override;
+  int64_t proxyPort() override;
 
   void Register() override;
   void UnRegister() override;

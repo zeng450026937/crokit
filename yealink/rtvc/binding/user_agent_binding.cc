@@ -45,6 +45,8 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
     options.Get("udpPort", &config.udp_port);
     options.Get("ipv4Only", &config.ipv4_only);
     options.Get("ipv6Only", &config.ipv6_only);
+    options.Get("proxyServer", &config.proxy_server);
+    options.Get("proxyPort", &config.proxy_port);
     options.Get("connector", &connector);
   }
 
@@ -70,6 +72,10 @@ void UserAgentBinding::BuildPrototype(
                    &UserAgentBinding::SetPassword)
       .SetProperty("domain", &UserAgentBinding::domain,
                    &UserAgentBinding::SetDomain)
+      .SetProperty("proxyServer", &UserAgentBinding::proxyServer,
+                   &UserAgentBinding::SetProxyServer)
+      .SetProperty("proxyPort", &UserAgentBinding::proxyPort,
+                   &UserAgentBinding::SetProxyPort)
       .SetMethod("set", &UserAgentBinding::Set)
       .SetMethod("get", &UserAgentBinding::Get)
       .SetMethod("start", &UserAgentBinding::Start)
@@ -147,6 +153,12 @@ std::string UserAgentBinding::password() {
 std::string UserAgentBinding::domain() {
   return config_.domain;
 }
+std::string UserAgentBinding::proxyServer() {
+  return config_.proxy_server;
+}
+int64_t UserAgentBinding::proxyPort() {
+  return config_.proxy_port;
+}
 
 void UserAgentBinding::SetUsername(std::string username) {
   config_.username = username;
@@ -156,6 +168,13 @@ void UserAgentBinding::SetPassword(std::string password) {
 }
 void UserAgentBinding::SetDomain(std::string domain) {
   config_.domain = domain;
+}
+
+void UserAgentBinding::SetProxyServer(std::string server) {
+  config_.proxy_server = server;
+}
+void UserAgentBinding::SetProxyPort(int64_t port) {
+  config_.proxy_port = port;
 }
 
 void UserAgentBinding::SetConnector(mate::Handle<ConnectorBinding> connector) {
@@ -179,6 +198,16 @@ void UserAgentBinding::Set(std::string key, mate::Arguments* args) {
     if (args->GetNext(&value)) {
       config_.domain = value;
     }
+  } else if (key == "proxyServer") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.proxy_server = value;
+    }
+  } else if (key == "proxyPort") {
+    int64_t value;
+    if (args->GetNext(&value)) {
+      config_.proxy_port = value;
+    }
   } else {
     args->ThrowError("Unknown setting key");
   }
@@ -191,6 +220,10 @@ v8::Local<v8::Value> UserAgentBinding::Get(std::string key,
     return mate::ConvertToV8(isolate(), config_.password);
   } else if (key == "domain") {
     return mate::ConvertToV8(isolate(), config_.domain);
+  } else if (key == "proxyServer") {
+    return mate::ConvertToV8(isolate(), config_.proxy_server);
+  } else if (key == "proxyPort") {
+    return mate::ConvertToV8(isolate(), config_.proxy_port);
   } else {
     args->ThrowError("Unknown setting key");
     return v8::Null(isolate());
@@ -229,8 +262,8 @@ v8::Local<v8::Promise> UserAgentBinding::Register() {
     yealink::ConnectionParam params;
     params.addrHost = config_.domain.c_str();
     params.hostPort = 5061;
-    params.addrProxy = "";
-    params.proxyPort = 0;
+    params.addrProxy = config_.proxy_server.c_str();
+    params.proxyPort = config_.proxy_port > 0 ? config_.proxy_port : 5061;
 
     sip_client_->Connect(params);
 

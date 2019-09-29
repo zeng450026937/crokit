@@ -37,10 +37,14 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   std::string username();
   std::string password();
   std::string domain();
+  std::string proxyServer();
+  int64_t proxyPort();
 
   void SetUsername(std::string username);
   void SetPassword(std::string password);
   void SetDomain(std::string domain);
+  void SetProxyServer(std::string server);
+  void SetProxyPort(int64_t port);
   void SetConnector(mate::Handle<ConnectorBinding> connector);
 
   void Set(std::string key, mate::Arguments* args);

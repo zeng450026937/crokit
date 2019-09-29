@@ -1,8 +1,8 @@
 #ifndef YEALINK_RTVC_API_USER_AGENT_H_
 #define YEALINK_RTVC_API_USER_AGENT_H_
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "base/optional.h"
 
@@ -27,6 +27,8 @@ class UserAgent {
     int64_t udp_port = 5060;
     bool ipv4_only = false;
     bool ipv6_only = false;
+    std::string proxy_server;
+    int64_t proxy_port;
   };
 
   virtual ~UserAgent() = default;
@@ -38,6 +40,8 @@ class UserAgent {
   virtual std::string username() = 0;
   virtual std::string password() = 0;
   virtual std::string domain() = 0;
+  virtual std::string proxyServer() = 0;
+  virtual int64_t proxyPort() = 0;
 
   virtual void Register() = 0;
   virtual void UnRegister() = 0;
