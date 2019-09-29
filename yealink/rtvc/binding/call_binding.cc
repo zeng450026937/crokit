@@ -106,6 +106,7 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("mute", &CallBinding::Mute)
       .SetMethod("unmute", &CallBinding::Unmute)
       .SetMethod("renegotiate", &CallBinding::Renegotiate)
+      .SetMethod("getStats", &CallBinding::GetStats)
       .SetMethod("getInfos", &CallBinding::GetInfos)
       .SetProperty("isInProgress", &CallBinding::isInProgress)
       .SetProperty("isEstablished", &CallBinding::isEstablished)
@@ -380,15 +381,29 @@ void CallBinding::Unmute() {
 
 void CallBinding::Renegotiate() {}
 
-void CallBinding::GetStats() {
+v8::Local<v8::Promise> CallBinding::GetStats() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
   yealink::MediaStreamStats media_stats = meeting_->AVMediaStats();
   yealink::VideoStreamStats share_stats = meeting_->ShareMediaStats();
 
   RTCStats v8_media_stats;
   ConvertFrom(v8_media_stats, media_stats);
 
-  RTCVideoStats v8_share_stats;
-  ConvertFrom(v8_share_stats, share_stats);
+  RTCVideoStats v8_share_video_stats;
+  ConvertFrom(v8_share_video_stats, share_stats);
+
+  RTCStats v8_share_stats;
+  v8_share_stats.video = v8_share_video_stats;
+
+  RTCStatsInfo result;
+
+  result.media = v8_media_stats;
+  result.share = v8_share_stats;
+
+  std::move(promise).Resolve(result);
+
+  return handle;
 }
 
 v8::Local<v8::Object> CallBinding::GetInfos() {

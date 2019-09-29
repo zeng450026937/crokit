@@ -3687,4 +3687,28 @@ bool Converter<yealink::rtvc::RTCStats>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
+v8::Local<v8::Value> Converter<yealink::rtvc::RTCStatsInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::RTCStatsInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("media", val.media);
+  handler.Set("share", val.share);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::RTCStatsInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::RTCStatsInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("media", &(out->media));
+  dict.Get("share", &(out->share));
+
+  return true;
+}
+
 }  // namespace mate

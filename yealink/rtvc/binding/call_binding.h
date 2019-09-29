@@ -65,7 +65,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 
   void Renegotiate();
 
-  void GetStats();
+  v8::Local<v8::Promise> GetStats();
   v8::Local<v8::Object> GetInfos();
 
   void InsertDTMF(std::string tone);

@@ -1081,6 +1081,16 @@ struct Converter<yealink::rtvc::RTCStats> {
                      yealink::rtvc::RTCStats* out);
 };
 
+template <>
+struct Converter<yealink::rtvc::RTCStatsInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::RTCStatsInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::RTCStatsInfo* out);
+};
+
 }  // namespace mate
 
 #endif  // YEALINK_RTVC_BINDING_CONVERTER_H_

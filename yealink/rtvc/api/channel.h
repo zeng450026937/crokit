@@ -94,6 +94,11 @@ struct RTCStats {
   RTCVideoStats video;
 };
 
+struct RTCStatsInfo {
+  RTCStats media;
+  RTCStats share;
+};
+
 class ChannelObserver {
  public:
   // singaling state
