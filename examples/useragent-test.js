@@ -7,10 +7,15 @@ async function test(binding, connector, account) {
   const { UserAgent } = binding;
   const { username, password, domain } = account;
 
-  const userAgent = new UserAgent(connector, {
-    username, password, domain,
+  const userAgent = new UserAgent({
+    username,
+    password,
+    domain,
+    //'userAgent' : 'Yealink Meeting(Windows) 1.0.0',
+    //'clientInfo' : 'Apollo_VCD_Windows'
   });
 
+  userAgent.setConnector(connector);
   userAgent.start();
 
   console.log('register()')

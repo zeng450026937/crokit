@@ -2055,6 +2055,88 @@ bool Converter<yealink::rtvc::HttpResponseInfo>::FromV8(
   return true;
 }
 
+v8::Local<v8::Value> Converter<yealink::rtvc::ImResponseInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::ImResponseInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("bizCode", val.biz_code);
+  handler.Set("entity", val.entity);
+  handler.Set("timestamp", val.timestamp);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::ImResponseInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ImResponseInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("bizCode", &(out->biz_code));
+  dict.Get("entity", &(out->entity));
+  dict.Get("timestamp", &(out->timestamp));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageInfo>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::ImMessageInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("isPrivate", val.is_private);
+  handler.Set("text", val.text);
+  handler.Set("timestamp", val.timestamp);
+  handler.Set("version", val.version);
+  handler.Set("senderEntity", val.sender_entity);
+  handler.Set("senderDisplayText", val.sender_display_text);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::ImMessageInfo>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ImMessageInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("isPrivate", &(out->is_private));
+  dict.Get("text", &(out->text));
+  dict.Get("timestamp", &(out->timestamp));
+  dict.Get("version", &(out->version));
+  dict.Get("senderEntity", &(out->sender_entity));
+  dict.Get("senderDisplayText", &(out->sender_display_text));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageList>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::ImMessageList& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("bizCode", val.biz_code);
+  handler.Set("messages", val.messages);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::ImMessageList>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::ImMessageList* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("bizCode", &(out->biz_code));
+  dict.Get("messages", &(out->messages));
+
+  return true;
+}
+
 v8::Local<v8::Value> Converter<yealink::rtvc::UserProtocolType>::ToV8(
     v8::Isolate* isolate,
     yealink::rtvc::UserProtocolType val) {

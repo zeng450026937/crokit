@@ -341,6 +341,21 @@ struct StructTraits<HttpResponseInfo> {
 };
 
 template <>
+struct StructTraits<ImResponseInfo> {
+  static bool From(ImResponseInfo& out, const yealink::RoomImResult& val);
+};
+
+template <>
+struct StructTraits<ImMessageInfo> {
+  static bool From(ImMessageInfo& out, const yealink::RoomImMessage& val);
+};
+
+template <>
+struct StructTraits<ImMessageList> {
+  static bool From(ImMessageList& out, const yealink::RoomImMessageList& val);
+};
+
+template <>
 struct StructTraits<UserProtocolType> {
   static bool From(UserProtocolType& out,
                    const yealink::MemberInfo::Protocol& val);

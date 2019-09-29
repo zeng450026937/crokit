@@ -965,7 +965,7 @@ void CallBinding::OnCreateConferenceAfter(yealink::RoomController* controller) {
   // ensure conference is not nullptr
   if (conference_.IsEmpty()) {
     conference_ =
-        ConferenceBinding::Create(isolate(), nullptr, user_agent_.get());
+        ConferenceBinding::Create(isolate(), controller, user_agent_.get());
     v8_conference_.Reset(isolate(), conference_.ToV8());
   }
 

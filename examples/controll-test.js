@@ -32,7 +32,7 @@ async function test(binding, userAgent) {
   // call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
   // call.connect('sip:1001@123456.onylyun.com;transport=tls');
   //call.connect('sip:1090@223504.onylyun.com;transport=tls');
-  call.connect('sip:23524@223504.onylyun.com;transport=tls');
+  call.connect('sip:8602@22014665.10.200.112.39.xip.io;transport=tls');
   //call.setRemoteVideoSink(sink);
 
   const eventNames = [
@@ -66,9 +66,9 @@ async function test(binding, userAgent) {
     'rtc:shareBroken',
   ];
 
-  eventNames.forEach((event) => {
-    call.on(event, () => console.log(event));
-  })
+  // eventNames.forEach((event) => {
+  //   call.on(event, () => console.log(event));
+  // })
 
   let hangupTimmer;
   let shareTimer;
@@ -85,25 +85,50 @@ async function test(binding, userAgent) {
   //   console.warn('user:removed', users);
   // });
 
+  call.conference.on('messageUpdated', (func, message) => {
+    console.warn('chat messageUpdated:', message);
+  });
+
   let user_test = true;
   call.conference.on('usersUpdated', (arg1, arg2) => {
-    // console.warn('usersUpdated users:', call.conference.users);
+    console.warn('chat dialogList:', call.conference, call.conference.chat.dialogList);
+    console.warn('chat dialogList length:', call.conference.chat.dialogList.length);
+    console.warn('chat publicDialog:', call.conference.chat.publicDialog);
+
+    console.warn('chat:', call.conference.chat);
+
+    console.warn('usersUpdated users:', call.conference.users);
     // console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
     // console.warn('usersUpdated currentUser.entity:', call.conference.users.currentUser.entity);
     // console.warn('usersUpdated userList:', call.conference.users.userList);
     // console.warn('usersUpdated userList.length:', call.conference.users.userList.length);
 
-    console.warn('usersUpdated addedUser:', call.conference.users.addedUser, call.conference.users.addedUser.length);
-    console.warn('usersUpdated deletedUser:', call.conference.users.deletedUser, call.conference.users.deletedUser.length);
-    console.warn('usersUpdated updatedUser:', call.conference.users.updatedUser, call.conference.users.updatedUser.length);
-    console.warn('usersUpdated presenters:', call.conference.users.presenters, call.conference.users.presenters.length);
-    console.warn('usersUpdated attendees:', call.conference.users.attendees, call.conference.users.attendees.length);
-    console.warn('usersUpdated onHoldUsers:', call.conference.users.onHoldUsers, call.conference.users.onHoldUsers.length);
-    console.warn('usersUpdated demonstrators:', call.conference.users.demonstrators, call.conference.users.demonstrators.length);
-    console.warn('usersUpdated castviewers:', call.conference.users.castviewers, call.conference.users.castviewers.length);
+    // console.warn('usersUpdated addedUser:', call.conference.users.addedUser, call.conference.users.addedUser.length);
+    // console.warn('usersUpdated deletedUser:', call.conference.users.deletedUser, call.conference.users.deletedUser.length);
+    // console.warn('usersUpdated updatedUser:', call.conference.users.updatedUser, call.conference.users.updatedUser.length);
+    // console.warn('usersUpdated presenters:', call.conference.users.presenters, call.conference.users.presenters.length);
+    // console.warn('usersUpdated attendees:', call.conference.users.attendees, call.conference.users.attendees.length);
+    // console.warn('usersUpdated onHoldUsers:', call.conference.users.onHoldUsers, call.conference.users.onHoldUsers.length);
+    // console.warn('usersUpdated demonstrators:', call.conference.users.demonstrators, call.conference.users.demonstrators.length);
+    // console.warn('usersUpdated castviewers:', call.conference.users.castviewers, call.conference.users.castviewers.length);
 
     if (user_test == true) {
       user_test = true;
+
+      setInterval(() => {
+        console.warn('chat publicDialog:', call.conference.chat);
+        call.conference.chat.sendChatMessage('私聊聊天测试', ['2'])
+          .then((res) => {
+            //console.warn(res, res.direction);
+          })
+          .catch(() => {});
+
+        call.conference.chat.sendChatMessage('群聊聊天测试', [])
+          .then((res) => {
+            //console.warn(res, res.direction);
+          })
+          .catch(() => {});
+      }, 10000);
 
       // setInterval(() => {
       //   //console.warn('usersUpdated setInterval currentUser.entity:', call.conference.users.currentUser.entity);
@@ -111,15 +136,17 @@ async function test(binding, userAgent) {
 
       //console.warn('usersUpdated invite', call.conference.users.invite('223504.1055'))
 
-      call.conference.users.handUp(false) // reject all handup users
-        .then((res) => {
-          console.warn(res);
-        })
-        .catch((e) => {
-          console.warn(e);
-        })
+      // reject all handup users
+      // call.conference.users.handUp(false)
+      //   .then((res) => {
+      //     console.warn(res);
+      //   })
+      //   .catch((e) => {
+      //     console.warn(e);
+      //   })
 
       call.conference.users.userList.map((user) => {
+
         // console.warn('this user entity = ', user.entity);
 
         // console.warn('this user isConnected = ', user.isConnected());
@@ -239,49 +266,48 @@ async function test(binding, userAgent) {
     // console.warn('viewUpdated getInitialFilters:', call.conference.view.getInitialFilters());
     // console.warn('*******************************************');
 
-    if(view_test == true)
-    {
+    if (view_test == true) {
       view_test = false;
 
-      call.conference.view.setSpeakMode('free') // handUp | free
-        .then((res) => {
-          console.warn(res);
-        })
-        .catch((e) =>{
-          console.warn(e);
-        })
+      // call.conference.view.setSpeakMode('free') // handUp | free
+      //   .then((res) => {
+      //     console.warn(res);
+      //   })
+      //   .catch((e) =>{
+      //     console.warn(e);
+      //   })
 
-    //   call.conference.view.setLayout({
-    //       'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
-    //     })
-    //   .then(() => {
-    //     console.warn('viewUpdated GetInitialFilters success', );
-    //   })
-    //   .catch(() => {
-    //     console.warn('viewUpdated GetInitialFilters fail', );
-    //   })
+      //   call.conference.view.setLayout({
+      //       'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive
+      //     })
+      //   .then(() => {
+      //     console.warn('viewUpdated GetInitialFilters success', );
+      //   })
+      //   .catch(() => {
+      //     console.warn('viewUpdated GetInitialFilters fail', );
+      //   })
 
-    //   call.conference.view.setInitialFilters({
-    //     'role' : 'default',
-    //     'ingress' : 'block'
-    //   })
-    //   .then(() => {
-    //     console.warn('viewUpdated setInitialFilters success', );
-    //   })
-    //   .catch(() => {
-    //     console.warn('viewUpdated setInitialFilters fail', );
-    //   })
+      //   call.conference.view.setInitialFilters({
+      //     'role' : 'default',
+      //     'ingress' : 'block'
+      //   })
+      //   .then(() => {
+      //     console.warn('viewUpdated setInitialFilters success', );
+      //   })
+      //   .catch(() => {
+      //     console.warn('viewUpdated setInitialFilters fail', );
+      //   })
 
-    //   call.conference.view.setInitialFilters({
-    //     'role' : 'default',
-    //     'ingress' : 'unblock'
-    //   })
-    //   .then(() => {
-    //     console.warn('viewUpdated setInitialFilters success', );
-    //   })
-    //   .catch(() => {
-    //     console.warn('viewUpdated setInitialFilters fail', );
-    //   })
+      //   call.conference.view.setInitialFilters({
+      //     'role' : 'default',
+      //     'ingress' : 'unblock'
+      //   })
+      //   .then(() => {
+      //     console.warn('viewUpdated setInitialFilters success', );
+      //   })
+      //   .catch(() => {
+      //     console.warn('viewUpdated setInitialFilters fail', );
+      //   })
     }
   });
 

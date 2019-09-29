@@ -26,6 +26,26 @@ struct HttpResponseInfo {
   RequesrResult result;
 };
 
+struct ImResponseInfo {
+  int32_t biz_code;
+  int64_t entity;
+  int64_t timestamp;
+};
+
+struct ImMessageInfo {
+  bool is_private;
+  std::string text;
+  int64_t timestamp;
+  int64_t version;
+  std::string sender_entity;
+  std::string sender_display_text;
+};
+
+struct ImMessageList {
+  int32_t biz_code;
+  std::vector<ImMessageInfo> messages;
+};
+
 class ConferenceDescription;
 class ConferenceState;
 class ConferenceView;

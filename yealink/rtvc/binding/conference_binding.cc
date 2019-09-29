@@ -45,6 +45,7 @@ void ConferenceBinding::BuildPrototype(
       .SetProperty("users", &ConferenceBinding::users)
       .SetProperty("rtmp", &ConferenceBinding::rtmp)
       .SetProperty("record", &ConferenceBinding::record)
+      .SetProperty("chat", &ConferenceBinding::chat)
       .SetProperty("isInProgress", &ConferenceBinding::isInProgress)
       .SetProperty("isEstablished", &ConferenceBinding::isEstablished)
       .SetProperty("isEnded", &ConferenceBinding::isEnded)
@@ -59,6 +60,7 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
                                      mate::Handle<UserAgentBinding> user_agent)
     : locally_generated_controller_(true),
       controller_(nullptr),
+      chat_controller_(nullptr),
       user_agent_(user_agent->GetWeakPtr()),
       sip_client_(user_agent->GetWeakSIPClientPtr()),
       weak_factory_(this) {
@@ -82,6 +84,9 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
 
   record_ = ConferenceRecordBinding::Create(isolate, controller_.get());
   v8_record_.Reset(isolate, record_.ToV8());
+
+  chat_ = ConferenceChatBinding::Create(isolate, controller_.get());
+  v8_chat_.Reset(isolate, chat_.ToV8());
 }
 ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
                                      yealink::RoomController* controller,
@@ -110,6 +115,18 @@ ConferenceBinding::ConferenceBinding(v8::Isolate* isolate,
 
   record_ = ConferenceRecordBinding::Create(isolate, controller_.get());
   v8_record_.Reset(isolate, record_.ToV8());
+
+  chat_ = ConferenceChatBinding::Create(isolate, controller_.get());
+  v8_chat_.Reset(isolate, chat_.ToV8());
+
+  if (controller_ && !chat_controller_) {
+    std::unique_ptr<yealink::ChatManager> manager(
+        new yealink::ChatManager(*controller_, 2000));
+
+    chat_controller_ = std::move(manager);
+    chat_controller_->AddObserver(this);
+    chat_->UpdateChatController(chat_controller_.get());
+  }
 }
 
 ConferenceBinding::~ConferenceBinding() {
@@ -131,12 +148,22 @@ void ConferenceBinding::SetController(RoomController* controller) {
   if (controller_)
     controller_->AddObserver(this);
 
+  if (controller_ && !chat_controller_) {
+    std::unique_ptr<yealink::ChatManager> manager(
+        new yealink::ChatManager(*controller_, 2000));
+
+    chat_controller_ = std::move(manager);
+    chat_controller_->AddObserver(this);
+    chat_->UpdateChatController(chat_controller_.get());
+  }
+
   state_->UpdateRoomController(controller_.get());
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
   rtmp_->UpdateRoomController(controller_.get());
   record_->UpdateRoomController(controller_.get());
+  chat_->UpdateRoomController(controller_.get());
 
   description_->UpdatePendingHandler(&pending_requests_);
   users_->UpdateStatsPendingHandler(&stats_pending_requests_);
@@ -152,12 +179,22 @@ void ConferenceBinding::SetController(
   if (controller_)
     controller_->AddObserver(this);
 
+  if (controller_ && !chat_controller_) {
+    std::unique_ptr<yealink::ChatManager> manager(
+        new yealink::ChatManager(*controller_, 2000));
+
+    chat_controller_ = std::move(manager);
+    chat_controller_->AddObserver(this);
+    chat_->UpdateChatController(chat_controller_.get());
+  }
+
   state_->UpdateRoomController(controller_.get());
   description_->UpdateRoomController(controller_.get());
   users_->UpdateRoomController(controller_.get());
   view_->UpdateRoomController(controller_.get());
   rtmp_->UpdateRoomController(controller_.get());
   record_->UpdateRoomController(controller_.get());
+  chat_->UpdateRoomController(controller_.get());
 
   description_->UpdatePendingHandler(&pending_requests_);
   users_->UpdateStatsPendingHandler(&stats_pending_requests_);
@@ -296,6 +333,14 @@ v8::Local<v8::Value> ConferenceBinding::record() {
   return v8::Local<v8::Value>::New(isolate(), v8_record_);
 }
 
+v8::Local<v8::Value> ConferenceBinding::chat() {
+  DCHECK(chat_.get());
+  if (v8_chat_.IsEmpty()) {
+    return v8::Null(isolate());
+  }
+  return v8::Local<v8::Value>::New(isolate(), v8_chat_);
+}
+
 void ConferenceBinding::OnConnectSuccess() {
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
@@ -422,6 +467,22 @@ void ConferenceBinding::OnGetShareInfo(int64_t requestId,
   pending_requests_.erase(it);
 
   // Emit("shareInfoUpdated", requestId, std::string(shareInfo));
+}
+
+void ConferenceBinding::OnImRecord(const char* messageBody) {}
+
+void ConferenceBinding::OnReceiveMessage(const ChatMessageItem& message) {
+  ChatMessageItem item = message;
+  mate::Handle<ConferenceMessageBinding> new_message =
+      ConferenceMessageBinding::Create(isolate(), item);
+  v8::Global<v8::Value> v8_new_message;
+  v8_new_message.Reset(isolate(), new_message.ToV8());
+
+  Emit("messageUpdated", v8::Local<v8::Value>::New(isolate(), v8_new_message));
+}
+
+void ConferenceBinding::OnDialogChange() {
+  Emit("dialogUpdated");
 }
 
 }  // namespace rtvc

@@ -2,6 +2,9 @@
 #define YEALINK_RTVC_BINDING_CONFERENCE_BINDING_H_
 
 #include <unordered_map>
+#include "yealink/libvc/include/chat/chat_manager.h"
+#include "yealink/libvc/include/chat/chat_message_item.h"
+#include "yealink/libvc/include/chat/chat_observer.h"
 #include "yealink/libvc/include/meeting/meeting_api.h"
 #include "yealink/libvc/include/room/room_controller.h"
 #include "yealink/libvc/include/room/room_data.h"
@@ -12,7 +15,9 @@
 #include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_state.h"
+#include "yealink/rtvc/binding/conference_chat_binding.h"
 #include "yealink/rtvc/binding/conference_description_binding.h"
+#include "yealink/rtvc/binding/conference_message_binding.h"
 #include "yealink/rtvc/binding/conference_record_binding.h"
 #include "yealink/rtvc/binding/conference_rtmp_binding.h"
 #include "yealink/rtvc/binding/conference_state_binding.h"
@@ -28,7 +33,8 @@ namespace yealink {
 namespace rtvc {
 
 class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
-                          public yealink::RoomObserver {
+                          public yealink::RoomObserver,
+                          public yealink::ChatObserver {
  public:
   static mate::WrappableBase* New(mate::Handle<UserAgentBinding> user_agent,
                                   mate::Arguments* args);
@@ -71,6 +77,7 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   v8::Local<v8::Value> users();
   v8::Local<v8::Value> rtmp();
   v8::Local<v8::Value> record();
+  v8::Local<v8::Value> chat();
 
   // room observer impl
   void OnConnectSuccess() override;
@@ -89,10 +96,16 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   void OnGetUserCallStats(const RoomMember& member,
                           const Array<yealink::UserMediaInfo>& info) override;
   void OnGetShareInfo(int64_t requestId, const char* shareInfo) override;
+  void OnImRecord(const char* messageBody) override;
+
+  // chat observer impl
+  void OnReceiveMessage(const ChatMessageItem& message) override;
+  void OnDialogChange() override;
 
  private:
   bool locally_generated_controller_ = true;
   std::unique_ptr<RoomController> controller_;
+  std::unique_ptr<ChatManager> chat_controller_;
   std::string conversation_id_;
 
   v8::Global<v8::Value> v8_description_;
@@ -112,6 +125,9 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
 
   v8::Global<v8::Value> v8_record_;
   mate::Handle<ConferenceRecordBinding> record_;
+
+  v8::Global<v8::Value> v8_chat_;
+  mate::Handle<ConferenceChatBinding> chat_;
 
   base::WeakPtr<UserAgentBinding> user_agent_;
   base::WeakPtr<yealink::SIPClient> sip_client_;
