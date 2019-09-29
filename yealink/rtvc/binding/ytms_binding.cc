@@ -546,8 +546,7 @@ void YTMSBinding::DoDownloadFile(DownloadInfo params,
 std::vector<std::string> YTMSBinding::GetCaptureDevice() {
   std::vector<std::string> deviceInfo;
 
-  // Todo update sdk to support
-  // ConvertFrom(deviceInfo, ytms_agent_->GetCaptureDevices());
+  ConvertFrom(deviceInfo, ytms_agent_->GetCaptureDevices());
 
   return deviceInfo;
 }
