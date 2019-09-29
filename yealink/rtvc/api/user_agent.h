@@ -27,8 +27,8 @@ class UserAgent {
     int64_t udp_port = 5060;
     bool ipv4_only = false;
     bool ipv6_only = false;
-    std::string proxy_server;
-    int64_t proxy_port;
+    base::Optional<std::string> proxy_server;
+    int64_t proxy_port = 0;
   };
 
   virtual ~UserAgent() = default;
