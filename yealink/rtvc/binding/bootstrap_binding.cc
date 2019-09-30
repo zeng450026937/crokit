@@ -37,6 +37,8 @@ void BootstrapBinding::BuildPrototype(
                    &BootstrapBinding::SetUsername)
       .SetProperty("password", &BootstrapBinding::password,
                    &BootstrapBinding::SetPassword)
+      .SetProperty("debug", &BootstrapBinding::debug,
+                   &BootstrapBinding::SetDebug)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
       .SetMethod("getConnector", &BootstrapBinding::GetConnector);
 }
@@ -45,6 +47,7 @@ BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
                                    std::string client_id)
     : client_id_(client_id),
+      debug_(false),
       access_agent_(yealink::CreateAccessAgent(client_id.c_str())),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
@@ -72,6 +75,13 @@ std::string BootstrapBinding::password() {
 }
 void BootstrapBinding::SetPassword(std::string password) {
   password_ = password;
+}
+
+bool BootstrapBinding::debug() {
+  return debug_;
+}
+void BootstrapBinding::SetDebug(bool debug) {
+  debug_ = debug;
 }
 
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
@@ -107,7 +117,14 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   info.server = server_.c_str();
   info.username = username_.c_str();
   info.password = password_.c_str();
-  ConvertFrom(*result, access_agent_->LoginAccessService(info, nullptr).accountInfos);
+
+  if (debug_ == true)
+    ConvertFrom(*result,
+                access_agent_->UnscheduledLoginAccessService(info, nullptr)
+                    .accountInfos);
+  else
+    ConvertFrom(*result,
+                access_agent_->LoginAccessService(info, nullptr).accountInfos);
 }
 
 }  // namespace rtvc

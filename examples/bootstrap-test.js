@@ -16,6 +16,7 @@ async function test(binding) {
   bootstrap.server = 'https://onylyun.com';
   bootstrap.username = '223504.1091';
   bootstrap.password = 'v123456789';
+  bootstrap.debug = false;
 
   console.log('authenticate()');
 
