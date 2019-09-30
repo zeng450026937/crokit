@@ -247,10 +247,18 @@ public:
     /**
          * @brief stop to capture net log job and upload packets
          * 
-         * @param ) 
+         * @param )
          * @return true/false
          */
     virtual bool StopCaptureNetLog(const char* sessionId, YTMSProcess* process) = 0;
+
+    /**
+         * @brief get net devices id infos for capture
+         * 
+         * @param 
+         * @
+		 */
+    virtual Array<SStringA> GetCaptureDevices() = 0;
 };
 } // namespace yealink
 

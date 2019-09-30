@@ -668,6 +668,36 @@ struct Converter<yealink::rtvc::HttpResponseInfo> {
 };
 
 template <>
+struct Converter<yealink::rtvc::ImResponseInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::ImResponseInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ImResponseInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ImMessageInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::ImMessageInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ImMessageInfo* out);
+};
+
+template <>
+struct Converter<yealink::rtvc::ImMessageList> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const yealink::rtvc::ImMessageList& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     yealink::rtvc::ImMessageList* out);
+};
+
+template <>
 struct Converter<yealink::rtvc::UserProtocolType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    yealink::rtvc::UserProtocolType val);

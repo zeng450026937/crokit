@@ -37,6 +37,9 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string password();
   void SetPassword(std::string password);
 
+  bool debug();
+  void SetDebug(bool debug);
+
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
 
@@ -47,6 +50,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string username_;
   std::string password_;
   std::string client_id_;
+  bool debug_;
 
   v8::Global<v8::Value> connector_;
 

@@ -29,6 +29,14 @@ std::string UserAgentImpl::domain() {
   LOG(INFO) << __FUNCTIONW__;
   return config_.domain;
 }
+std::string UserAgentImpl::proxyServer() {
+  LOG(INFO) << __FUNCTIONW__;
+  return config_.proxy_server.value_or("");
+}
+int64_t UserAgentImpl::proxyPort() {
+  LOG(INFO) << __FUNCTIONW__;
+  return config_.proxy_port;
+}
 
 void UserAgentImpl::Register() {
   LOG(INFO) << __FUNCTIONW__;

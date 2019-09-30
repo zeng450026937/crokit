@@ -87,6 +87,11 @@ public:
      * @brief 
      * @return 
      */
+    bool InMeeting() const;
+    /**
+     * @brief 
+     * @return 
+     */
     MemberInfo::Roles::PermissionRole GetPermissionRole() const;
     /**
      * @brief 
@@ -199,6 +204,12 @@ public:
      * @return 
      */
     RequestResult ModifyUserName(const char* userName);
+    /**
+     * @brief 
+     * @param context 
+     * @return 
+     */
+    RoomImResult SendChatMessage(const char* context);
 };
 } // namespace yealink
 #endif // __ROOM_MEMBER_H__

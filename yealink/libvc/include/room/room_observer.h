@@ -146,6 +146,14 @@ public:
         (void)requestId;
         (void)shareInfo;
     }
+    /**
+     * @brief receive im record change
+     * @param messageBody message with json
+     */
+    virtual void OnImRecord(const char* messageBody)
+    {
+        (void)messageBody;
+    }
 };
 
 } // namespace yealink

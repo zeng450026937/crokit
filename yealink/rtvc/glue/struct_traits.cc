@@ -830,6 +830,35 @@ bool StructTraits<ResponseInfo>::From(ResponseInfo& out,
   return true;
 }
 
+bool StructTraits<ImResponseInfo>::From(ImResponseInfo& out,
+                                        const yealink::RoomImResult& val) {
+  ConvertFrom(out.biz_code, val.bizCode);
+  ConvertFrom(out.entity, val.imEntity);
+  ConvertFrom(out.timestamp, val.imTimestamp);
+
+  return true;
+}
+
+bool StructTraits<ImMessageInfo>::From(ImMessageInfo& out,
+                                       const yealink::RoomImMessage& val) {
+  ConvertFrom(out.is_private, val.isPrivate);
+  ConvertFrom(out.text, val.imContext);
+  ConvertFrom(out.timestamp, val.imTimestamp);
+  ConvertFrom(out.version, val.imVersion);
+  ConvertFrom(out.sender_entity, val.senderEntity);
+  ConvertFrom(out.sender_display_text, val.senderDisplayText);
+
+  return true;
+}
+
+bool StructTraits<ImMessageList>::From(ImMessageList& out,
+                                       const yealink::RoomImMessageList& val) {
+  ConvertFrom(out.biz_code, val.bizCode);
+  ConvertFrom(out.messages, val.imInfos);
+
+  return true;
+}
+
 bool StructTraits<HttpResponseInfo>::From(HttpResponseInfo& out,
                                           const yealink::RoomHttpResult& val) {
   ConvertFrom(out.biz_code, val.bizCode);
