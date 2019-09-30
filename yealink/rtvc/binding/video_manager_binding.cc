@@ -38,6 +38,7 @@ void VideoManagerBinding::BuildPrototype(
       .SetMethod("setRotation", &VideoManagerBinding::SetRotation)
       .SetMethod("acquireStream", &VideoManagerBinding::AcquireStream)
       .SetMethod("releaseStream", &VideoManagerBinding::ReleaseStream)
+      .SetMethod("acquiring", &VideoManagerBinding::acquiring)
       .SetMethod("setLocalVideoSink", &VideoManagerBinding::SetLocalVideoSink)
       .SetMethod("addLocalVideoSink", &VideoManagerBinding::AddLocalVideoSink)
       .SetMethod("removeLocalVideoSink",
@@ -162,6 +163,9 @@ void VideoManagerBinding::ReleaseStream() {
   acquiring_stream_ = false;
 
   media_->SetCamera(nullptr, false);
+}
+bool VideoManagerBinding::acquiring() {
+  return acquiring_stream_;
 }
 
 void VideoManagerBinding::SetLocalVideoSink(mate::Arguments* args) {
