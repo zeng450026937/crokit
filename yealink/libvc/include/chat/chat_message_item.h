@@ -12,6 +12,10 @@
 
 namespace yealink
 {
+/**
+ * @enum ChatItemStatus
+ * @brief item status
+ */
 enum ChatItemStatus
 {
     CHAT_ITEM_STATUS_INVALID,
@@ -20,6 +24,10 @@ enum ChatItemStatus
     CHAT_ITEM_STATUS_FAILURE
 };
 
+/**
+ * @class ChatMessageItem
+ * @brief message item for each message
+ */
 class VC_EXPORT_API ChatMessageItem
 {
     SIMPLE_OBJECT_DECLARE(ChatMessageItem)

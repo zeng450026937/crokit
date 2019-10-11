@@ -29,6 +29,8 @@ struct BindPushInfo
     int tenantId;
     const char* clientId;
     const char* language;
+    const char* apnsToken;
+    const char* env;
     const char* thirdPartyToken;
     const char* service;
     BindPushInfo()
@@ -37,6 +39,8 @@ struct BindPushInfo
         , tenantId(0)
         , clientId("")
         , language("")
+        , apnsToken("")
+        , env("")
         , thirdPartyToken("")
         , service("")
     {
@@ -104,8 +108,6 @@ struct LoginUserInfo
     PermissionInfo permission;
     SubjectInfo subject;
     TurnServerInfo turnServer;
-    bool hasRegister; // 是否注册个人账号，因为软终端现在还未限制云账号登录，对于未注册的云账号登录时可能需要根据此字段限制一些功能
-    bool upgraded; // 账号是否已创建企业，false：没有创建企业；true：已经创建企业
     SStringA token;
 };
 
@@ -130,6 +132,8 @@ struct LoginUserInfos
 {
     Array<LoginUserInfo> accountInfos;
     LoginAuthInfo authInfo;
+    bool hasRegister; // 是否注册个人账号，因为软终端现在还未限制云账号登录，对于未注册的云账号登录时可能需要根据此字段限制一些功能
+    bool upgraded; // 账号是否已创建企业，false：没有创建企业；true：已经创建企业
 };
 
 struct WechatAuthCallbackInfo

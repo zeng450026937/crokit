@@ -190,10 +190,13 @@ enum ScheduleRtmpWatchLimitType
 struct ScheduleDetailInfo
 {
     ScheduleDetailInfo()
-        : rtmpWatchLimitType(SCHEDULE_WATCH_TYPE_INVALID)
+        : bizCode(900200)
+        , rtmpWatchLimitType(SCHEDULE_WATCH_TYPE_INVALID)
         , rtmpAutoRecord(false)
     {
     }
+
+    int32_t bizCode;
 
     ScheduleMemberInfo organizer;
     SStringA remark;
