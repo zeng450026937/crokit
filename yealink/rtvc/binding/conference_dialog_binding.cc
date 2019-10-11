@@ -39,7 +39,7 @@ mate::Handle<ConferenceDialogBinding> ConferenceDialogBinding::Create(
       isolate, weak_map_id);
 
   if (binding) {
-    binding->UpdateUserController(controller);
+    binding->UpdateDialogController(controller);
     return mate::CreateHandle(isolate, binding);
   }
 
@@ -61,7 +61,7 @@ void ConferenceDialogBinding::BuildPrototype(
       .SetMethod("clearUnread", &ConferenceDialogBinding::ClearUnread);
 }
 
-void ConferenceDialogBinding::UpdateUserController(ChatDialog& handler) {
+void ConferenceDialogBinding::UpdateDialogController(ChatDialog& handler) {
   dialog_controller_ = handler;
 }
 

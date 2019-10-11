@@ -38,7 +38,7 @@ mate::Handle<ConferenceMessageBinding> ConferenceMessageBinding::Create(
       isolate, weak_map_id);
 
   if (binding) {
-    binding->UpdateUserController(controller);
+    binding->UpdateMessageController(controller);
     return mate::CreateHandle(isolate, binding);
   }
 
@@ -66,8 +66,13 @@ void ConferenceMessageBinding::BuildPrototype(
       .SetMethod("setStatus", &ConferenceMessageBinding::SetStatus);
 }
 
-void ConferenceMessageBinding::UpdateUserController(ChatMessageItem& handler) {
+void ConferenceMessageBinding::UpdateMessageController(
+    ChatMessageItem& handler) {
   message_controller_ = handler;
+}
+
+ChatMessageItem ConferenceMessageBinding::GetMessageItem() {
+  return message_controller_;
 }
 
 ConferenceMessageBinding::ConferenceMessageBinding(

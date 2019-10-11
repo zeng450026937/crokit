@@ -30,7 +30,7 @@ class ConferenceDialogBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateUserController(ChatDialog& handler);
+  void UpdateDialogController(ChatDialog& handler);
 
  protected:
   ConferenceDialogBinding(v8::Isolate* isolate,

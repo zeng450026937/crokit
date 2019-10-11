@@ -32,7 +32,9 @@ void ConferenceChatBinding::BuildPrototype(
       .MakeDestroyable()
       .SetProperty("publicDialog", &ConferenceChatBinding::publicDialog)
       .SetProperty("dialogList", &ConferenceChatBinding::dialogList)
-      .SetMethod("sendChatMessage", &ConferenceChatBinding::SendChatMessage);
+      .SetMethod("sendChatMessage", &ConferenceChatBinding::SendChatMessage)
+      .SetMethod("retrySendMessage",
+                 &ConferenceChatBinding::RetrySendChatMessage);
 }
 
 void ConferenceChatBinding::UpdateRoomController(RoomController* handler) {
@@ -101,6 +103,32 @@ v8::Local<v8::Promise> ConferenceChatBinding::SendChatMessage(
         std::move(promise).Reject();
       }
     }
+  } else {
+    std::move(promise).Reject();
+  }
+
+  return handle;
+}
+
+v8::Local<v8::Promise> ConferenceChatBinding::RetrySendChatMessage(
+    mate::Handle<ConferenceMessageBinding> handler) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  bool res = false;
+
+  if (chat_controller_ && !handler.IsEmpty()) {
+
+    ChatMessageItem test = handler->GetMessageItem();
+
+    ChatItemStatus status = test.GetStatus();
+    char* text = (char *)test.GetContext();
+
+    res = chat_controller_->RetryMessage(test);
+
+    if (res == true)
+      std::move(promise).Resolve();
+    else
+      std::move(promise).Reject();
   } else {
     std::move(promise).Reject();
   }

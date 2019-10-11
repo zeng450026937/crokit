@@ -28,7 +28,8 @@ class ConferenceMessageBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateUserController(ChatMessageItem& handler);
+  void UpdateMessageController(ChatMessageItem& handler);
+  ChatMessageItem GetMessageItem();
 
  protected:
   ConferenceMessageBinding(v8::Isolate* isolate,

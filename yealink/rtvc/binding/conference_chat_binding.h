@@ -41,6 +41,8 @@ class ConferenceChatBinding : public mate::EventEmitter<ConferenceChatBinding> {
 
   v8::Local<v8::Promise> SendChatMessage(std::string message,
                                          std::vector<std::string> entities);
+  v8::Local<v8::Promise> RetrySendChatMessage(
+      mate::Handle<ConferenceMessageBinding> handler);
 
   v8::Local<v8::Value> publicDialog();
   std::vector<v8::Local<v8::Value>> dialogList();
