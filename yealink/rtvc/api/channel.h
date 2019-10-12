@@ -64,6 +64,14 @@ struct AudioStatsInfo {
   int total_lost_packets;
   int jitter;
   int delay;
+  AudioStatsInfo()
+      : codec(StatsAudioCodecType::kNone),
+        bitrate(-1),
+        samplerate(-1),
+        loss_rate(-1),
+        total_lost_packets(-1),
+        jitter(-1),
+        delay(-1) {}
 };
 
 struct VideoStatsInfo {
@@ -77,6 +85,17 @@ struct VideoStatsInfo {
   int total_loss_packets;
   int jitter;
   int rtt;
+  VideoStatsInfo()
+      : codec(StatsVideoCodecType::kNone),
+        profile(StatsVideoProfileType::kNone),
+        width(-1),
+        height(-1),
+        frame_rate(-1),
+        bit_rate(-1),
+        loss_rate(-1),
+        total_loss_packets(-1),
+        jitter(-1),
+        rtt(-1) {}
 };
 
 struct RTCVideoStats {
