@@ -27,14 +27,6 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
   if (sinks_.empty())
     return;
 
-  if (!Context::Instance()->CalledOnValidThread()) {
-    Context::Instance()->PostTask(
-        FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnVideoFrame,
-                                  weak_factory_.GetWeakPtr(), frame));
-
-    return;
-  }
-
   auto type = frame.RawDataType();
   scoped_refptr<VideoFrameBuffer> buffer;
 
@@ -49,11 +41,25 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
     buffer = i420_buffer;
   }
 
+  DCHECK(buffer) << "Invalid frame buffer type:" << type;
+
   VideoFrame video_frame =
       VideoFrame::Builder().set_video_frame_buffer(buffer).build();
 
+  OnFrame(video_frame);
+}
+
+void VideoSourceAdapter::OnFrame(const VideoFrame& frame) {
+  if (!Context::Instance()->CalledOnValidThread()) {
+    Context::Instance()->PostTask(
+        FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnFrame,
+                                  weak_factory_.GetWeakPtr(), frame));
+
+    return;
+  }
+
   for (auto sink : sinks_) {
-    sink->OnFrame(video_frame);
+    sink->OnFrame(frame);
   }
 }
 

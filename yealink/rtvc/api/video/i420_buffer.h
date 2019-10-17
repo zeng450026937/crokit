@@ -4,8 +4,9 @@
 #include <stdint.h>
 #include <memory>
 
-#include "base/memory/aligned_memory.h"
+// #include "base/memory/aligned_memory.h"
 #include "base/memory/scoped_refptr.h"
+#include "yealink/rtvc/api/memory/aligned_malloc.h"
 #include "yealink/rtvc/api/video/video_frame_buffer.h"
 #include "yealink/rtvc/api/video/video_rotation.h"
 
@@ -107,7 +108,8 @@ class I420BufferImpl : public I420Buffer {
   const int stride_y_;
   const int stride_u_;
   const int stride_v_;
-  const std::unique_ptr<uint8_t, base::AlignedFreeDeleter> data_;
+  // const std::unique_ptr<uint8_t, base::AlignedFreeDeleter> data_;
+  const std::unique_ptr<uint8_t, webrtc::AlignedFreeDeleter> data_;
 };
 
 }  // namespace rtvc

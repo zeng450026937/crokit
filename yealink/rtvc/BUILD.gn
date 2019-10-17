@@ -9,6 +9,9 @@ group("rtvc") {
 
 source_set("rtvc_api") {
   sources = [
+    "api/memory/aligned_array.h.h",
+    "api/memory/aligned_malloc.h",
+    "api/memory/aligned_malloc.cc",
     "api/user_agent.h",
     "api/contact.h",
     "api/schedule_item.h",
@@ -47,6 +50,27 @@ source_set("desktop_media") {
   ]
   deps = [
     "//base",
+    "//third_party/webrtc/modules/desktop_capture",
+  ]
+}
+
+source_set("screen_drawer") {
+  sources = [
+    "//third_party/webrtc/modules/desktop_capture/screen_drawer.cc",
+    "//third_party/webrtc/modules/desktop_capture/screen_drawer.h",
+    "//third_party/webrtc/modules/desktop_capture/screen_drawer_linux.cc",
+    "//third_party/webrtc/modules/desktop_capture/screen_drawer_mac.cc",
+    "//third_party/webrtc/modules/desktop_capture/screen_drawer_win.cc",
+  ]
+
+  if (is_posix || is_fuchsia) {
+    sources += [
+      "//third_party/webrtc/modules/desktop_capture/screen_drawer_lock_posix.cc",
+      "//third_party/webrtc/modules/desktop_capture/screen_drawer_lock_posix.h",
+    ]
+  }
+
+  public_deps = [
     "//third_party/webrtc/modules/desktop_capture",
   ]
 }
@@ -123,6 +147,8 @@ node_addon("rtvc_binding") {
     "binding/video_source_v8.cc",
     "binding/desktop_capture_binding.h",
     "binding/desktop_capture_binding.cc",
+    "binding/desktop_drawer.h",
+    "binding/desktop_drawer.cc",
     "binding/bootstrap_binding.h",
     "binding/bootstrap_binding.cc",
     "binding/connector_binding.h",
@@ -183,6 +209,7 @@ node_addon("rtvc_binding") {
     ":rtvc_lib",
     ":rtvc_glue",
     ":desktop_media",
+    ":screen_drawer",
     "//third_party/webrtc/modules/desktop_capture",
   ]
 }

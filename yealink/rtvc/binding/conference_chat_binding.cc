@@ -118,12 +118,12 @@ v8::Local<v8::Promise> ConferenceChatBinding::RetrySendChatMessage(
 
   if (chat_controller_ && !handler.IsEmpty()) {
 
-    ChatMessageItem test = handler->GetMessageItem();
+    // ChatMessageItem test = handler->GetMessageItem();
 
-    ChatItemStatus status = test.GetStatus();
-    char* text = (char *)test.GetContext();
+    // ChatItemStatus status = test.GetStatus();
+    // char* text = (char *)test.GetContext();
 
-    res = chat_controller_->RetryMessage(test);
+    res = chat_controller_->RetryMessage(handler->GetMessageItem());
 
     if (res == true)
       std::move(promise).Resolve();

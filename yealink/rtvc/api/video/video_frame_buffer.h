@@ -15,7 +15,7 @@ class I420ABuffer;
 class I444Buffer;
 class I010Buffer;
 
-class VideoFrameBuffer : public base::RefCounted<VideoFrameBuffer> {
+class VideoFrameBuffer : public base::RefCountedThreadSafe<VideoFrameBuffer> {
  public:
   // New frame buffer types will be added conservatively when there is an
   // opportunity to optimize the path between some pair of video source and
@@ -56,7 +56,7 @@ class VideoFrameBuffer : public base::RefCounted<VideoFrameBuffer> {
   const I010Buffer* GetI010() const;
 
  protected:
-  friend class base::RefCounted<VideoFrameBuffer>;
+  friend class base::RefCountedThreadSafe<VideoFrameBuffer>;
 
   virtual ~VideoFrameBuffer() = default;
 };

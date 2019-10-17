@@ -1,7 +1,7 @@
 
 declare_args() {
   node_host_binary = "node"
-  node_build = true
+  node_build = false
 }
 
 node_addon_configs = [
@@ -60,7 +60,7 @@ template("node_addon") {
       "BUILDING_NODE_EXTENSION"
     ]
 
-    if (node_build) {
+    if (true || node_build) {
       defines += [ "NODE_BUILD" ]
     }
 

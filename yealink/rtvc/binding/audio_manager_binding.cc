@@ -146,7 +146,12 @@ void AudioManagerBinding::SetPlayback(bool enable) {
   if (enable)
     media_->StartAudioPlayout();
   else
-    media_->StartAudioPlayout();
+    media_->StopAudioPlayout();
+
+  if (enable)
+    media_->SetAudioMode(yealink::AudioMode::AM_HANDSET_FREE);
+  else
+    media_->SetAudioMode(yealink::AudioMode::AM_IDLE);
 }
 
 bool AudioManagerBinding::desktop_recording() {

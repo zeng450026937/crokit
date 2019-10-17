@@ -1,5 +1,6 @@
 #include <node.h>
 
+#include "base/debug/stack_trace.h"
 #include "base/memory/ptr_util.h"
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/video/i420_buffer.h"
@@ -7,6 +8,7 @@
 #include "yealink/rtvc/binding/bootstrap_binding.h"
 #include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/cloud_contact_binding.h"
+#include "yealink/rtvc/binding/conference_binding.h"
 #include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/desktop_capture_binding.h"
@@ -17,7 +19,6 @@
 #include "yealink/rtvc/binding/video_frame_binding.h"
 #include "yealink/rtvc/binding/video_manager_binding.h"
 #include "yealink/rtvc/binding/ytms_binding.h"
-#include "yealink/rtvc/binding/conference_binding.h"
 
 namespace {
 
@@ -25,6 +26,7 @@ using yealink::rtvc::AudioManagerBinding;
 using yealink::rtvc::BootstrapBinding;
 using yealink::rtvc::CallBinding;
 using yealink::rtvc::CloudContactBinding;
+using yealink::rtvc::ConferenceBinding;
 using yealink::rtvc::ConnectorBinding;
 using yealink::rtvc::DesktopCaptureBinding;
 using yealink::rtvc::LocalContactBinding;
@@ -33,12 +35,22 @@ using yealink::rtvc::UserAgentBinding;
 using yealink::rtvc::VideoFrameBinding;
 using yealink::rtvc::VideoManagerBinding;
 using yealink::rtvc::YTMSBinding;
-using yealink::rtvc::ConferenceBinding;
 
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
                 v8::Local<v8::Context> context,
                 void* priv) {
+#if defined(DEBUG)
+  _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG | _CRTDBG_MODE_FILE);
+  _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+
+  _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG | _CRTDBG_MODE_FILE);
+  _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+
+  _set_error_mode(_OUT_TO_STDERR);
+  
+  base::debug::EnableInProcessStackDumping();
+#endif
   v8::Isolate* isolate = context->GetIsolate();
 
   yealink::rtvc::Context::Instance()->Initialize(isolate);
@@ -57,11 +69,11 @@ void Initialize(v8::Local<v8::Object> exports,
                     &yealink::rtvc::RequestGarbageCollectionForTesting);
   dict.Set("v8Util", v8_util);
 
-  DesktopCaptureBinding::SetConstructor(isolate,
-                                   base::BindRepeating(&DesktopCaptureBinding::New));
+  DesktopCaptureBinding::SetConstructor(
+      isolate, base::BindRepeating(&DesktopCaptureBinding::New));
   dict.Set("DesktopCapture", DesktopCaptureBinding::GetConstructor(isolate)
-                            ->GetFunction(context)
-                            .ToLocalChecked());
+                                 ->GetFunction(context)
+                                 .ToLocalChecked());
 
   UserAgentBinding::SetConstructor(isolate,
                                    base::BindRepeating(&UserAgentBinding::New));
@@ -74,11 +86,11 @@ void Initialize(v8::Local<v8::Object> exports,
                        ->GetFunction(context)
                        .ToLocalChecked());
 
-  ConferenceBinding::SetConstructor(isolate,
-                              base::BindRepeating(&ConferenceBinding::New));
+  ConferenceBinding::SetConstructor(
+      isolate, base::BindRepeating(&ConferenceBinding::New));
   dict.Set("Conference", ConferenceBinding::GetConstructor(isolate)
-                            ->GetFunction(context)
-                            .ToLocalChecked());
+                             ->GetFunction(context)
+                             .ToLocalChecked());
 
   AudioManagerBinding::SetConstructor(
       isolate, base::BindRepeating(&AudioManagerBinding::New));

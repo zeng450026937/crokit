@@ -35,7 +35,8 @@ I010BufferImpl::I010BufferImpl(int width,
       stride_u_(stride_u),
       stride_v_(stride_v),
       data_(static_cast<uint16_t*>(
-          base::AlignedAlloc(I010DataSize(height, stride_y, stride_u, stride_v),
+          // base::AlignedAlloc(I010DataSize(height, stride_y, stride_u, stride_v),
+          webrtc::AlignedMalloc(I010DataSize(height, stride_y, stride_u, stride_v),
                              kBufferAlignment))) {
   DCHECK_GT(width, 0);
   DCHECK_GT(height, 0);
