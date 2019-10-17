@@ -1002,24 +1002,28 @@ void CallBinding::OnRealseConferenceBefore(
   v8_conference_.Reset();
 }
 void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
-  if (!Context::Instance()->CalledOnValidThread()) {
-    Context::Instance()->PostTask(
-        FROM_HERE, base::BindOnce(&CallBinding::OnVideoFrame,
-                                  weak_factory_.GetWeakPtr(), frame));
+  // we must copy video frame as soon as possible
 
-    return;
-  }
+  // if (!Context::Instance()->CalledOnValidThread()) {
+  //   Context::Instance()->PostTask(
+  //       FROM_HERE, base::BindOnce(&CallBinding::OnVideoFrame,
+  //                                 weak_factory_.GetWeakPtr(), frame));
+
+  //   return;
+  // }
 
   remote_video_source_->OnVideoFrame(frame);
 }
 void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
-  if (!Context::Instance()->CalledOnValidThread()) {
-    Context::Instance()->PostTask(
-        FROM_HERE, base::BindOnce(&CallBinding::OnShareFrame,
-                                  weak_factory_.GetWeakPtr(), frame));
+  // we must copy video frame as soon as possible
 
-    return;
-  }
+  // if (!Context::Instance()->CalledOnValidThread()) {
+  //   Context::Instance()->PostTask(
+  //       FROM_HERE, base::BindOnce(&CallBinding::OnShareFrame,
+  //                                 weak_factory_.GetWeakPtr(), frame));
+
+  //   return;
+  // }
 
   remote_share_video_source_->OnVideoFrame(frame);
 }

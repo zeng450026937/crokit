@@ -132,16 +132,17 @@ UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
   sip_client_->SetClientHandler(this);
 }
 UserAgentBinding::~UserAgentBinding() {
+  Stop();
   sip_client_->SetClientHandler(nullptr);
   sip_client_->SetAuthHandler(nullptr);
   sip_client_->SetConnectionHandler(nullptr);
-  Context::Instance()->PostTask(FROM_HERE,
-                                base::BindOnce(
-                                    [](yealink::SIPClient* sip_client) {
-                                      yealink::RealseSIPClient(sip_client);
-                                    },
-                                    sip_client_));
-  Stop();
+  yealink::RealseSIPClient(sip_client_);
+  // Context::Instance()->PostTask(FROM_HERE,
+  //                               base::BindOnce(
+  //                                   [](yealink::SIPClient* sip_client) {
+  //                                     yealink::RealseSIPClient(sip_client);
+  //                                   },
+  //                                   sip_client_));
 };
 
 std::string UserAgentBinding::workspace_folder() {

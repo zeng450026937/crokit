@@ -117,7 +117,15 @@ void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
   video_input_device_ = device;
 
   if (acquiring_stream_) {
-    media_->SetCamera(device->deviceId.c_str(), false);
+    switch (device->type) {
+      case DeviceType::kImageFile:
+        media_->SetCamera(device->deviceId.c_str(), true);
+        break;
+      case DeviceType::kVideoInput:
+        media_->SetCamera(device->deviceId.c_str(), false);
+      default:
+        break;
+    }
   }
 };
 
@@ -153,7 +161,15 @@ void VideoManagerBinding::AcquireStream() {
   acquiring_stream_ = true;
 
   if (video_input_device_) {
-    media_->SetCamera(video_input_device_->deviceId.c_str(), false);
+    switch (video_input_device_->type) {
+      case DeviceType::kImageFile:
+        media_->SetCamera(video_input_device_->deviceId.c_str(), true);
+        break;
+      case DeviceType::kVideoInput:
+      default:
+        media_->SetCamera(video_input_device_->deviceId.c_str(), false);
+        break;
+    }
   }
 }
 void VideoManagerBinding::ReleaseStream() {
