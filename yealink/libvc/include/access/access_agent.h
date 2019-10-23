@@ -205,23 +205,36 @@ public:
     /**
          * @brief common http request api
          * 
-         * @param method 
-         * @param serverAddr 
-         * @param apiUrl 
-         * @param body 
-         * @return true/false
+         * @param params 
+         * @param process 
+         * @return SStringA
          */
     virtual SStringA SendHttpRequest(const HttpRequestParam& params, AccessProcess* process) = 0;
-
+    /**
+         * @brief common http request api
+         *
+         * @param params
+         * @param process
+         * @return SStringA
+         */
+    virtual SStringA SendHttpRequest(const HttpRequestParam& params, const char* token, AccessProcess* process) = 0;
+    /**
+         * @brief get Schedule Services jwt
+         * 
+         * @param partyId 
+         * @param number
+         * @param process 
+         * @return SStringA
+         */
+    virtual SStringA GetTempJWT(const char* partyId, const char* number, AccessProcess* process) = 0;
     /**
          * @brief get Schedule Services Information
-         * 
-         * @param url 
-         * @param process 
+         *
+         * @param url
+         * @param process
          * @return ScheduleMetaInfo
          */
     virtual SchedulerMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
-
     /**
          * @brief get LoginUserInfo by account id
          * 

@@ -35,6 +35,13 @@ public:
     virtual void OnDialogChange()
     {
     }
+
+    /**
+     * @brief notify fetch public chat message
+     */
+    virtual void OnFetchFinish()
+    {
+    }
 };
 
 } // namespace yealink

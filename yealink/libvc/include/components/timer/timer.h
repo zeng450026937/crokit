@@ -13,22 +13,15 @@ class Timer
 {
 public:
     Timer();
-    Timer(const Timer& t);
     ~Timer();
 
     void StartTimer(int interval, const std::function<void()>& task);
-    void Expire();
-
-    template<typename callable, class... arguments>
-    void SyncWait(int after, callable&& f, arguments&&... args);
-    template<typename callable, class... arguments>
-    void AsyncWait(int after, callable&& f, arguments&&... args);
+    void Stop();
 
 private:
-    std::atomic<bool> expired_;
-    std::atomic<bool> try_to_expire_;
-    std::mutex mutex_;
-    std::condition_variable expired_cond_;
+    std::mutex m_mutex;
+    bool m_bActived;
+    std::condition_variable m_condExpired;
 };
 } // namespace yealink
 #endif

@@ -204,6 +204,8 @@ public:
     virtual void PlayTone(char key) = 0;
     virtual bool PlayRingFile(const char* strFile, bool bLoop) = 0;
     virtual void StopPlayRing() = 0;
+    virtual bool StartAudioDump(const char* strFile) = 0;
+    virtual void StopAudioDump() = 0;
     virtual int GetRecentVolume() = 0;
     virtual bool BuiltInAECIsAvailable() = 0;
     virtual bool BuiltInAGCIsAvailable() = 0;

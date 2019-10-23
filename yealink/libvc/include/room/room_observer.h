@@ -154,6 +154,13 @@ public:
     {
         (void)messageBody;
     }
+
+    /**
+     * @brief notify token is stand by
+     */
+    virtual void OnTokenStandBy()
+    {
+    }
 };
 
 } // namespace yealink

@@ -45,6 +45,12 @@ public:
     void RemoveObserver(ChatObserver* observer);
 
     /**
+     * @brief find dialog by member
+     * @param member target member
+     * @return chat dialog(check available)
+     */
+    ChatDialog FindDialog(const RoomMember& member);
+    /**
      * @brief send a message to public dialog
      * @param context context of message
      * @return
