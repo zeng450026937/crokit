@@ -229,8 +229,13 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
   enterprise.Set("uid", val.enterprise.uid);
   enterprise.Set("zone", val.enterprise.zone);
 
+  Dictionary turn_server = Dictionary::CreateEmpty(isolate);
+  turn_server.Set("username", val.turn_server.username);
+  turn_server.Set("password", val.turn_server.password);
+
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("enterprise", enterprise);
+  dict.Set("turnServer", turn_server);
   dict.Set("id", val.id);
   dict.Set("uid", val.uid);
   dict.Set("number", val.number);
@@ -241,6 +246,8 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
   dict.Set("token", val.token);
   dict.Set("type", val.type);
   dict.Set("meetnow", val.meetnow);
+  dict.Set("algorithm", val.algorithm);
+  dict.Set("credential", val.credential);
 
   return dict.GetHandle();
 }
@@ -3789,6 +3796,30 @@ bool Converter<yealink::rtvc::RTCStatsInfo>::FromV8(
     return false;
   dict.Get("media", &(out->media));
   dict.Get("share", &(out->share));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<yealink::rtvc::PartyInviteInfos>::ToV8(
+    v8::Isolate* isolate,
+    const yealink::rtvc::PartyInviteInfos& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("url", val.url);
+  handler.Set("applicants", val.applicants);
+
+  return handler.GetHandle();
+}
+
+bool Converter<yealink::rtvc::PartyInviteInfos>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    yealink::rtvc::PartyInviteInfos* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("url", &(out->url));
+  dict.Get("applicants", &(out->applicants));
 
   return true;
 }

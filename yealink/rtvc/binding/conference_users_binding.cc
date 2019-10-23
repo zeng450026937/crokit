@@ -473,22 +473,42 @@ void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,
 v8::Local<v8::Promise> ConferenceUsersBinding::HandUp(bool agreed) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  HttpResponseInfo response;
 
   if (room_controller_) {
     if (agreed == true) {
       // do nothing, server not support
       std::move(promise).Resolve();
     } else {
-      ConvertFrom(response,
-                  room_controller_->GetMemberManager().RejectAllHandUp());
-      std::move(promise).Resolve(response);
+      HttpResponseInfo* response = new HttpResponseInfo();
+      base::PostTaskAndReply(
+          FROM_HERE,
+          base::BindOnce(&ConferenceUsersBinding::DoHandUpAll,
+                         base::Unretained(this), response),
+          base::BindOnce(&ConferenceUsersBinding::OnProcessCompeleted,
+                         weak_factory_.GetWeakPtr(), std::move(promise),
+                         response));
     }
   } else {
     std::move(promise).Reject();
   }
 
   return handle;
+}
+
+void ConferenceUsersBinding::DoHandUpAll(HttpResponseInfo* response) {
+  if (response != nullptr && room_controller_ != nullptr)
+    ConvertFrom(*response,
+                room_controller_->GetMemberManager().RejectAllHandUp());
+}
+
+void ConferenceUsersBinding::OnProcessCompeleted(Promise promise,
+                                                 HttpResponseInfo* response) {
+  if (response != nullptr) {
+    std::move(promise).Resolve(*response);
+    delete response;
+  } else {
+    std::move(promise).Reject();
+  }
 }
 
 void ConferenceUsersBinding::OnCommandCompeleted(Promise promise) {

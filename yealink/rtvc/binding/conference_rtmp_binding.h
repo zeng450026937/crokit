@@ -39,6 +39,9 @@ class ConferenceRtmpBinding : public mate::EventEmitter<ConferenceRtmpBinding> {
   v8::Local<v8::Promise> SetRtmpStatus(RtmpStatusType status);
 
  private:
+  void DoSetRtmpStatus(RtmpStatusType status, HttpResponseInfo* response);
+  void OnProcessCompeleted(Promise promise, HttpResponseInfo* response);
+
   RoomController* room_controller_;
   base::WeakPtrFactory<ConferenceRtmpBinding> weak_factory_;
 };

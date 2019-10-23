@@ -97,6 +97,7 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
                           const Array<yealink::UserMediaInfo>& info) override;
   void OnGetShareInfo(int64_t requestId, const char* shareInfo) override;
   void OnImRecord(const char* messageBody) override;
+  void OnFetchFinish() override;
 
   // chat observer impl
   void OnReceiveMessage(const ChatMessageItem& message) override;

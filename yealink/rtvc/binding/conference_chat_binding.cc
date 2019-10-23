@@ -63,7 +63,7 @@ v8::Local<v8::Promise> ConferenceChatBinding::SendChatMessage(
     std::vector<std::string> entities) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  yealink::Array<RoomMember> sendUsers;
+  yealink::Array<yealink::RoomMember> sendUsers;
 
   for (int i = 0; i < (int)entities.size(); i++) {
     yealink::RoomMember sendUser;
@@ -75,29 +75,27 @@ v8::Local<v8::Promise> ConferenceChatBinding::SendChatMessage(
 
   if (room_controller_) {
     if ((int)entities.size() == 0) {
-      ChatMessageItem item =
-          chat_controller_->SendMessageToAll(message.c_str());
+      ChatMessageItem* item = new ChatMessageItem();
+      yealink::RoomMember tmpUser;
+      base::PostTaskAndReply(
+          FROM_HERE,
+          base::BindOnce(&ConferenceChatBinding::DoSendChatMessage,
+                         base::Unretained(this), false, message, tmpUser, item),
+          base::BindOnce(&ConferenceChatBinding::OnMessageCompeleted,
+                         weak_factory_.GetWeakPtr(), std::move(promise), item));
 
-      mate::Handle<ConferenceMessageBinding> new_message =
-          ConferenceMessageBinding::Create(isolate(), item);
-      v8::Global<v8::Value> v8_new_message;
-      v8_new_message.Reset(isolate(), new_message.ToV8());
-
-      std::move(promise).Resolve(
-          v8::Local<v8::Value>::New(isolate(), v8_new_message));
     } else {
       if ((int)sendUsers.Size() > 0) {
         // only send to first member
-        ChatMessageItem item = chat_controller_->SendMessageToMember(
-            (yealink::RoomMember)sendUsers[0], message.c_str());
-
-        mate::Handle<ConferenceMessageBinding> new_message =
-            ConferenceMessageBinding::Create(isolate(), item);
-        v8::Global<v8::Value> v8_new_message;
-        v8_new_message.Reset(isolate(), new_message.ToV8());
-
-        std::move(promise).Resolve(
-            v8::Local<v8::Value>::New(isolate(), v8_new_message));
+        ChatMessageItem* item = new ChatMessageItem();
+        base::PostTaskAndReply(
+            FROM_HERE,
+            base::BindOnce(&ConferenceChatBinding::DoSendChatMessage,
+                           base::Unretained(this), true, message, sendUsers[0],
+                           item),
+            base::BindOnce(&ConferenceChatBinding::OnMessageCompeleted,
+                           weak_factory_.GetWeakPtr(), std::move(promise),
+                           item));
       } else {
         // if no find any member
         std::move(promise).Reject();
@@ -114,21 +112,15 @@ v8::Local<v8::Promise> ConferenceChatBinding::RetrySendChatMessage(
     mate::Handle<ConferenceMessageBinding> handler) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  bool res = false;
 
   if (chat_controller_ && !handler.IsEmpty()) {
-
-    // ChatMessageItem test = handler->GetMessageItem();
-
-    // ChatItemStatus status = test.GetStatus();
-    // char* text = (char *)test.GetContext();
-
-    res = chat_controller_->RetryMessage(handler->GetMessageItem());
-
-    if (res == true)
-      std::move(promise).Resolve();
-    else
-      std::move(promise).Reject();
+    bool* res = new bool();
+    base::PostTaskAndReply(
+        FROM_HERE,
+        base::BindOnce(&ConferenceChatBinding::DoRetrySendMessage,
+                       base::Unretained(this), handler, res),
+        base::BindOnce(&ConferenceChatBinding::OnRetryMessageCompeleted,
+                       weak_factory_.GetWeakPtr(), std::move(promise), res));
   } else {
     std::move(promise).Reject();
   }
@@ -162,6 +154,53 @@ std::vector<v8::Local<v8::Value>> ConferenceChatBinding::dialogList() {
   }
 
   return value;
+}
+
+void ConferenceChatBinding::DoSendChatMessage(bool isSingle,
+                                              std::string message,
+                                              yealink::RoomMember member,
+                                              ChatMessageItem* item) {
+  if (isSingle == false)
+    *item = chat_controller_->SendMessageToAll(message.c_str());
+  else
+    *item = chat_controller_->SendMessageToMember(member, message.c_str());
+}
+
+void ConferenceChatBinding::OnMessageCompeleted(
+    Promise promise,
+    yealink::ChatMessageItem* item) {
+  if (item != nullptr) {
+    v8::HandleScope handle_scope(isolate());
+    mate::Handle<ConferenceMessageBinding> new_message =
+        ConferenceMessageBinding::Create(isolate(), *item);
+    v8::Global<v8::Value> v8_new_message;
+    v8_new_message.Reset(isolate(), new_message.ToV8());
+
+    std::move(promise).Resolve(
+        v8::Local<v8::Value>::New(isolate(), v8_new_message));
+
+    delete item;
+  } else {
+    std::move(promise).Reject();
+  }
+}
+
+void ConferenceChatBinding::DoRetrySendMessage(
+    mate::Handle<ConferenceMessageBinding> handler,
+    bool* res) {
+  if (res != nullptr && chat_controller_ != nullptr)
+    *res = chat_controller_->RetryMessage(handler->GetMessageItem());
+}
+void ConferenceChatBinding::OnRetryMessageCompeleted(Promise promise,
+                                                     bool* res) {
+  if (res != nullptr) {
+    if (*res == true)
+      std::move(promise).Resolve();
+    else
+      std::move(promise).Reject();
+  } else {
+    std::move(promise).Reject();
+  }
 }
 
 }  // namespace rtvc

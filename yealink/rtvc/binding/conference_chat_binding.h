@@ -48,6 +48,16 @@ class ConferenceChatBinding : public mate::EventEmitter<ConferenceChatBinding> {
   std::vector<v8::Local<v8::Value>> dialogList();
 
  private:
+  void DoSendChatMessage(bool isSingle,
+                         std::string message,
+                         yealink::RoomMember member,
+                         yealink::ChatMessageItem* item);
+  void OnMessageCompeleted(Promise promise, yealink::ChatMessageItem* item);
+
+  void DoRetrySendMessage(mate::Handle<ConferenceMessageBinding> handler,
+                          bool* res);
+  void OnRetryMessageCompeleted(Promise promise, bool* res);
+
   RoomController* room_controller_;
   ChatManager* chat_controller_;
   base::WeakPtrFactory<ConferenceChatBinding> weak_factory_;

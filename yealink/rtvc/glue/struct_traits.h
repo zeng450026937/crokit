@@ -581,6 +581,12 @@ struct StructTraits<RTCStats> {
   static bool From(RTCStats& out, const yealink::MediaStreamStats& val);
 };
 
+template <>
+struct StructTraits<PartyInviteInfos> {
+  static bool From(PartyInviteInfos& out, const yealink::PartyInviteInfo& val);
+};
+
+
 }  // namespace rtvc
 
 }  // namespace yealink

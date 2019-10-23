@@ -24,6 +24,7 @@ struct ResponseInfo {
 struct HttpResponseInfo {
   int32_t biz_code;
   RequesrResult result;
+  HttpResponseInfo() : biz_code(-1) {}
 };
 
 struct ImResponseInfo {

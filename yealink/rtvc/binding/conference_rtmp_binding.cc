@@ -65,17 +65,33 @@ v8::Local<v8::Promise> ConferenceRtmpBinding::SetRtmpStatus(
     RtmpStatusType status) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  HttpResponseInfo response;
+  HttpResponseInfo* response = new HttpResponseInfo();
 
-  if (room_controller_) {
-    ConvertFrom(response, room_controller_->GetRtmpComponent().SetRtmpState(
-                              RoomRtmpStatus(status)));
-    std::move(promise).Resolve(response);
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ConferenceRtmpBinding::DoSetRtmpStatus,
+                     base::Unretained(this), status, response),
+      base::BindOnce(&ConferenceRtmpBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), response));
+
+  return handle;
+}
+
+void ConferenceRtmpBinding::DoSetRtmpStatus(RtmpStatusType status,
+                                            HttpResponseInfo* response) {
+  if (response != nullptr && room_controller_ != nullptr)
+    ConvertFrom(*response, room_controller_->GetRtmpComponent().SetRtmpState(
+                               RoomRtmpStatus(status)));
+}
+
+void ConferenceRtmpBinding::OnProcessCompeleted(Promise promise,
+                                                HttpResponseInfo* response) {
+  if (response != nullptr) {
+    std::move(promise).Resolve(*response);
+    delete response;
   } else {
     std::move(promise).Reject();
   }
-
-  return handle;
 }
 }  // namespace rtvc
 

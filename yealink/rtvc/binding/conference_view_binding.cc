@@ -135,17 +135,32 @@ v8::Local<v8::Promise> ConferenceViewBinding::SetSpeakMode(
     ViewSpeakMode params) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  HttpResponseInfo response;
+  HttpResponseInfo* response = new HttpResponseInfo();
 
-  if (room_controller_) {
-    ConvertFrom(response, room_controller_->GetViewComponent().SetSpeakMode(
-                              (yealink::ConferenceViewSpeakMode)params));
-    std::move(promise).Resolve(response);
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ConferenceViewBinding::DoSetSpeakMode,
+                     base::Unretained(this), params, response),
+      base::BindOnce(&ConferenceViewBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), response));
+
+  return handle;
+}
+
+void ConferenceViewBinding::DoSetSpeakMode(ViewSpeakMode params,
+                                           HttpResponseInfo* response) {
+  if (response != nullptr && room_controller_ != nullptr)
+    ConvertFrom(*response, room_controller_->GetViewComponent().SetSpeakMode(
+                               (yealink::ConferenceViewSpeakMode)params));
+}
+void ConferenceViewBinding::OnProcessCompeleted(Promise promise,
+                                                HttpResponseInfo* response) {
+  if (response != nullptr) {
+    std::move(promise).Resolve(*response);
+    delete response;
   } else {
     std::move(promise).Reject();
   }
-
-  return handle;
 }
 
 void ConferenceViewBinding::OnCommandCompeleted(Promise promise) {

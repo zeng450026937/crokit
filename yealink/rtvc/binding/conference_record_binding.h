@@ -40,6 +40,9 @@ class ConferenceRecordBinding
   v8::Local<v8::Promise> SetRecordStatus(RecordStatusType status);
 
  private:
+  void DoSetRecordStatus(RecordStatusType status, HttpResponseInfo* response);
+  void OnProcessCompeleted(Promise promise, HttpResponseInfo* response);
+
   RoomController* room_controller_;
   base::WeakPtrFactory<ConferenceRecordBinding> weak_factory_;
 };

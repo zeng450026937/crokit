@@ -23,6 +23,11 @@ struct EnterpriseInfo {
   int subtype;
 };
 
+struct TurnServerInfo {
+  std::string username;
+  std::string password;
+};
+
 struct AccountInfo {
   std::string id;
   std::string uid;
@@ -35,10 +40,20 @@ struct AccountInfo {
   int type;
   bool meetnow;
 
+  std::string algorithm;
+  std::string credential;
+
   EnterpriseInfo enterprise;
+  TurnServerInfo turn_server;
 };
 
 using AccountInfoList = std::vector<AccountInfo>;
+
+struct PartyInviteInfos {
+  std::string url;
+  int applicants;
+  PartyInviteInfos() : url(""), applicants(0) {}
+};
 
 }  // namespace rtvc
 

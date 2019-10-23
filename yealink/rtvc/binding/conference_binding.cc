@@ -471,6 +471,10 @@ void ConferenceBinding::OnGetShareInfo(int64_t requestId,
 
 void ConferenceBinding::OnImRecord(const char* messageBody) {}
 
+void ConferenceBinding::OnFetchFinish() {
+  Emit("messageInited");
+};
+
 void ConferenceBinding::OnReceiveMessage(const ChatMessageItem& message) {
   ChatMessageItem item = message;
   mate::Handle<ConferenceMessageBinding> new_message =

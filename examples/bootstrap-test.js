@@ -17,6 +17,9 @@ async function test(binding) {
   bootstrap.username = '223504.1091';
   bootstrap.password = 'v123456789';
   bootstrap.debug = false;
+  bootstrap.smsVerify = false;
+  bootstrap.algorithm = '';
+  bootstrap.credential = '';
 
   console.log('authenticate()');
 
@@ -37,6 +40,8 @@ async function test(binding) {
   console.log('getConnector()');
 
   const connector = bootstrap.getConnector(id);
+
+  const inviteInfo = await bootstrap.getPartyInviteInfo();
 
   useragent_test(binding, connector, {username, password, domain});
   //schedule_test(binding, connector);

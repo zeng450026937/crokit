@@ -29,6 +29,8 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
   ConvertFrom(out.enterprise.zone, val.party.zoneId);
   ConvertFrom(out.token, val.token);
   ConvertFrom(out.meetnow, val.permission.enableMeetingNow);
+  ConvertFrom(out.turn_server.username, val.turnServer.username);
+  ConvertFrom(out.turn_server.password, val.turnServer.password);
   return true;
 }
 
@@ -1611,6 +1613,13 @@ bool StructTraits<RTCStats>::From(RTCStats& out,
                                   const yealink::MediaStreamStats& val) {
   ConvertFrom(out.audio, val.stAudio);
   ConvertFrom(out.video, val.stVideo);
+  return true;
+}
+
+bool StructTraits<PartyInviteInfos>::From(PartyInviteInfos& out,
+                                          const yealink::PartyInviteInfo& val) {
+  ConvertFrom(out.applicants, val.applicants);
+  ConvertFrom(out.url, val.url);
   return true;
 }
 

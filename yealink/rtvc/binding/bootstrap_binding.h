@@ -4,6 +4,7 @@
 #include <string>
 
 #include "base/memory/weak_ptr.h"
+#include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/account_info.h"
@@ -40,17 +41,34 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   bool debug();
   void SetDebug(bool debug);
 
+  bool smsVerify();
+  void SetSmsVerify(bool smsVerify);
+
+  std::string credential();
+  void SetCredential(std::string credential);
+
+  std::string algorithm();
+  void SetAlgorithm(std::string algorithm);
+
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
 
+  v8::Local<v8::Promise> GetPartyInviteInfo();
+  v8::Local<v8::Promise> PushVerifyCode();
+
  private:
   void DoAuthenticate(std::vector<AccountInfo>* result);
+  void DoGetPartyInviteInfo(PartyInviteInfos* result);
+  void DoPushVerifyCode(bool* result);
 
   std::string server_;
   std::string username_;
   std::string password_;
   std::string client_id_;
   bool debug_;
+  bool sms_verify_;
+  std::string credential_;
+  std::string algorithm_;
 
   v8::Global<v8::Value> connector_;
 

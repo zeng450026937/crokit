@@ -48,6 +48,9 @@ class ConferenceViewBinding : public mate::EventEmitter<ConferenceViewBinding> {
   void DoSetLayout(SetLayoutInfo params);
   void DoSetInitialFilters(ViewFilterRuleInfo params);
 
+  void DoSetSpeakMode(ViewSpeakMode params, HttpResponseInfo* response);
+  void OnProcessCompeleted(Promise promise, HttpResponseInfo* response);
+
  private:
   RoomController* room_controller_;
   base::WeakPtrFactory<ConferenceViewBinding> weak_factory_;

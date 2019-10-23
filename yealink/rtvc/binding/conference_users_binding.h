@@ -69,6 +69,9 @@ class ConferenceUsersBinding
   void DoInviteBatch(std::vector<std::string> uri);
   void DoAllow(std::vector<std::string> entities, bool granted);
 
+  void DoHandUpAll(HttpResponseInfo* response);
+  void OnProcessCompeleted(Promise promise, HttpResponseInfo* response);
+
   std::unordered_map<std::string, mate::Handle<ConferenceUserBinding>>
       user_list_;
   std::unordered_map<std::string, v8::Global<v8::Value>> v8_user_list_;

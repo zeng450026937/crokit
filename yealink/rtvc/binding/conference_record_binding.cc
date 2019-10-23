@@ -65,18 +65,34 @@ v8::Local<v8::Promise> ConferenceRecordBinding::SetRecordStatus(
     RecordStatusType status) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  HttpResponseInfo response;
+  HttpResponseInfo* response = new HttpResponseInfo();
 
-  if (room_controller_) {
-    ConvertFrom(response,
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ConferenceRecordBinding::DoSetRecordStatus,
+                     base::Unretained(this), status, response),
+      base::BindOnce(&ConferenceRecordBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), response));
+
+  return handle;
+}
+
+void ConferenceRecordBinding::DoSetRecordStatus(RecordStatusType status,
+                                                HttpResponseInfo* response) {
+  if (response != nullptr && room_controller_ != nullptr)
+    ConvertFrom(*response,
                 room_controller_->GetRecordComponent().SetRecordStatus(
                     (RoomRecordStatus)status));
-    std::move(promise).Resolve(response);
+}
+
+void ConferenceRecordBinding::OnProcessCompeleted(Promise promise,
+                                                  HttpResponseInfo* response) {
+  if (response != nullptr) {
+    std::move(promise).Resolve(*response);
+    delete response;
   } else {
     std::move(promise).Reject();
   }
-
-  return handle;
 }
 }  // namespace rtvc
 

@@ -1,7 +1,6 @@
 #include "yealink/rtvc/binding/bootstrap_binding.h"
 
 #include "base/task/post_task.h"
-#include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/converter.h"
@@ -39,8 +38,15 @@ void BootstrapBinding::BuildPrototype(
                    &BootstrapBinding::SetPassword)
       .SetProperty("debug", &BootstrapBinding::debug,
                    &BootstrapBinding::SetDebug)
+      .SetProperty("smsVerify", &BootstrapBinding::smsVerify,
+                   &BootstrapBinding::SetSmsVerify)
+      .SetProperty("credential", &BootstrapBinding::credential,
+                   &BootstrapBinding::SetCredential)
+      .SetProperty("algorithm", &BootstrapBinding::algorithm,
+                   &BootstrapBinding::SetAlgorithm)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
-      .SetMethod("getConnector", &BootstrapBinding::GetConnector);
+      .SetMethod("getConnector", &BootstrapBinding::GetConnector)
+      .SetMethod("getPartyInviteInfo", &BootstrapBinding::GetPartyInviteInfo);
 }
 
 BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
@@ -84,6 +90,27 @@ void BootstrapBinding::SetDebug(bool debug) {
   debug_ = debug;
 }
 
+bool BootstrapBinding::smsVerify() {
+  return sms_verify_;
+}
+void BootstrapBinding::SetSmsVerify(bool smsVerify) {
+  sms_verify_ = smsVerify;
+}
+
+std::string BootstrapBinding::credential() {
+  return credential_;
+}
+void BootstrapBinding::SetCredential(std::string credential) {
+  credential_ = credential;
+}
+
+std::string BootstrapBinding::algorithm() {
+  return algorithm_;
+}
+void BootstrapBinding::SetAlgorithm(std::string algorithm) {
+  algorithm_ = algorithm;
+}
+
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
@@ -112,19 +139,82 @@ v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
   return v8::Local<v8::Value>::New(isolate(), connector_);
 }
 
+v8::Local<v8::Promise> BootstrapBinding::GetPartyInviteInfo() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  PartyInviteInfos* result = new PartyInviteInfos();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&BootstrapBinding::DoGetPartyInviteInfo,
+                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+      base::BindOnce(
+          [](Promise promise, const PartyInviteInfos* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(result)));
+
+  return handle;
+}
+
+v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  bool* result = new bool();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&BootstrapBinding::DoPushVerifyCode,
+                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+      base::BindOnce(
+          [](Promise promise, const bool* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(result)));
+
+  return handle;
+}
+
 void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   LoginInfo info;
+  yealink::LoginUserInfos ret;
   info.server = server_.c_str();
   info.username = username_.c_str();
-  info.password = password_.c_str();
+  info.password = sms_verify_ ? credential_.c_str() : password_.c_str();
+  info.isSmsVerify = sms_verify_;
+  info.algorithm = algorithm_.c_str();
 
-  if (debug_ == true)
-    ConvertFrom(*result,
-                access_agent_->UnscheduledLoginAccessService(info, nullptr)
-                    .accountInfos);
-  else
-    ConvertFrom(*result,
-                access_agent_->LoginAccessService(info, nullptr).accountInfos);
+  if (debug_ == true) {
+    ret = access_agent_->UnscheduledLoginAccessService(info, nullptr);
+  } else {
+    ret = access_agent_->LoginAccessService(info, nullptr);
+  }
+
+  ConvertFrom(*result, ret.accountInfos);
+
+  size_t i;
+  for (i = 0; i < result->size(); i++) {
+    (*result)[i].credential =
+    std::string(ret.authInfo.credential.ConstData());
+    (*result)[i].algorithm = std::string(ret.authInfo.algorithm.ConstData());
+  }
+}
+
+void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result) {
+  if (result != nullptr && access_agent_ != nullptr) {
+    ConvertFrom(*result, access_agent_->GetPartyInviteInfo(nullptr));
+  }
+}
+
+void BootstrapBinding::DoPushVerifyCode(bool* result) {
+  if (result != nullptr) {
+    if (debug_ == true)
+      *result = access_agent_->UnscheduledSendMobileLoginVerifyCode(
+          server_.c_str(), username_.c_str(), nullptr);
+    else
+      *result = access_agent_->SendMobileLoginVerifyCode(
+          server_.c_str(), username_.c_str(), nullptr);
+  }
 }
 
 }  // namespace rtvc

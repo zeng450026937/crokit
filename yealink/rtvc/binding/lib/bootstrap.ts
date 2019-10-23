@@ -15,6 +15,11 @@ export interface EnterpriseInfo {
   subtype: number,
 }
 
+export interface TurnServerInfo {
+  username: string,
+  password: string,
+}
+
 export interface AccountInfo {
   uid: string,
   number: string,
