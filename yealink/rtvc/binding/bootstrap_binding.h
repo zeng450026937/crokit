@@ -41,11 +41,9 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   bool smsVerify();
   void SetSmsVerify(bool smsVerify);
 
-  std::string credential();
-  void SetCredential(std::string credential);
+  std::string ha1();
+  void SetHa1(std::string ha1);
 
-  std::string algorithm();
-  void SetAlgorithm(std::string algorithm);
 
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
@@ -55,7 +53,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   v8::Local<v8::Promise> PushVerifyCode();
 
  private:
-  void DoAuthenticate(std::vector<AccountInfo>* result, ProcessObserver* observer);
+  void DoAuthenticate(AccessInfo* result, ProcessObserver* observer);
   void DoGetPartyInviteInfo(PartyInviteInfos* result, ProcessObserver* observer);
   void DoPushVerifyCode(bool* result, ProcessObserver* observer);
 
@@ -65,8 +63,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string client_id_;
   bool debug_;
   bool sms_verify_;
-  std::string credential_;
-  std::string algorithm_;
+  std::string ha1_;
 
   v8::Global<v8::Value> connector_;
 

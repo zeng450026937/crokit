@@ -23,10 +23,11 @@ async function test(binding) {
 
   console.log('authenticate()');
 
-  const accountList = await bootstrap.authenticate().catch((e) => {
+  const accountInfo = await bootstrap.authenticate().catch((e) => {
     console.warn(e)
   });
 
+  const accountList = accountInfo.accountList;
   console.log('authenticated', accountList)
 
   const [ account ] = accountList;
@@ -34,6 +35,7 @@ async function test(binding) {
   const username = account.number;
   const password = bootstrap.password;
   const domain = account.enterprise.domain;
+  const ha1 = account.ha1;
 
   console.log('default username', username);
   console.log('default password', password);
@@ -47,7 +49,12 @@ async function test(binding) {
 
   const inviteInfo = await bootstrap.getPartyInviteInfo();
 
-  useragent_test(binding, connector, {username, password, domain});
+  useragent_test(binding, connector, {
+    username,
+    password,
+    domain,
+    ha1
+  });
   //schedule_test(binding, connector);
   //contact_test(binding, connector);
 }

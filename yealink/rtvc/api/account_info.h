@@ -38,11 +38,24 @@ struct AccountInfo {
   int type;
   bool meetnow;
 
-  std::string algorithm;
-  std::string credential;
+  std::string ha1;
 
   EnterpriseInfo enterprise;
   TurnServerInfo turn_server;
+};
+
+struct PrimaryAccountInfo {
+  bool upgraded;
+  std::string principle;
+  std::string realm;
+  std::string type;
+  std::string algorithm;
+  std::string ha1;
+};
+
+struct AccessInfo {
+  PrimaryAccountInfo primary_account;
+  std::vector<AccountInfo> account_list;
 };
 
 struct ErrorInfo {

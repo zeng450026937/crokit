@@ -240,8 +240,31 @@ v8::Local<v8::Value> Converter<rtvc::AccountInfo>::ToV8(
   dict.Set("token", val.token);
   dict.Set("type", val.type);
   dict.Set("meetnow", val.meetnow);
+  dict.Set("ha1", val.ha1);
+
+  return dict.GetHandle();
+}
+
+v8::Local<v8::Value> Converter<rtvc::PrimaryAccountInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::PrimaryAccountInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("upgraded", val.upgraded);
+  dict.Set("principle", val.principle);
+  dict.Set("realm", val.realm);
+  dict.Set("type", val.type);
   dict.Set("algorithm", val.algorithm);
-  dict.Set("credential", val.credential);
+  dict.Set("ha1", val.ha1);
+
+  return dict.GetHandle();
+}
+
+v8::Local<v8::Value> Converter<rtvc::AccessInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::AccessInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("accountList", val.account_list);
+  dict.Set("primaryAccount", val.primary_account);
 
   return dict.GetHandle();
 }

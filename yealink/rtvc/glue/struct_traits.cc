@@ -29,6 +29,28 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
   ConvertFrom(out.meetnow, val.permission.enableMeetingNow);
   ConvertFrom(out.turn_server.username, val.turnServer.username);
   ConvertFrom(out.turn_server.password, val.turnServer.password);
+  ConvertFrom(out.ha1, val.account.encryptedCredential);
+
+  return true;
+}
+
+bool StructTraits<PrimaryAccountInfo>::From(PrimaryAccountInfo& out,
+                                    const yealink::LoginUserInfos& val) {
+  ConvertFrom(out.upgraded, val.upgraded);
+  ConvertFrom(out.algorithm, val.authInfo.algorithm);
+  ConvertFrom(out.ha1, val.authInfo.credential);
+  ConvertFrom(out.principle, val.authInfo.principle);
+  ConvertFrom(out.realm, val.authInfo.realm);
+  ConvertFrom(out.type, val.authInfo.type);
+
+  return true;
+}
+
+bool StructTraits<AccessInfo>::From(AccessInfo& out,
+                                    const yealink::LoginUserInfos& val) {
+  ConvertFrom(out.account_list, val.accountInfos);
+  ConvertFrom(out.primary_account, val);
+
   return true;
 }
 

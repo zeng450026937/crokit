@@ -5,12 +5,13 @@ async function test(binding, connector, account) {
   console.log('UserAgent test');
 
   const { UserAgent } = binding;
-  const { username, password, domain } = account;
+  const { username, password, domain, ha1 } = account;
 
   const userAgent = new UserAgent({
     username,
     password,
     domain,
+    ha1,
     //'userAgent' : 'Yealink Meeting(Windows) 1.0.0',
     //'clientInfo' : 'Apollo_VCD_Windows'
   });

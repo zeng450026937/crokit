@@ -99,6 +99,16 @@ struct StructTraits<AccountInfo> {
 };
 
 template <>
+struct StructTraits<PrimaryAccountInfo> {
+  static bool From(PrimaryAccountInfo& out, const yealink::LoginUserInfos& val);
+};
+
+template <>
+struct StructTraits<AccessInfo> {
+  static bool From(AccessInfo& out, const yealink::LoginUserInfos& val);
+};
+
+template <>
 struct StructTraits<ScheduleItemProfile> {
   static bool From(ScheduleItemProfile& out,
                    const yealink::ScheduleItemProfile& val);
@@ -583,7 +593,6 @@ template <>
 struct StructTraits<PartyInviteInfos> {
   static bool From(PartyInviteInfos& out, const yealink::PartyInviteInfo& val);
 };
-
 
 }  // namespace rtvc
 

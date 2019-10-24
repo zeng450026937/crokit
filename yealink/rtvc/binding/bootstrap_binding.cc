@@ -38,10 +38,7 @@ void BootstrapBinding::BuildPrototype(
                    &BootstrapBinding::SetDebug)
       .SetProperty("smsVerify", &BootstrapBinding::smsVerify,
                    &BootstrapBinding::SetSmsVerify)
-      .SetProperty("credential", &BootstrapBinding::credential,
-                   &BootstrapBinding::SetCredential)
-      .SetProperty("algorithm", &BootstrapBinding::algorithm,
-                   &BootstrapBinding::SetAlgorithm)
+      .SetProperty("ha1", &BootstrapBinding::ha1, &BootstrapBinding::SetHa1)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
       .SetMethod("getConnector", &BootstrapBinding::GetConnector)
       .SetMethod("getToken", &BootstrapBinding::GetToken)
@@ -55,6 +52,7 @@ BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
     : client_id_(client_id),
       debug_(false),
       sms_verify_(false),
+      ha1_(""),
       access_agent_(yealink::CreateAccessAgent(client_id.c_str())),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
@@ -98,24 +96,17 @@ void BootstrapBinding::SetSmsVerify(bool smsVerify) {
   sms_verify_ = smsVerify;
 }
 
-std::string BootstrapBinding::credential() {
-  return credential_;
+std::string BootstrapBinding::ha1() {
+  return ha1_;
 }
-void BootstrapBinding::SetCredential(std::string credential) {
-  credential_ = credential;
-}
-
-std::string BootstrapBinding::algorithm() {
-  return algorithm_;
-}
-void BootstrapBinding::SetAlgorithm(std::string algorithm) {
-  algorithm_ = algorithm;
+void BootstrapBinding::SetHa1(std::string ha1) {
+  ha1_ = ha1;
 }
 
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  std::vector<AccountInfo>* result = new std::vector<AccountInfo>();
+  AccessInfo* result = new AccessInfo();
   ProcessObserver* observer = new ProcessObserver();
 
   base::PostTaskAndReply(
@@ -124,7 +115,7 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
                      weak_factory_.GetWeakPtr(), base::Unretained(result),
                      observer),
       base::BindOnce(
-          [](Promise promise, const std::vector<AccountInfo>* result,
+          [](Promise promise, const AccessInfo* result,
              ProcessObserver* observer) {
             int code = observer ? observer->bizCode() : 900500;
 
@@ -227,15 +218,15 @@ v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
   return handle;
 }
 
-void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result,
+void BootstrapBinding::DoAuthenticate(AccessInfo* result,
                                       ProcessObserver* observer) {
   yealink::LoginInfo info;
   yealink::LoginUserInfos ret;
   info.server = server_.c_str();
   info.username = username_.c_str();
-  info.password = sms_verify_ ? credential_.c_str() : password_.c_str();
+  info.password = ha1_.size() > 0 ? ha1_.c_str() : password_.c_str();
   info.isSmsVerify = sms_verify_;
-  info.algorithm = algorithm_.c_str();
+  info.algorithm = ha1_.size() > 0 ? "a1_hash" : "";
 
   if (debug_ == true) {
     ret = access_agent_->UnscheduledLoginAccessService(info, observer);
@@ -243,13 +234,7 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result,
     ret = access_agent_->LoginAccessService(info, observer);
   }
 
-  ConvertFrom(*result, ret.accountInfos);
-
-  size_t i;
-  for (i = 0; i < result->size(); i++) {
-    (*result)[i].credential = std::string(ret.authInfo.credential.ConstData());
-    (*result)[i].algorithm = std::string(ret.authInfo.algorithm.ConstData());
-  }
+  ConvertFrom(*result, ret);
 }
 
 void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result,

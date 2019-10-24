@@ -13,7 +13,7 @@ namespace rtvc {
 
 namespace {
 unsigned char falsy_value = 0;
-unsigned char truthy_value = 0;
+unsigned char truthy_value = 1;
 char* default_useragent = (char*)"Yealink VCD-H5";
 char* default_client_info = (char*)"Yealink VCD-H5";
 char* default_sitename = (char*)"Yealink VCD-H5";
@@ -346,10 +346,10 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
       return yealink::SByteData(
           reinterpret_cast<const unsigned char*>(
               is_ha1 ? config_.ha1.c_str() : config_.password.c_str()),
-          config_.password.size());
+          is_ha1 ? config_.ha1.size() : config_.password.size());
     case yealink::AUTH_PARAM_PASSWORD_IS_A1HASH:
       return yealink::SByteData(reinterpret_cast<const unsigned char*>(
-                                    is_ha1 ? &truthy_value : &falsy_value),
+                                    is_ha1 ? &truthy_value : &truthy_value),
                                 1);
     case yealink::AUTH_PARAM_DISPLAY_NAME:
       break;
