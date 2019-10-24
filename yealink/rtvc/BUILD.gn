@@ -197,8 +197,8 @@ node_addon("rtvc_binding") {
     "binding/video_manager_binding.cc",
     "binding/ytms_binding.h",
     "binding/ytms_binding.cc",
-    "binding/ytms_process.h",
-    "binding/ytms_process.cc",
+    "binding/process_observer.h",
+    "binding/process_observer.cc",
   ]
   deps = [
     "//base",
