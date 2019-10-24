@@ -190,8 +190,7 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetDetail() {
 
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&ScheduleItemBinding::DoGetDetail,
-                     weak_factory_.GetWeakPtr()),
+      base::BindOnce(&ScheduleItemBinding::DoGetDetail, base::Unretained(this)),
       base::BindOnce(
           [](Promise promise,
              base::WeakPtr<ScheduleItemBinding> schedule_item) {
@@ -217,7 +216,7 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetMailTemplate() {
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&ScheduleItemBinding::DoGetMailTemplate,
-                     weak_factory_.GetWeakPtr()),
+                     base::Unretained(this)),
       base::BindOnce(
           [](Promise promise,
              base::WeakPtr<ScheduleItemBinding> schedule_item) {
