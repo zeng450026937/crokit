@@ -52,6 +52,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
 
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
+  std::string GetToken(std::string uid);
 
   v8::Local<v8::Promise> GetPartyInviteInfo();
   v8::Local<v8::Promise> PushVerifyCode();

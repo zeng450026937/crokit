@@ -46,7 +46,9 @@ void BootstrapBinding::BuildPrototype(
                    &BootstrapBinding::SetAlgorithm)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
       .SetMethod("getConnector", &BootstrapBinding::GetConnector)
-      .SetMethod("getPartyInviteInfo", &BootstrapBinding::GetPartyInviteInfo);
+      .SetMethod("getToken", &BootstrapBinding::GetToken)
+      .SetMethod("getPartyInviteInfo", &BootstrapBinding::GetPartyInviteInfo)
+      .SetMethod("pushVerifyCode", &BootstrapBinding::PushVerifyCode);
 }
 
 BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
@@ -139,6 +141,13 @@ v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
   return v8::Local<v8::Value>::New(isolate(), connector_);
 }
 
+std::string BootstrapBinding::GetToken(std::string uid) {
+  DCHECK(access_agent_);
+  yealink::LoginUserInfo info;
+  info = access_agent_->GetLoginUserInfoById(uid.c_str());
+  return std::string(info.token.ConstData());
+}
+
 v8::Local<v8::Promise> BootstrapBinding::GetPartyInviteInfo() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
@@ -194,8 +203,7 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
 
   size_t i;
   for (i = 0; i < result->size(); i++) {
-    (*result)[i].credential =
-    std::string(ret.authInfo.credential.ConstData());
+    (*result)[i].credential = std::string(ret.authInfo.credential.ConstData());
     (*result)[i].algorithm = std::string(ret.authInfo.algorithm.ConstData());
   }
 }
