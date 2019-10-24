@@ -73,6 +73,7 @@ void UserAgentBinding::BuildPrototype(
                    &UserAgentBinding::SetUsername)
       .SetProperty("password", &UserAgentBinding::password,
                    &UserAgentBinding::SetPassword)
+      .SetProperty("ha1", &UserAgentBinding::ha1, &UserAgentBinding::SetHa1)
       .SetProperty("domain", &UserAgentBinding::domain,
                    &UserAgentBinding::SetDomain)
       .SetProperty("proxyServer", &UserAgentBinding::proxyServer,
