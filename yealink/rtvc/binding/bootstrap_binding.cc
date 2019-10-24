@@ -56,6 +56,7 @@ BootstrapBinding::BootstrapBinding(v8::Isolate* isolate,
                                    std::string client_id)
     : client_id_(client_id),
       debug_(false),
+      sms_verify_(false),
       access_agent_(yealink::CreateAccessAgent(client_id.c_str())),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
