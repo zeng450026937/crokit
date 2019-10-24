@@ -4,12 +4,12 @@
 #include <string>
 
 #include "base/memory/weak_ptr.h"
+#include "process_observer.h"
 #include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/binding/promise.h"
-#include "yealink/libvc/include/access/access_agent_api.h"
 
 namespace rtvc {
 
@@ -55,9 +55,9 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   v8::Local<v8::Promise> PushVerifyCode();
 
  private:
-  void DoAuthenticate(std::vector<AccountInfo>* result);
-  void DoGetPartyInviteInfo(PartyInviteInfos* result);
-  void DoPushVerifyCode(bool* result);
+  void DoAuthenticate(std::vector<AccountInfo>* result, ProcessObserver* observer);
+  void DoGetPartyInviteInfo(PartyInviteInfos* result, ProcessObserver* observer);
+  void DoPushVerifyCode(bool* result, ProcessObserver* observer);
 
   std::string server_;
   std::string username_;

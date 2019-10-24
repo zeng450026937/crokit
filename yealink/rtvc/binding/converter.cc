@@ -246,6 +246,15 @@ v8::Local<v8::Value> Converter<rtvc::AccountInfo>::ToV8(
   return dict.GetHandle();
 }
 
+v8::Local<v8::Value> Converter<rtvc::ErrorInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::ErrorInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("bizCode", val.biz_code);
+
+  return dict.GetHandle();
+}
+
 // static
 v8::Local<v8::Value> Converter<rtvc::ScheduleItemProfile>::ToV8(
     v8::Isolate* isolate,

@@ -23,7 +23,9 @@ async function test(binding) {
 
   console.log('authenticate()');
 
-  const accountList = await bootstrap.authenticate();
+  const accountList = await bootstrap.authenticate().catch((e) => {
+    console.warn(e)
+  });
 
   console.log('authenticated', accountList)
 
@@ -40,6 +42,8 @@ async function test(binding) {
   console.log('getConnector()');
 
   const connector = bootstrap.getConnector(id);
+
+  const token = bootstrap.getToken(id);
 
   const inviteInfo = await bootstrap.getPartyInviteInfo();
 

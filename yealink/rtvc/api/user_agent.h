@@ -37,6 +37,7 @@ class UserAgent {
 
   virtual std::string username() = 0;
   virtual std::string password() = 0;
+  virtual std::string ha1() = 0;
   virtual std::string domain() = 0;
   virtual std::string proxyServer() = 0;
   virtual int64_t proxyPort() = 0;

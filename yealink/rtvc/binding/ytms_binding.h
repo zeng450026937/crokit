@@ -9,7 +9,7 @@
 #include "yealink/rtvc/api/ytms_info.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
-#include "ytms_process.h"
+#include "process_observer.h"
 
 namespace rtvc {
 class YTMSBinding : public mate::EventEmitter<YTMSBinding>,

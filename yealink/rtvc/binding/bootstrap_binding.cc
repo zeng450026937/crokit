@@ -116,16 +116,31 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
   std::vector<AccountInfo>* result = new std::vector<AccountInfo>();
+  ProcessObserver* observer = new ProcessObserver();
 
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&BootstrapBinding::DoAuthenticate,
-                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+                     weak_factory_.GetWeakPtr(), base::Unretained(result),
+                     observer),
       base::BindOnce(
-          [](Promise promise, const std::vector<AccountInfo>* result) {
-            std::move(promise).Resolve(*result);
+          [](Promise promise, const std::vector<AccountInfo>* result,
+             ProcessObserver* observer) {
+            int code = observer ? observer->bizCode() : 900500;
+
+            if (code != 900200) {
+              ErrorInfo error_result;
+              error_result.biz_code = code;
+              std::move(promise).Reject(error_result);
+            }
+
+            else
+              std::move(promise).Resolve(*result);
+
+            if (observer)
+              delete observer;
           },
-          std::move(promise), base::Owned(result)));
+          std::move(promise), base::Owned(result), observer));
 
   return handle;
 }
@@ -151,16 +166,31 @@ v8::Local<v8::Promise> BootstrapBinding::GetPartyInviteInfo() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
   PartyInviteInfos* result = new PartyInviteInfos();
+  ProcessObserver* observer = new ProcessObserver();
 
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&BootstrapBinding::DoGetPartyInviteInfo,
-                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+                     weak_factory_.GetWeakPtr(), base::Unretained(result),
+                     observer),
       base::BindOnce(
-          [](Promise promise, const PartyInviteInfos* result) {
-            std::move(promise).Resolve(*result);
+          [](Promise promise, const PartyInviteInfos* result,
+             ProcessObserver* observer) {
+            int code = observer ? observer->bizCode() : 900500;
+
+            if (code != 900200) {
+              ErrorInfo error_result;
+              error_result.biz_code = code;
+              std::move(promise).Reject(error_result);
+            }
+
+            else
+              std::move(promise).Resolve(*result);
+
+            if (observer)
+              delete observer;
           },
-          std::move(promise), base::Owned(result)));
+          std::move(promise), base::Owned(result), observer));
 
   return handle;
 }
@@ -169,21 +199,36 @@ v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
   bool* result = new bool();
+  ProcessObserver* observer = new ProcessObserver();
 
   base::PostTaskAndReply(
       FROM_HERE,
       base::BindOnce(&BootstrapBinding::DoPushVerifyCode,
-                     weak_factory_.GetWeakPtr(), base::Unretained(result)),
+                     weak_factory_.GetWeakPtr(), base::Unretained(result),
+                     observer),
       base::BindOnce(
-          [](Promise promise, const bool* result) {
-            std::move(promise).Resolve(*result);
+          [](Promise promise, const bool* result, ProcessObserver* observer) {
+            int code = observer ? observer->bizCode() : 900500;
+
+            if (code != 900200) {
+              ErrorInfo error_result;
+              error_result.biz_code = code;
+              std::move(promise).Reject(error_result);
+            }
+
+            else
+              std::move(promise).Resolve(*result);
+
+            if (observer)
+              delete observer;
           },
-          std::move(promise), base::Owned(result)));
+          std::move(promise), base::Owned(result), observer));
 
   return handle;
 }
 
-void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
+void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result,
+                                      ProcessObserver* observer) {
   yealink::LoginInfo info;
   yealink::LoginUserInfos ret;
   info.server = server_.c_str();
@@ -193,9 +238,9 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   info.algorithm = algorithm_.c_str();
 
   if (debug_ == true) {
-    ret = access_agent_->UnscheduledLoginAccessService(info, nullptr);
+    ret = access_agent_->UnscheduledLoginAccessService(info, observer);
   } else {
-    ret = access_agent_->LoginAccessService(info, nullptr);
+    ret = access_agent_->LoginAccessService(info, observer);
   }
 
   ConvertFrom(*result, ret.accountInfos);
@@ -207,20 +252,22 @@ void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
   }
 }
 
-void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result) {
+void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result,
+                                            ProcessObserver* observer) {
   if (result != nullptr && access_agent_ != nullptr) {
-    ConvertFrom(*result, access_agent_->GetPartyInviteInfo(nullptr));
+    ConvertFrom(*result, access_agent_->GetPartyInviteInfo(observer));
   }
 }
 
-void BootstrapBinding::DoPushVerifyCode(bool* result) {
-  if (result != nullptr) {
+void BootstrapBinding::DoPushVerifyCode(bool* result,
+                                        ProcessObserver* observer) {
+  if (result != nullptr && access_agent_ != nullptr) {
     if (debug_ == true)
       *result = access_agent_->UnscheduledSendMobileLoginVerifyCode(
-          server_.c_str(), username_.c_str(), nullptr);
+          server_.c_str(), username_.c_str(), observer);
     else
       *result = access_agent_->SendMobileLoginVerifyCode(
-          server_.c_str(), username_.c_str(), nullptr);
+          server_.c_str(), username_.c_str(), observer);
   }
 }
 

@@ -23,6 +23,10 @@ std::string UserAgentImpl::password() {
   LOG(INFO) << __FUNCTIONW__;
   return config_.password;
 }
+std::string UserAgentImpl::ha1() {
+  LOG(INFO) << __FUNCTIONW__;
+  return config_.ha1;
+}
 std::string UserAgentImpl::domain() {
   LOG(INFO) << __FUNCTIONW__;
   return config_.domain;

@@ -45,6 +45,10 @@ struct AccountInfo {
   TurnServerInfo turn_server;
 };
 
+struct ErrorInfo {
+  int biz_code;
+};
+
 using AccountInfoList = std::vector<AccountInfo>;
 
 struct PartyInviteInfos {

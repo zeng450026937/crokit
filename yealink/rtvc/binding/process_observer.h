@@ -1,8 +1,9 @@
-#ifndef YEALINK_RTVC_BINDING_YTMS_PROCESS_H_
-#define YEALINK_RTVC_BINDING_YTMS_PROCESS_H_
+#ifndef YEALINK_RTVC_BINDING_PROCESS_OBSERVER_H_
+#define YEALINK_RTVC_BINDING_PROCESS_OBSERVER_H_
 
 #include <string>
 
+#include "yealink/libvc/include/access/access_agent_api.h"
 #include "yealink/libvc/include/ytms/ytms_agent_api.h"
 
 #include "yealink/native_mate/handle.h"
@@ -13,7 +14,8 @@
 
 namespace rtvc {
 
-class ProcessObserver : public yealink::YTMSProcess {
+class ProcessObserver : public yealink::YTMSProcess,
+                        public yealink::AccessProcess {
  public:
   ProcessObserver();
   ~ProcessObserver();
@@ -33,4 +35,4 @@ class ProcessObserver : public yealink::YTMSProcess {
 
 }  // namespace rtvc
 
-#endif  // YEALINK_RTVC_BINDING_YTMS_PROCESS_H_
+#endif  // YEALINK_RTVC_BINDING_PROCESS_OBSERVER_H_

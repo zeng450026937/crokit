@@ -35,6 +35,7 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
   if (args->GetNext(&options)) {
     options.Get("username", &config.username);
     options.Get("password", &config.password);
+    options.Get("ha1", &config.ha1);
     options.Get("domain", &config.domain);
     options.Get("displayName", &config.display_name);
     options.Get("userAgent", &config.useragent);
@@ -153,6 +154,9 @@ std::string UserAgentBinding::username() {
 std::string UserAgentBinding::password() {
   return config_.password;
 }
+std::string UserAgentBinding::ha1() {
+  return config_.ha1;
+}
 std::string UserAgentBinding::domain() {
   return config_.domain;
 }
@@ -168,6 +172,9 @@ void UserAgentBinding::SetUsername(std::string username) {
 }
 void UserAgentBinding::SetPassword(std::string password) {
   config_.password = password;
+}
+void UserAgentBinding::SetHa1(std::string ha1) {
+  config_.ha1 = ha1;
 }
 void UserAgentBinding::SetDomain(std::string domain) {
   config_.domain = domain;
@@ -196,6 +203,11 @@ void UserAgentBinding::Set(std::string key, mate::Arguments* args) {
     if (args->GetNext(&value)) {
       config_.password = value;
     }
+  } else if (key == "ha1") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.ha1 = value;
+    }
   } else if (key == "domain") {
     std::string value;
     if (args->GetNext(&value)) {
@@ -221,6 +233,8 @@ v8::Local<v8::Value> UserAgentBinding::Get(std::string key,
     return mate::ConvertToV8(isolate(), config_.username);
   } else if (key == "password") {
     return mate::ConvertToV8(isolate(), config_.password);
+  } else if (key == "ha1") {
+    return mate::ConvertToV8(isolate(), config_.ha1);
   } else if (key == "domain") {
     return mate::ConvertToV8(isolate(), config_.domain);
   } else if (key == "proxyServer") {
