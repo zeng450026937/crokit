@@ -7,8 +7,6 @@
 #include "yealink/rtvc/api/device_type.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoManager {
@@ -44,7 +42,5 @@ class VideoManager {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_MANAGER_H_

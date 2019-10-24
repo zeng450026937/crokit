@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/native_desktop_media_list.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class DesktopCaptureBinding
@@ -75,7 +73,5 @@ class DesktopCaptureBinding
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_CAPTURE_BINDING_H_

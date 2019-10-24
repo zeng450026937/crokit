@@ -125,1010 +125,1010 @@ struct Converter<yealink::Array<T>> {
 };
 
 template <>
-struct Converter<yealink::rtvc::AudioMode> {
+struct Converter<rtvc::AudioMode> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::AudioMode val);
+                                   rtvc::AudioMode val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::AudioMode* out);
+                     rtvc::AudioMode* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DeviceType> {
+struct Converter<rtvc::DeviceType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DeviceType val);
+                                   rtvc::DeviceType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DeviceType* out);
+                     rtvc::DeviceType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::Device> {
+struct Converter<rtvc::Device> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::Device& val);
+                                   const rtvc::Device& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::Device* out);
+                     rtvc::Device* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::VideoFrameBuffer::Type> {
+struct Converter<rtvc::VideoFrameBuffer::Type> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::VideoFrameBuffer::Type val);
+                                   rtvc::VideoFrameBuffer::Type val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::VideoFrameBuffer::Type* out);
+                     rtvc::VideoFrameBuffer::Type* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::VideoRotation> {
+struct Converter<rtvc::VideoRotation> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::VideoRotation val);
+                                   rtvc::VideoRotation val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::VideoRotation* out);
+                     rtvc::VideoRotation* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::AccountInfo> {
+struct Converter<rtvc::AccountInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::AccountInfo& val);
+                                   const rtvc::AccountInfo& val);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleItemProfile> {
+struct Converter<rtvc::ScheduleItemProfile> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ScheduleItemProfile val);
+                                   rtvc::ScheduleItemProfile val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleItemProfile* out);
+                     rtvc::ScheduleItemProfile* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRecurrenceType> {
+struct Converter<rtvc::ScheduleRecurrenceType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ScheduleRecurrenceType val);
+                                   rtvc::ScheduleRecurrenceType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRecurrenceType* out);
+                     rtvc::ScheduleRecurrenceType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRecurrenceDailyType> {
+struct Converter<rtvc::ScheduleRecurrenceDailyType> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      yealink::rtvc::ScheduleRecurrenceDailyType val);
+      rtvc::ScheduleRecurrenceDailyType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRecurrenceDailyType* out);
+                     rtvc::ScheduleRecurrenceDailyType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRecurrence> {
+struct Converter<rtvc::ScheduleRecurrence> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::ScheduleRecurrence& val);
+      const rtvc::ScheduleRecurrence& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRecurrence* out);
+                     rtvc::ScheduleRecurrence* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleDaylightStrategy> {
+struct Converter<rtvc::ScheduleDaylightStrategy> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::ScheduleDaylightStrategy& val);
+      const rtvc::ScheduleDaylightStrategy& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleDaylightStrategy* out);
+                     rtvc::ScheduleDaylightStrategy* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleTimeZoneRule> {
+struct Converter<rtvc::ScheduleTimeZoneRule> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::ScheduleTimeZoneRule& val);
+      const rtvc::ScheduleTimeZoneRule& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleTimeZoneRule* out);
+                     rtvc::ScheduleTimeZoneRule* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleTimeZone> {
+struct Converter<rtvc::ScheduleTimeZone> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ScheduleTimeZone& val);
+                                   const rtvc::ScheduleTimeZone& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleTimeZone* out);
+                     rtvc::ScheduleTimeZone* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleMemberRole> {
+struct Converter<rtvc::ScheduleMemberRole> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ScheduleMemberRole val);
+                                   rtvc::ScheduleMemberRole val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleMemberRole* out);
+                     rtvc::ScheduleMemberRole* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleMemberType> {
+struct Converter<rtvc::ScheduleMemberType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ScheduleMemberType val);
+                                   rtvc::ScheduleMemberType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleMemberType* out);
+                     rtvc::ScheduleMemberType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleMember> {
+struct Converter<rtvc::ScheduleMember> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ScheduleMember& val);
+                                   const rtvc::ScheduleMember& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleMember* out);
+                     rtvc::ScheduleMember* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRoom> {
+struct Converter<rtvc::ScheduleRoom> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ScheduleRoom& val);
+                                   const rtvc::ScheduleRoom& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRoom* out);
+                     rtvc::ScheduleRoom* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRTMPLimitType> {
+struct Converter<rtvc::ScheduleRTMPLimitType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ScheduleRTMPLimitType val);
+                                   rtvc::ScheduleRTMPLimitType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRTMPLimitType* out);
+                     rtvc::ScheduleRTMPLimitType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleRTMP> {
+struct Converter<rtvc::ScheduleRTMP> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ScheduleRTMP& val);
+                                   const rtvc::ScheduleRTMP& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleRTMP* out);
+                     rtvc::ScheduleRTMP* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ScheduleItemDetail> {
+struct Converter<rtvc::ScheduleItemDetail> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::ScheduleItemDetail& val);
+      const rtvc::ScheduleItemDetail& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ScheduleItemDetail* out);
+                     rtvc::ScheduleItemDetail* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ContactLoadMode> {
+struct Converter<rtvc::ContactLoadMode> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ContactLoadMode val);
+                                   rtvc::ContactLoadMode val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ContactLoadMode* out);
+                     rtvc::ContactLoadMode* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ContactNodeType> {
+struct Converter<rtvc::ContactNodeType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ContactNodeType val);
+                                   rtvc::ContactNodeType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ContactNodeType* out);
+                     rtvc::ContactNodeType* out);
 };
 
 // template <>
-// struct Converter<yealink::rtvc::ContactNode> {
+// struct Converter<rtvc::ContactNode> {
 //   static v8::Local<v8::Value> ToV8(
 //       v8::Isolate* isolate,
-//       const yealink::rtvc::ContactNode& val);
+//       const rtvc::ContactNode& val);
 
 //   static bool FromV8(v8::Isolate* isolate,
 //                      v8::Local<v8::Value> val,
-//                      yealink::rtvc::ContactNode* out);
+//                      rtvc::ContactNode* out);
 // };
 
 template <>
-struct Converter<yealink::rtvc::TerminalInfo> {
+struct Converter<rtvc::TerminalInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::TerminalInfo& val);
+                                   const rtvc::TerminalInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::TerminalInfo* out);
+                     rtvc::TerminalInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::AlarmInfo> {
+struct Converter<rtvc::AlarmInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::AlarmInfo& val);
+                                   const rtvc::AlarmInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::AlarmInfo* out);
+                     rtvc::AlarmInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::FeedbackInfo> {
+struct Converter<rtvc::FeedbackInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::FeedbackInfo& val);
+                                   const rtvc::FeedbackInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::FeedbackInfo* out);
+                     rtvc::FeedbackInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::PackageInfo> {
+struct Converter<rtvc::PackageInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::PackageInfo& val);
+                                   const rtvc::PackageInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::PackageInfo* out);
+                     rtvc::PackageInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ConfigurationInfo> {
+struct Converter<rtvc::ConfigurationInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ConfigurationInfo& val);
+                                   const rtvc::ConfigurationInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ConfigurationInfo* out);
+                     rtvc::ConfigurationInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DownloadInfo> {
+struct Converter<rtvc::DownloadInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DownloadInfo& val);
+                                   const rtvc::DownloadInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DownloadInfo* out);
+                     rtvc::DownloadInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UploadLogInfo> {
+struct Converter<rtvc::UploadLogInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UploadLogInfo& val);
+                                   const rtvc::UploadLogInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UploadLogInfo* out);
+                     rtvc::UploadLogInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::NetCaptureInfo> {
+struct Converter<rtvc::NetCaptureInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::NetCaptureInfo& val);
+                                   const rtvc::NetCaptureInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::NetCaptureInfo* out);
+                     rtvc::NetCaptureInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::EventInfo> {
+struct Converter<rtvc::EventInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::EventInfo& val);
+                                   const rtvc::EventInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::EventInfo* out);
+                     rtvc::EventInfo* out);
 };
 
 // description
 template <>
-struct Converter<yealink::rtvc::DescProfile> {
+struct Converter<rtvc::DescProfile> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescProfile val);
+                                   rtvc::DescProfile val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescProfile* out);
+                     rtvc::DescProfile* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescPosition> {
+struct Converter<rtvc::DescPosition> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescPosition val);
+                                   rtvc::DescPosition val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescPosition* out);
+                     rtvc::DescPosition* out);
 };
 template <>
-struct Converter<yealink::rtvc::DescBanner> {
+struct Converter<rtvc::DescBanner> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescBanner& val);
+                                   const rtvc::DescBanner& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescBanner* out);
-};
-
-template <>
-struct Converter<yealink::rtvc::DescRtmpSessionType> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescRtmpSessionType val);
-
-  static bool FromV8(v8::Isolate* isolate,
-                     v8::Local<v8::Value> val,
-                     yealink::rtvc::DescRtmpSessionType* out);
-};
-template <>
-struct Converter<yealink::rtvc::DescRtmpFsType> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescRtmpFsType val);
-
-  static bool FromV8(v8::Isolate* isolate,
-                     v8::Local<v8::Value> val,
-                     yealink::rtvc::DescRtmpFsType* out);
-};
-template <>
-struct Converter<yealink::rtvc::DescDefaultRtmp> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescDefaultRtmp& val);
-
-  static bool FromV8(v8::Isolate* isolate,
-                     v8::Local<v8::Value> val,
-                     yealink::rtvc::DescDefaultRtmp* out);
+                     rtvc::DescBanner* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescUriPurpose> {
+struct Converter<rtvc::DescRtmpSessionType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescUriPurpose val);
+                                   rtvc::DescRtmpSessionType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescUriPurpose* out);
+                     rtvc::DescRtmpSessionType* out);
+};
+template <>
+struct Converter<rtvc::DescRtmpFsType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::DescRtmpFsType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::DescRtmpFsType* out);
+};
+template <>
+struct Converter<rtvc::DescDefaultRtmp> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::DescDefaultRtmp& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::DescDefaultRtmp* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescConfUriInfo> {
+struct Converter<rtvc::DescUriPurpose> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescConfUriInfo& val);
+                                   rtvc::DescUriPurpose val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescConfUriInfo* out);
+                     rtvc::DescUriPurpose* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescOrganizerInfo> {
+struct Converter<rtvc::DescConfUriInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescOrganizerInfo& val);
+                                   const rtvc::DescConfUriInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescOrganizerInfo* out);
+                     rtvc::DescConfUriInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescConferenceType> {
+struct Converter<rtvc::DescOrganizerInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescConferenceType val);
+                                   const rtvc::DescOrganizerInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescConferenceType* out);
+                     rtvc::DescOrganizerInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescNumberType> {
+struct Converter<rtvc::DescConferenceType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescNumberType val);
+                                   rtvc::DescConferenceType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescNumberType* out);
+                     rtvc::DescConferenceType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescAdmissionPolicy> {
+struct Converter<rtvc::DescNumberType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescAdmissionPolicy val);
+                                   rtvc::DescNumberType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescAdmissionPolicy* out);
+                     rtvc::DescNumberType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescAttendeeByPass> {
+struct Converter<rtvc::DescAdmissionPolicy> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescAttendeeByPass val);
+                                   rtvc::DescAdmissionPolicy val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescAttendeeByPass* out);
+                     rtvc::DescAdmissionPolicy* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescAutoPromote> {
+struct Converter<rtvc::DescAttendeeByPass> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescAutoPromote val);
+                                   rtvc::DescAttendeeByPass val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescAutoPromote* out);
+                     rtvc::DescAttendeeByPass* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescRecordType> {
+struct Converter<rtvc::DescAutoPromote> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescRecordType val);
+                                   rtvc::DescAutoPromote val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescRecordType* out);
+                     rtvc::DescAutoPromote* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescRecordPrivilege> {
+struct Converter<rtvc::DescRecordType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::DescRecordPrivilege val);
+                                   rtvc::DescRecordType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescRecordPrivilege* out);
+                     rtvc::DescRecordType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescSetLockInfo> {
+struct Converter<rtvc::DescRecordPrivilege> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescSetLockInfo& val);
+                                   rtvc::DescRecordPrivilege val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescSetLockInfo* out);
+                     rtvc::DescRecordPrivilege* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescGetLockInfo> {
+struct Converter<rtvc::DescSetLockInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescGetLockInfo& val);
+                                   const rtvc::DescSetLockInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescGetLockInfo* out);
+                     rtvc::DescSetLockInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::DescInfo> {
+struct Converter<rtvc::DescGetLockInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::DescInfo& val);
+                                   const rtvc::DescGetLockInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::DescInfo* out);
+                     rtvc::DescGetLockInfo* out);
+};
+
+template <>
+struct Converter<rtvc::DescInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::DescInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::DescInfo* out);
 };
 
 // state
 
 // user
 template <>
-struct Converter<yealink::rtvc::RequesrResult> {
+struct Converter<rtvc::RequesrResult> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::RequesrResult val);
+                                   rtvc::RequesrResult val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RequesrResult* out);
+                     rtvc::RequesrResult* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ResponseInfo> {
+struct Converter<rtvc::ResponseInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ResponseInfo& val);
+                                   const rtvc::ResponseInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ResponseInfo* out);
+                     rtvc::ResponseInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::HttpResponseInfo> {
+struct Converter<rtvc::HttpResponseInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::HttpResponseInfo& val);
+                                   const rtvc::HttpResponseInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::HttpResponseInfo* out);
+                     rtvc::HttpResponseInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ImResponseInfo> {
+struct Converter<rtvc::ImResponseInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ImResponseInfo& val);
+                                   const rtvc::ImResponseInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ImResponseInfo* out);
+                     rtvc::ImResponseInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ImMessageInfo> {
+struct Converter<rtvc::ImMessageInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ImMessageInfo& val);
+                                   const rtvc::ImMessageInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ImMessageInfo* out);
+                     rtvc::ImMessageInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ImMessageList> {
+struct Converter<rtvc::ImMessageList> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ImMessageList& val);
+                                   const rtvc::ImMessageList& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ImMessageList* out);
+                     rtvc::ImMessageList* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserProtocolType> {
+struct Converter<rtvc::UserProtocolType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserProtocolType val);
+                                   rtvc::UserProtocolType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserProtocolType* out);
+                     rtvc::UserProtocolType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserPermissionType> {
+struct Converter<rtvc::UserPermissionType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserPermissionType val);
+                                   rtvc::UserPermissionType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserPermissionType* out);
+                     rtvc::UserPermissionType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserDemoStateType> {
+struct Converter<rtvc::UserDemoStateType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserDemoStateType val);
+                                   rtvc::UserDemoStateType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserDemoStateType* out);
+                     rtvc::UserDemoStateType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::PresenterDemoStateType> {
+struct Converter<rtvc::PresenterDemoStateType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::PresenterDemoStateType val);
+                                   rtvc::PresenterDemoStateType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::PresenterDemoStateType* out);
+                     rtvc::PresenterDemoStateType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserRolesInfo> {
+struct Converter<rtvc::UserRolesInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserRolesInfo& val);
+                                   const rtvc::UserRolesInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserRolesInfo* out);
+                     rtvc::UserRolesInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserEndpointSeesionType> {
+struct Converter<rtvc::UserEndpointSeesionType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserEndpointSeesionType val);
+                                   rtvc::UserEndpointSeesionType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserEndpointSeesionType* out);
+                     rtvc::UserEndpointSeesionType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserEndpointStatusType> {
+struct Converter<rtvc::UserEndpointStatusType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserEndpointStatusType val);
+                                   rtvc::UserEndpointStatusType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserEndpointStatusType* out);
+                     rtvc::UserEndpointStatusType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserJoinMethod> {
+struct Converter<rtvc::UserJoinMethod> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserJoinMethod val);
+                                   rtvc::UserJoinMethod val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserJoinMethod* out);
+                     rtvc::UserJoinMethod* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaType> {
+struct Converter<rtvc::UserMediaType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserMediaType val);
+                                   rtvc::UserMediaType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaType* out);
+                     rtvc::UserMediaType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaLabelType> {
+struct Converter<rtvc::UserMediaLabelType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserMediaLabelType val);
+                                   rtvc::UserMediaLabelType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaLabelType* out);
+                     rtvc::UserMediaLabelType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaDirectionType> {
+struct Converter<rtvc::UserMediaDirectionType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserMediaDirectionType val);
+                                   rtvc::UserMediaDirectionType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaDirectionType* out);
+                     rtvc::UserMediaDirectionType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediafilterType> {
+struct Converter<rtvc::UserMediafilterType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserMediafilterType val);
+                                   rtvc::UserMediafilterType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediafilterType* out);
+                     rtvc::UserMediafilterType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaBlockByType> {
+struct Converter<rtvc::UserMediaBlockByType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::UserMediaBlockByType val);
+                                   rtvc::UserMediaBlockByType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaBlockByType* out);
+                     rtvc::UserMediaBlockByType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaInfo> {
+struct Converter<rtvc::UserMediaInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserMediaInfo& val);
+                                   const rtvc::UserMediaInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaInfo* out);
+                     rtvc::UserMediaInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaFilterInfo> {
+struct Converter<rtvc::UserMediaFilterInfo> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::UserMediaFilterInfo& val);
+      const rtvc::UserMediaFilterInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaFilterInfo* out);
+                     rtvc::UserMediaFilterInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserEndpointInfo> {
+struct Converter<rtvc::UserEndpointInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserEndpointInfo& val);
+                                   const rtvc::UserEndpointInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserEndpointInfo* out);
+                     rtvc::UserEndpointInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserInfo> {
+struct Converter<rtvc::UserInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserInfo& val);
+                                   const rtvc::UserInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserInfo* out);
+                     rtvc::UserInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserMediaDataInfo> {
+struct Converter<rtvc::UserMediaDataInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::UserMediaDataInfo& val);
+                                   const rtvc::UserMediaDataInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserMediaDataInfo* out);
+                     rtvc::UserMediaDataInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::UserStatisticsInfo> {
+struct Converter<rtvc::UserStatisticsInfo> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::UserStatisticsInfo& val);
+      const rtvc::UserStatisticsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::UserStatisticsInfo* out);
+                     rtvc::UserStatisticsInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RecordStatusType> {
+struct Converter<rtvc::RecordStatusType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::RecordStatusType val);
+                                   rtvc::RecordStatusType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RecordStatusType* out);
+                     rtvc::RecordStatusType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RecordUserInfo> {
+struct Converter<rtvc::RecordUserInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RecordUserInfo& val);
+                                   const rtvc::RecordUserInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RecordUserInfo* out);
+                     rtvc::RecordUserInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RecordUsers> {
+struct Converter<rtvc::RecordUsers> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RecordUsers& val);
+                                   const rtvc::RecordUsers& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RecordUsers* out);
+                     rtvc::RecordUsers* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RtmpStatusType> {
+struct Converter<rtvc::RtmpStatusType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::RtmpStatusType val);
+                                   rtvc::RtmpStatusType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RtmpStatusType* out);
+                     rtvc::RtmpStatusType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RtmpUserInfo> {
+struct Converter<rtvc::RtmpUserInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RtmpUserInfo& val);
+                                   const rtvc::RtmpUserInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RtmpUserInfo* out);
+                     rtvc::RtmpUserInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RtmpInfo> {
+struct Converter<rtvc::RtmpInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RtmpInfo& val);
+                                   const rtvc::RtmpInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RtmpInfo* out);
+                     rtvc::RtmpInfo* out);
 };
 
 // view
 template <>
-struct Converter<yealink::rtvc::ViewSpeakMode> {
+struct Converter<rtvc::ViewSpeakMode> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ViewSpeakMode val);
+                                   rtvc::ViewSpeakMode val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewSpeakMode* out);
+                     rtvc::ViewSpeakMode* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ViewLayoutType> {
+struct Converter<rtvc::ViewLayoutType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ViewLayoutType val);
+                                   rtvc::ViewLayoutType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewLayoutType* out);
+                     rtvc::ViewLayoutType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ViewPresenterLayoutType> {
+struct Converter<rtvc::ViewPresenterLayoutType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ViewPresenterLayoutType val);
+                                   rtvc::ViewPresenterLayoutType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewPresenterLayoutType* out);
+                     rtvc::ViewPresenterLayoutType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::GetLayoutInfo> {
+struct Converter<rtvc::GetLayoutInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::GetLayoutInfo& val);
+                                   const rtvc::GetLayoutInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::GetLayoutInfo* out);
+                     rtvc::GetLayoutInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::SetLayoutInfo> {
+struct Converter<rtvc::SetLayoutInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::SetLayoutInfo& val);
+                                   const rtvc::SetLayoutInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::SetLayoutInfo* out);
+                     rtvc::SetLayoutInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ViewFilterRoleType> {
+struct Converter<rtvc::ViewFilterRoleType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ViewFilterRoleType val);
+                                   rtvc::ViewFilterRoleType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewFilterRoleType* out);
+                     rtvc::ViewFilterRoleType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ViewFilterType> {
+struct Converter<rtvc::ViewFilterType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::ViewFilterType val);
+                                   rtvc::ViewFilterType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewFilterType* out);
+                     rtvc::ViewFilterType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::ViewFilterRuleInfo> {
+struct Converter<rtvc::ViewFilterRuleInfo> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::ViewFilterRuleInfo& val);
+      const rtvc::ViewFilterRuleInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ViewFilterRuleInfo* out);
+                     rtvc::ViewFilterRuleInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::StatsAudioCodecType> {
+struct Converter<rtvc::StatsAudioCodecType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::StatsAudioCodecType val);
+                                   rtvc::StatsAudioCodecType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::StatsAudioCodecType* out);
+                     rtvc::StatsAudioCodecType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::StatsVideoCodecType> {
+struct Converter<rtvc::StatsVideoCodecType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::StatsVideoCodecType val);
+                                   rtvc::StatsVideoCodecType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::StatsVideoCodecType* out);
+                     rtvc::StatsVideoCodecType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::StatsVideoProfileType> {
+struct Converter<rtvc::StatsVideoProfileType> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   yealink::rtvc::StatsVideoProfileType val);
+                                   rtvc::StatsVideoProfileType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::StatsVideoProfileType* out);
+                     rtvc::StatsVideoProfileType* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::AudioStatsInfo> {
+struct Converter<rtvc::AudioStatsInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::AudioStatsInfo& val);
+                                   const rtvc::AudioStatsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::AudioStatsInfo* out);
+                     rtvc::AudioStatsInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::VideoStatsInfo> {
+struct Converter<rtvc::VideoStatsInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::VideoStatsInfo& val);
+                                   const rtvc::VideoStatsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::VideoStatsInfo* out);
+                     rtvc::VideoStatsInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RTCVideoStats> {
+struct Converter<rtvc::RTCVideoStats> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RTCVideoStats& val);
+                                   const rtvc::RTCVideoStats& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RTCVideoStats* out);
+                     rtvc::RTCVideoStats* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RTCAudioStats> {
+struct Converter<rtvc::RTCAudioStats> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RTCAudioStats& val);
+                                   const rtvc::RTCAudioStats& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RTCAudioStats* out);
+                     rtvc::RTCAudioStats* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RTCStats> {
+struct Converter<rtvc::RTCStats> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RTCStats& val);
+                                   const rtvc::RTCStats& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RTCStats* out);
+                     rtvc::RTCStats* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::RTCStatsInfo> {
+struct Converter<rtvc::RTCStatsInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::RTCStatsInfo& val);
+                                   const rtvc::RTCStatsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::RTCStatsInfo* out);
+                     rtvc::RTCStatsInfo* out);
 };
 
 template <>
-struct Converter<yealink::rtvc::PartyInviteInfos> {
+struct Converter<rtvc::PartyInviteInfos> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::PartyInviteInfos& val);
+                                   const rtvc::PartyInviteInfos& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::PartyInviteInfos* out);
+                     rtvc::PartyInviteInfos* out);
 };
 
 }  // namespace mate

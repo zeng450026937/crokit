@@ -5,7 +5,6 @@
 
 #include "yealink/rtvc/api/macros.h"
 
-namespace yealink {
 namespace rtvc {
 
 enum class ViewSpeakMode {
@@ -155,7 +154,5 @@ class ConferenceView {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONFERENCE_VIEW_H_

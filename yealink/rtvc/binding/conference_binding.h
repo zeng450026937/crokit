@@ -28,8 +28,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/user_agent_binding.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
@@ -47,8 +45,8 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void SetController(RoomController* controller);
-  void SetController(std::unique_ptr<RoomController> controller);
+  void SetController(yealink::RoomController* controller);
+  void SetController(std::unique_ptr<yealink::RoomController> controller);
 
  protected:
   friend class CallBinding;
@@ -88,25 +86,25 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
       const yealink::ConferenceDescription& desc) override;
   void OnConferenceStateChange(const yealink::ConferenceState& state) override;
   void OnConferenceViewChange(const yealink::ConferenceView& view) override;
-  void OnRtmpStateChange(const RoomRtmpState& rtmpState) override;
-  void OnRecordUsersChange(const RoomRecordUsers& recordUsers) override;
-  void OnUserChange(const Array<RoomMember>& newMemberList,
-                    const Array<RoomMember>& modifyMemberList,
-                    const Array<RoomMember>& deleteMemberList) override;
-  void OnGetUserCallStats(const RoomMember& member,
-                          const Array<yealink::UserMediaInfo>& info) override;
+  void OnRtmpStateChange(const yealink::RoomRtmpState& rtmpState) override;
+  void OnRecordUsersChange(const yealink::RoomRecordUsers& recordUsers) override;
+  void OnUserChange(const yealink::Array<yealink::RoomMember>& newMemberList,
+                    const yealink::Array<yealink::RoomMember>& modifyMemberList,
+                    const yealink::Array<yealink::RoomMember>& deleteMemberList) override;
+  void OnGetUserCallStats(const yealink::RoomMember& member,
+                          const yealink::Array<yealink::UserMediaInfo>& info) override;
   void OnGetShareInfo(int64_t requestId, const char* shareInfo) override;
   void OnImRecord(const char* messageBody) override;
   void OnFetchFinish() override;
 
   // chat observer impl
-  void OnReceiveMessage(const ChatMessageItem& message) override;
+  void OnReceiveMessage(const yealink::ChatMessageItem& message) override;
   void OnDialogChange() override;
 
  private:
   bool locally_generated_controller_ = true;
-  std::unique_ptr<RoomController> controller_;
-  std::unique_ptr<ChatManager> chat_controller_;
+  std::unique_ptr<yealink::RoomController> controller_;
+  std::unique_ptr<yealink::ChatManager> chat_controller_;
   std::string conversation_id_;
 
   v8::Global<v8::Value> v8_description_;
@@ -139,7 +137,5 @@ class ConferenceBinding : public mate::EventEmitter<ConferenceBinding>,
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_BINDING_H_

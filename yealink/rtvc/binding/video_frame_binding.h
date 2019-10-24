@@ -5,8 +5,6 @@
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video/video_frame.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoFrameBinding : public mate::Wrappable<VideoFrameBinding> {
@@ -34,7 +32,5 @@ class VideoFrameBinding : public mate::Wrappable<VideoFrameBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_FRAME_BINDING_H_

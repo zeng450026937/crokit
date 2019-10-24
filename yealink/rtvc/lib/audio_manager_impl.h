@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/audio_manager.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class AudioManagerImpl : public AudioManager {
@@ -53,7 +51,5 @@ class AudioManagerImpl : public AudioManager {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_AUDIO_MANAGER_IMPL_H_

@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -67,11 +65,11 @@ void ConferenceMessageBinding::BuildPrototype(
 }
 
 void ConferenceMessageBinding::UpdateMessageController(
-    ChatMessageItem& handler) {
+    yealink::ChatMessageItem& handler) {
   message_controller_ = handler;
 }
 
-ChatMessageItem ConferenceMessageBinding::GetMessageItem() {
+yealink::ChatMessageItem ConferenceMessageBinding::GetMessageItem() {
   return message_controller_;
 }
 
@@ -116,11 +114,11 @@ std::string ConferenceMessageBinding::text() {
 std::string ConferenceMessageBinding::status() {
   yealink::ChatItemStatus status = message_controller_.GetStatus();
 
-  if (status == ChatItemStatus::CHAT_ITEM_STATUS_PENDING) {
+  if (status == yealink::ChatItemStatus::CHAT_ITEM_STATUS_PENDING) {
     return std::string("pending");
-  } else if (status == ChatItemStatus::CHAT_ITEM_STATUS_SUCCESS) {
+  } else if (status == yealink::ChatItemStatus::CHAT_ITEM_STATUS_SUCCESS) {
     return std::string("success");
-  } else if (status == ChatItemStatus::CHAT_ITEM_STATUS_FAILURE) {
+  } else if (status == yealink::ChatItemStatus::CHAT_ITEM_STATUS_FAILURE) {
     return std::string("failure");
   } else {
     return std::string("invalid");
@@ -153,5 +151,3 @@ v8::Local<v8::Promise> ConferenceMessageBinding::SetStatus(bool isRead) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

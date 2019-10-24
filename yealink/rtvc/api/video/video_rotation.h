@@ -1,8 +1,6 @@
 #ifndef YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_
 #define YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_
 
-namespace yealink {
-
 namespace rtvc {
 
 // enum for clockwise rotation.
@@ -14,7 +12,5 @@ enum VideoRotation {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_VIDEO_ROTATION_H_

@@ -11,13 +11,7 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "ytms_process.h"
 
-namespace yealink {
-
-class YTMSAgent;
-class ProcessObserver;
-
 namespace rtvc {
-
 class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
                     public yealink::YTMSObserver {
  public:
@@ -96,13 +90,11 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
   PackageInfo package_info_;
   ConfigurationInfo config_info_;
 
-  YTMSAgent* ytms_agent_;
+  yealink::YTMSAgent* ytms_agent_;
 
   base::WeakPtrFactory<YTMSBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_YTMS_BINDING_H_

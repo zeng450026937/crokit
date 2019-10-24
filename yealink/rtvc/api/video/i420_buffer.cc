@@ -12,8 +12,6 @@
 // Aligning pointer to 64 bytes for improved performance, e.g. use SIMD.
 static const int kBufferAlignment = 64;
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -245,5 +243,3 @@ void I420BufferImpl::PasteFrom(const I420Buffer& picture,
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -11,8 +11,6 @@
 #include "yealink/rtvc/api/media_channel.h"
 #include "yealink/rtvc/api/share_channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ChannelHolder : public base::RefCounted<ChannelHolder> {
@@ -36,7 +34,5 @@ class ChannelHolder : public base::RefCounted<ChannelHolder> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_CHANNEL_HOLDER_H_

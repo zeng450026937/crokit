@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/video_manager.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoManagerImpl : public VideoManager {
@@ -33,7 +31,5 @@ class VideoManagerImpl : public VideoManager {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_VIDEO_MANAGER_IMPL_H_

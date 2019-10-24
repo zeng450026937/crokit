@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class ChannelState {
@@ -167,7 +165,5 @@ class Channel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CHANNEL_H_

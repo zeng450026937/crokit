@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class ScheduleItemProfile {
@@ -185,7 +183,5 @@ class ScheduleItem {
 */
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_SCHEDULE_ITEM_H_

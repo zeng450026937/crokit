@@ -4,8 +4,6 @@
 #include <v8.h>
 #include <v8-profiler.h>
 
-namespace yealink {
-
 namespace rtvc {
 
 v8::Local<v8::Value> GetHiddenValue(v8::Isolate* isolate,
@@ -58,7 +56,5 @@ void RequestGarbageCollectionForTesting(v8::Isolate* isolate) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_V8_UTIL_H_

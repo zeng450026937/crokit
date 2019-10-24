@@ -7,8 +7,6 @@
 #include "base/single_thread_task_runner.h"
 #include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class SIPPoller {
@@ -28,7 +26,5 @@ class SIPPoller {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_SIP_POLLER_H_

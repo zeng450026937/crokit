@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-namespace yealink {
-
 namespace rtvc {
 
 static const int64_t kNumMillisecsPerSec = INT64_C(1000);
@@ -19,7 +17,5 @@ static const int64_t kNumNanosecsPerMicrosec =
     kNumNanosecsPerSec / kNumMicrosecsPerSec;
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_TIME_UTILS_H_

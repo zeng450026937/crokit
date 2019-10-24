@@ -1,7 +1,5 @@
 #include "ytms_process.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 ProcessObserver::ProcessObserver() {
@@ -34,4 +32,3 @@ void ProcessObserver::SetErrorInfo(int code, const char* msg) {
 }
 
 }  // namespace rtvc
-}  // namespace yealink

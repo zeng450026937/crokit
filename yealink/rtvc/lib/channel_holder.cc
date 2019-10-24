@@ -1,7 +1,5 @@
 #include "yealink/rtvc/lib/channel_holder.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 ChannelHolder::ChannelHolder(std::unique_ptr<MediaChannel> media_channel,
@@ -14,5 +12,3 @@ ChannelHolder::ChannelHolder(std::unique_ptr<MediaChannel> media_channel,
       chat_channel_(std::move(chat_channel)) {}
 
 }  // namespace rtvc
-
-}  // namespace yealink

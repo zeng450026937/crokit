@@ -73,7 +73,7 @@ class EventEmitter : public Wrappable<T> {
   bool EmitWithEvent(const base::StringPiece& name,
                      v8::Local<v8::Object> event,
                      Args&&... args) {
-    DCHECK(yealink::rtvc::Context::Instance()->CalledOnValidThread());
+    DCHECK(rtvc::Context::Instance()->CalledOnValidThread());
     // v8::Locker locker(isolate());
     v8::HandleScope handle_scope(isolate());
     EmitEvent(isolate(), GetWrapper(), name, event,

@@ -2,102 +2,97 @@
 
 namespace mate {
 
-v8::Local<v8::Value> Converter<yealink::rtvc::AudioMode>::ToV8(
-    v8::Isolate* isolate,
-    yealink::rtvc::AudioMode val) {
+v8::Local<v8::Value> Converter<rtvc::AudioMode>::ToV8(v8::Isolate* isolate,
+                                                      rtvc::AudioMode val) {
   std::string audio_mode;
   switch (val) {
-    case yealink::rtvc::AudioMode::kIdle:
+    case rtvc::AudioMode::kIdle:
       audio_mode = "kIdle";
       break;
-    case yealink::rtvc::AudioMode::kHandset:
+    case rtvc::AudioMode::kHandset:
       audio_mode = "kHandset";
       break;
-    case yealink::rtvc::AudioMode::kHandsetFree:
+    case rtvc::AudioMode::kHandsetFree:
       audio_mode = "kHandsetFree";
       break;
   }
   return ConvertToV8(isolate, audio_mode);
 }
 
-bool Converter<yealink::rtvc::AudioMode>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::AudioMode* out) {
+bool Converter<rtvc::AudioMode>::FromV8(v8::Isolate* isolate,
+                                        v8::Local<v8::Value> val,
+                                        rtvc::AudioMode* out) {
   std::string audio_mode;
   if (!ConvertFromV8(isolate, val, &audio_mode))
     return false;
 
   if (audio_mode == "kHandset")
-    *out = yealink::rtvc::AudioMode::kHandset;
+    *out = rtvc::AudioMode::kHandset;
   else if (audio_mode == "kHandsetFree")
-    *out = yealink::rtvc::AudioMode::kHandsetFree;
+    *out = rtvc::AudioMode::kHandsetFree;
   else if (audio_mode == "kIdle")
-    *out = yealink::rtvc::AudioMode::kIdle;
+    *out = rtvc::AudioMode::kIdle;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DeviceType>::ToV8(
-    v8::Isolate* isolate,
-    yealink::rtvc::DeviceType val) {
+v8::Local<v8::Value> Converter<rtvc::DeviceType>::ToV8(v8::Isolate* isolate,
+                                                       rtvc::DeviceType val) {
   std::string device_type;
   switch (val) {
-    case yealink::rtvc::DeviceType::kAudioInput:
+    case rtvc::DeviceType::kAudioInput:
       device_type = "kAudioInput";
       break;
-    case yealink::rtvc::DeviceType::kAudioOutput:
+    case rtvc::DeviceType::kAudioOutput:
       device_type = "kAudioOutput";
       break;
-    case yealink::rtvc::DeviceType::kVideoInput:
+    case rtvc::DeviceType::kVideoInput:
       device_type = "kVideoInput";
       break;
-    case yealink::rtvc::DeviceType::kScreen:
+    case rtvc::DeviceType::kScreen:
       device_type = "kScreen";
       break;
-    case yealink::rtvc::DeviceType::kWindow:
+    case rtvc::DeviceType::kWindow:
       device_type = "kWindow";
       break;
-    case yealink::rtvc::DeviceType::kImageFile:
+    case rtvc::DeviceType::kImageFile:
       device_type = "kImageFile";
       break;
   }
   return ConvertToV8(isolate, device_type);
 }
 
-bool Converter<yealink::rtvc::DeviceType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DeviceType* out) {
+bool Converter<rtvc::DeviceType>::FromV8(v8::Isolate* isolate,
+                                         v8::Local<v8::Value> val,
+                                         rtvc::DeviceType* out) {
   std::string device_type;
   if (!ConvertFromV8(isolate, val, &device_type))
     return false;
 
   if (device_type == "kAudioInput")
-    *out = yealink::rtvc::DeviceType::kAudioInput;
+    *out = rtvc::DeviceType::kAudioInput;
   else if (device_type == "kAudioOutput")
-    *out = yealink::rtvc::DeviceType::kAudioOutput;
+    *out = rtvc::DeviceType::kAudioOutput;
   else if (device_type == "kAudioOutput")
-    *out = yealink::rtvc::DeviceType::kAudioOutput;
+    *out = rtvc::DeviceType::kAudioOutput;
   else if (device_type == "kVideoInput")
-    *out = yealink::rtvc::DeviceType::kVideoInput;
+    *out = rtvc::DeviceType::kVideoInput;
   else if (device_type == "kScreen")
-    *out = yealink::rtvc::DeviceType::kScreen;
+    *out = rtvc::DeviceType::kScreen;
   else if (device_type == "kWindow")
-    *out = yealink::rtvc::DeviceType::kWindow;
+    *out = rtvc::DeviceType::kWindow;
   else if (device_type == "kImageFile")
-    *out = yealink::rtvc::DeviceType::kImageFile;
+    *out = rtvc::DeviceType::kImageFile;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::Device>::ToV8(
-    v8::Isolate* isolate,
-    const yealink::rtvc::Device& val) {
+v8::Local<v8::Value> Converter<rtvc::Device>::ToV8(v8::Isolate* isolate,
+                                                   const rtvc::Device& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("deviceId", val.deviceId);
   dict.Set("label", val.label);
@@ -105,9 +100,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::Device>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::Device>::FromV8(v8::Isolate* isolate,
-                                              v8::Local<v8::Value> val,
-                                              yealink::rtvc::Device* out) {
+bool Converter<rtvc::Device>::FromV8(v8::Isolate* isolate,
+                                     v8::Local<v8::Value> val,
+                                     rtvc::Device* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -117,69 +112,69 @@ bool Converter<yealink::rtvc::Device>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::VideoFrameBuffer::Type>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::VideoFrameBuffer::Type>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::VideoFrameBuffer::Type val) {
+    rtvc::VideoFrameBuffer::Type val) {
   std::string buffer_type;
   switch (val) {
-    case yealink::rtvc::VideoFrameBuffer::Type::kI010:
+    case rtvc::VideoFrameBuffer::Type::kI010:
       buffer_type = "kI010";
       break;
-    case yealink::rtvc::VideoFrameBuffer::Type::kI420:
+    case rtvc::VideoFrameBuffer::Type::kI420:
       buffer_type = "kI420";
       break;
-    case yealink::rtvc::VideoFrameBuffer::Type::kI420A:
+    case rtvc::VideoFrameBuffer::Type::kI420A:
       buffer_type = "kI420A";
       break;
-    case yealink::rtvc::VideoFrameBuffer::Type::kI444:
+    case rtvc::VideoFrameBuffer::Type::kI444:
       buffer_type = "kI444";
       break;
-    case yealink::rtvc::VideoFrameBuffer::Type::kNative:
+    case rtvc::VideoFrameBuffer::Type::kNative:
       buffer_type = "kNative";
       break;
   }
   return ConvertToV8(isolate, buffer_type);
 }
 
-bool Converter<yealink::rtvc::VideoFrameBuffer::Type>::FromV8(
+bool Converter<rtvc::VideoFrameBuffer::Type>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::VideoFrameBuffer::Type* out) {
+    rtvc::VideoFrameBuffer::Type* out) {
   std::string buffer_type;
   if (!ConvertFromV8(isolate, val, &buffer_type))
     return false;
 
   if (buffer_type == "kI010")
-    *out = yealink::rtvc::VideoFrameBuffer::Type::kI010;
+    *out = rtvc::VideoFrameBuffer::Type::kI010;
   else if (buffer_type == "kI420")
-    *out = yealink::rtvc::VideoFrameBuffer::Type::kI420;
+    *out = rtvc::VideoFrameBuffer::Type::kI420;
   else if (buffer_type == "kI420A")
-    *out = yealink::rtvc::VideoFrameBuffer::Type::kI420A;
+    *out = rtvc::VideoFrameBuffer::Type::kI420A;
   else if (buffer_type == "kI444")
-    *out = yealink::rtvc::VideoFrameBuffer::Type::kI444;
+    *out = rtvc::VideoFrameBuffer::Type::kI444;
   else if (buffer_type == "kNative")
-    *out = yealink::rtvc::VideoFrameBuffer::Type::kNative;
+    *out = rtvc::VideoFrameBuffer::Type::kNative;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::VideoRotation>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::VideoRotation>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::VideoRotation val) {
+    rtvc::VideoRotation val) {
   std::string rotation;
   switch (val) {
-    case yealink::rtvc::VideoRotation::kVideoRotation_0:
+    case rtvc::VideoRotation::kVideoRotation_0:
       rotation = "kVideoRotation_0";
       break;
-    case yealink::rtvc::VideoRotation::kVideoRotation_180:
+    case rtvc::VideoRotation::kVideoRotation_180:
       rotation = "kVideoRotation_180";
       break;
-    case yealink::rtvc::VideoRotation::kVideoRotation_270:
+    case rtvc::VideoRotation::kVideoRotation_270:
       rotation = "kVideoRotation_270";
       break;
-    case yealink::rtvc::VideoRotation::kVideoRotation_90:
+    case rtvc::VideoRotation::kVideoRotation_90:
       rotation = "kVideoRotation_90";
       break;
     default:
@@ -189,22 +184,21 @@ v8::Local<v8::Value> Converter<yealink::rtvc::VideoRotation>::ToV8(
   return ConvertToV8(isolate, rotation);
 }
 
-bool Converter<yealink::rtvc::VideoRotation>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::VideoRotation* out) {
+bool Converter<rtvc::VideoRotation>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::VideoRotation* out) {
   std::string buffer_type;
   if (!ConvertFromV8(isolate, val, &buffer_type))
     return false;
 
   if (buffer_type == "kVideoRotation_0")
-    *out = yealink::rtvc::VideoRotation::kVideoRotation_0;
+    *out = rtvc::VideoRotation::kVideoRotation_0;
   else if (buffer_type == "kVideoRotation_180")
-    *out = yealink::rtvc::VideoRotation::kVideoRotation_180;
+    *out = rtvc::VideoRotation::kVideoRotation_180;
   else if (buffer_type == "kVideoRotation_270")
-    *out = yealink::rtvc::VideoRotation::kVideoRotation_270;
+    *out = rtvc::VideoRotation::kVideoRotation_270;
   else if (buffer_type == "kVideoRotation_90")
-    *out = yealink::rtvc::VideoRotation::kVideoRotation_90;
+    *out = rtvc::VideoRotation::kVideoRotation_90;
   else
     return false;
 
@@ -212,9 +206,9 @@ bool Converter<yealink::rtvc::VideoRotation>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::AccountInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::AccountInfo& val) {
+    const rtvc::AccountInfo& val) {
   Dictionary enterprise = Dictionary::CreateEmpty(isolate);
   enterprise.Set("area", val.enterprise.area);
   enterprise.Set("country", val.enterprise.country);
@@ -253,18 +247,18 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AccountInfo>::ToV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemProfile>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleItemProfile>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleItemProfile val) {
+    rtvc::ScheduleItemProfile val) {
   std::string profile;
   switch (val) {
-    case yealink::rtvc::ScheduleItemProfile::kDefault:
+    case rtvc::ScheduleItemProfile::kDefault:
       profile = "kDefault";
       break;
-    case yealink::rtvc::ScheduleItemProfile::kEducation:
+    case rtvc::ScheduleItemProfile::kEducation:
       profile = "kEducation";
       break;
-    case yealink::rtvc::ScheduleItemProfile::kSeminar:
+    case rtvc::ScheduleItemProfile::kSeminar:
       profile = "kSeminar";
       break;
     default:
@@ -274,20 +268,20 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemProfile>::ToV8(
   return ConvertToV8(isolate, profile);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleItemProfile>::FromV8(
+bool Converter<rtvc::ScheduleItemProfile>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleItemProfile* out) {
+    rtvc::ScheduleItemProfile* out) {
   std::string profile;
   if (!ConvertFromV8(isolate, val, &profile))
     return false;
 
   if (profile == "kDefault")
-    *out = yealink::rtvc::ScheduleItemProfile::kDefault;
+    *out = rtvc::ScheduleItemProfile::kDefault;
   else if (profile == "kEducation")
-    *out = yealink::rtvc::ScheduleItemProfile::kEducation;
+    *out = rtvc::ScheduleItemProfile::kEducation;
   else if (profile == "kSeminar")
-    *out = yealink::rtvc::ScheduleItemProfile::kSeminar;
+    *out = rtvc::ScheduleItemProfile::kSeminar;
   else
     return false;
 
@@ -295,30 +289,30 @@ bool Converter<yealink::rtvc::ScheduleItemProfile>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrenceType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRecurrenceType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleRecurrenceType val) {
+    rtvc::ScheduleRecurrenceType val) {
   std::string recurrence;
   switch (val) {
-    case yealink::rtvc::ScheduleRecurrenceType::kDaily:
+    case rtvc::ScheduleRecurrenceType::kDaily:
       recurrence = "kDaily";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kMonthly:
+    case rtvc::ScheduleRecurrenceType::kMonthly:
       recurrence = "kMonthly";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kMonthlyNTH:
+    case rtvc::ScheduleRecurrenceType::kMonthlyNTH:
       recurrence = "kMonthlyNTH";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kNone:
+    case rtvc::ScheduleRecurrenceType::kNone:
       recurrence = "kNone";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kWeekly:
+    case rtvc::ScheduleRecurrenceType::kWeekly:
       recurrence = "kWeekly";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kYearly:
+    case rtvc::ScheduleRecurrenceType::kYearly:
       recurrence = "kYearly";
       break;
-    case yealink::rtvc::ScheduleRecurrenceType::kYearlyNTH:
+    case rtvc::ScheduleRecurrenceType::kYearlyNTH:
       recurrence = "kYearlyNTH";
       break;
     default:
@@ -328,47 +322,46 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrenceType>::ToV8(
   return ConvertToV8(isolate, recurrence);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleRecurrenceType>::FromV8(
+bool Converter<rtvc::ScheduleRecurrenceType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRecurrenceType* out) {
+    rtvc::ScheduleRecurrenceType* out) {
   std::string recurrence;
   if (!ConvertFromV8(isolate, val, &recurrence))
     return false;
 
   if (recurrence == "kNone")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kNone;
+    *out = rtvc::ScheduleRecurrenceType::kNone;
   else if (recurrence == "kDaily")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kDaily;
+    *out = rtvc::ScheduleRecurrenceType::kDaily;
   else if (recurrence == "kWeekly")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kWeekly;
+    *out = rtvc::ScheduleRecurrenceType::kWeekly;
   else if (recurrence == "kMonthly")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kMonthly;
+    *out = rtvc::ScheduleRecurrenceType::kMonthly;
   else if (recurrence == "kMonthlyNTH")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kMonthlyNTH;
+    *out = rtvc::ScheduleRecurrenceType::kMonthlyNTH;
   else if (recurrence == "kYearly")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kYearly;
+    *out = rtvc::ScheduleRecurrenceType::kYearly;
   else if (recurrence == "kYearlyNTH")
-    *out = yealink::rtvc::ScheduleRecurrenceType::kYearlyNTH;
+    *out = rtvc::ScheduleRecurrenceType::kYearlyNTH;
   else
     return false;
 
   return true;
 }
 // static
-v8::Local<v8::Value>
-Converter<yealink::rtvc::ScheduleRecurrenceDailyType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRecurrenceDailyType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleRecurrenceDailyType val) {
+    rtvc::ScheduleRecurrenceDailyType val) {
   std::string recurrence_daily;
   switch (val) {
-    case yealink::rtvc::ScheduleRecurrenceDailyType::kEach:
+    case rtvc::ScheduleRecurrenceDailyType::kEach:
       recurrence_daily = "kEach";
       break;
-    case yealink::rtvc::ScheduleRecurrenceDailyType::kNone:
+    case rtvc::ScheduleRecurrenceDailyType::kNone:
       recurrence_daily = "kNone";
       break;
-    case yealink::rtvc::ScheduleRecurrenceDailyType::kWeekday:
+    case rtvc::ScheduleRecurrenceDailyType::kWeekday:
       recurrence_daily = "kWeekday";
       break;
     default:
@@ -378,29 +371,29 @@ Converter<yealink::rtvc::ScheduleRecurrenceDailyType>::ToV8(
   return ConvertToV8(isolate, recurrence_daily);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleRecurrenceDailyType>::FromV8(
+bool Converter<rtvc::ScheduleRecurrenceDailyType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRecurrenceDailyType* out) {
+    rtvc::ScheduleRecurrenceDailyType* out) {
   std::string recurrence_daily;
   if (!ConvertFromV8(isolate, val, &recurrence_daily))
     return false;
 
   if (recurrence_daily == "kEach")
-    *out = yealink::rtvc::ScheduleRecurrenceDailyType::kEach;
+    *out = rtvc::ScheduleRecurrenceDailyType::kEach;
   else if (recurrence_daily == "kNone")
-    *out = yealink::rtvc::ScheduleRecurrenceDailyType::kNone;
+    *out = rtvc::ScheduleRecurrenceDailyType::kNone;
   else if (recurrence_daily == "kWeekday")
-    *out = yealink::rtvc::ScheduleRecurrenceDailyType::kWeekday;
+    *out = rtvc::ScheduleRecurrenceDailyType::kWeekday;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrence>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRecurrence>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleRecurrence& val) {
+    const rtvc::ScheduleRecurrence& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("type", val.type);
   dict.Set("dailyType", val.dailyType);
@@ -411,10 +404,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRecurrence>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRecurrence>::FromV8(
+bool Converter<rtvc::ScheduleRecurrence>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRecurrence* out) {
+    rtvc::ScheduleRecurrence* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -427,9 +420,9 @@ bool Converter<yealink::rtvc::ScheduleRecurrence>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleDaylightStrategy>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleDaylightStrategy>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleDaylightStrategy& val) {
+    const rtvc::ScheduleDaylightStrategy& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("isFixedDateRule", val.isFixedDateRule);
   dict.Set("day", val.day);
@@ -440,10 +433,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleDaylightStrategy>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleDaylightStrategy>::FromV8(
+bool Converter<rtvc::ScheduleDaylightStrategy>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleDaylightStrategy* out) {
+    rtvc::ScheduleDaylightStrategy* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -456,9 +449,9 @@ bool Converter<yealink::rtvc::ScheduleDaylightStrategy>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZoneRule>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleTimeZoneRule>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleTimeZoneRule& val) {
+    const rtvc::ScheduleTimeZoneRule& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("startDate", val.startDate);
   dict.Set("endDate", val.endDate);
@@ -468,10 +461,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZoneRule>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleTimeZoneRule>::FromV8(
+bool Converter<rtvc::ScheduleTimeZoneRule>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleTimeZoneRule* out) {
+    rtvc::ScheduleTimeZoneRule* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -483,9 +476,9 @@ bool Converter<yealink::rtvc::ScheduleTimeZoneRule>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZone>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleTimeZone>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleTimeZone& val) {
+    const rtvc::ScheduleTimeZone& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("id", val.id);
   dict.Set("cnName", val.cnName);
@@ -496,10 +489,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleTimeZone>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleTimeZone>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleTimeZone* out) {
+bool Converter<rtvc::ScheduleTimeZone>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::ScheduleTimeZone* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -513,21 +505,21 @@ bool Converter<yealink::rtvc::ScheduleTimeZone>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMemberRole>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleMemberRole>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleMemberRole val) {
+    rtvc::ScheduleMemberRole val) {
   std::string member_role;
   switch (val) {
-    case yealink::rtvc::ScheduleMemberRole::kOrganizer:
+    case rtvc::ScheduleMemberRole::kOrganizer:
       member_role = "kOrganizer";
       break;
-    case yealink::rtvc::ScheduleMemberRole::kPresenter:
+    case rtvc::ScheduleMemberRole::kPresenter:
       member_role = "kPresenter";
       break;
-    case yealink::rtvc::ScheduleMemberRole::kPaticipant:
+    case rtvc::ScheduleMemberRole::kPaticipant:
       member_role = "kPaticipant";
       break;
-    case yealink::rtvc::ScheduleMemberRole::kCastViewer:
+    case rtvc::ScheduleMemberRole::kCastViewer:
       member_role = "kCastViewer";
       break;
     default:
@@ -537,22 +529,22 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMemberRole>::ToV8(
   return ConvertToV8(isolate, member_role);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleMemberRole>::FromV8(
+bool Converter<rtvc::ScheduleMemberRole>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleMemberRole* out) {
+    rtvc::ScheduleMemberRole* out) {
   std::string member_role;
   if (!ConvertFromV8(isolate, val, &member_role))
     return false;
 
   if (member_role == "kOrganizer")
-    *out = yealink::rtvc::ScheduleMemberRole::kOrganizer;
+    *out = rtvc::ScheduleMemberRole::kOrganizer;
   else if (member_role == "kPresenter")
-    *out = yealink::rtvc::ScheduleMemberRole::kPresenter;
+    *out = rtvc::ScheduleMemberRole::kPresenter;
   else if (member_role == "kPaticipant")
-    *out = yealink::rtvc::ScheduleMemberRole::kPaticipant;
+    *out = rtvc::ScheduleMemberRole::kPaticipant;
   else if (member_role == "kCastViewer")
-    *out = yealink::rtvc::ScheduleMemberRole::kCastViewer;
+    *out = rtvc::ScheduleMemberRole::kCastViewer;
   else
     return false;
 
@@ -560,15 +552,15 @@ bool Converter<yealink::rtvc::ScheduleMemberRole>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMemberType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleMemberType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleMemberType val) {
+    rtvc::ScheduleMemberType val) {
   std::string member_role;
   switch (val) {
-    case yealink::rtvc::ScheduleMemberType::kInternal:
+    case rtvc::ScheduleMemberType::kInternal:
       member_role = "kInternal";
       break;
-    case yealink::rtvc::ScheduleMemberType::kExternal:
+    case rtvc::ScheduleMemberType::kExternal:
       member_role = "kExternal";
       break;
     default:
@@ -578,27 +570,27 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMemberType>::ToV8(
   return ConvertToV8(isolate, member_role);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleMemberType>::FromV8(
+bool Converter<rtvc::ScheduleMemberType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleMemberType* out) {
+    rtvc::ScheduleMemberType* out) {
   std::string member_role;
   if (!ConvertFromV8(isolate, val, &member_role))
     return false;
 
   if (member_role == "kInternal")
-    *out = yealink::rtvc::ScheduleMemberType::kInternal;
+    *out = rtvc::ScheduleMemberType::kInternal;
   else if (member_role == "kExternal")
-    *out = yealink::rtvc::ScheduleMemberType::kExternal;
+    *out = rtvc::ScheduleMemberType::kExternal;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMember>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleMember>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleMember& val) {
+    const rtvc::ScheduleMember& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("id", val.id);
   dict.Set("name", val.name);
@@ -608,10 +600,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleMember>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleMember>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleMember* out) {
+bool Converter<rtvc::ScheduleMember>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::ScheduleMember* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -623,19 +614,18 @@ bool Converter<yealink::rtvc::ScheduleMember>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRoom>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRoom>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleRoom& val) {
+    const rtvc::ScheduleRoom& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("id", val.id);
   dict.Set("name", val.name);
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRoom>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRoom* out) {
+bool Converter<rtvc::ScheduleRoom>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::ScheduleRoom* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -645,15 +635,15 @@ bool Converter<yealink::rtvc::ScheduleRoom>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRTMPLimitType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRTMPLimitType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ScheduleRTMPLimitType val) {
+    rtvc::ScheduleRTMPLimitType val) {
   std::string member_role;
   switch (val) {
-    case yealink::rtvc::ScheduleRTMPLimitType::kAll:
+    case rtvc::ScheduleRTMPLimitType::kAll:
       member_role = "kAll";
       break;
-    case yealink::rtvc::ScheduleRTMPLimitType::kPassword:
+    case rtvc::ScheduleRTMPLimitType::kPassword:
       member_role = "kPassword";
       break;
     default:
@@ -663,27 +653,27 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRTMPLimitType>::ToV8(
   return ConvertToV8(isolate, member_role);
 }
 // static
-bool Converter<yealink::rtvc::ScheduleRTMPLimitType>::FromV8(
+bool Converter<rtvc::ScheduleRTMPLimitType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRTMPLimitType* out) {
+    rtvc::ScheduleRTMPLimitType* out) {
   std::string member_role;
   if (!ConvertFromV8(isolate, val, &member_role))
     return false;
 
   if (member_role == "kAll")
-    *out = yealink::rtvc::ScheduleRTMPLimitType::kAll;
+    *out = rtvc::ScheduleRTMPLimitType::kAll;
   else if (member_role == "kPassword")
-    *out = yealink::rtvc::ScheduleRTMPLimitType::kPassword;
+    *out = rtvc::ScheduleRTMPLimitType::kPassword;
   else
     return false;
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRTMP>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleRTMP>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleRTMP& val) {
+    const rtvc::ScheduleRTMP& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("autoRecord", val.autoRecord);
   dict.Set("url", val.url);
@@ -693,10 +683,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleRTMP>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleRTMP>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleRTMP* out) {
+bool Converter<rtvc::ScheduleRTMP>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::ScheduleRTMP* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -708,9 +697,9 @@ bool Converter<yealink::rtvc::ScheduleRTMP>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemDetail>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ScheduleItemDetail>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ScheduleItemDetail& val) {
+    const rtvc::ScheduleItemDetail& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
   dict.Set("shareLink", val.share_link);
   dict.Set("remark", val.remark);
@@ -721,10 +710,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ScheduleItemDetail>::ToV8(
   return dict.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(
+bool Converter<rtvc::ScheduleItemDetail>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ScheduleItemDetail* out) {
+    rtvc::ScheduleItemDetail* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -738,18 +727,18 @@ bool Converter<yealink::rtvc::ScheduleItemDetail>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ContactLoadMode>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ContactLoadMode>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ContactLoadMode val) {
+    rtvc::ContactLoadMode val) {
   std::string load_mode;
   switch (val) {
-    case yealink::rtvc::ContactLoadMode::kAuto:
+    case rtvc::ContactLoadMode::kAuto:
       load_mode = "kAuto";
       break;
-    case yealink::rtvc::ContactLoadMode::kOverall:
+    case rtvc::ContactLoadMode::kOverall:
       load_mode = "kOverall";
       break;
-    case yealink::rtvc::ContactLoadMode::kPartial:
+    case rtvc::ContactLoadMode::kPartial:
       load_mode = "kPartial";
       break;
     default:
@@ -760,20 +749,19 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ContactLoadMode>::ToV8(
 }
 
 // static
-bool Converter<yealink::rtvc::ContactLoadMode>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ContactLoadMode* out) {
+bool Converter<rtvc::ContactLoadMode>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::ContactLoadMode* out) {
   std::string load_mode;
   if (!ConvertFromV8(isolate, val, &load_mode))
     return false;
 
   if (load_mode == "kAuto")
-    *out = yealink::rtvc::ContactLoadMode::kAuto;
+    *out = rtvc::ContactLoadMode::kAuto;
   else if (load_mode == "kOverall")
-    *out = yealink::rtvc::ContactLoadMode::kOverall;
+    *out = rtvc::ContactLoadMode::kOverall;
   else if (load_mode == "kPartial")
-    *out = yealink::rtvc::ContactLoadMode::kPartial;
+    *out = rtvc::ContactLoadMode::kPartial;
   else
     return false;
 
@@ -781,30 +769,30 @@ bool Converter<yealink::rtvc::ContactLoadMode>::FromV8(
 }
 
 // static
-v8::Local<v8::Value> Converter<yealink::rtvc::ContactNodeType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ContactNodeType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ContactNodeType val) {
+    rtvc::ContactNodeType val) {
   std::string node_type;
   switch (val) {
-    case yealink::rtvc::ContactNodeType::kDepartment:
+    case rtvc::ContactNodeType::kDepartment:
       node_type = "kDepartment";
       break;
-    case yealink::rtvc::ContactNodeType::kStaff:
+    case rtvc::ContactNodeType::kStaff:
       node_type = "kStaff";
       break;
-    case yealink::rtvc::ContactNodeType::kDevice:
+    case rtvc::ContactNodeType::kDevice:
       node_type = "kDevice";
       break;
-    case yealink::rtvc::ContactNodeType::kVMR:
+    case rtvc::ContactNodeType::kVMR:
       node_type = "kVMR";
       break;
-    case yealink::rtvc::ContactNodeType::kThirdParty:
+    case rtvc::ContactNodeType::kThirdParty:
       node_type = "kThirdParty";
       break;
-    case yealink::rtvc::ContactNodeType::kRoom:
+    case rtvc::ContactNodeType::kRoom:
       node_type = "kRoom";
       break;
-    case yealink::rtvc::ContactNodeType::kEnterprise:
+    case rtvc::ContactNodeType::kEnterprise:
       node_type = "kEnterprise";
       break;
     default:
@@ -815,37 +803,36 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ContactNodeType>::ToV8(
 }
 
 // static
-bool Converter<yealink::rtvc::ContactNodeType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ContactNodeType* out) {
+bool Converter<rtvc::ContactNodeType>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::ContactNodeType* out) {
   std::string node_type;
   if (!ConvertFromV8(isolate, val, &node_type))
     return false;
 
   if (node_type == "kDepartment")
-    *out = yealink::rtvc::ContactNodeType::kDepartment;
+    *out = rtvc::ContactNodeType::kDepartment;
   else if (node_type == "kStaff")
-    *out = yealink::rtvc::ContactNodeType::kStaff;
+    *out = rtvc::ContactNodeType::kStaff;
   else if (node_type == "kDevice")
-    *out = yealink::rtvc::ContactNodeType::kDevice;
+    *out = rtvc::ContactNodeType::kDevice;
   else if (node_type == "kVMR")
-    *out = yealink::rtvc::ContactNodeType::kVMR;
+    *out = rtvc::ContactNodeType::kVMR;
   else if (node_type == "kThirdParty")
-    *out = yealink::rtvc::ContactNodeType::kThirdParty;
+    *out = rtvc::ContactNodeType::kThirdParty;
   else if (node_type == "kRoom")
-    *out = yealink::rtvc::ContactNodeType::kRoom;
+    *out = rtvc::ContactNodeType::kRoom;
   else if (node_type == "kEnterprise")
-    *out = yealink::rtvc::ContactNodeType::kEnterprise;
+    *out = rtvc::ContactNodeType::kEnterprise;
   else
     return false;
 
   return true;
 }
 
-// v8::Local<v8::Value> Converter<yealink::rtvc::ContactNode>::ToV8(
+// v8::Local<v8::Value> Converter<rtvc::ContactNode>::ToV8(
 //     v8::Isolate* isolate,
-//     const yealink::rtvc::ContactNode& val) {
+//     const rtvc::ContactNode& val) {
 //   Dictionary dict = Dictionary::CreateEmpty(isolate);
 //   dict.Set("uid", val.uid);
 //   dict.Set("type", val.type);
@@ -863,10 +850,10 @@ bool Converter<yealink::rtvc::ContactNodeType>::FromV8(
 //   return dict.GetHandle();
 // }
 
-// bool Converter<yealink::rtvc::ContactNode>::FromV8(
+// bool Converter<rtvc::ContactNode>::FromV8(
 //     v8::Isolate* isolate,
 //     v8::Local<v8::Value> val,
-//     yealink::rtvc::ContactNode* out) {
+//     rtvc::ContactNode* out) {
 //   Dictionary dict;
 //   if (!ConvertFromV8(isolate, val, &dict))
 //     return false;
@@ -886,9 +873,9 @@ bool Converter<yealink::rtvc::ContactNodeType>::FromV8(
 //   return true;
 // }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::TerminalInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::TerminalInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::TerminalInfo& val) {
+    const rtvc::TerminalInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("name", val.name);
   handler.Set("type", val.type);
@@ -926,10 +913,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::TerminalInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::TerminalInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::TerminalInfo* out) {
+bool Converter<rtvc::TerminalInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::TerminalInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -969,9 +955,9 @@ bool Converter<yealink::rtvc::TerminalInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::AlarmInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::AlarmInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::AlarmInfo& val) {
+    const rtvc::AlarmInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("filePath", val.file_path);
   handler.Set("code", val.code);
@@ -983,10 +969,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AlarmInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::AlarmInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::AlarmInfo* out) {
+bool Converter<rtvc::AlarmInfo>::FromV8(v8::Isolate* isolate,
+                                        v8::Local<v8::Value> val,
+                                        rtvc::AlarmInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1000,9 +985,9 @@ bool Converter<yealink::rtvc::AlarmInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::FeedbackInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::FeedbackInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::FeedbackInfo& val) {
+    const rtvc::FeedbackInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("title", val.title);
   handler.Set("content", val.content);
@@ -1015,10 +1000,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::FeedbackInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::FeedbackInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::FeedbackInfo* out) {
+bool Converter<rtvc::FeedbackInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::FeedbackInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1033,9 +1017,9 @@ bool Converter<yealink::rtvc::FeedbackInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::PackageInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::PackageInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::PackageInfo& val) {
+    const rtvc::PackageInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("version", val.version);
   handler.Set("date", val.date);
@@ -1049,10 +1033,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::PackageInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::PackageInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::PackageInfo* out) {
+bool Converter<rtvc::PackageInfo>::FromV8(v8::Isolate* isolate,
+                                          v8::Local<v8::Value> val,
+                                          rtvc::PackageInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1068,9 +1051,9 @@ bool Converter<yealink::rtvc::PackageInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ConfigurationInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ConfigurationInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ConfigurationInfo& val) {
+    const rtvc::ConfigurationInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("id", val.id);
   handler.Set("name", val.name);
@@ -1080,10 +1063,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ConfigurationInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ConfigurationInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ConfigurationInfo* out) {
+bool Converter<rtvc::ConfigurationInfo>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                rtvc::ConfigurationInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1095,9 +1077,9 @@ bool Converter<yealink::rtvc::ConfigurationInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DownloadInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DownloadInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DownloadInfo& val) {
+    const rtvc::DownloadInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("url", val.url);
   handler.Set("path", val.path);
@@ -1106,10 +1088,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DownloadInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DownloadInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DownloadInfo* out) {
+bool Converter<rtvc::DownloadInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::DownloadInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1120,9 +1101,9 @@ bool Converter<yealink::rtvc::DownloadInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UploadLogInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UploadLogInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UploadLogInfo& val) {
+    const rtvc::UploadLogInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("sessionId", val.session_id);
   handler.Set("path", val.file_path);
@@ -1130,10 +1111,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UploadLogInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UploadLogInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UploadLogInfo* out) {
+bool Converter<rtvc::UploadLogInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::UploadLogInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1143,9 +1123,9 @@ bool Converter<yealink::rtvc::UploadLogInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::NetCaptureInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::NetCaptureInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::NetCaptureInfo& val) {
+    const rtvc::NetCaptureInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("sessionId", val.session_id);
   handler.Set("deviceId", val.device_id);
@@ -1154,10 +1134,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::NetCaptureInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::NetCaptureInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::NetCaptureInfo* out) {
+bool Converter<rtvc::NetCaptureInfo>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::NetCaptureInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1168,9 +1147,9 @@ bool Converter<yealink::rtvc::NetCaptureInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::EventInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::EventInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::EventInfo& val) {
+    const rtvc::EventInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("code", val.code);
   handler.Set("name", val.name);
@@ -1180,10 +1159,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::EventInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::EventInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::EventInfo* out) {
+bool Converter<rtvc::EventInfo>::FromV8(v8::Isolate* isolate,
+                                        v8::Local<v8::Value> val,
+                                        rtvc::EventInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1196,95 +1174,92 @@ bool Converter<yealink::rtvc::EventInfo>::FromV8(
 }
 
 // description
-v8::Local<v8::Value> Converter<yealink::rtvc::DescProfile>::ToV8(
-    v8::Isolate* isolate,
-    yealink::rtvc::DescProfile val) {
+v8::Local<v8::Value> Converter<rtvc::DescProfile>::ToV8(v8::Isolate* isolate,
+                                                        rtvc::DescProfile val) {
   std::string profile;
   switch (val) {
-    case yealink::rtvc::DescProfile::kConference:
+    case rtvc::DescProfile::kConference:
       profile = "conference";
       break;
-    case yealink::rtvc::DescProfile::kTeaching:
+    case rtvc::DescProfile::kTeaching:
       profile = "education";
       break;
-    case yealink::rtvc::DescProfile::kSeminar:
+    case rtvc::DescProfile::kSeminar:
       profile = "seminar";
       break;
-    case yealink::rtvc::DescProfile::kInvalid:
+    case rtvc::DescProfile::kInvalid:
       profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
 }
 
-bool Converter<yealink::rtvc::DescProfile>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescProfile* out) {
+bool Converter<rtvc::DescProfile>::FromV8(v8::Isolate* isolate,
+                                          v8::Local<v8::Value> val,
+                                          rtvc::DescProfile* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "conference")
-    *out = yealink::rtvc::DescProfile::kConference;
+    *out = rtvc::DescProfile::kConference;
   else if (in == "education")
-    *out = yealink::rtvc::DescProfile::kTeaching;
+    *out = rtvc::DescProfile::kTeaching;
   else if (in == "seminar")
-    *out = yealink::rtvc::DescProfile::kSeminar;
+    *out = rtvc::DescProfile::kSeminar;
   else {
-    *out = yealink::rtvc::DescProfile::kInvalid;
+    *out = rtvc::DescProfile::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescPosition>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescPosition>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescPosition val) {
+    rtvc::DescPosition val) {
   std::string position;
   switch (val) {
-    case yealink::rtvc::DescPosition::kTop:
+    case rtvc::DescPosition::kTop:
       position = "top";
       break;
-    case yealink::rtvc::DescPosition::kMedium:
+    case rtvc::DescPosition::kMedium:
       position = "medium";
       break;
-    case yealink::rtvc::DescPosition::kBottom:
+    case rtvc::DescPosition::kBottom:
       position = "bottom";
       break;
-    case yealink::rtvc::DescPosition::kInvalid:
+    case rtvc::DescPosition::kInvalid:
       position = "";
       break;
   }
   return ConvertToV8(isolate, position);
 }
 
-bool Converter<yealink::rtvc::DescPosition>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescPosition* out) {
+bool Converter<rtvc::DescPosition>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::DescPosition* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "top")
-    *out = yealink::rtvc::DescPosition::kTop;
+    *out = rtvc::DescPosition::kTop;
   else if (in == "medium")
-    *out = yealink::rtvc::DescPosition::kMedium;
+    *out = rtvc::DescPosition::kMedium;
   else if (in == "bottom")
-    *out = yealink::rtvc::DescPosition::kBottom;
+    *out = rtvc::DescPosition::kBottom;
   else {
-    *out = yealink::rtvc::DescPosition::kInvalid;
+    *out = rtvc::DescPosition::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescBanner>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescBanner>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescBanner& val) {
+    const rtvc::DescBanner& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("enabled", val.enabled);
   handler.Set("displayText", val.display_text);
@@ -1293,10 +1268,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescBanner>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescBanner>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescBanner* out) {
+bool Converter<rtvc::DescBanner>::FromV8(v8::Isolate* isolate,
+                                         v8::Local<v8::Value> val,
+                                         rtvc::DescBanner* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1308,95 +1282,94 @@ bool Converter<yealink::rtvc::DescBanner>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescRtmpSessionType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescRtmpSessionType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescRtmpSessionType val) {
+    rtvc::DescRtmpSessionType val) {
   std::string profile;
   switch (val) {
-    case yealink::rtvc::DescRtmpSessionType::kAV:
+    case rtvc::DescRtmpSessionType::kAV:
       profile = "AV";
       break;
-    case yealink::rtvc::DescRtmpSessionType::kAD:
+    case rtvc::DescRtmpSessionType::kAD:
       profile = "AD";
       break;
-    case yealink::rtvc::DescRtmpSessionType::kAVD:
+    case rtvc::DescRtmpSessionType::kAVD:
       profile = "AVD";
       break;
-    case yealink::rtvc::DescRtmpSessionType::kInvalid:
+    case rtvc::DescRtmpSessionType::kInvalid:
       profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
 }
 
-bool Converter<yealink::rtvc::DescRtmpSessionType>::FromV8(
+bool Converter<rtvc::DescRtmpSessionType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::DescRtmpSessionType* out) {
+    rtvc::DescRtmpSessionType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "AV")
-    *out = yealink::rtvc::DescRtmpSessionType::kAV;
+    *out = rtvc::DescRtmpSessionType::kAV;
   else if (in == "AD")
-    *out = yealink::rtvc::DescRtmpSessionType::kAD;
+    *out = rtvc::DescRtmpSessionType::kAD;
   else if (in == "AVD")
-    *out = yealink::rtvc::DescRtmpSessionType::kAVD;
+    *out = rtvc::DescRtmpSessionType::kAVD;
   else {
-    *out = yealink::rtvc::DescRtmpSessionType::kInvalid;
+    *out = rtvc::DescRtmpSessionType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescRtmpFsType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescRtmpFsType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescRtmpFsType val) {
+    rtvc::DescRtmpFsType val) {
   std::string profile;
   switch (val) {
-    case yealink::rtvc::DescRtmpFsType::k360P:
+    case rtvc::DescRtmpFsType::k360P:
       profile = "360P";
       break;
-    case yealink::rtvc::DescRtmpFsType::k720P:
+    case rtvc::DescRtmpFsType::k720P:
       profile = "720P";
       break;
-    case yealink::rtvc::DescRtmpFsType::k1080P:
+    case rtvc::DescRtmpFsType::k1080P:
       profile = "1080P";
       break;
-    case yealink::rtvc::DescRtmpFsType::kInvalid:
+    case rtvc::DescRtmpFsType::kInvalid:
       profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
 }
 
-bool Converter<yealink::rtvc::DescRtmpFsType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescRtmpFsType* out) {
+bool Converter<rtvc::DescRtmpFsType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::DescRtmpFsType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "360P")
-    *out = yealink::rtvc::DescRtmpFsType::k360P;
+    *out = rtvc::DescRtmpFsType::k360P;
   else if (in == "720P")
-    *out = yealink::rtvc::DescRtmpFsType::k720P;
+    *out = rtvc::DescRtmpFsType::k720P;
   else if (in == "1080P")
-    *out = yealink::rtvc::DescRtmpFsType::k1080P;
+    *out = rtvc::DescRtmpFsType::k1080P;
   else {
-    *out = yealink::rtvc::DescRtmpFsType::kInvalid;
+    *out = rtvc::DescRtmpFsType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescDefaultRtmp>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescDefaultRtmp>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescDefaultRtmp& val) {
+    const rtvc::DescDefaultRtmp& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("enabled", val.enabled);
   handler.Set("displayText", val.display_text);
@@ -1407,10 +1380,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescDefaultRtmp>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescDefaultRtmp>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescDefaultRtmp* out) {
+bool Converter<rtvc::DescDefaultRtmp>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::DescDefaultRtmp* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1424,62 +1396,61 @@ bool Converter<yealink::rtvc::DescDefaultRtmp>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescUriPurpose>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescUriPurpose>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescUriPurpose val) {
+    rtvc::DescUriPurpose val) {
   std::string profile;
   switch (val) {
-    case yealink::rtvc::DescUriPurpose::kFocus:
+    case rtvc::DescUriPurpose::kFocus:
       profile = "focus";
       break;
-    case yealink::rtvc::DescUriPurpose::kAudioVideo:
+    case rtvc::DescUriPurpose::kAudioVideo:
       profile = "audio-video";
       break;
-    case yealink::rtvc::DescUriPurpose::kChat:
+    case rtvc::DescUriPurpose::kChat:
       profile = "chat";
       break;
-    case yealink::rtvc::DescUriPurpose::kCoopShare:
+    case rtvc::DescUriPurpose::kCoopShare:
       profile = "coopshare";
       break;
-    case yealink::rtvc::DescUriPurpose::kApplicationSharing:
+    case rtvc::DescUriPurpose::kApplicationSharing:
       profile = "applicationsharing";
       break;
-    case yealink::rtvc::DescUriPurpose::kInvalid:
+    case rtvc::DescUriPurpose::kInvalid:
       profile = "";
       break;
   }
   return ConvertToV8(isolate, profile);
 }
 
-bool Converter<yealink::rtvc::DescUriPurpose>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescUriPurpose* out) {
+bool Converter<rtvc::DescUriPurpose>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::DescUriPurpose* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "focus")
-    *out = yealink::rtvc::DescUriPurpose::kFocus;
+    *out = rtvc::DescUriPurpose::kFocus;
   else if (in == "audio-video")
-    *out = yealink::rtvc::DescUriPurpose::kAudioVideo;
+    *out = rtvc::DescUriPurpose::kAudioVideo;
   else if (in == "chat")
-    *out = yealink::rtvc::DescUriPurpose::kChat;
+    *out = rtvc::DescUriPurpose::kChat;
   else if (in == "coopshare")
-    *out = yealink::rtvc::DescUriPurpose::kCoopShare;
+    *out = rtvc::DescUriPurpose::kCoopShare;
   else if (in == "applicationsharing")
-    *out = yealink::rtvc::DescUriPurpose::kApplicationSharing;
+    *out = rtvc::DescUriPurpose::kApplicationSharing;
   else {
-    *out = yealink::rtvc::DescUriPurpose::kInvalid;
+    *out = rtvc::DescUriPurpose::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescConfUriInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescConfUriInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescConfUriInfo& val) {
+    const rtvc::DescConfUriInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("uri", val.uri);
   handler.Set("displayText", val.display_text);
@@ -1488,10 +1459,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescConfUriInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescConfUriInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescConfUriInfo* out) {
+bool Converter<rtvc::DescConfUriInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::DescConfUriInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1503,9 +1473,9 @@ bool Converter<yealink::rtvc::DescConfUriInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescOrganizerInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescOrganizerInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescOrganizerInfo& val) {
+    const rtvc::DescOrganizerInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("displayText", val.display_text);
   handler.Set("uid", val.uid);
@@ -1517,10 +1487,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescOrganizerInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescOrganizerInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescOrganizerInfo* out) {
+bool Converter<rtvc::DescOrganizerInfo>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                rtvc::DescOrganizerInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1535,310 +1504,307 @@ bool Converter<yealink::rtvc::DescOrganizerInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescConferenceType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescConferenceType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescConferenceType val) {
+    rtvc::DescConferenceType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::DescConferenceType::kVGCM:
+    case rtvc::DescConferenceType::kVGCM:
       res = "VGCM";
       break;
-    case yealink::rtvc::DescConferenceType::kVGCP:
+    case rtvc::DescConferenceType::kVGCP:
       res = "VGCP";
       break;
-    case yealink::rtvc::DescConferenceType::kVMN:
+    case rtvc::DescConferenceType::kVMN:
       res = "VMN";
       break;
-    case yealink::rtvc::DescConferenceType::kVSC:
+    case rtvc::DescConferenceType::kVSC:
       res = "VSC";
       break;
-    case yealink::rtvc::DescConferenceType::kVSCA:
+    case rtvc::DescConferenceType::kVSCA:
       res = "VSCA";
       break;
-    case yealink::rtvc::DescConferenceType::kInvalid:
+    case rtvc::DescConferenceType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescConferenceType>::FromV8(
+bool Converter<rtvc::DescConferenceType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::DescConferenceType* out) {
+    rtvc::DescConferenceType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "VGCM")
-    *out = yealink::rtvc::DescConferenceType::kVGCM;
+    *out = rtvc::DescConferenceType::kVGCM;
   else if (in == "VGCP")
-    *out = yealink::rtvc::DescConferenceType::kVGCP;
+    *out = rtvc::DescConferenceType::kVGCP;
   else if (in == "VMN")
-    *out = yealink::rtvc::DescConferenceType::kVMN;
+    *out = rtvc::DescConferenceType::kVMN;
   else if (in == "VSC")
-    *out = yealink::rtvc::DescConferenceType::kVSC;
+    *out = rtvc::DescConferenceType::kVSC;
   else if (in == "VSCA")
-    *out = yealink::rtvc::DescConferenceType::kVSCA;
+    *out = rtvc::DescConferenceType::kVSCA;
   else {
-    *out = yealink::rtvc::DescConferenceType::kInvalid;
+    *out = rtvc::DescConferenceType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescNumberType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescNumberType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescNumberType val) {
+    rtvc::DescNumberType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::DescNumberType::kMeetNow:
+    case rtvc::DescNumberType::kMeetNow:
       res = "meetnow";
       break;
-    case yealink::rtvc::DescNumberType::kRecurrence:
+    case rtvc::DescNumberType::kRecurrence:
       res = "recurrence";
       break;
-    case yealink::rtvc::DescNumberType::kVMR:
+    case rtvc::DescNumberType::kVMR:
       res = "vmr";
       break;
-    case yealink::rtvc::DescNumberType::kInvalid:
+    case rtvc::DescNumberType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescNumberType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescNumberType* out) {
+bool Converter<rtvc::DescNumberType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::DescNumberType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "meetnow")
-    *out = yealink::rtvc::DescNumberType::kMeetNow;
+    *out = rtvc::DescNumberType::kMeetNow;
   else if (in == "recurrence")
-    *out = yealink::rtvc::DescNumberType::kRecurrence;
+    *out = rtvc::DescNumberType::kRecurrence;
   else if (in == "vmr")
-    *out = yealink::rtvc::DescNumberType::kVMR;
+    *out = rtvc::DescNumberType::kVMR;
   else {
-    *out = yealink::rtvc::DescNumberType::kInvalid;
+    *out = rtvc::DescNumberType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescAdmissionPolicy>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescAdmissionPolicy>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescAdmissionPolicy val) {
+    rtvc::DescAdmissionPolicy val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::DescAdmissionPolicy::kClosedAuthenticated:
+    case rtvc::DescAdmissionPolicy::kClosedAuthenticated:
       res = "closedAuthenticated";
       break;
-    case yealink::rtvc::DescAdmissionPolicy::kAnonumous:
+    case rtvc::DescAdmissionPolicy::kAnonumous:
       res = "anonymous";
       break;
-    case yealink::rtvc::DescAdmissionPolicy::KOpenAuthenticated:
+    case rtvc::DescAdmissionPolicy::KOpenAuthenticated:
       res = "openAuthenticated";
       break;
-    case yealink::rtvc::DescAdmissionPolicy::kInvalid:
+    case rtvc::DescAdmissionPolicy::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescAdmissionPolicy>::FromV8(
+bool Converter<rtvc::DescAdmissionPolicy>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::DescAdmissionPolicy* out) {
+    rtvc::DescAdmissionPolicy* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "closedAuthenticated")
-    *out = yealink::rtvc::DescAdmissionPolicy::kClosedAuthenticated;
+    *out = rtvc::DescAdmissionPolicy::kClosedAuthenticated;
   else if (in == "anonymous")
-    *out = yealink::rtvc::DescAdmissionPolicy::kAnonumous;
+    *out = rtvc::DescAdmissionPolicy::kAnonumous;
   else if (in == "openAuthenticated")
-    *out = yealink::rtvc::DescAdmissionPolicy::KOpenAuthenticated;
+    *out = rtvc::DescAdmissionPolicy::KOpenAuthenticated;
   else {
-    *out = yealink::rtvc::DescAdmissionPolicy::kInvalid;
+    *out = rtvc::DescAdmissionPolicy::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescAttendeeByPass>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescAttendeeByPass>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescAttendeeByPass val) {
+    rtvc::DescAttendeeByPass val) {
   bool res;
   switch (val) {
-    case yealink::rtvc::DescAttendeeByPass::kByPassTrue:
+    case rtvc::DescAttendeeByPass::kByPassTrue:
       res = true;
       break;
-    case yealink::rtvc::DescAttendeeByPass::KByPassFalse:
+    case rtvc::DescAttendeeByPass::KByPassFalse:
       res = false;
       break;
-    case yealink::rtvc::DescAttendeeByPass::kInvalid:
+    case rtvc::DescAttendeeByPass::kInvalid:
       res = false;
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescAttendeeByPass>::FromV8(
+bool Converter<rtvc::DescAttendeeByPass>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::DescAttendeeByPass* out) {
+    rtvc::DescAttendeeByPass* out) {
   bool in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == true)
-    *out = yealink::rtvc::DescAttendeeByPass::kByPassTrue;
+    *out = rtvc::DescAttendeeByPass::kByPassTrue;
   else if (in == false)
-    *out = yealink::rtvc::DescAttendeeByPass::KByPassFalse;
+    *out = rtvc::DescAttendeeByPass::KByPassFalse;
   else {
-    *out = yealink::rtvc::DescAttendeeByPass::kInvalid;
+    *out = rtvc::DescAttendeeByPass::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescAutoPromote>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescAutoPromote>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescAutoPromote val) {
+    rtvc::DescAutoPromote val) {
   int64_t res = 0;
   switch (val) {
-    case yealink::rtvc::DescAutoPromote::kNone:
+    case rtvc::DescAutoPromote::kNone:
       res = 0;
       break;
-    case yealink::rtvc::DescAutoPromote::kEveryOne:
+    case rtvc::DescAutoPromote::kEveryOne:
       res = 2147483648;
       break;
-    case yealink::rtvc::DescAutoPromote::kCompany:
+    case rtvc::DescAutoPromote::kCompany:
       res = 32768;
       break;
-    case yealink::rtvc::DescAutoPromote::kInvalid:
+    case rtvc::DescAutoPromote::kInvalid:
       res = -1;
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescRecordType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescRecordType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescRecordType val) {
+    rtvc::DescRecordType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::DescRecordType::kThirdParty:
+    case rtvc::DescRecordType::kThirdParty:
       res = "third-party";
       break;
-    case yealink::rtvc::DescRecordType::kYealinkRecord:
+    case rtvc::DescRecordType::kYealinkRecord:
       res = "ylrecord";
       break;
-    case yealink::rtvc::DescRecordType::kInvalid:
+    case rtvc::DescRecordType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescRecordType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescRecordType* out) {
+bool Converter<rtvc::DescRecordType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::DescRecordType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "third-party")
-    *out = yealink::rtvc::DescRecordType::kThirdParty;
+    *out = rtvc::DescRecordType::kThirdParty;
   else if (in == "ylrecord")
-    *out = yealink::rtvc::DescRecordType::kYealinkRecord;
+    *out = rtvc::DescRecordType::kYealinkRecord;
   else {
-    *out = yealink::rtvc::DescRecordType::kInvalid;
+    *out = rtvc::DescRecordType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescRecordPrivilege>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescRecordPrivilege>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::DescRecordPrivilege val) {
+    rtvc::DescRecordPrivilege val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::DescRecordPrivilege::kOrganizer:
+    case rtvc::DescRecordPrivilege::kOrganizer:
       res = "organizer";
       break;
-    case yealink::rtvc::DescRecordPrivilege::kPresenter:
+    case rtvc::DescRecordPrivilege::kPresenter:
       res = "presenter";
       break;
-    case yealink::rtvc::DescRecordPrivilege::kAttendee:
+    case rtvc::DescRecordPrivilege::kAttendee:
       res = "attendee";
       break;
-    case yealink::rtvc::DescRecordPrivilege::kInvalid:
+    case rtvc::DescRecordPrivilege::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::DescRecordPrivilege>::FromV8(
+bool Converter<rtvc::DescRecordPrivilege>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::DescRecordPrivilege* out) {
+    rtvc::DescRecordPrivilege* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "organizer")
-    *out = yealink::rtvc::DescRecordPrivilege::kOrganizer;
+    *out = rtvc::DescRecordPrivilege::kOrganizer;
   else if (in == "presenter")
-    *out = yealink::rtvc::DescRecordPrivilege::kPresenter;
+    *out = rtvc::DescRecordPrivilege::kPresenter;
   else if (in == "attendee")
-    *out = yealink::rtvc::DescRecordPrivilege::kAttendee;
+    *out = rtvc::DescRecordPrivilege::kAttendee;
   else {
-    *out = yealink::rtvc::DescRecordPrivilege::kInvalid;
+    *out = rtvc::DescRecordPrivilege::kInvalid;
     return false;
   }
 
   return true;
 }
 
-bool Converter<yealink::rtvc::DescAutoPromote>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescAutoPromote* out) {
+bool Converter<rtvc::DescAutoPromote>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::DescAutoPromote* out) {
   int64_t in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == 0)
-    *out = yealink::rtvc::DescAutoPromote::kNone;
+    *out = rtvc::DescAutoPromote::kNone;
   else if (in == 2147483648)
-    *out = yealink::rtvc::DescAutoPromote::kEveryOne;
+    *out = rtvc::DescAutoPromote::kEveryOne;
   else if (in == 32768)
-    *out = yealink::rtvc::DescAutoPromote::kCompany;
+    *out = rtvc::DescAutoPromote::kCompany;
   else {
-    *out = yealink::rtvc::DescAutoPromote::kInvalid;
+    *out = rtvc::DescAutoPromote::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescSetLockInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescSetLockInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescSetLockInfo& val) {
+    const rtvc::DescSetLockInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("admissionPolicy", val.admission_policy);
   handler.Set("attendeeByPass", val.attendee_by_pass);
@@ -1847,10 +1813,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescSetLockInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescSetLockInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescSetLockInfo* out) {
+bool Converter<rtvc::DescSetLockInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::DescSetLockInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1861,9 +1826,9 @@ bool Converter<yealink::rtvc::DescSetLockInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescGetLockInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescGetLockInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescGetLockInfo& val) {
+    const rtvc::DescGetLockInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("admissionPolicy", val.admission_policy);
   handler.Set("attendeeByPass", val.attendee_by_pass);
@@ -1872,10 +1837,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescGetLockInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescGetLockInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::DescGetLockInfo* out) {
+bool Converter<rtvc::DescGetLockInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::DescGetLockInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1886,9 +1850,9 @@ bool Converter<yealink::rtvc::DescGetLockInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::DescInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::DescInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::DescInfo& val) {
+    const rtvc::DescInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("subject", val.subject);
@@ -1923,9 +1887,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::DescInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::DescInfo>::FromV8(v8::Isolate* isolate,
-                                                v8::Local<v8::Value> val,
-                                                yealink::rtvc::DescInfo* out) {
+bool Converter<rtvc::DescInfo>::FromV8(v8::Isolate* isolate,
+                                       v8::Local<v8::Value> val,
+                                       rtvc::DescInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -1966,57 +1930,56 @@ bool Converter<yealink::rtvc::DescInfo>::FromV8(v8::Isolate* isolate,
 // state
 
 // user
-v8::Local<v8::Value> Converter<yealink::rtvc::RequesrResult>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RequesrResult>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::RequesrResult val) {
+    rtvc::RequesrResult val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::RequesrResult::kSuccess:
+    case rtvc::RequesrResult::kSuccess:
       res = "success";
       break;
-    case yealink::rtvc::RequesrResult::kInvalidParam:
+    case rtvc::RequesrResult::kInvalidParam:
       res = "invalid param";
       break;
-    case yealink::rtvc::RequesrResult::kSipFailure:
+    case rtvc::RequesrResult::kSipFailure:
       res = "sip failure";
       break;
-    case yealink::rtvc::RequesrResult::kInvalid:
+    case rtvc::RequesrResult::kInvalid:
       res = "invalid";
       break;
-    case yealink::rtvc::RequesrResult::kHttpFailure:
+    case rtvc::RequesrResult::kHttpFailure:
       res = "http failure";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::RequesrResult>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RequesrResult* out) {
+bool Converter<rtvc::RequesrResult>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::RequesrResult* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "success")
-    *out = yealink::rtvc::RequesrResult::kSuccess;
+    *out = rtvc::RequesrResult::kSuccess;
   else if (in == "invalid param")
-    *out = yealink::rtvc::RequesrResult::kInvalidParam;
+    *out = rtvc::RequesrResult::kInvalidParam;
   else if (in == "sip failure")
-    *out = yealink::rtvc::RequesrResult::kSipFailure;
+    *out = rtvc::RequesrResult::kSipFailure;
   else if (in == "http failure")
-    *out = yealink::rtvc::RequesrResult::kHttpFailure;
+    *out = rtvc::RequesrResult::kHttpFailure;
   else {
-    *out = yealink::rtvc::RequesrResult::kInvalid;
+    *out = rtvc::RequesrResult::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ResponseInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ResponseInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ResponseInfo& val) {
+    const rtvc::ResponseInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("requestId", val.request_id);
   handler.Set("result", val.result);
@@ -2024,10 +1987,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ResponseInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ResponseInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ResponseInfo* out) {
+bool Converter<rtvc::ResponseInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::ResponseInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2038,9 +2000,9 @@ bool Converter<yealink::rtvc::ResponseInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::HttpResponseInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::HttpResponseInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::HttpResponseInfo& val) {
+    const rtvc::HttpResponseInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("bizCode", val.biz_code);
   handler.Set("result", val.result);
@@ -2048,10 +2010,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::HttpResponseInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::HttpResponseInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::HttpResponseInfo* out) {
+bool Converter<rtvc::HttpResponseInfo>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::HttpResponseInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2062,9 +2023,9 @@ bool Converter<yealink::rtvc::HttpResponseInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ImResponseInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ImResponseInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ImResponseInfo& val) {
+    const rtvc::ImResponseInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("bizCode", val.biz_code);
   handler.Set("entity", val.entity);
@@ -2073,10 +2034,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ImResponseInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ImResponseInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ImResponseInfo* out) {
+bool Converter<rtvc::ImResponseInfo>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::ImResponseInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2088,9 +2048,9 @@ bool Converter<yealink::rtvc::ImResponseInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ImMessageInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ImMessageInfo& val) {
+    const rtvc::ImMessageInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("isPrivate", val.is_private);
   handler.Set("text", val.text);
@@ -2102,10 +2062,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ImMessageInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ImMessageInfo* out) {
+bool Converter<rtvc::ImMessageInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::ImMessageInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2120,9 +2079,9 @@ bool Converter<yealink::rtvc::ImMessageInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageList>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ImMessageList>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ImMessageList& val) {
+    const rtvc::ImMessageList& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("bizCode", val.biz_code);
   handler.Set("messages", val.messages);
@@ -2130,10 +2089,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ImMessageList>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ImMessageList>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ImMessageList* out) {
+bool Converter<rtvc::ImMessageList>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::ImMessageList* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2144,176 +2102,174 @@ bool Converter<yealink::rtvc::ImMessageList>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserProtocolType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserProtocolType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserProtocolType val) {
+    rtvc::UserProtocolType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserProtocolType::kSIP:
+    case rtvc::UserProtocolType::kSIP:
       res = "SIP";
       break;
-    case yealink::rtvc::UserProtocolType::kH323:
+    case rtvc::UserProtocolType::kH323:
       res = "H323";
       break;
-    case yealink::rtvc::UserProtocolType::kRTMP:
+    case rtvc::UserProtocolType::kRTMP:
       res = "RTMP";
       break;
-    case yealink::rtvc::UserProtocolType::kInvalid:
+    case rtvc::UserProtocolType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserProtocolType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserProtocolType* out) {
+bool Converter<rtvc::UserProtocolType>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::UserProtocolType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "SIP")
-    *out = yealink::rtvc::UserProtocolType::kSIP;
+    *out = rtvc::UserProtocolType::kSIP;
   else if (in == "H323")
-    *out = yealink::rtvc::UserProtocolType::kH323;
+    *out = rtvc::UserProtocolType::kH323;
   else if (in == "RTMP")
-    *out = yealink::rtvc::UserProtocolType::kRTMP;
+    *out = rtvc::UserProtocolType::kRTMP;
   else {
-    *out = yealink::rtvc::UserProtocolType::kInvalid;
+    *out = rtvc::UserProtocolType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserPermissionType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserPermissionType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserPermissionType val) {
+    rtvc::UserPermissionType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserPermissionType::kAttendee:
+    case rtvc::UserPermissionType::kAttendee:
       res = "attendee";
       break;
-    case yealink::rtvc::UserPermissionType::kCastviewer:
+    case rtvc::UserPermissionType::kCastviewer:
       res = "castviewer";
       break;
-    case yealink::rtvc::UserPermissionType::kOrganizer:
+    case rtvc::UserPermissionType::kOrganizer:
       res = "organizer";
       break;
-    case yealink::rtvc::UserPermissionType::kPresenter:
+    case rtvc::UserPermissionType::kPresenter:
       res = "presenter";
       break;
-    case yealink::rtvc::UserPermissionType::kInvalid:
+    case rtvc::UserPermissionType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserPermissionType>::FromV8(
+bool Converter<rtvc::UserPermissionType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserPermissionType* out) {
+    rtvc::UserPermissionType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "attendee")
-    *out = yealink::rtvc::UserPermissionType::kAttendee;
+    *out = rtvc::UserPermissionType::kAttendee;
   else if (in == "castviewer")
-    *out = yealink::rtvc::UserPermissionType::kCastviewer;
+    *out = rtvc::UserPermissionType::kCastviewer;
   else if (in == "organizer")
-    *out = yealink::rtvc::UserPermissionType::kOrganizer;
+    *out = rtvc::UserPermissionType::kOrganizer;
   else if (in == "presenter")
-    *out = yealink::rtvc::UserPermissionType::kPresenter;
+    *out = rtvc::UserPermissionType::kPresenter;
   else {
-    *out = yealink::rtvc::UserPermissionType::kInvalid;
+    *out = rtvc::UserPermissionType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserDemoStateType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserDemoStateType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserDemoStateType val) {
+    rtvc::UserDemoStateType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserDemoStateType::kAudience:
+    case rtvc::UserDemoStateType::kAudience:
       res = "audience";
       break;
-    case yealink::rtvc::UserDemoStateType::kDemonstrator:
+    case rtvc::UserDemoStateType::kDemonstrator:
       res = "demonstrator";
       break;
-    case yealink::rtvc::UserDemoStateType::kInvalid:
+    case rtvc::UserDemoStateType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserDemoStateType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserDemoStateType* out) {
+bool Converter<rtvc::UserDemoStateType>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                rtvc::UserDemoStateType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "audience")
-    *out = yealink::rtvc::UserDemoStateType::kAudience;
+    *out = rtvc::UserDemoStateType::kAudience;
   else if (in == "demonstrator")
-    *out = yealink::rtvc::UserDemoStateType::kDemonstrator;
+    *out = rtvc::UserDemoStateType::kDemonstrator;
   else {
-    *out = yealink::rtvc::UserDemoStateType::kInvalid;
+    *out = rtvc::UserDemoStateType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::PresenterDemoStateType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::PresenterDemoStateType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::PresenterDemoStateType val) {
+    rtvc::PresenterDemoStateType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::PresenterDemoStateType::kAudience:
+    case rtvc::PresenterDemoStateType::kAudience:
       res = "audience";
       break;
-    case yealink::rtvc::PresenterDemoStateType::kDemonstrator:
+    case rtvc::PresenterDemoStateType::kDemonstrator:
       res = "demonstrator";
       break;
-    case yealink::rtvc::PresenterDemoStateType::kInvalid:
+    case rtvc::PresenterDemoStateType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::PresenterDemoStateType>::FromV8(
+bool Converter<rtvc::PresenterDemoStateType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::PresenterDemoStateType* out) {
+    rtvc::PresenterDemoStateType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "audience")
-    *out = yealink::rtvc::PresenterDemoStateType::kAudience;
+    *out = rtvc::PresenterDemoStateType::kAudience;
   else if (in == "demonstrator")
-    *out = yealink::rtvc::PresenterDemoStateType::kDemonstrator;
+    *out = rtvc::PresenterDemoStateType::kDemonstrator;
   else {
-    *out = yealink::rtvc::PresenterDemoStateType::kInvalid;
+    *out = rtvc::PresenterDemoStateType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserRolesInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserRolesInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserRolesInfo& val) {
+    const rtvc::UserRolesInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("permission", val.permission);
   handler.Set("demostate", val.demostate);
@@ -2322,10 +2278,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserRolesInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserRolesInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserRolesInfo* out) {
+bool Converter<rtvc::UserRolesInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::UserRolesInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2337,378 +2292,376 @@ bool Converter<yealink::rtvc::UserRolesInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointSeesionType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserEndpointSeesionType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserEndpointSeesionType val) {
+    rtvc::UserEndpointSeesionType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserEndpointSeesionType::kApplicationSharing:
+    case rtvc::UserEndpointSeesionType::kApplicationSharing:
       res = "applicationsharing";
       break;
-    case yealink::rtvc::UserEndpointSeesionType::kAudioVideo:
+    case rtvc::UserEndpointSeesionType::kAudioVideo:
       res = "audio-video";
       break;
-    case yealink::rtvc::UserEndpointSeesionType::kChat:
+    case rtvc::UserEndpointSeesionType::kChat:
       res = "chat";
       break;
-    case yealink::rtvc::UserEndpointSeesionType::kCoopshare:
+    case rtvc::UserEndpointSeesionType::kCoopshare:
       res = "coopshare";
       break;
-    case yealink::rtvc::UserEndpointSeesionType::kFocus:
+    case rtvc::UserEndpointSeesionType::kFocus:
       res = "focus";
       break;
-    case yealink::rtvc::UserEndpointSeesionType::kInvalid:
+    case rtvc::UserEndpointSeesionType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserEndpointSeesionType>::FromV8(
+bool Converter<rtvc::UserEndpointSeesionType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserEndpointSeesionType* out) {
+    rtvc::UserEndpointSeesionType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "applicationsharing")
-    *out = yealink::rtvc::UserEndpointSeesionType::kApplicationSharing;
+    *out = rtvc::UserEndpointSeesionType::kApplicationSharing;
   else if (in == "audio-video")
-    *out = yealink::rtvc::UserEndpointSeesionType::kAudioVideo;
+    *out = rtvc::UserEndpointSeesionType::kAudioVideo;
   else if (in == "chat")
-    *out = yealink::rtvc::UserEndpointSeesionType::kChat;
+    *out = rtvc::UserEndpointSeesionType::kChat;
   else if (in == "coopshare")
-    *out = yealink::rtvc::UserEndpointSeesionType::kCoopshare;
+    *out = rtvc::UserEndpointSeesionType::kCoopshare;
   else if (in == "focus")
-    *out = yealink::rtvc::UserEndpointSeesionType::kFocus;
+    *out = rtvc::UserEndpointSeesionType::kFocus;
   else {
-    *out = yealink::rtvc::UserEndpointSeesionType::kInvalid;
+    *out = rtvc::UserEndpointSeesionType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointStatusType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserEndpointStatusType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserEndpointStatusType val) {
+    rtvc::UserEndpointStatusType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserEndpointStatusType::kConnected:
+    case rtvc::UserEndpointStatusType::kConnected:
       res = "connected";
       break;
-    case yealink::rtvc::UserEndpointStatusType::kDialingIn:
+    case rtvc::UserEndpointStatusType::kDialingIn:
       res = "dialing-in";
       break;
-    case yealink::rtvc::UserEndpointStatusType::kDialingOut:
+    case rtvc::UserEndpointStatusType::kDialingOut:
       res = "dialing-out";
       break;
-    case yealink::rtvc::UserEndpointStatusType::kDisconnected:
+    case rtvc::UserEndpointStatusType::kDisconnected:
       res = "disconnected";
       break;
-    case yealink::rtvc::UserEndpointStatusType::kOnHold:
+    case rtvc::UserEndpointStatusType::kOnHold:
       res = "on-hold";
       break;
-    case yealink::rtvc::UserEndpointStatusType::kInvalid:
+    case rtvc::UserEndpointStatusType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserEndpointStatusType>::FromV8(
+bool Converter<rtvc::UserEndpointStatusType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserEndpointStatusType* out) {
+    rtvc::UserEndpointStatusType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "connected")
-    *out = yealink::rtvc::UserEndpointStatusType::kConnected;
+    *out = rtvc::UserEndpointStatusType::kConnected;
   else if (in == "dialing-in")
-    *out = yealink::rtvc::UserEndpointStatusType::kDialingIn;
+    *out = rtvc::UserEndpointStatusType::kDialingIn;
   else if (in == "dialing-out")
-    *out = yealink::rtvc::UserEndpointStatusType::kDialingOut;
+    *out = rtvc::UserEndpointStatusType::kDialingOut;
   else if (in == "disconnected")
-    *out = yealink::rtvc::UserEndpointStatusType::kDisconnected;
+    *out = rtvc::UserEndpointStatusType::kDisconnected;
   else if (in == "on-hold")
-    *out = yealink::rtvc::UserEndpointStatusType::kOnHold;
+    *out = rtvc::UserEndpointStatusType::kOnHold;
   else {
-    *out = yealink::rtvc::UserEndpointStatusType::kInvalid;
+    *out = rtvc::UserEndpointStatusType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserJoinMethod>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserJoinMethod>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserJoinMethod val) {
+    rtvc::UserJoinMethod val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserJoinMethod::kDialedIn:
+    case rtvc::UserJoinMethod::kDialedIn:
       res = "dialed-in";
       break;
-    case yealink::rtvc::UserJoinMethod::kDialedOut:
+    case rtvc::UserJoinMethod::kDialedOut:
       res = "dialed-out";
       break;
-    case yealink::rtvc::UserJoinMethod::kInvalid:
+    case rtvc::UserJoinMethod::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserJoinMethod>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserJoinMethod* out) {
+bool Converter<rtvc::UserJoinMethod>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::UserJoinMethod* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "dialed-in")
-    *out = yealink::rtvc::UserJoinMethod::kDialedIn;
+    *out = rtvc::UserJoinMethod::kDialedIn;
   else if (in == "dialed-out")
-    *out = yealink::rtvc::UserJoinMethod::kDialedOut;
+    *out = rtvc::UserJoinMethod::kDialedOut;
   else {
-    *out = yealink::rtvc::UserJoinMethod::kInvalid;
+    *out = rtvc::UserJoinMethod::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserMediaType val) {
+    rtvc::UserMediaType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserMediaType::kApplication:
+    case rtvc::UserMediaType::kApplication:
       res = "application";
       break;
-    case yealink::rtvc::UserMediaType::kAudio:
+    case rtvc::UserMediaType::kAudio:
       res = "audio";
       break;
-    case yealink::rtvc::UserMediaType::kVideo:
+    case rtvc::UserMediaType::kVideo:
       res = "video";
       break;
-    case yealink::rtvc::UserMediaType::kInvalid:
+    case rtvc::UserMediaType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserMediaType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaType* out) {
+bool Converter<rtvc::UserMediaType>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::UserMediaType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "application")
-    *out = yealink::rtvc::UserMediaType::kApplication;
+    *out = rtvc::UserMediaType::kApplication;
   else if (in == "audio")
-    *out = yealink::rtvc::UserMediaType::kAudio;
+    *out = rtvc::UserMediaType::kAudio;
   else if (in == "video")
-    *out = yealink::rtvc::UserMediaType::kVideo;
+    *out = rtvc::UserMediaType::kVideo;
   else {
-    *out = yealink::rtvc::UserMediaType::kInvalid;
+    *out = rtvc::UserMediaType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaLabelType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaLabelType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserMediaLabelType val) {
+    rtvc::UserMediaLabelType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserMediaLabelType::kApplication:
+    case rtvc::UserMediaLabelType::kApplication:
       res = "application";
       break;
-    case yealink::rtvc::UserMediaLabelType::kFecc:
+    case rtvc::UserMediaLabelType::kFecc:
       res = "fecc";
       break;
-    case yealink::rtvc::UserMediaLabelType::kMainAudio:
+    case rtvc::UserMediaLabelType::kMainAudio:
       res = "main-audio";
       break;
-    case yealink::rtvc::UserMediaLabelType::kMainVideo:
+    case rtvc::UserMediaLabelType::kMainVideo:
       res = "main-video";
       break;
-    case yealink::rtvc::UserMediaLabelType::kInvalid:
+    case rtvc::UserMediaLabelType::kInvalid:
       res = "main-video";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserMediaLabelType>::FromV8(
+bool Converter<rtvc::UserMediaLabelType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaLabelType* out) {
+    rtvc::UserMediaLabelType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "application")
-    *out = yealink::rtvc::UserMediaLabelType::kApplication;
+    *out = rtvc::UserMediaLabelType::kApplication;
   else if (in == "fecc")
-    *out = yealink::rtvc::UserMediaLabelType::kFecc;
+    *out = rtvc::UserMediaLabelType::kFecc;
   else if (in == "main-audio")
-    *out = yealink::rtvc::UserMediaLabelType::kMainAudio;
+    *out = rtvc::UserMediaLabelType::kMainAudio;
   else if (in == "main-video")
-    *out = yealink::rtvc::UserMediaLabelType::kMainVideo;
+    *out = rtvc::UserMediaLabelType::kMainVideo;
   else {
-    *out = yealink::rtvc::UserMediaLabelType::kInvalid;
+    *out = rtvc::UserMediaLabelType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaDirectionType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaDirectionType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserMediaDirectionType val) {
+    rtvc::UserMediaDirectionType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserMediaDirectionType::kInactive:
+    case rtvc::UserMediaDirectionType::kInactive:
       res = "inactive";
       break;
-    case yealink::rtvc::UserMediaDirectionType::kRecvOnly:
+    case rtvc::UserMediaDirectionType::kRecvOnly:
       res = "recvonly";
       break;
-    case yealink::rtvc::UserMediaDirectionType::kSendOnly:
+    case rtvc::UserMediaDirectionType::kSendOnly:
       res = "sendonly";
       break;
-    case yealink::rtvc::UserMediaDirectionType::kSendRecv:
+    case rtvc::UserMediaDirectionType::kSendRecv:
       res = "sendrecv";
       break;
-    case yealink::rtvc::UserMediaDirectionType::kInvalid:
+    case rtvc::UserMediaDirectionType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserMediaDirectionType>::FromV8(
+bool Converter<rtvc::UserMediaDirectionType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaDirectionType* out) {
+    rtvc::UserMediaDirectionType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "inactive")
-    *out = yealink::rtvc::UserMediaDirectionType::kInactive;
+    *out = rtvc::UserMediaDirectionType::kInactive;
   else if (in == "recvonly")
-    *out = yealink::rtvc::UserMediaDirectionType::kRecvOnly;
+    *out = rtvc::UserMediaDirectionType::kRecvOnly;
   else if (in == "sendonly")
-    *out = yealink::rtvc::UserMediaDirectionType::kSendOnly;
+    *out = rtvc::UserMediaDirectionType::kSendOnly;
   else if (in == "sendrecv")
-    *out = yealink::rtvc::UserMediaDirectionType::kSendRecv;
+    *out = rtvc::UserMediaDirectionType::kSendRecv;
   else {
-    *out = yealink::rtvc::UserMediaDirectionType::kInvalid;
+    *out = rtvc::UserMediaDirectionType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediafilterType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediafilterType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserMediafilterType val) {
+    rtvc::UserMediafilterType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserMediafilterType::kBlock:
+    case rtvc::UserMediafilterType::kBlock:
       res = "block";
       break;
-    case yealink::rtvc::UserMediafilterType::kUnblock:
+    case rtvc::UserMediafilterType::kUnblock:
       res = "unblock";
       break;
-    case yealink::rtvc::UserMediafilterType::kUnblocking:
+    case rtvc::UserMediafilterType::kUnblocking:
       res = "unblocking";
       break;
-    case yealink::rtvc::UserMediafilterType::kInvalid:
+    case rtvc::UserMediafilterType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserMediafilterType>::FromV8(
+bool Converter<rtvc::UserMediafilterType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediafilterType* out) {
+    rtvc::UserMediafilterType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "block")
-    *out = yealink::rtvc::UserMediafilterType::kBlock;
+    *out = rtvc::UserMediafilterType::kBlock;
   else if (in == "unblock")
-    *out = yealink::rtvc::UserMediafilterType::kUnblock;
+    *out = rtvc::UserMediafilterType::kUnblock;
   else if (in == "unblocking")
-    *out = yealink::rtvc::UserMediafilterType::kUnblocking;
+    *out = rtvc::UserMediafilterType::kUnblocking;
   else {
-    *out = yealink::rtvc::UserMediafilterType::kInvalid;
+    *out = rtvc::UserMediafilterType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaBlockByType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaBlockByType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::UserMediaBlockByType val) {
+    rtvc::UserMediaBlockByType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::UserMediaBlockByType::kClient:
+    case rtvc::UserMediaBlockByType::kClient:
       res = "client";
       break;
-    case yealink::rtvc::UserMediaBlockByType::kNone:
+    case rtvc::UserMediaBlockByType::kNone:
       res = "none";
       break;
-    case yealink::rtvc::UserMediaBlockByType::kServer:
+    case rtvc::UserMediaBlockByType::kServer:
       res = "server";
       break;
-    case yealink::rtvc::UserMediaBlockByType::kInvalid:
+    case rtvc::UserMediaBlockByType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::UserMediaBlockByType>::FromV8(
+bool Converter<rtvc::UserMediaBlockByType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaBlockByType* out) {
+    rtvc::UserMediaBlockByType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "client")
-    *out = yealink::rtvc::UserMediaBlockByType::kClient;
+    *out = rtvc::UserMediaBlockByType::kClient;
   else if (in == "none")
-    *out = yealink::rtvc::UserMediaBlockByType::kNone;
+    *out = rtvc::UserMediaBlockByType::kNone;
   else if (in == "server")
-    *out = yealink::rtvc::UserMediaBlockByType::kServer;
+    *out = rtvc::UserMediaBlockByType::kServer;
   else {
-    *out = yealink::rtvc::UserMediaBlockByType::kInvalid;
+    *out = rtvc::UserMediaBlockByType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserMediaInfo& val) {
+    const rtvc::UserMediaInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("id", val.id);
   handler.Set("type", val.type);
@@ -2722,10 +2675,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserMediaInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaInfo* out) {
+bool Converter<rtvc::UserMediaInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::UserMediaInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2742,9 +2694,9 @@ bool Converter<yealink::rtvc::UserMediaInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaFilterInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaFilterInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserMediaFilterInfo& val) {
+    const rtvc::UserMediaFilterInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("mediaEgressBlockBy", val.media_egress_block_by);
   handler.Set("mediaEgressFilter", val.media_egress_filter);
@@ -2754,10 +2706,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaFilterInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserMediaFilterInfo>::FromV8(
+bool Converter<rtvc::UserMediaFilterInfo>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaFilterInfo* out) {
+    rtvc::UserMediaFilterInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2770,9 +2722,9 @@ bool Converter<yealink::rtvc::UserMediaFilterInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserEndpointInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserEndpointInfo& val) {
+    const rtvc::UserEndpointInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("entity", val.entity);
   handler.Set("sessionType", val.session_type);
@@ -2785,10 +2737,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserEndpointInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserEndpointInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserEndpointInfo* out) {
+bool Converter<rtvc::UserEndpointInfo>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::UserEndpointInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2804,9 +2755,9 @@ bool Converter<yealink::rtvc::UserEndpointInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserInfo& val) {
+    const rtvc::UserInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("entity", val.entity);
   handler.Set("displayText", val.display_text);
@@ -2825,9 +2776,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserInfo>::FromV8(v8::Isolate* isolate,
-                                                v8::Local<v8::Value> val,
-                                                yealink::rtvc::UserInfo* out) {
+bool Converter<rtvc::UserInfo>::FromV8(v8::Isolate* isolate,
+                                       v8::Local<v8::Value> val,
+                                       rtvc::UserInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2849,9 +2800,9 @@ bool Converter<yealink::rtvc::UserInfo>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaDataInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserMediaDataInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserMediaDataInfo& val) {
+    const rtvc::UserMediaDataInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("enable", val.enable);
   handler.Set("ip", val.ip);
@@ -2870,10 +2821,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserMediaDataInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserMediaDataInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::UserMediaDataInfo* out) {
+bool Converter<rtvc::UserMediaDataInfo>::FromV8(v8::Isolate* isolate,
+                                                v8::Local<v8::Value> val,
+                                                rtvc::UserMediaDataInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2895,9 +2845,9 @@ bool Converter<yealink::rtvc::UserMediaDataInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::UserStatisticsInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::UserStatisticsInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::UserStatisticsInfo& val) {
+    const rtvc::UserStatisticsInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("mediaId", val.media_id);
   handler.Set("label", val.label);
@@ -2908,10 +2858,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::UserStatisticsInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::UserStatisticsInfo>::FromV8(
+bool Converter<rtvc::UserStatisticsInfo>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::UserStatisticsInfo* out) {
+    rtvc::UserStatisticsInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -2925,77 +2875,76 @@ bool Converter<yealink::rtvc::UserStatisticsInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RecordStatusType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RecordStatusType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::RecordStatusType val) {
+    rtvc::RecordStatusType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::RecordStatusType::kInvalid:
+    case rtvc::RecordStatusType::kInvalid:
       res = "";
       break;
-    case yealink::rtvc::RecordStatusType::kPause:
+    case rtvc::RecordStatusType::kPause:
       res = "pause";
       break;
-    case yealink::rtvc::RecordStatusType::kPausing:
+    case rtvc::RecordStatusType::kPausing:
       res = "pausing";
       break;
-    case yealink::rtvc::RecordStatusType::kResume:
+    case rtvc::RecordStatusType::kResume:
       res = "resume";
       break;
-    case yealink::rtvc::RecordStatusType::kResuming:
+    case rtvc::RecordStatusType::kResuming:
       res = "resuming";
       break;
-    case yealink::rtvc::RecordStatusType::kStart:
+    case rtvc::RecordStatusType::kStart:
       res = "start";
       break;
-    case yealink::rtvc::RecordStatusType::kStarting:
+    case rtvc::RecordStatusType::kStarting:
       res = "starting";
       break;
-    case yealink::rtvc::RecordStatusType::kStop:
+    case rtvc::RecordStatusType::kStop:
       res = "stop";
       break;
-    case yealink::rtvc::RecordStatusType::kStopping:
+    case rtvc::RecordStatusType::kStopping:
       res = "stopping";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::RecordStatusType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RecordStatusType* out) {
+bool Converter<rtvc::RecordStatusType>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::RecordStatusType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "pause")
-    *out = yealink::rtvc::RecordStatusType::kPause;
+    *out = rtvc::RecordStatusType::kPause;
   else if (in == "pausing")
-    *out = yealink::rtvc::RecordStatusType::kPausing;
+    *out = rtvc::RecordStatusType::kPausing;
   else if (in == "resume")
-    *out = yealink::rtvc::RecordStatusType::kResume;
+    *out = rtvc::RecordStatusType::kResume;
   else if (in == "resuming")
-    *out = yealink::rtvc::RecordStatusType::kResuming;
+    *out = rtvc::RecordStatusType::kResuming;
   else if (in == "start")
-    *out = yealink::rtvc::RecordStatusType::kStart;
+    *out = rtvc::RecordStatusType::kStart;
   else if (in == "starting")
-    *out = yealink::rtvc::RecordStatusType::kStarting;
+    *out = rtvc::RecordStatusType::kStarting;
   else if (in == "stop")
-    *out = yealink::rtvc::RecordStatusType::kStop;
+    *out = rtvc::RecordStatusType::kStop;
   else if (in == "stopping")
-    *out = yealink::rtvc::RecordStatusType::kStopping;
+    *out = rtvc::RecordStatusType::kStopping;
   else {
-    *out = yealink::rtvc::RecordStatusType::kInvalid;
+    *out = rtvc::RecordStatusType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RecordUserInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RecordUserInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RecordUserInfo& val) {
+    const rtvc::RecordUserInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("recordLastStartTime", val.record_last_start_time);
@@ -3005,10 +2954,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RecordUserInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RecordUserInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RecordUserInfo* out) {
+bool Converter<rtvc::RecordUserInfo>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::RecordUserInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3020,9 +2968,9 @@ bool Converter<yealink::rtvc::RecordUserInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RecordUsers>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RecordUsers>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RecordUsers& val) {
+    const rtvc::RecordUsers& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("user", val.user);
@@ -3031,10 +2979,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RecordUsers>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RecordUsers>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RecordUsers* out) {
+bool Converter<rtvc::RecordUsers>::FromV8(v8::Isolate* isolate,
+                                          v8::Local<v8::Value> val,
+                                          rtvc::RecordUsers* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3045,77 +2992,76 @@ bool Converter<yealink::rtvc::RecordUsers>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RtmpStatusType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RtmpStatusType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::RtmpStatusType val) {
+    rtvc::RtmpStatusType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::RtmpStatusType::kInvalid:
+    case rtvc::RtmpStatusType::kInvalid:
       res = "";
       break;
-    case yealink::rtvc::RtmpStatusType::kPause:
+    case rtvc::RtmpStatusType::kPause:
       res = "pause";
       break;
-    case yealink::rtvc::RtmpStatusType::kPausing:
+    case rtvc::RtmpStatusType::kPausing:
       res = "pausing";
       break;
-    case yealink::rtvc::RtmpStatusType::kResume:
+    case rtvc::RtmpStatusType::kResume:
       res = "resume";
       break;
-    case yealink::rtvc::RtmpStatusType::kResuming:
+    case rtvc::RtmpStatusType::kResuming:
       res = "resuming";
       break;
-    case yealink::rtvc::RtmpStatusType::kStart:
+    case rtvc::RtmpStatusType::kStart:
       res = "start";
       break;
-    case yealink::rtvc::RtmpStatusType::kStarting:
+    case rtvc::RtmpStatusType::kStarting:
       res = "starting";
       break;
-    case yealink::rtvc::RtmpStatusType::kStop:
+    case rtvc::RtmpStatusType::kStop:
       res = "stop";
       break;
-    case yealink::rtvc::RtmpStatusType::kStopping:
+    case rtvc::RtmpStatusType::kStopping:
       res = "stopping";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::RtmpStatusType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RtmpStatusType* out) {
+bool Converter<rtvc::RtmpStatusType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::RtmpStatusType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "pause")
-    *out = yealink::rtvc::RtmpStatusType::kPause;
+    *out = rtvc::RtmpStatusType::kPause;
   else if (in == "pausing")
-    *out = yealink::rtvc::RtmpStatusType::kPausing;
+    *out = rtvc::RtmpStatusType::kPausing;
   else if (in == "resume")
-    *out = yealink::rtvc::RtmpStatusType::kResume;
+    *out = rtvc::RtmpStatusType::kResume;
   else if (in == "resuming")
-    *out = yealink::rtvc::RtmpStatusType::kResuming;
+    *out = rtvc::RtmpStatusType::kResuming;
   else if (in == "start")
-    *out = yealink::rtvc::RtmpStatusType::kStart;
+    *out = rtvc::RtmpStatusType::kStart;
   else if (in == "starting")
-    *out = yealink::rtvc::RtmpStatusType::kStarting;
+    *out = rtvc::RtmpStatusType::kStarting;
   else if (in == "stop")
-    *out = yealink::rtvc::RtmpStatusType::kStop;
+    *out = rtvc::RtmpStatusType::kStop;
   else if (in == "stopping")
-    *out = yealink::rtvc::RtmpStatusType::kStopping;
+    *out = rtvc::RtmpStatusType::kStopping;
   else {
-    *out = yealink::rtvc::RtmpStatusType::kInvalid;
+    *out = rtvc::RtmpStatusType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RtmpUserInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RtmpUserInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RtmpUserInfo& val) {
+    const rtvc::RtmpUserInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("entity", val.entity);
@@ -3127,10 +3073,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RtmpUserInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RtmpUserInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RtmpUserInfo* out) {
+bool Converter<rtvc::RtmpUserInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::RtmpUserInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3144,9 +3089,9 @@ bool Converter<yealink::rtvc::RtmpUserInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RtmpInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RtmpInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RtmpInfo& val) {
+    const rtvc::RtmpInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("enable", val.enable);
@@ -3156,9 +3101,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RtmpInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RtmpInfo>::FromV8(v8::Isolate* isolate,
-                                                v8::Local<v8::Value> val,
-                                                yealink::rtvc::RtmpInfo* out) {
+bool Converter<rtvc::RtmpInfo>::FromV8(v8::Isolate* isolate,
+                                       v8::Local<v8::Value> val,
+                                       rtvc::RtmpInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3171,138 +3116,136 @@ bool Converter<yealink::rtvc::RtmpInfo>::FromV8(v8::Isolate* isolate,
 }
 
 // view
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewSpeakMode>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewSpeakMode>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ViewSpeakMode val) {
+    rtvc::ViewSpeakMode val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::ViewSpeakMode::kFree:
+    case rtvc::ViewSpeakMode::kFree:
       res = "free";
       break;
-    case yealink::rtvc::ViewSpeakMode::kHandUp:
+    case rtvc::ViewSpeakMode::kHandUp:
       res = "handUp";
       break;
-    case yealink::rtvc::ViewSpeakMode::kInvalid:
+    case rtvc::ViewSpeakMode::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::ViewSpeakMode>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ViewSpeakMode* out) {
+bool Converter<rtvc::ViewSpeakMode>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::ViewSpeakMode* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "free")
-    *out = yealink::rtvc::ViewSpeakMode::kFree;
+    *out = rtvc::ViewSpeakMode::kFree;
   else if (in == "handUp")
-    *out = yealink::rtvc::ViewSpeakMode::kHandUp;
+    *out = rtvc::ViewSpeakMode::kHandUp;
   else {
-    *out = yealink::rtvc::ViewSpeakMode::kInvalid;
+    *out = rtvc::ViewSpeakMode::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewLayoutType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewLayoutType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ViewLayoutType val) {
+    rtvc::ViewLayoutType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::ViewLayoutType::kEquality:
+    case rtvc::ViewLayoutType::kEquality:
       res = "Equality";
       break;
-    case yealink::rtvc::ViewLayoutType::kPresentation:
+    case rtvc::ViewLayoutType::kPresentation:
       res = "Presentation";
       break;
-    case yealink::rtvc::ViewLayoutType::kSpeechExcitation:
+    case rtvc::ViewLayoutType::kSpeechExcitation:
       res = "SpeechExcitation";
       break;
-    case yealink::rtvc::ViewLayoutType::kExclusive:
+    case rtvc::ViewLayoutType::kExclusive:
       res = "Exclusive";
       break;
-    case yealink::rtvc::ViewLayoutType::kInvalid:
+    case rtvc::ViewLayoutType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::ViewLayoutType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ViewLayoutType* out) {
+bool Converter<rtvc::ViewLayoutType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::ViewLayoutType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "Equality")
-    *out = yealink::rtvc::ViewLayoutType::kEquality;
+    *out = rtvc::ViewLayoutType::kEquality;
   else if (in == "Presentation")
-    *out = yealink::rtvc::ViewLayoutType::kPresentation;
+    *out = rtvc::ViewLayoutType::kPresentation;
   else if (in == "SpeechExcitation")
-    *out = yealink::rtvc::ViewLayoutType::kSpeechExcitation;
+    *out = rtvc::ViewLayoutType::kSpeechExcitation;
   else if (in == "Exclusive")
-    *out = yealink::rtvc::ViewLayoutType::kExclusive;
+    *out = rtvc::ViewLayoutType::kExclusive;
   else {
-    *out = yealink::rtvc::ViewLayoutType::kInvalid;
+    *out = rtvc::ViewLayoutType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewPresenterLayoutType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewPresenterLayoutType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ViewPresenterLayoutType val) {
+    rtvc::ViewPresenterLayoutType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::ViewPresenterLayoutType::kEquality:
+    case rtvc::ViewPresenterLayoutType::kEquality:
       res = "Equality";
       break;
-    case yealink::rtvc::ViewPresenterLayoutType::kSpeechExcitation:
+    case rtvc::ViewPresenterLayoutType::kSpeechExcitation:
       res = "SpeechExcitation";
       break;
-    case yealink::rtvc::ViewPresenterLayoutType::kExclusive:
+    case rtvc::ViewPresenterLayoutType::kExclusive:
       res = "Exclusive";
       break;
-    case yealink::rtvc::ViewPresenterLayoutType::kInvalid:
+    case rtvc::ViewPresenterLayoutType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::ViewPresenterLayoutType>::FromV8(
+bool Converter<rtvc::ViewPresenterLayoutType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ViewPresenterLayoutType* out) {
+    rtvc::ViewPresenterLayoutType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "Equality")
-    *out = yealink::rtvc::ViewPresenterLayoutType::kEquality;
+    *out = rtvc::ViewPresenterLayoutType::kEquality;
   else if (in == "SpeechExcitation")
-    *out = yealink::rtvc::ViewPresenterLayoutType::kSpeechExcitation;
+    *out = rtvc::ViewPresenterLayoutType::kSpeechExcitation;
   else if (in == "Exclusive")
-    *out = yealink::rtvc::ViewPresenterLayoutType::kExclusive;
+    *out = rtvc::ViewPresenterLayoutType::kExclusive;
   else {
-    *out = yealink::rtvc::ViewPresenterLayoutType::kInvalid;
+    *out = rtvc::ViewPresenterLayoutType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::GetLayoutInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::GetLayoutInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::GetLayoutInfo& val) {
+    const rtvc::GetLayoutInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("speakMode", val.speak_mode);
   handler.Set("videoLayout", val.video_layout);
@@ -3322,10 +3265,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::GetLayoutInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::GetLayoutInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::GetLayoutInfo* out) {
+bool Converter<rtvc::GetLayoutInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::GetLayoutInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3348,9 +3290,9 @@ bool Converter<yealink::rtvc::GetLayoutInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::SetLayoutInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::SetLayoutInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::SetLayoutInfo& val) {
+    const rtvc::SetLayoutInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("videoLayout", val.video_layout);
   handler.Set("videoMaxView", val.video_max_view);
@@ -3358,10 +3300,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::SetLayoutInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::SetLayoutInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::SetLayoutInfo* out) {
+bool Converter<rtvc::SetLayoutInfo>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::SetLayoutInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3371,85 +3312,84 @@ bool Converter<yealink::rtvc::SetLayoutInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterRoleType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewFilterRoleType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ViewFilterRoleType val) {
+    rtvc::ViewFilterRoleType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::ViewFilterRoleType::kDefault:
+    case rtvc::ViewFilterRoleType::kDefault:
       res = "default";
       break;
-    case yealink::rtvc::ViewFilterRoleType::kAttendee:
+    case rtvc::ViewFilterRoleType::kAttendee:
       res = "attendee";
       break;
-    case yealink::rtvc::ViewFilterRoleType::kInvalid:
+    case rtvc::ViewFilterRoleType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::ViewFilterRoleType>::FromV8(
+bool Converter<rtvc::ViewFilterRoleType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ViewFilterRoleType* out) {
+    rtvc::ViewFilterRoleType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "default")
-    *out = yealink::rtvc::ViewFilterRoleType::kDefault;
+    *out = rtvc::ViewFilterRoleType::kDefault;
   else if (in == "attendee")
-    *out = yealink::rtvc::ViewFilterRoleType::kAttendee;
+    *out = rtvc::ViewFilterRoleType::kAttendee;
   else {
-    *out = yealink::rtvc::ViewFilterRoleType::kInvalid;
+    *out = rtvc::ViewFilterRoleType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewFilterType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::ViewFilterType val) {
+    rtvc::ViewFilterType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::ViewFilterType::kBlock:
+    case rtvc::ViewFilterType::kBlock:
       res = "block";
       break;
-    case yealink::rtvc::ViewFilterType::kUnBlock:
+    case rtvc::ViewFilterType::kUnBlock:
       res = "unblock";
       break;
-    case yealink::rtvc::ViewFilterType::kInvalid:
+    case rtvc::ViewFilterType::kInvalid:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::ViewFilterType>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::ViewFilterType* out) {
+bool Converter<rtvc::ViewFilterType>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::ViewFilterType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "block")
-    *out = yealink::rtvc::ViewFilterType::kBlock;
+    *out = rtvc::ViewFilterType::kBlock;
   else if (in == "unblock")
-    *out = yealink::rtvc::ViewFilterType::kUnBlock;
+    *out = rtvc::ViewFilterType::kUnBlock;
   else {
-    *out = yealink::rtvc::ViewFilterType::kInvalid;
+    *out = rtvc::ViewFilterType::kInvalid;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterRuleInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::ViewFilterRuleInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::ViewFilterRuleInfo& val) {
+    const rtvc::ViewFilterRuleInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
   handler.Set("role", val.role);
   handler.Set("ingress", val.ingress);
@@ -3458,10 +3398,10 @@ v8::Local<v8::Value> Converter<yealink::rtvc::ViewFilterRuleInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::ViewFilterRuleInfo>::FromV8(
+bool Converter<rtvc::ViewFilterRuleInfo>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::ViewFilterRuleInfo* out) {
+    rtvc::ViewFilterRuleInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3472,168 +3412,168 @@ bool Converter<yealink::rtvc::ViewFilterRuleInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::StatsAudioCodecType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::StatsAudioCodecType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::StatsAudioCodecType val) {
+    rtvc::StatsAudioCodecType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::StatsAudioCodecType::kAACLC:
+    case rtvc::StatsAudioCodecType::kAACLC:
       res = "AACLC";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kARES:
+    case rtvc::StatsAudioCodecType::kARES:
       res = "ARES";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kG7221:
+    case rtvc::StatsAudioCodecType::kG7221:
       res = "G7221";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kG72221C:
+    case rtvc::StatsAudioCodecType::kG72221C:
       res = "G7221C";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kG722:
+    case rtvc::StatsAudioCodecType::kG722:
       res = "G722";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kG729:
+    case rtvc::StatsAudioCodecType::kG729:
       res = "G729";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kNone:
+    case rtvc::StatsAudioCodecType::kNone:
       res = "";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kOPUS:
+    case rtvc::StatsAudioCodecType::kOPUS:
       res = "OPUS";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kPCMA:
+    case rtvc::StatsAudioCodecType::kPCMA:
       res = "PCMA";
       break;
-    case yealink::rtvc::StatsAudioCodecType::kPCMU:
+    case rtvc::StatsAudioCodecType::kPCMU:
       res = "PCMU";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::StatsAudioCodecType>::FromV8(
+bool Converter<rtvc::StatsAudioCodecType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::StatsAudioCodecType* out) {
+    rtvc::StatsAudioCodecType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "AACLC")
-    *out = yealink::rtvc::StatsAudioCodecType::kAACLC;
+    *out = rtvc::StatsAudioCodecType::kAACLC;
   else if (in == "ARES")
-    *out = yealink::rtvc::StatsAudioCodecType::kARES;
+    *out = rtvc::StatsAudioCodecType::kARES;
   else if (in == "G7221")
-    *out = yealink::rtvc::StatsAudioCodecType::kG7221;
+    *out = rtvc::StatsAudioCodecType::kG7221;
   else if (in == "G72221C")
-    *out = yealink::rtvc::StatsAudioCodecType::kG72221C;
+    *out = rtvc::StatsAudioCodecType::kG72221C;
   else if (in == "G722")
-    *out = yealink::rtvc::StatsAudioCodecType::kG722;
+    *out = rtvc::StatsAudioCodecType::kG722;
   else if (in == "G729")
-    *out = yealink::rtvc::StatsAudioCodecType::kG729;
+    *out = rtvc::StatsAudioCodecType::kG729;
   else if (in == "OPUS")
-    *out = yealink::rtvc::StatsAudioCodecType::kOPUS;
+    *out = rtvc::StatsAudioCodecType::kOPUS;
   else if (in == "PCMA")
-    *out = yealink::rtvc::StatsAudioCodecType::kPCMA;
+    *out = rtvc::StatsAudioCodecType::kPCMA;
   else if (in == "PCMU")
-    *out = yealink::rtvc::StatsAudioCodecType::kPCMU;
+    *out = rtvc::StatsAudioCodecType::kPCMU;
   else {
-    *out = yealink::rtvc::StatsAudioCodecType::kNone;
+    *out = rtvc::StatsAudioCodecType::kNone;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::StatsVideoCodecType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::StatsVideoCodecType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::StatsVideoCodecType val) {
+    rtvc::StatsVideoCodecType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::StatsVideoCodecType::kH263:
+    case rtvc::StatsVideoCodecType::kH263:
       res = "H263";
       break;
-    case yealink::rtvc::StatsVideoCodecType::kH264:
+    case rtvc::StatsVideoCodecType::kH264:
       res = "H264";
       break;
-    case yealink::rtvc::StatsVideoCodecType::kNone:
+    case rtvc::StatsVideoCodecType::kNone:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::StatsVideoCodecType>::FromV8(
+bool Converter<rtvc::StatsVideoCodecType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::StatsVideoCodecType* out) {
+    rtvc::StatsVideoCodecType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "H263")
-    *out = yealink::rtvc::StatsVideoCodecType::kH263;
+    *out = rtvc::StatsVideoCodecType::kH263;
   else if (in == "H264")
-    *out = yealink::rtvc::StatsVideoCodecType::kH264;
+    *out = rtvc::StatsVideoCodecType::kH264;
   else {
-    *out = yealink::rtvc::StatsVideoCodecType::kNone;
+    *out = rtvc::StatsVideoCodecType::kNone;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::StatsVideoProfileType>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::StatsVideoProfileType>::ToV8(
     v8::Isolate* isolate,
-    yealink::rtvc::StatsVideoProfileType val) {
+    rtvc::StatsVideoProfileType val) {
   std::string res;
   switch (val) {
-    case yealink::rtvc::StatsVideoProfileType::kBase:
+    case rtvc::StatsVideoProfileType::kBase:
       res = "base";
       break;
-    case yealink::rtvc::StatsVideoProfileType::kHigh:
+    case rtvc::StatsVideoProfileType::kHigh:
       res = "high";
       break;
-    case yealink::rtvc::StatsVideoProfileType::kMain:
+    case rtvc::StatsVideoProfileType::kMain:
       res = "main";
       break;
-    case yealink::rtvc::StatsVideoProfileType::kMax:
+    case rtvc::StatsVideoProfileType::kMax:
       res = "max";
       break;
-    case yealink::rtvc::StatsVideoProfileType::kNone:
+    case rtvc::StatsVideoProfileType::kNone:
       res = "";
       break;
   }
   return ConvertToV8(isolate, res);
 }
 
-bool Converter<yealink::rtvc::StatsVideoProfileType>::FromV8(
+bool Converter<rtvc::StatsVideoProfileType>::FromV8(
     v8::Isolate* isolate,
     v8::Local<v8::Value> val,
-    yealink::rtvc::StatsVideoProfileType* out) {
+    rtvc::StatsVideoProfileType* out) {
   std::string in;
   if (!ConvertFromV8(isolate, val, &in))
     return false;
 
   if (in == "base")
-    *out = yealink::rtvc::StatsVideoProfileType::kBase;
+    *out = rtvc::StatsVideoProfileType::kBase;
   else if (in == "high")
-    *out = yealink::rtvc::StatsVideoProfileType::kHigh;
+    *out = rtvc::StatsVideoProfileType::kHigh;
   else if (in == "main")
-    *out = yealink::rtvc::StatsVideoProfileType::kMain;
+    *out = rtvc::StatsVideoProfileType::kMain;
   else if (in == "max")
-    *out = yealink::rtvc::StatsVideoProfileType::kMax;
+    *out = rtvc::StatsVideoProfileType::kMax;
   else {
-    *out = yealink::rtvc::StatsVideoProfileType::kNone;
+    *out = rtvc::StatsVideoProfileType::kNone;
     return false;
   }
 
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::AudioStatsInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::AudioStatsInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::AudioStatsInfo& val) {
+    const rtvc::AudioStatsInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("codec", val.codec);
@@ -3647,10 +3587,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::AudioStatsInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::AudioStatsInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::AudioStatsInfo* out) {
+bool Converter<rtvc::AudioStatsInfo>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::AudioStatsInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3665,9 +3604,9 @@ bool Converter<yealink::rtvc::AudioStatsInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::VideoStatsInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::VideoStatsInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::VideoStatsInfo& val) {
+    const rtvc::VideoStatsInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("codec", val.codec);
@@ -3684,10 +3623,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::VideoStatsInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::VideoStatsInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::VideoStatsInfo* out) {
+bool Converter<rtvc::VideoStatsInfo>::FromV8(v8::Isolate* isolate,
+                                             v8::Local<v8::Value> val,
+                                             rtvc::VideoStatsInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3705,9 +3643,9 @@ bool Converter<yealink::rtvc::VideoStatsInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RTCVideoStats>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RTCVideoStats>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RTCVideoStats& val) {
+    const rtvc::RTCVideoStats& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("inbound", val.inbound);
@@ -3716,10 +3654,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RTCVideoStats>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RTCVideoStats>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RTCVideoStats* out) {
+bool Converter<rtvc::RTCVideoStats>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::RTCVideoStats* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3729,9 +3666,9 @@ bool Converter<yealink::rtvc::RTCVideoStats>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RTCAudioStats>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RTCAudioStats>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RTCAudioStats& val) {
+    const rtvc::RTCAudioStats& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("inbound", val.inbound);
@@ -3740,10 +3677,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RTCAudioStats>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RTCAudioStats>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RTCAudioStats* out) {
+bool Converter<rtvc::RTCAudioStats>::FromV8(v8::Isolate* isolate,
+                                            v8::Local<v8::Value> val,
+                                            rtvc::RTCAudioStats* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3753,9 +3689,9 @@ bool Converter<yealink::rtvc::RTCAudioStats>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RTCStats>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RTCStats>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RTCStats& val) {
+    const rtvc::RTCStats& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("video", val.video);
@@ -3764,9 +3700,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RTCStats>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RTCStats>::FromV8(v8::Isolate* isolate,
-                                                v8::Local<v8::Value> val,
-                                                yealink::rtvc::RTCStats* out) {
+bool Converter<rtvc::RTCStats>::FromV8(v8::Isolate* isolate,
+                                       v8::Local<v8::Value> val,
+                                       rtvc::RTCStats* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3776,9 +3712,9 @@ bool Converter<yealink::rtvc::RTCStats>::FromV8(v8::Isolate* isolate,
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::RTCStatsInfo>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::RTCStatsInfo>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::RTCStatsInfo& val) {
+    const rtvc::RTCStatsInfo& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("media", val.media);
@@ -3787,10 +3723,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::RTCStatsInfo>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::RTCStatsInfo>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::RTCStatsInfo* out) {
+bool Converter<rtvc::RTCStatsInfo>::FromV8(v8::Isolate* isolate,
+                                           v8::Local<v8::Value> val,
+                                           rtvc::RTCStatsInfo* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;
@@ -3800,9 +3735,9 @@ bool Converter<yealink::rtvc::RTCStatsInfo>::FromV8(
   return true;
 }
 
-v8::Local<v8::Value> Converter<yealink::rtvc::PartyInviteInfos>::ToV8(
+v8::Local<v8::Value> Converter<rtvc::PartyInviteInfos>::ToV8(
     v8::Isolate* isolate,
-    const yealink::rtvc::PartyInviteInfos& val) {
+    const rtvc::PartyInviteInfos& val) {
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("url", val.url);
@@ -3811,10 +3746,9 @@ v8::Local<v8::Value> Converter<yealink::rtvc::PartyInviteInfos>::ToV8(
   return handler.GetHandle();
 }
 
-bool Converter<yealink::rtvc::PartyInviteInfos>::FromV8(
-    v8::Isolate* isolate,
-    v8::Local<v8::Value> val,
-    yealink::rtvc::PartyInviteInfos* out) {
+bool Converter<rtvc::PartyInviteInfos>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::PartyInviteInfos* out) {
   Dictionary dict;
   if (!ConvertFromV8(isolate, val, &dict))
     return false;

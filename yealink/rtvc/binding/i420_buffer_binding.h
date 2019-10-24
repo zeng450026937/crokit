@@ -5,8 +5,6 @@
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video/i420_buffer.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class I420BufferBinding : public mate::Wrappable<I420BufferBinding> {
@@ -51,7 +49,5 @@ class I420BufferBinding : public mate::Wrappable<I420BufferBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_I420_BUFFER_BINDING_H_

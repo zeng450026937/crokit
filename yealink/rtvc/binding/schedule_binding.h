@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ScheduleBinding : public mate::EventEmitter<ScheduleBinding> {
@@ -42,7 +40,5 @@ class ScheduleBinding : public mate::EventEmitter<ScheduleBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_SCHEDULE_BINDING_H_

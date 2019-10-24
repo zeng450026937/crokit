@@ -15,8 +15,6 @@
 #include "third_party/webrtc/modules/desktop_capture/desktop_frame.h"
 #include "yealink/rtvc/binding/desktop_media_list_observer.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -297,5 +295,3 @@ void NativeDesktopMediaList::UpdateNativeThumbnailsFinished() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

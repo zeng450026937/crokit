@@ -4,8 +4,6 @@
 #include "base/optional.h"
 #include "yealink/rtvc/api/channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ShareChannelObserver : public ChannelObserver {
@@ -24,7 +22,5 @@ class ShareChannel : public Channel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_SHARE_CHANNEL_H_

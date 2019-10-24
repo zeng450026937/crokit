@@ -5,8 +5,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/binding/i420_buffer_binding.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -64,5 +62,3 @@ v8::Local<v8::Value> VideoFrameBinding::buffer() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

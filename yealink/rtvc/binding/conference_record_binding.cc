@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -34,7 +32,7 @@ void ConferenceRecordBinding::BuildPrototype(
       .SetMethod("setRecordStatus", &ConferenceRecordBinding::SetRecordStatus);
 }
 
-void ConferenceRecordBinding::UpdateRoomController(RoomController* handler) {
+void ConferenceRecordBinding::UpdateRoomController(yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
@@ -82,7 +80,7 @@ void ConferenceRecordBinding::DoSetRecordStatus(RecordStatusType status,
   if (response != nullptr && room_controller_ != nullptr)
     ConvertFrom(*response,
                 room_controller_->GetRecordComponent().SetRecordStatus(
-                    (RoomRecordStatus)status));
+                    (yealink::RoomRecordStatus)status));
 }
 
 void ConferenceRecordBinding::OnProcessCompeleted(Promise promise,
@@ -95,5 +93,3 @@ void ConferenceRecordBinding::OnProcessCompeleted(Promise promise,
   }
 }
 }  // namespace rtvc
-
-}  // namespace yealink

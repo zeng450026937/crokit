@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class RequesrResult {
@@ -111,7 +109,5 @@ class Conference {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONFERENCE_H_

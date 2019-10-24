@@ -11,8 +11,6 @@
 #include "base/strings/string_split.h"
 #include "base/strings/string_util.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 const char kScreenPrefix[] = "screen";
@@ -96,5 +94,3 @@ std::string DesktopMediaID::ToString() const {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

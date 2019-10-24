@@ -1,7 +1,5 @@
 #include "yealink/rtvc/binding/connector_binding.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -12,7 +10,7 @@ mate::WrappableBase* ConnectorBinding::New(mate::Arguments* args) {
 // static
 mate::Handle<ConnectorBinding> ConnectorBinding::Create(
     v8::Isolate* isolate,
-    AccessAgent* access_agent) {
+    yealink::AccessAgent* access_agent) {
   return mate::CreateHandle(isolate,
                             new ConnectorBinding(isolate, access_agent));
 }
@@ -28,7 +26,7 @@ ConnectorBinding::ConnectorBinding(v8::Isolate* isolate,
   InitWith(isolate, wrapper);
 }
 ConnectorBinding::ConnectorBinding(v8::Isolate* isolate,
-                                   AccessAgent* access_agent)
+                                   yealink::AccessAgent* access_agent)
     : access_agent_(access_agent) {
   DCHECK(access_agent_);
   Init(isolate);
@@ -36,5 +34,3 @@ ConnectorBinding::ConnectorBinding(v8::Isolate* isolate,
 ConnectorBinding::~ConnectorBinding() = default;
 
 }  // namespace rtvc
-
-}  // namespace yealink

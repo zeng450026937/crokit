@@ -5,8 +5,6 @@
 #include "base/memory/weak_ptr.h"
 #include "third_party/webrtc/modules/desktop_capture/screen_drawer.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class DesktopDrawer {
@@ -30,7 +28,5 @@ class DesktopDrawer {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_DRAWER_H_

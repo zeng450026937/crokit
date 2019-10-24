@@ -5,8 +5,6 @@
 #include "yealink/rtvc/api/contact.h"
 #include "yealink/rtvc/binding/trackable_object.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ContactNodeBinding : public mate::TrackableObject<ContactNodeBinding> {
@@ -48,7 +46,5 @@ class ContactNodeBinding : public mate::TrackableObject<ContactNodeBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONTACT_NODE_BINDING_H_

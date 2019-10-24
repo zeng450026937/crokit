@@ -12,8 +12,6 @@ namespace webrtc {
 class DesktopCapturer;
 }
 
-namespace yealink {
-
 namespace rtvc {
 
 // Implementation of DesktopMediaList that shows native screens and
@@ -47,5 +45,4 @@ class NativeDesktopMediaList : public DesktopMediaListBase {
 
 }  // namespace rtvc
 
-}  // namespace yealink
 #endif  // YEALINK_RTVC_BINDING_NATIVE_DESKTOP_MEDIA_LIST_H_

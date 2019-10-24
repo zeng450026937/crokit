@@ -12,8 +12,6 @@
 #include "yealink/rtvc/binding/video_sink_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class CallBinding : public mate::EventEmitter<CallBinding>,
@@ -177,7 +175,5 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CALL_BINDING_H_

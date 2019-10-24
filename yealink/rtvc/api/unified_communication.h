@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class Call;
@@ -29,7 +27,5 @@ class UnifiedCommunication {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_UNIFIED_COMMUNICATION_H_

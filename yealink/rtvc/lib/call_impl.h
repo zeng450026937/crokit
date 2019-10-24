@@ -8,8 +8,6 @@
 #include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/lib/user_agent_impl.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class CallImpl : public Call {
@@ -70,7 +68,5 @@ class CallImpl : public Call {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_CALL_IMPL_H_

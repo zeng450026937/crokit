@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 CallImpl::CallImpl() {}
@@ -110,5 +108,3 @@ void CallImpl::SetConferenceAware(bool enable) {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink

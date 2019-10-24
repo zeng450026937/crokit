@@ -8,8 +8,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -48,7 +46,7 @@ void ConferenceUsersBinding::BuildPrototype(
       .SetMethod("handUp", &ConferenceUsersBinding::HandUp);
 }
 
-void ConferenceUsersBinding::UpdateRoomController(RoomController* handler) {
+void ConferenceUsersBinding::UpdateRoomController(yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
@@ -58,9 +56,9 @@ void ConferenceUsersBinding::UpdateStatsPendingHandler(
 }
 
 void ConferenceUsersBinding::UpdateUsers(
-    const Array<RoomMember>& newMemberList,
-    const Array<RoomMember>& modifyMemberList,
-    const Array<RoomMember>& deleteMemberList,
+    const yealink::Array<yealink::RoomMember>& newMemberList,
+    const yealink::Array<yealink::RoomMember>& modifyMemberList,
+    const yealink::Array<yealink::RoomMember>& deleteMemberList,
     bool force) {
   uint32_t i;
 
@@ -69,9 +67,9 @@ void ConferenceUsersBinding::UpdateUsers(
   v8_deleted_list_.clear();
 
   if (force == true) {
-    Array<RoomMember> memberList =
+    yealink::Array<yealink::RoomMember> memberList =
         room_controller_->GetMemberManager().GetMemberList();
-    RoomMember owner = room_controller_->GetMemberManager().GetOwner();
+    yealink::RoomMember owner = room_controller_->GetMemberManager().GetOwner();
 
     // v8::HandleScope handle_scope(isolate());
     for (i = 0; i < memberList.Size(); i++) {
@@ -423,7 +421,7 @@ v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
     bool granted) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
-  yealink::Array<RoomMember> params;
+  yealink::Array<yealink::RoomMember> params;
 
   for (int i = 0; i < (int)entities.size(); i++) {
     auto iter = user_list_.find(entities[i]);
@@ -453,7 +451,7 @@ v8::Local<v8::Promise> ConferenceUsersBinding::Allow(
 
 void ConferenceUsersBinding::DoAllow(std::vector<std::string> entities,
                                      bool granted) {
-  yealink::Array<RoomMember> params;  // todo get member control
+  yealink::Array<yealink::RoomMember> params;  // todo get member control
 
   if (room_controller_) {
     if (granted) {
@@ -516,5 +514,3 @@ void ConferenceUsersBinding::OnCommandCompeleted(Promise promise) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

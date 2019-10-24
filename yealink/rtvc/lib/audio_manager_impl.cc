@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 AudioManagerImpl::AudioManagerImpl() {}
@@ -107,5 +105,3 @@ AudioManager* AudioManager::Instance() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

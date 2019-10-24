@@ -22,19 +22,19 @@
 
 namespace {
 
-using yealink::rtvc::AudioManagerBinding;
-using yealink::rtvc::BootstrapBinding;
-using yealink::rtvc::CallBinding;
-using yealink::rtvc::CloudContactBinding;
-using yealink::rtvc::ConferenceBinding;
-using yealink::rtvc::ConnectorBinding;
-using yealink::rtvc::DesktopCaptureBinding;
-using yealink::rtvc::LocalContactBinding;
-using yealink::rtvc::ScheduleBinding;
-using yealink::rtvc::UserAgentBinding;
-using yealink::rtvc::VideoFrameBinding;
-using yealink::rtvc::VideoManagerBinding;
-using yealink::rtvc::YTMSBinding;
+using rtvc::AudioManagerBinding;
+using rtvc::BootstrapBinding;
+using rtvc::CallBinding;
+using rtvc::CloudContactBinding;
+using rtvc::ConferenceBinding;
+using rtvc::ConnectorBinding;
+using rtvc::DesktopCaptureBinding;
+using rtvc::LocalContactBinding;
+using rtvc::ScheduleBinding;
+using rtvc::UserAgentBinding;
+using rtvc::VideoFrameBinding;
+using rtvc::VideoManagerBinding;
+using rtvc::YTMSBinding;
 
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
@@ -53,20 +53,20 @@ void Initialize(v8::Local<v8::Object> exports,
 #endif
   v8::Isolate* isolate = context->GetIsolate();
 
-  yealink::rtvc::Context::Instance()->Initialize(isolate);
+  rtvc::Context::Instance()->Initialize(isolate);
   // setup exports
   mate::Dictionary dict(isolate, exports);
 
   dict.Set("version", "1.0.0-alpha");
 
   mate::Dictionary v8_util = mate::Dictionary::CreateEmpty(isolate);
-  v8_util.SetMethod("getHiddenValue", &yealink::rtvc::GetHiddenValue);
-  v8_util.SetMethod("setHiddenValue", &yealink::rtvc::SetHiddenValue);
-  v8_util.SetMethod("deleteHiddenValue", &yealink::rtvc::DeleteHiddenValue);
-  v8_util.SetMethod("getObjectHash", &yealink::rtvc::GetObjectHash);
-  v8_util.SetMethod("takeHeapSnapshot", &yealink::rtvc::TakeHeapSnapshot);
+  v8_util.SetMethod("getHiddenValue", &rtvc::GetHiddenValue);
+  v8_util.SetMethod("setHiddenValue", &rtvc::SetHiddenValue);
+  v8_util.SetMethod("deleteHiddenValue", &rtvc::DeleteHiddenValue);
+  v8_util.SetMethod("getObjectHash", &rtvc::GetObjectHash);
+  v8_util.SetMethod("takeHeapSnapshot", &rtvc::TakeHeapSnapshot);
   v8_util.SetMethod("requestGarbageCollectionForTesting",
-                    &yealink::rtvc::RequestGarbageCollectionForTesting);
+                    &rtvc::RequestGarbageCollectionForTesting);
   dict.Set("v8Util", v8_util);
 
   DesktopCaptureBinding::SetConstructor(

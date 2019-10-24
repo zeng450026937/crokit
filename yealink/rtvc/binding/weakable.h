@@ -3,8 +3,6 @@
 
 #include "base/memory/weak_ptr.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 template <typename T>
@@ -51,7 +49,5 @@ Weakable<T>* WrapWeakable(T* ptr) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_WEAKABLE_H_

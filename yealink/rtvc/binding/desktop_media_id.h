@@ -4,8 +4,6 @@
 #include <string>
 #include <tuple>
 
-namespace yealink {
-
 namespace rtvc {
 
 // Type used to identify desktop media sources. It's converted to string and
@@ -52,7 +50,5 @@ struct DesktopMediaID {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_MEDIA_ID_H_

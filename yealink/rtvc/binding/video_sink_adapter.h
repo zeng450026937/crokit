@@ -6,8 +6,6 @@
 #include "yealink/libvc/include/media/media_capture.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoSinkAdapter : public yealink::MediaCapture, public VideoSink {
@@ -28,7 +26,5 @@ class VideoSinkAdapter : public yealink::MediaCapture, public VideoSink {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_SINK_ADAPTER_H_

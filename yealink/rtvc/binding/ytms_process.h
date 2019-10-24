@@ -11,11 +11,9 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
-class ProcessObserver : public YTMSProcess {
+class ProcessObserver : public yealink::YTMSProcess {
  public:
   ProcessObserver();
   ~ProcessObserver();
@@ -34,7 +32,5 @@ class ProcessObserver : public YTMSProcess {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_YTMS_PROCESS_H_

@@ -8,8 +8,6 @@
 
 #include "yealink/rtvc/api/conference_user.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 struct RTMPOptions {};
@@ -162,7 +160,5 @@ class UserCon {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONFERENCE_CONTROL_H_

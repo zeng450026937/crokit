@@ -6,8 +6,6 @@
 #include "yealink/rtvc/api/video/video_source.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class CallState {
@@ -96,7 +94,5 @@ class Call {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CALL_H_

@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/share_channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ShareChannelImpl : public ShareChannel {
@@ -14,7 +12,5 @@ class ShareChannelImpl : public ShareChannel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_SHARE_CHANNEL_IMPL_H_

@@ -10,8 +10,6 @@
 #include "yealink/rtvc/api/video/video_frame_buffer.h"
 #include "yealink/rtvc/api/video/video_rotation.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class I010BufferImpl : public I010Buffer {
@@ -80,7 +78,5 @@ class I010BufferImpl : public I010Buffer {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_I010_BUFFER_H_

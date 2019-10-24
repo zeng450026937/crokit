@@ -7,8 +7,6 @@
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/binding/context.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 VideoSourceAdapter::VideoSourceAdapter() : weak_factory_(this) {}
@@ -30,10 +28,11 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
   auto type = frame.RawDataType();
   scoped_refptr<VideoFrameBuffer> buffer;
 
-  if (type == VideoRawDataType::VIDEO_RAW_DATA_I420) {
+  if (type == yealink::VideoRawDataType::VIDEO_RAW_DATA_I420) {
     auto y_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kYPlane);
     auto u_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kUPlane);
     auto v_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kVPlane);
+    // auto i420_buffer = I420BufferImpl::Create(frame.Width(), frame.Height());;
     auto i420_buffer = I420BufferImpl::Copy(
         frame.Width(), frame.Height(), (uint8_t*)y_plane.data, y_plane.stride,
         (uint8_t*)u_plane.data, u_plane.stride, (uint8_t*)v_plane.data,
@@ -64,5 +63,3 @@ void VideoSourceAdapter::OnFrame(const VideoFrame& frame) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

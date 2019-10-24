@@ -5,8 +5,6 @@
 
 #include "yealink/rtvc/api/macros.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceUser;
@@ -27,7 +25,5 @@ class ConferenceState {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONFERENCE_STATE_H_

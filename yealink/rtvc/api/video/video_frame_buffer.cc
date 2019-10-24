@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 scoped_refptr<I420Buffer> VideoFrameBuffer::GetI420() {
@@ -91,5 +89,3 @@ int I010Buffer::ChromaHeight() const {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

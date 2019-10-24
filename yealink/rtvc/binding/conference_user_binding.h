@@ -14,8 +14,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/trackable_object.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceUserBinding
@@ -31,8 +29,8 @@ class ConferenceUserBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateUserController(RoomMember& handler);
-  RoomMember GetUserController();
+  void UpdateUserController(yealink::RoomMember& handler);
+  yealink::RoomMember GetUserController();
   void UpdateStatsPendingHandler(
       std::unordered_map<std::string, Promise>* handler);
 
@@ -107,13 +105,11 @@ class ConferenceUserBinding
   void OnCommandCompeleted(Promise promise);
 
  private:
-  RoomMember user_controller_;
+  yealink::RoomMember user_controller_;
   base::WeakPtrFactory<ConferenceUserBinding> weak_factory_;
   std::unordered_map<std::string, Promise>* stats_pending_requests_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_USER_BINDING_H_

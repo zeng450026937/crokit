@@ -3,8 +3,6 @@
 #include "base/logging.h"
 #include "yealink/rtvc/binding/video_sink_v8.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -41,5 +39,3 @@ void VideoSourceBinding::RemoveSink(mate::PersistentDictionary sink) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

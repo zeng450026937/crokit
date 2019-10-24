@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 ChannelImpl::ChannelImpl() {}
@@ -42,5 +40,3 @@ void ChannelImpl::Renegotiate() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

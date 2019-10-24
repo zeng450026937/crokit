@@ -7,8 +7,6 @@
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/binding/context.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 VideoSinkAdapter::VideoSinkAdapter() {}
@@ -62,5 +60,3 @@ void VideoSinkAdapter::OnFrame(const VideoFrame& frame) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

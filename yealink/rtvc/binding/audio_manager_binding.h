@@ -2,16 +2,12 @@
 #define YEALINK_RTVC_BINDING_AUDIO_MANAGER_BINDING_H_
 
 #include "base/optional.h"
+#include "yealink/libvc/include/media/media_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/audio_manager.h"
 
-namespace yealink {
-
-class Media;
-
 namespace rtvc {
-
 class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
@@ -94,7 +90,5 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_AUDIO_MANAGER_BINDING_H_

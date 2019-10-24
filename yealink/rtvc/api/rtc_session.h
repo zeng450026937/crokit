@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class SignalingState {
@@ -131,7 +129,5 @@ class RTCSession {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_RTC_SESSION_H_

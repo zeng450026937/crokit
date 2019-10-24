@@ -14,12 +14,10 @@ template <>
 struct Converter<yealink::ScheduleItem> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const yealink::ScheduleItem& val) {
-    return yealink::rtvc::ScheduleItemBinding::Create(isolate, val).ToV8();
+    return rtvc::ScheduleItemBinding::Create(isolate, val).ToV8();
   }
 };
 }  // namespace mate
-
-namespace yealink {
 
 namespace rtvc {
 
@@ -143,5 +141,3 @@ void ScheduleBinding::DoSync(uint64_t start_time, uint64_t end_time) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

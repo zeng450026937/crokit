@@ -4,8 +4,6 @@
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/converter.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -118,5 +116,3 @@ v8::Local<v8::Value> I420BufferBinding::DataV() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

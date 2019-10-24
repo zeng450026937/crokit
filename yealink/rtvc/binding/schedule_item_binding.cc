@@ -14,15 +14,13 @@ template <>
 struct hash<yealink::ScheduleItem> {
   size_t operator()(const yealink::ScheduleItem& item) const {
     std::string hash;
-    yealink::rtvc::ConvertFrom(hash, item.GetPlanId());
+    rtvc::ConvertFrom(hash, item.GetPlanId());
     hash = hash + base::IntToString(item.GetSequence());
     return std::hash<std::string>()(hash);
   }
 };
 
 }  // namespace std
-
-namespace yealink {
 
 namespace rtvc {
 
@@ -242,5 +240,3 @@ void ScheduleItemBinding::DoGetMailTemplate() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -1,7 +1,5 @@
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -1624,5 +1622,3 @@ bool StructTraits<PartyInviteInfos>::From(PartyInviteInfos& out,
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

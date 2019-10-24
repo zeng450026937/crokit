@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -186,7 +184,7 @@ v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
 }
 
 void BootstrapBinding::DoAuthenticate(std::vector<AccountInfo>* result) {
-  LoginInfo info;
+  yealink::LoginInfo info;
   yealink::LoginUserInfos ret;
   info.server = server_.c_str();
   info.username = username_.c_str();
@@ -227,5 +225,3 @@ void BootstrapBinding::DoPushVerifyCode(bool* result) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

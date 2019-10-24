@@ -6,8 +6,6 @@
 #include "base/memory/ref_counted.h"
 #include "base/memory/scoped_refptr.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class I420Buffer;
@@ -154,7 +152,5 @@ class I010Buffer : public PlanarYuv16BBuffer {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_BUFFER_H_

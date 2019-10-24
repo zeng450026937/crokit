@@ -12,8 +12,7 @@
 #include "yealink/rtvc/binding/video_sink_v8.h"
 #include "yealink/rtvc/binding/video_source_v8.h"
 #include "yealink/rtvc/binding/video_source_adapter.h"
-
-namespace yealink {
+#include "yealink/libvc/include/media/media_api.h"
 
 class Media;
 
@@ -74,7 +73,5 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_MANAGER_BINDING_H_

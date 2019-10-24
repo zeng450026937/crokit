@@ -11,8 +11,6 @@
 #include "third_party/webrtc/modules/desktop_capture/win/screen_capture_utils.h"
 #endif
 
-namespace yealink {
-
 namespace rtvc {
 
 class CallBinding::UpgradeDelegate : public yealink::MeetingObserver {
@@ -1030,4 +1028,3 @@ void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
 
 }  // namespace rtvc
 
-}  // namespace yealink

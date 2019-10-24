@@ -5,8 +5,6 @@
 #include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoSinkV8 : public VideoSink {
@@ -24,7 +22,5 @@ class VideoSinkV8 : public VideoSink {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_SINK_V8_H_

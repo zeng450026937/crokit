@@ -28,20 +28,20 @@ int64_t DeviceIdFromDeviceName(const wchar_t* device_name) {
 //                               LPARAM dwData) {
 //   if (hMonitor != NULL) {
 //     auto list =
-//         reinterpret_cast<std::vector<yealink::rtvc::DesktopMediaList::Source>*>(
+//         reinterpret_cast<std::vector<rtvc::DesktopMediaList::Source>*>(
 //             dwData);
-//     yealink::rtvc::DesktopMediaList::Source source;
-//     source.id = yealink::rtvc::DesktopMediaID(
-//         yealink::rtvc::DesktopMediaID::TYPE_SCREEN,
-//         reinterpret_cast<yealink::rtvc::DesktopMediaID::Id>(hMonitor));
+//     rtvc::DesktopMediaList::Source source;
+//     source.id = rtvc::DesktopMediaID(
+//         rtvc::DesktopMediaID::TYPE_SCREEN,
+//         reinterpret_cast<rtvc::DesktopMediaID::Id>(hMonitor));
 //     list->emplace_back(source);
 //   }
 //   return TRUE;
 // }
 
 // // static
-// std::vector<yealink::rtvc::DesktopMediaList::Source> EnumDisplayScreen() {
-//   std::vector<yealink::rtvc::DesktopMediaList::Source> list;
+// std::vector<rtvc::DesktopMediaList::Source> EnumDisplayScreen() {
+//   std::vector<rtvc::DesktopMediaList::Source> list;
 //   ::EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&list);
 //   return list;
 // }
@@ -50,12 +50,12 @@ int64_t DeviceIdFromDeviceName(const wchar_t* device_name) {
 namespace mate {
 
 template <>
-struct Converter<yealink::rtvc::DesktopCaptureBinding::Source> {
+struct Converter<rtvc::DesktopCaptureBinding::Source> {
   static v8::Local<v8::Value> ToV8(
       v8::Isolate* isolate,
-      const yealink::rtvc::DesktopCaptureBinding::Source& source) {
+      const rtvc::DesktopCaptureBinding::Source& source) {
     mate::Dictionary dict(isolate, v8::Object::New(isolate));
-    yealink::rtvc::DesktopMediaID id = source.media_list_source.id;
+    rtvc::DesktopMediaID id = source.media_list_source.id;
     dict.Set("name", base::UTF16ToUTF8(source.media_list_source.name));
     dict.Set("id", id.ToString());
     dict.Set("display_id", source.display_id);
@@ -64,10 +64,10 @@ struct Converter<yealink::rtvc::DesktopCaptureBinding::Source> {
 };
 
 template <>
-struct Converter<yealink::rtvc::ThumbnailSize> {
+struct Converter<rtvc::ThumbnailSize> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ThumbnailSize* out) {
+                     rtvc::ThumbnailSize* out) {
     Dictionary dict;
     if (!ConvertFromV8(isolate, val, &dict))
       return false;
@@ -80,7 +80,7 @@ struct Converter<yealink::rtvc::ThumbnailSize> {
     return true;
   }
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ThumbnailSize& size) {
+                                   const rtvc::ThumbnailSize& size) {
     mate::Dictionary dict(isolate, v8::Object::New(isolate));
     dict.Set("width", size.width());
     dict.Set("height", size.height());
@@ -89,8 +89,6 @@ struct Converter<yealink::rtvc::ThumbnailSize> {
 };
 
 }  // namespace mate
-
-namespace yealink {
 
 namespace rtvc {
 
@@ -156,7 +154,7 @@ void DesktopCaptureBinding::StartHandling(bool capture_window,
                                           bool fetch_window_icons) {
   fetch_window_icons_ = fetch_window_icons;
 #if defined(OS_WIN)
-  if (yealink::desktop_capture::CreateDesktopCaptureOptions()
+  if (desktop_capture::CreateDesktopCaptureOptions()
           .allow_directx_capturer()) {
     // DxgiDuplicatorController should be alive in this scope according to
     // screen_capturer_win.cc.
@@ -178,7 +176,7 @@ void DesktopCaptureBinding::StartHandling(bool capture_window,
     if (capture_window) {
       window_capturer_.reset(new NativeDesktopMediaList(
           DesktopMediaID::TYPE_WINDOW,
-          yealink::desktop_capture::CreateWindowCapturer()));
+          desktop_capture::CreateWindowCapturer()));
       window_capturer_->SetThumbnailSize(thumbnail_size);
       window_capturer_->StartUpdating(this);
     }
@@ -186,7 +184,7 @@ void DesktopCaptureBinding::StartHandling(bool capture_window,
     if (capture_screen) {
       screen_capturer_.reset(new NativeDesktopMediaList(
           DesktopMediaID::TYPE_SCREEN,
-          yealink::desktop_capture::CreateScreenCapturer()));
+          desktop_capture::CreateScreenCapturer()));
       screen_capturer_->SetThumbnailSize(thumbnail_size);
       screen_capturer_->StartUpdating(this);
     }
@@ -295,5 +293,3 @@ void DesktopCaptureBinding::UpdateSourcesList(DesktopMediaList* list) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

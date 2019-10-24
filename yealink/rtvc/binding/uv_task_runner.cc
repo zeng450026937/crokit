@@ -8,8 +8,6 @@
 
 #include "base/stl_util.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 UvTaskRunner::UvTaskRunner(uv_loop_t* loop) : uv_loop_(loop) {}
@@ -69,5 +67,3 @@ void UvTaskRunner::OnClose(uv_handle_t* handle) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -3,7 +3,6 @@
 
 #include "yealink/rtvc/api/channel.h"
 
-namespace yealink {
 
 namespace rtvc {
 
@@ -43,7 +42,5 @@ class ChannelImpl : public Channel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_CHANNEL_IMPL_H_

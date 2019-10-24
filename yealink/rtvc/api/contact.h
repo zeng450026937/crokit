@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class ContactLoadMode {
@@ -102,7 +100,5 @@ class CloudContact {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONTACT_H_

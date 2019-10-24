@@ -9,10 +9,7 @@
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/binding/promise.h"
-
-namespace yealink {
-
-class AccessAgent;
+#include "yealink/libvc/include/access/access_agent_api.h"
 
 namespace rtvc {
 
@@ -73,13 +70,11 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
 
   v8::Global<v8::Value> connector_;
 
-  AccessAgent* access_agent_;
+  yealink::AccessAgent* access_agent_;
 
   base::WeakPtrFactory<BootstrapBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_BOOTSTRAP_BINDING_CC_

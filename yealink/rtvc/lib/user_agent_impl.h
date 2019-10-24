@@ -4,8 +4,6 @@
 #include "base/memory/weak_ptr.h"
 #include "yealink/rtvc/api/user_agent.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class UserAgentImpl : public UserAgent {
@@ -32,7 +30,5 @@ class UserAgentImpl : public UserAgent {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_USER_AGENT_IMPL_H_

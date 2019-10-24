@@ -11,8 +11,6 @@
 static const int kBufferAlignment = 64;
 static const int kBytesPerPixel = 2;
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -250,5 +248,3 @@ void I010BufferImpl::PasteFrom(const I010Buffer& picture,
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

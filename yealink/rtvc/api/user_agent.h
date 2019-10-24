@@ -6,8 +6,6 @@
 
 #include "base/optional.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class UserAgent {
@@ -50,7 +48,5 @@ class UserAgent {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_USER_AGENT_H_

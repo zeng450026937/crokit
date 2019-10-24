@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 VideoManagerImpl::VideoManagerImpl() {}
@@ -58,5 +56,3 @@ VideoManager* VideoManager::Instance() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

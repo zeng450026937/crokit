@@ -27,7 +27,7 @@ class IDUserData : public base::SupportsUserData::Data {
 }  // namespace
 
 TrackableObjectBase::TrackableObjectBase() : weak_factory_(this) {
-  yealink::rtvc::Context::Instance()->RegisterDestructionCallback(
+  rtvc::Context::Instance()->RegisterDestructionCallback(
       GetDestroyClosure());
 }
 

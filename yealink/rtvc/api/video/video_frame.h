@@ -7,8 +7,6 @@
 #include "yealink/rtvc/api/video/video_frame_buffer.h"
 #include "yealink/rtvc/api/video/video_rotation.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoFrame {
@@ -178,7 +176,5 @@ class VideoFrame {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_VIDEO_FRAME_H_

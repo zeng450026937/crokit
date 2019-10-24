@@ -7,8 +7,6 @@
 #include "yealink/rtvc/api/time_utils.h"
 // #include "rtc_base/time_utils.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 void VideoFrame::UpdateRect::Union(const UpdateRect& other) {
@@ -180,5 +178,3 @@ int64_t VideoFrame::render_time_ms() const {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -7,8 +7,6 @@
 #include "base/optional.h"
 #include "yealink/rtvc/api/device_type.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class AudioMode {
@@ -62,7 +60,5 @@ class AudioManager {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_AUDIO_MANAGER_H_

@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/conference.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceImpl : public Conference {
@@ -14,7 +12,5 @@ class ConferenceImpl : public Conference {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_CONFERENCE_IMPL_H_

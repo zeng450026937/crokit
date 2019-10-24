@@ -8,8 +8,6 @@
 #include "yealink/rtvc/api/schedule_item.h"
 #include "yealink/rtvc/binding/trackable_object.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ScheduleItemBinding : public mate::TrackableObject<ScheduleItemBinding> {
@@ -74,7 +72,5 @@ class ScheduleItemBinding : public mate::TrackableObject<ScheduleItemBinding> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_SCHEDULE_ITEM_BINDING_H_

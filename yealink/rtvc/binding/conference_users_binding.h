@@ -15,8 +15,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceUsersBinding
@@ -31,10 +29,10 @@ class ConferenceUsersBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateRoomController(RoomController* handler);
-  void UpdateUsers(const Array<RoomMember>& newMemberList,
-                   const Array<RoomMember>& modifyMemberList,
-                   const Array<RoomMember>& deleteMemberList,
+  void UpdateRoomController(yealink::RoomController* handler);
+  void UpdateUsers(const yealink::Array<yealink::RoomMember>& newMemberList,
+                   const yealink::Array<yealink::RoomMember>& modifyMemberList,
+                   const yealink::Array<yealink::RoomMember>& deleteMemberList,
                    bool force);
   void UpdateStatsPendingHandler(
       std::unordered_map<std::string, Promise>* handler);
@@ -80,14 +78,12 @@ class ConferenceUsersBinding
   std::unordered_map<std::string, v8::Global<v8::Value>> v8_deleted_list_;
   std::unordered_map<std::string, v8::Global<v8::Value>> v8_added_list_;
 
-  RoomController* room_controller_;
+  yealink::RoomController* room_controller_;
 
   base::WeakPtrFactory<ConferenceUsersBinding> weak_factory_;
   std::unordered_map<std::string, Promise>* stats_pending_requests_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_USER_BINDING_H_

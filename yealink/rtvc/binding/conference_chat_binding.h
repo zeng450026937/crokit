@@ -15,8 +15,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceChatBinding : public mate::EventEmitter<ConferenceChatBinding> {
@@ -30,8 +28,8 @@ class ConferenceChatBinding : public mate::EventEmitter<ConferenceChatBinding> {
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateRoomController(RoomController* handler);
-  void UpdateChatController(ChatManager* handler);
+  void UpdateRoomController(yealink::RoomController* handler);
+  void UpdateChatController(yealink::ChatManager* handler);
 
  protected:
   ConferenceChatBinding(v8::Isolate* isolate,
@@ -58,13 +56,11 @@ class ConferenceChatBinding : public mate::EventEmitter<ConferenceChatBinding> {
                           bool* res);
   void OnRetryMessageCompeleted(Promise promise, bool* res);
 
-  RoomController* room_controller_;
-  ChatManager* chat_controller_;
+  yealink::RoomController* room_controller_;
+  yealink::ChatManager* chat_controller_;
   base::WeakPtrFactory<ConferenceChatBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_CHAT_BINDING_H_

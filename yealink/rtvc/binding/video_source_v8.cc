@@ -3,8 +3,6 @@
 #include "base/logging.h"
 #include "yealink/rtvc/binding/event_emitter_caller.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 VideoSourceV8::VideoSourceV8(mate::PersistentDictionary source)
@@ -48,5 +46,3 @@ void VideoSourceV8::RemoveSink(VideoSink* sink) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

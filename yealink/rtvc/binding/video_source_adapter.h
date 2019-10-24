@@ -7,8 +7,6 @@
 #include "yealink/libvc/include/media/media_video_frame.h"
 #include "yealink/rtvc/api/video/video_source.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
@@ -33,7 +31,5 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_SOURCE_ADAPTER_H_

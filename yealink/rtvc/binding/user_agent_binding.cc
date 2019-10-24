@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/context.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -400,12 +398,10 @@ void UserAgentBinding::OnICEProfile(const yealink::AuthICEProfile& turn,
   Context::Instance()->GetMedia()->SetICEProfile(profile, false);
 }
 
-void UserAgentBinding::OnOffer(const SIPMessageReadonly& message,
-                               SIPInviteAgent** agent) {
+void UserAgentBinding::OnOffer(const yealink::SIPMessageReadonly& message,
+                               yealink::SIPInviteAgent** agent) {
   auto call = CallBinding::Create(isolate(), this, access_agent_);
   *agent = call->GetMeeting()->MediaCallAgent();
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

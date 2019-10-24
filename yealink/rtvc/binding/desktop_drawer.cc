@@ -8,8 +8,6 @@
 #include "base/timer/timer.h"
 #include "build/build_config.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -67,5 +65,3 @@ void DesktopDrawer::DrawRectangle() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/focus_channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class FocusChannelImpl : public FocusChannel {
@@ -14,7 +12,5 @@ class FocusChannelImpl : public FocusChannel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_FOCUS_CHANNEL_IMPL_H_

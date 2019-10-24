@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -61,7 +59,7 @@ void ConferenceDialogBinding::BuildPrototype(
       .SetMethod("clearUnread", &ConferenceDialogBinding::ClearUnread);
 }
 
-void ConferenceDialogBinding::UpdateDialogController(ChatDialog& handler) {
+void ConferenceDialogBinding::UpdateDialogController(yealink::ChatDialog& handler) {
   dialog_controller_ = handler;
 }
 
@@ -102,7 +100,7 @@ int64_t ConferenceDialogBinding::unreadCount() {
 }
 
 std::vector<v8::Local<v8::Value>> ConferenceDialogBinding::messages() {
-  Array<ChatMessageItem> items;
+  yealink::Array<yealink::ChatMessageItem> items;
   std::vector<v8::Local<v8::Value>> message_list;
   size_t i = 0;
 
@@ -126,5 +124,3 @@ bool ConferenceDialogBinding::ClearUnread() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -4,8 +4,6 @@
 #include "base/memory/ref_counted.h"
 #include "uv.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class LibUVHolder : public base::RefCounted<LibUVHolder> {
@@ -27,7 +25,5 @@ class LibUVHolder : public base::RefCounted<LibUVHolder> {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_LIBUV_HOLDER_H_

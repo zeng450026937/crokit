@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 UserAgentImpl::UserAgentImpl(UserAgent::Config config)
@@ -55,5 +53,3 @@ std::unique_ptr<UserAgent> UserAgent::Create(UserAgent::Config config) {
   return std::unique_ptr<UserAgent>(new UserAgentImpl(config));
 }
 }  // namespace rtvc
-
-}  // namespace yealink

@@ -10,8 +10,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -134,14 +132,14 @@ ConferenceBinding::~ConferenceBinding() {
     controller_.release();
 }
 
-void ConferenceBinding::SetController(RoomController* controller) {
+void ConferenceBinding::SetController(yealink::RoomController* controller) {
   locally_generated_controller_ = false;
 
   if (controller_)
     controller_->RemoveObserver(this);
 
   if (controller)
-    controller_ = std::make_unique<RoomController>(*controller);
+    controller_ = std::make_unique<yealink::RoomController>(*controller);
   else
     controller_.reset();
 
@@ -170,7 +168,7 @@ void ConferenceBinding::SetController(RoomController* controller) {
 }
 
 void ConferenceBinding::SetController(
-    std::unique_ptr<RoomController> controller) {
+    std::unique_ptr<yealink::RoomController> controller) {
   if (controller_)
     controller_->RemoveObserver(this);
 
@@ -253,13 +251,13 @@ void ConferenceBinding::CreateConference(mate::Dictionary dict,
   dict.Get("conversationId", &conversation_id);
 
   yealink::RequestResult result;
-  // yealink::rtvc::ResponseInfo response;
+  // rtvc::ResponseInfo response;
   yealink::Array<yealink::SStringA> params;
 
   std::unique_ptr<yealink::RoomController> controller(
       new yealink::RoomController());
 
-  ConferenceResult ret;
+  yealink::ConferenceResult ret;
 
   controller->Init();
   controller->SetConversationId(conversation_id.c_str());
@@ -351,7 +349,7 @@ void ConferenceBinding::OnConnectSuccess() {
   }
 
   // First Information Update
-  Array<RoomMember> empty;
+  yealink::Array<yealink::RoomMember> empty;
   users_->UpdateUsers(empty, empty, empty, true);
 
   Emit("connected");
@@ -411,17 +409,17 @@ void ConferenceBinding::OnConferenceStateChange(
 void ConferenceBinding::OnConferenceViewChange(const yealink::ConferenceView&) {
   Emit("viewUpdated", view());
 }
-void ConferenceBinding::OnRtmpStateChange(const RoomRtmpState&) {
+void ConferenceBinding::OnRtmpStateChange(const yealink::RoomRtmpState&) {
   Emit("rtmpUpdated", rtmp());
 }
-void ConferenceBinding::OnRecordUsersChange(const RoomRecordUsers&) {
+void ConferenceBinding::OnRecordUsersChange(const yealink::RoomRecordUsers&) {
   Emit("recordUpdated", record());
 }
 
 void ConferenceBinding::OnUserChange(
-    const Array<RoomMember>& newMemberList,
-    const Array<RoomMember>& modifyMemberList,
-    const Array<RoomMember>& deleteMemberList) {
+    const yealink::Array<yealink::RoomMember>& newMemberList,
+    const yealink::Array<yealink::RoomMember>& modifyMemberList,
+    const yealink::Array<yealink::RoomMember>& deleteMemberList) {
   users_->UpdateUsers(newMemberList, modifyMemberList, deleteMemberList, false);
 
   Emit("usersUpdated", users());
@@ -436,8 +434,8 @@ void ConferenceBinding::OnUserChange(
     Emit("user:removed", users_->deletedUser());
 }
 void ConferenceBinding::OnGetUserCallStats(
-    const RoomMember& member,
-    const Array<yealink::UserMediaInfo>& info) {
+    const yealink::RoomMember& member,
+    const yealink::Array<yealink::UserMediaInfo>& info) {
   std::vector<UserStatisticsInfo> stats;
 
   ConvertFrom(stats, info);
@@ -475,8 +473,8 @@ void ConferenceBinding::OnFetchFinish() {
   Emit("messageInited");
 };
 
-void ConferenceBinding::OnReceiveMessage(const ChatMessageItem& message) {
-  ChatMessageItem item = message;
+void ConferenceBinding::OnReceiveMessage(const yealink::ChatMessageItem& message) {
+  yealink::ChatMessageItem item = message;
   mate::Handle<ConferenceMessageBinding> new_message =
       ConferenceMessageBinding::Create(isolate(), item);
   v8::Global<v8::Value> v8_new_message;
@@ -490,5 +488,3 @@ void ConferenceBinding::OnDialogChange() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

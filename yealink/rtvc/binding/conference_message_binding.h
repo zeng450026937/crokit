@@ -12,8 +12,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/trackable_object.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceMessageBinding
@@ -28,8 +26,8 @@ class ConferenceMessageBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateMessageController(ChatMessageItem& handler);
-  ChatMessageItem GetMessageItem();
+  void UpdateMessageController(yealink::ChatMessageItem& handler);
+  yealink::ChatMessageItem GetMessageItem();
 
  protected:
   ConferenceMessageBinding(v8::Isolate* isolate,
@@ -51,12 +49,10 @@ class ConferenceMessageBinding
   v8::Local<v8::Promise> SetStatus(bool isRead);
 
  private:
-  ChatMessageItem message_controller_;
+  yealink::ChatMessageItem message_controller_;
   base::WeakPtrFactory<ConferenceMessageBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_MESSAGE_BINDING_H_

@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -76,7 +74,7 @@ VideoManagerBinding::~VideoManagerBinding() {
 }
 
 void VideoManagerBinding::EnumerateDevices() {
-  MediaDeviceInfo devices[kMaxVideoDeviceCout] = {};
+  yealink::MediaDeviceInfo devices[kMaxVideoDeviceCout] = {};
   int count = 0;
 
   count = media_->EnumVideoCameraDevice(devices, kMaxVideoDeviceCout);
@@ -279,5 +277,3 @@ void VideoManagerBinding::SetLocalVideoSource(mate::Arguments* args) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

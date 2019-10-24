@@ -5,8 +5,6 @@
 #include "yealink/rtvc/binding/desktop_media_id.h"
 #include "yealink/rtvc/binding/desktop_media_list.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // Thumbnail size is 100*100 pixels
@@ -79,7 +77,5 @@ class DesktopMediaListBase : public DesktopMediaList {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_MEDIA_LIST_BASE_H_

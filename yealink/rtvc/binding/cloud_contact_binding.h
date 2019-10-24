@@ -8,8 +8,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 class AccessAgent;
 
 namespace rtvc {
@@ -48,7 +46,7 @@ class CloudContactBinding : public mate::EventEmitter<CloudContactBinding>,
   void OnUpdateFinished() override;
   void OnEnableStatusChanged(bool available) override;
   void OnNodeChange(
-      const Array<CloudNodeChangeNotifyEntity>& changeData) override;
+      const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& changeData) override;
 
  private:
   void DoSync();
@@ -66,7 +64,5 @@ class CloudContactBinding : public mate::EventEmitter<CloudContactBinding>,
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CLOUD_CONTACT_BINDING_H_

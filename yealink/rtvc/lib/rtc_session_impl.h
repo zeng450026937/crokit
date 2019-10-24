@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/rtc_session.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class RTCSessionImpl : public RTCSession {
@@ -42,7 +40,5 @@ class RTCSessionImpl : public RTCSession {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_RTC_SESSION_IMPL_H_

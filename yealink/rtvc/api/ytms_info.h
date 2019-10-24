@@ -3,8 +3,6 @@
 
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 struct TerminalInfo {
@@ -104,7 +102,5 @@ struct EventInfo {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_ACCOUNT_INFO_H_

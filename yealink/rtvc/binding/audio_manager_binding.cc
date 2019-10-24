@@ -6,8 +6,6 @@
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/converter.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -171,7 +169,7 @@ void AudioManagerBinding::SetAudioMode(AudioMode mode) {
 }
 
 void AudioManagerBinding::EnumerateDevices() {
-  MediaDeviceInfo devices[kMaxAudioDeviceCout] = {};
+  yealink::MediaDeviceInfo devices[kMaxAudioDeviceCout] = {};
   int count = 0;
 
   count = media_->EnumAudioRecordDevices(devices, kMaxAudioDeviceCout);
@@ -284,5 +282,3 @@ void AudioManagerBinding::EnableBuiltInNS(bool enable) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

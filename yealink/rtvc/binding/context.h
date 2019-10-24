@@ -7,15 +7,11 @@
 #include "base/message_loop/message_loop.h"
 #include "base/single_thread_task_runner.h"
 #include "base/threading/thread_checker.h"
+#include "yealink/libvc/include/media/media_api.h"
 
 namespace v8 {
 class Isolate;
 }  // namespace v8
-
-namespace yealink {
-
-class Media;
-class AccessAgent;
 
 namespace rtvc {
 
@@ -42,7 +38,7 @@ class Context {
 
   base::FilePath GetWorkspaceFolder();
 
-  Media* GetMedia();
+  yealink::Media* GetMedia();
 
  protected:
   Context();
@@ -62,11 +58,9 @@ class Context {
   v8::Isolate* isolate_ = nullptr;
   std::string unique_id_;
   base::FilePath workspace_folder_;
-  Media* media_ = nullptr;
+  yealink::Media* media_ = nullptr;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONTEXT_H_

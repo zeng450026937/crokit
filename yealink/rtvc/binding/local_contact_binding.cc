@@ -30,8 +30,6 @@ struct Converter<yealink::LocalContactInfo> {
 };
 }  // namespace mate
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -227,5 +225,3 @@ LocalContactBinding::ExactFromDict(mate::Dictionary dict) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

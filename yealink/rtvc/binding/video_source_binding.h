@@ -7,8 +7,6 @@
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class VideoSourceBinding : public mate::Wrappable<VideoSourceBinding>,
@@ -36,7 +34,5 @@ class VideoSourceBinding : public mate::Wrappable<VideoSourceBinding>,
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_SOURCE_BINDING_H_

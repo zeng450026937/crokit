@@ -2,8 +2,6 @@
 
 #include "uv.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -20,5 +18,3 @@ void PostTask(base::OnceClosure task) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

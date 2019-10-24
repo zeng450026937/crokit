@@ -10,8 +10,6 @@
 #include "yealink/rtvc/binding/context.h"
 #include "yealink/rtvc/binding/libuv_holder.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // A wrapper around the v8::Promise.
@@ -256,14 +254,12 @@ class CopyablePromise {
 
 }  // namespace rtvc
 
-}  // namespace yealink
-
 namespace mate {
 
 template <>
-struct Converter<yealink::rtvc::Promise> {
+struct Converter<rtvc::Promise> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::Promise& val);
+                                   const rtvc::Promise& val);
   // TODO(MarshallOfSound): Implement FromV8 to allow promise chaining
   //                        in native land
   // static bool FromV8(v8::Isolate* isolate,

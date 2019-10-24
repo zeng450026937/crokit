@@ -6,8 +6,6 @@
 #include "yealink/rtvc/api/unified_communication.h"
 #include "yealink/rtvc/lib/channel_holder.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class UnifiedCommunicationImpl : public UnifiedCommunication {
@@ -42,7 +40,5 @@ class UnifiedCommunicationImpl : public UnifiedCommunication {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_LIB_UNIFIED_COMMUNICATION_IMPL_H_

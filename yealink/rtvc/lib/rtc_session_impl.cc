@@ -2,8 +2,6 @@
 
 #include "base/logging.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 RTCSessionImpl::RTCSessionImpl() {}
@@ -74,5 +72,3 @@ void RTCSessionImpl::SetBitrate(int bitrate) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

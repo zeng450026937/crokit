@@ -24,8 +24,6 @@
 #include "yealink/rtvc/binding/null_task_runner.h"
 #include "yealink/rtvc/binding/uv_task_runner.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -52,7 +50,7 @@ Context::~Context() {
     base::TaskScheduler::GetInstance()->Shutdown();
   }
   if (media_) {
-    Media::ReleaseInstance(media_);
+    yealink::Media::ReleaseInstance(media_);
   }
 }
 
@@ -91,9 +89,9 @@ void Context::Initialize(v8::Isolate* isolate,
   logging::InitLogging(settings);
   logging::SetLogItems(true, false, true, false);
 
-  task_runner_ = base::MakeRefCounted<yealink::rtvc::UvTaskRunner>();
+  task_runner_ = base::MakeRefCounted<rtvc::UvTaskRunner>();
   high_priority_task_runner_ =
-      base::MakeRefCounted<yealink::rtvc::LibuvTaskRunner>();
+      base::MakeRefCounted<rtvc::LibuvTaskRunner>();
 
   message_loop_.reset(new base::MessageLoop);
   message_loop_->SetTaskRunner(task_runner_);
@@ -161,7 +159,7 @@ base::FilePath Context::GetWorkspaceFolder() {
   return workspace_folder_;
 }
 
-Media* Context::GetMedia() {
+yealink::Media* Context::GetMedia() {
   if (!media_) {
     media_ = yealink::Media::CreateInstance(
         workspace_folder_.AsUTF8Unsafe().c_str());
@@ -171,5 +169,3 @@ Media* Context::GetMedia() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

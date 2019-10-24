@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
@@ -53,11 +51,9 @@ class LocalContactBinding : public mate::EventEmitter<LocalContactBinding> {
       mate::Dictionary dict);
 
   LocalContactConfig config_;
-  std::unique_ptr<LocalContactManager> contact_manager_;
+  std::unique_ptr<yealink::LocalContactManager> contact_manager_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_LOCAL_CONTACT_BINDING_CC_

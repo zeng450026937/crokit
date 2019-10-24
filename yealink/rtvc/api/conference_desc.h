@@ -5,8 +5,6 @@
 
 #include "yealink/rtvc/api/macros.h"
 
-namespace yealink {
-
 namespace rtvc {
 enum class DescProfile { kInvalid, kConference, kTeaching, kSeminar };
 
@@ -218,7 +216,5 @@ struct DescInfo {
 // };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CONFERENE_DESC_H_

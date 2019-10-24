@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -37,7 +35,7 @@ void ConferenceViewBinding::BuildPrototype(
       .SetMethod("setSpeakMode", &ConferenceViewBinding::SetSpeakMode);
 }
 
-void ConferenceViewBinding::UpdateRoomController(RoomController* handler) {
+void ConferenceViewBinding::UpdateRoomController(yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
@@ -91,12 +89,12 @@ v8::Local<v8::Promise> ConferenceViewBinding::SetInitialFilters(
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
-  if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
-      params.ingress == yealink::rtvc::ViewFilterType::kBlock) {
+  if (params.role == rtvc::ViewFilterRoleType::kDefault &&
+      params.ingress == rtvc::ViewFilterType::kBlock) {
     if (room_controller_)
       room_controller_->GetViewComponent().MuteAll();
-  } else if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
-             params.ingress == yealink::rtvc::ViewFilterType::kUnBlock) {
+  } else if (params.role == rtvc::ViewFilterRoleType::kDefault &&
+             params.ingress == rtvc::ViewFilterType::kUnBlock) {
     if (room_controller_)
       room_controller_->GetViewComponent().UnMuteAll();
   } else {
@@ -108,12 +106,12 @@ v8::Local<v8::Promise> ConferenceViewBinding::SetInitialFilters(
 }
 
 void ConferenceViewBinding::DoSetInitialFilters(ViewFilterRuleInfo params) {
-  if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
-      params.ingress == yealink::rtvc::ViewFilterType::kBlock) {
+  if (params.role == rtvc::ViewFilterRoleType::kDefault &&
+      params.ingress == rtvc::ViewFilterType::kBlock) {
     if (room_controller_)
       room_controller_->GetViewComponent().MuteAll();
-  } else if (params.role == yealink::rtvc::ViewFilterRoleType::kDefault &&
-             params.ingress == yealink::rtvc::ViewFilterType::kUnBlock) {
+  } else if (params.role == rtvc::ViewFilterRoleType::kDefault &&
+             params.ingress == rtvc::ViewFilterType::kUnBlock) {
     if (room_controller_)
       room_controller_->GetViewComponent().UnMuteAll();
   } else {
@@ -168,5 +166,3 @@ void ConferenceViewBinding::OnCommandCompeleted(Promise promise) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

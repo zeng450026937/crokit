@@ -7,8 +7,6 @@
 #include "base/threading/thread_task_runner_handle.h"
 #include "yealink/rtvc/binding/desktop_media_list_observer.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 DesktopMediaListBase::DesktopMediaListBase(base::TimeDelta update_period)
@@ -160,5 +158,3 @@ void DesktopMediaListBase::ScheduleNextRefresh() {
 // }
 
 }  // namespace rtvc
-
-}  // namespace yealink

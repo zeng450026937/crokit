@@ -7,8 +7,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -37,11 +35,13 @@ void ConferenceChatBinding::BuildPrototype(
                  &ConferenceChatBinding::RetrySendChatMessage);
 }
 
-void ConferenceChatBinding::UpdateRoomController(RoomController* handler) {
+void ConferenceChatBinding::UpdateRoomController(
+    yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
-void ConferenceChatBinding::UpdateChatController(ChatManager* handler) {
+void ConferenceChatBinding::UpdateChatController(
+    yealink::ChatManager* handler) {
   chat_controller_ = handler;
 }
 
@@ -75,7 +75,7 @@ v8::Local<v8::Promise> ConferenceChatBinding::SendChatMessage(
 
   if (room_controller_) {
     if ((int)entities.size() == 0) {
-      ChatMessageItem* item = new ChatMessageItem();
+      yealink::ChatMessageItem* item = new yealink::ChatMessageItem();
       yealink::RoomMember tmpUser;
       base::PostTaskAndReply(
           FROM_HERE,
@@ -87,7 +87,7 @@ v8::Local<v8::Promise> ConferenceChatBinding::SendChatMessage(
     } else {
       if ((int)sendUsers.Size() > 0) {
         // only send to first member
-        ChatMessageItem* item = new ChatMessageItem();
+        yealink::ChatMessageItem* item = new yealink::ChatMessageItem();
         base::PostTaskAndReply(
             FROM_HERE,
             base::BindOnce(&ConferenceChatBinding::DoSendChatMessage,
@@ -129,7 +129,7 @@ v8::Local<v8::Promise> ConferenceChatBinding::RetrySendChatMessage(
 }
 
 v8::Local<v8::Value> ConferenceChatBinding::publicDialog() {
-  ChatDialog dlgControl = chat_controller_->GetPublicDialog();
+  yealink::ChatDialog dlgControl = chat_controller_->GetPublicDialog();
 
   mate::Handle<ConferenceDialogBinding> dlg =
       ConferenceDialogBinding::Create(isolate(), dlgControl);
@@ -142,7 +142,8 @@ v8::Local<v8::Value> ConferenceChatBinding::publicDialog() {
 std::vector<v8::Local<v8::Value>> ConferenceChatBinding::dialogList() {
   std::vector<v8::Local<v8::Value>> value;
 
-  Array<ChatDialog> dlgControlList = chat_controller_->GetPrivateDialogList();
+  yealink::Array<yealink::ChatDialog> dlgControlList =
+      chat_controller_->GetPrivateDialogList();
 
   for (size_t i = 0; i < dlgControlList.Size(); i++) {
     mate::Handle<ConferenceDialogBinding> dlg =
@@ -159,7 +160,7 @@ std::vector<v8::Local<v8::Value>> ConferenceChatBinding::dialogList() {
 void ConferenceChatBinding::DoSendChatMessage(bool isSingle,
                                               std::string message,
                                               yealink::RoomMember member,
-                                              ChatMessageItem* item) {
+                                              yealink::ChatMessageItem* item) {
   if (isSingle == false)
     *item = chat_controller_->SendMessageToAll(message.c_str());
   else
@@ -204,5 +205,3 @@ void ConferenceChatBinding::OnRetryMessageCompeleted(Promise promise,
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

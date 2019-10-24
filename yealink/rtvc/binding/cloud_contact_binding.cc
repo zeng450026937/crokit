@@ -13,15 +13,15 @@
 
 namespace mate {
 template <>
-struct Converter<yealink::rtvc::ContactNode> {
+struct Converter<rtvc::ContactNode> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   const yealink::rtvc::ContactNode& val) {
-    return yealink::rtvc::ContactNodeBinding::Create(isolate, val).ToV8();
+                                   const rtvc::ContactNode& val) {
+    return rtvc::ContactNodeBinding::Create(isolate, val).ToV8();
   }
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
-                     yealink::rtvc::ContactNode* out) {
+                     rtvc::ContactNode* out) {
     Dictionary dict;
     if (!ConvertFromV8(isolate, val, &dict))
       return false;
@@ -42,8 +42,6 @@ struct Converter<yealink::rtvc::ContactNode> {
   }
 };
 }  // namespace mate
-
-namespace yealink {
 
 namespace rtvc {
 
@@ -204,7 +202,7 @@ void CloudContactBinding::OnUpdateFinished() {
 void CloudContactBinding::OnEnableStatusChanged(bool available) {}
 
 void CloudContactBinding::OnNodeChange(
-    const Array<CloudNodeChangeNotifyEntity>& changeData) {
+    const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& changeData) {
   Context* context = Context::Instance();
   if (!context->CalledOnValidThread()) {
     context->PostTask(FROM_HERE,
@@ -228,5 +226,3 @@ void CloudContactBinding::DoSearch(std::string keyword,
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

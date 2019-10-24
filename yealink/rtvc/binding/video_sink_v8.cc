@@ -5,8 +5,6 @@
 #include "yealink/rtvc/binding/invoke_method.h"
 #include "yealink/rtvc/binding/video_frame_binding.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 VideoSinkV8::VideoSinkV8(mate::PersistentDictionary sink)
@@ -31,5 +29,3 @@ void VideoSinkV8::OnFrame(const VideoFrame& frame) {
   CallMethodWithArgs(isolate, sink_.GetHandle(), "onFrame", &converted_args);
 }
 }  // namespace rtvc
-
-}  // namespace yealink

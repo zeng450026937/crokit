@@ -1,7 +1,5 @@
 #include "yealink/rtvc/binding/libuv_task_runner.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class LibuvTaskRunner::AsyncRunner : public LibuvTaskRunner::Runner {
@@ -165,4 +163,3 @@ void LibuvTaskRunner::QueueDeferredTask(const base::Location& from_here,
 
 }  // namespace rtvc
 
-}  // namespace yealink

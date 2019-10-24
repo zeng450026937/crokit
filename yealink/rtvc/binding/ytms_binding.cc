@@ -8,8 +8,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -310,7 +308,7 @@ v8::Local<v8::Promise> YTMSBinding::Update(TerminalInfo params) {
   return handle;
 }
 void YTMSBinding::DoUpdate(TerminalInfo params, ProcessObserver* observer) {
-  YtmsConfigInfo config;
+  yealink::YtmsConfigInfo config;
 
   config.clientName = params.name.c_str();
   config.clientType = params.type.c_str();
@@ -363,7 +361,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadAlarm(AlarmInfo params) {
   return handle;
 }
 void YTMSBinding::DoUploadAlarm(AlarmInfo params, ProcessObserver* observer) {
-  YtmsAlarm config;
+  yealink::YtmsAlarm config;
 
   config.log = params.file_path.c_str();
   config.alarmCode = params.code.c_str();
@@ -391,7 +389,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadFeedBack(FeedbackInfo params) {
 }
 void YTMSBinding::DoUploadFeedBack(FeedbackInfo params,
                                    ProcessObserver* observer) {
-  YtmsFeedback config;
+  yealink::YtmsFeedback config;
 
   config.title = params.title.c_str();
   config.content = params.content.c_str();
@@ -419,7 +417,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadEvent(EventInfo params) {
   return handle;
 }
 void YTMSBinding::DoUploadEvent(EventInfo params, ProcessObserver* observer) {
-  YtmsEvent config;
+  yealink::YtmsEvent config;
 
   config.eventCode = params.code.c_str();
   config.eventName = params.name.c_str();
@@ -469,7 +467,7 @@ v8::Local<v8::Promise> YTMSBinding::UploadLog(UploadLogInfo params) {
   return handle;
 }
 void YTMSBinding::DoUploadLog(UploadLogInfo params, ProcessObserver* observer) {
-  YtmsLog config;
+  yealink::YtmsLog config;
 
   config.sessionId = params.session_id.c_str();
   config.logPath = params.file_path.c_str();
@@ -568,7 +566,7 @@ v8::Local<v8::Promise> YTMSBinding::StartCapture(NetCaptureInfo params) {
 }
 void YTMSBinding::DoStartCapture(NetCaptureInfo params,
                                  ProcessObserver* observer) {
-  YtmsNetLog config;
+  yealink::YtmsNetLog config;
 
   config.captureDeviceName = params.device_id.c_str();
   config.logPath = params.path.c_str();
@@ -603,5 +601,3 @@ void YTMSBinding::DoStopCapture(std::string params, ProcessObserver* observer) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

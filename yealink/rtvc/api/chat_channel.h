@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ChatChannelObserver : public ChannelObserver {
@@ -29,7 +27,5 @@ class ChatChannel : public Channel {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_CHAT_CHANNEL_H_

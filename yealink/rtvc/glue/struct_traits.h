@@ -24,8 +24,6 @@
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/libvc/include/ytms/ytms_define.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 template <typename T1, typename T2 = void>
@@ -588,7 +586,5 @@ struct StructTraits<PartyInviteInfos> {
 
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_GLUE_STRUCT_TRAITS_H_

@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -130,5 +128,3 @@ std::string ContactNodeBinding::fullNumber() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

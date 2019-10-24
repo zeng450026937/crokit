@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 namespace {
@@ -104,11 +102,11 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("setFocus", &ConferenceUserBinding::SetFocus);
 }
 
-void ConferenceUserBinding::UpdateUserController(RoomMember& handler) {
+void ConferenceUserBinding::UpdateUserController(yealink::RoomMember& handler) {
   user_controller_ = handler;
 }
 
-RoomMember ConferenceUserBinding::GetUserController() {
+yealink::RoomMember ConferenceUserBinding::GetUserController() {
   return user_controller_;
 }
 
@@ -305,7 +303,7 @@ bool ConferenceUserBinding::IsCastViewer() {
 
 bool ConferenceUserBinding::IsDemonstrator() {
   bool value = false;
-  MemberInfo test = user_controller_.GetMemberInfo();
+  yealink::MemberInfo test = user_controller_.GetMemberInfo();
   ConvertFrom(
       value,
       user_controller_.GetMemberInfo().roles.demoStateRole ==
@@ -511,8 +509,8 @@ v8::Local<v8::Promise> ConferenceUserBinding::SetPermission(
 }
 
 void ConferenceUserBinding::DoSetPermission(UserPermissionType params) {
-  MemberInfo::Roles::PermissionRole value =
-      MemberInfo::Roles::PermissionRole::PERMISSION_INVALID;
+  yealink::MemberInfo::Roles::PermissionRole value =
+      yealink::MemberInfo::Roles::PermissionRole::PERMISSION_INVALID;
 
   ConvertFrom(params, value);
 
@@ -656,5 +654,3 @@ void ConferenceUserBinding::OnCommandCompeleted(Promise promise) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

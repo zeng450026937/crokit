@@ -9,8 +9,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 mate::Handle<ConferenceDescriptionBinding> ConferenceDescriptionBinding::Create(
@@ -76,7 +74,7 @@ void ConferenceDescriptionBinding::BuildPrototype(
 }
 
 void ConferenceDescriptionBinding::UpdateRoomController(
-    RoomController* handler) {
+    yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
@@ -499,5 +497,3 @@ void ConferenceDescriptionBinding::OnCommandCompeleted(Promise promise) {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

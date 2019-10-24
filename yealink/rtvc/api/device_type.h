@@ -3,8 +3,6 @@
 
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 enum class DeviceType {
@@ -26,6 +24,5 @@ struct Device {
 
 }  // namespace rtvc
 
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_DEVICE_TYPE_H_

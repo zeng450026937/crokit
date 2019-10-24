@@ -7,8 +7,6 @@
 #include "yealink/rtvc/lib/media_channel_impl.h"
 #include "yealink/rtvc/lib/share_channel_impl.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 UnifiedCommunicationImpl::UnifiedCommunicationImpl()
@@ -42,5 +40,3 @@ const Conference* UnifiedCommunicationImpl::AsConference() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

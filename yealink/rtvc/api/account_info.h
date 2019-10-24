@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-namespace yealink {
-
 namespace rtvc {
 
 struct EnterpriseInfo {
@@ -56,7 +54,5 @@ struct PartyInviteInfos {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_ACCOUNT_INFO_H_

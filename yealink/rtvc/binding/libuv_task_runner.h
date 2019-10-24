@@ -9,8 +9,6 @@
 #include "base/synchronization/lock.h"
 #include "uv.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class LibuvTaskRunner : public base::SingleThreadTaskRunner {
@@ -80,7 +78,5 @@ class LibuvTaskRunner : public base::SingleThreadTaskRunner {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_LIBUV_TASK_RUNNER_H_

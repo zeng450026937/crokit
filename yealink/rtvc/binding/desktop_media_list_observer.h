@@ -1,8 +1,6 @@
 #ifndef YEALINK_RTVC_BINDING_DESKTOP_MEDIA_LIST_OBSERVER_H_
 #define YEALINK_RTVC_BINDING_DESKTOP_MEDIA_LIST_OBSERVER_H_
 
-namespace yealink {
-
 namespace rtvc {
 
 class DesktopMediaList;
@@ -28,7 +26,5 @@ class DesktopMediaListObserver {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_MEDIA_LIST_OBSERVER_H_

@@ -8,8 +8,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/glue/struct_traits.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 // static
@@ -36,7 +34,7 @@ void ConferenceStateBinding::BuildPrototype(
       .SetProperty("rollCallStatus", &ConferenceStateBinding::rollCallStatus);
 }
 
-void ConferenceStateBinding::UpdateRoomController(RoomController* handler) {
+void ConferenceStateBinding::UpdateRoomController(yealink::RoomController* handler) {
   room_controller_ = handler;
 }
 
@@ -88,5 +86,3 @@ std::string ConferenceStateBinding::rollCallStatus() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

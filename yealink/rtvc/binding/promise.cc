@@ -2,8 +2,6 @@
 
 #include <string>
 
-namespace yealink {
-
 namespace rtvc {
 
 Promise::Promise(v8::Isolate* isolate)
@@ -61,13 +59,11 @@ Promise CopyablePromise::GetPromise() const {
 
 }  // namespace rtvc
 
-}  // namespace yealink
-
 namespace mate {
 
-v8::Local<v8::Value> mate::Converter<yealink::rtvc::Promise>::ToV8(
+v8::Local<v8::Value> mate::Converter<rtvc::Promise>::ToV8(
     v8::Isolate*,
-    const yealink::rtvc::Promise& val) {
+    const rtvc::Promise& val) {
   return val.GetHandle();
 }
 

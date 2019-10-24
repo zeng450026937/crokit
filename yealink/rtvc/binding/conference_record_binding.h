@@ -12,8 +12,6 @@
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceRecordBinding
@@ -28,7 +26,7 @@ class ConferenceRecordBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateRoomController(RoomController* handler);
+  void UpdateRoomController(yealink::RoomController* handler);
 
  protected:
   ConferenceRecordBinding(v8::Isolate* isolate,
@@ -43,12 +41,10 @@ class ConferenceRecordBinding
   void DoSetRecordStatus(RecordStatusType status, HttpResponseInfo* response);
   void OnProcessCompeleted(Promise promise, HttpResponseInfo* response);
 
-  RoomController* room_controller_;
+  yealink::RoomController* room_controller_;
   base::WeakPtrFactory<ConferenceRecordBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_RECORD_BINDING_H_

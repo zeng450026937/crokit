@@ -14,8 +14,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/trackable_object.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class ConferenceDialogBinding
@@ -30,7 +28,7 @@ class ConferenceDialogBinding
   static void BuildPrototype(v8::Isolate* isolate,
                              v8::Local<v8::FunctionTemplate> prototype);
 
-  void UpdateDialogController(ChatDialog& handler);
+  void UpdateDialogController(yealink::ChatDialog& handler);
 
  protected:
   ConferenceDialogBinding(v8::Isolate* isolate,
@@ -46,12 +44,10 @@ class ConferenceDialogBinding
   bool ClearUnread();
 
  private:
-  ChatDialog dialog_controller_;
+  yealink::ChatDialog dialog_controller_;
   base::WeakPtrFactory<ConferenceDialogBinding> weak_factory_;
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_CONFERENCE_DIALOG_BINDING_H_

@@ -9,10 +9,6 @@
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/sip_poller.h"
 
-namespace yealink {
-
-class SIPClient;
-
 namespace rtvc {
 
 class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
@@ -75,8 +71,8 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
                     const yealink::AuthICEProfile& stun) override;
 
   // yealink::SIPClientHandler impl
-  void OnOffer(const SIPMessageReadonly& message,
-               SIPInviteAgent** agent) override;
+  void OnOffer(const yealink::SIPMessageReadonly& message,
+               yealink::SIPInviteAgent** agent) override;
 
  private:
   friend class CallBinding;
@@ -88,7 +84,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   base::WeakPtr<yealink::SIPClient> GetWeakSIPClientPtr() {
     return sip_client_weak_factory_.GetWeakPtr();
   }
-  AccessAgent* GetAccessAgent() { return access_agent_; }
+  yealink::AccessAgent* GetAccessAgent() { return access_agent_; }
 
   UserAgent::Config config_;
 
@@ -105,7 +101,5 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_USER_AGENT_BINDING_H_

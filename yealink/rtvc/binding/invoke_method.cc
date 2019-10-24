@@ -2,8 +2,6 @@
 
 #include "node.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 v8::Local<v8::Value> CallMethodWithArgs(
@@ -30,5 +28,3 @@ v8::Local<v8::Value> CallMethodWithArgs(
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

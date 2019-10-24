@@ -4,11 +4,8 @@
 #include <set>
 
 #include "yealink/native_mate/persistent_dictionary.h"
-#include "yealink/native_mate/persistent_dictionary.h"
 #include "yealink/rtvc/api/video/video_source.h"
 #include "yealink/rtvc/binding/video_frame_binding.h"
-
-namespace yealink {
 
 namespace rtvc {
 
@@ -21,6 +18,7 @@ class VideoSourceV8 : public VideoSource {
   void RemoveSink(VideoSink* sink) override;
 
   mate::PersistentDictionary GetHandle() { return source_; }
+
  private:
   void OnFrame(mate::Dictionary frame);
 
@@ -30,7 +28,5 @@ class VideoSourceV8 : public VideoSource {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_VIDEO_SOURCE_V8_H_

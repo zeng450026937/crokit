@@ -8,8 +8,6 @@
 #include "base/single_thread_task_runner.h"
 #include "uv.h"  // NOLINT(build/include)
 
-namespace yealink {
-
 namespace rtvc {
 
 // TaskRunner implementation that posts tasks into libuv's default loop.
@@ -39,7 +37,5 @@ class UvTaskRunner : public base::SingleThreadTaskRunner {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_UV_TASK_RUNNER_H_

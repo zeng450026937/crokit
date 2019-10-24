@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/video/video_frame.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 template <typename VideoFrameT>
@@ -22,7 +20,5 @@ class VideoSinkInterface {
 using VideoSink = VideoSinkInterface<VideoFrame>;
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_VIDEO_VIDEO_SINK_H_

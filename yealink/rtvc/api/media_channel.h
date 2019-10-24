@@ -3,8 +3,6 @@
 
 #include "yealink/rtvc/api/channel.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class MediaChannelObserver : public ChannelObserver {
@@ -34,7 +32,5 @@ class MediaChannel : public Channel {
   virtual ~MediaChannel() = default;
 };
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_API_MEDIA_CHANNEL_H_

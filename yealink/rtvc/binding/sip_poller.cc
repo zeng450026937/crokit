@@ -5,8 +5,6 @@
 #include "yealink/libvc/include/sip_agent/sip_agent_api.h"
 #include "yealink/rtvc/binding/context.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 SIPPoller::SIPPoller(scoped_refptr<base::SingleThreadTaskRunner> task_runner,
@@ -32,5 +30,3 @@ void SIPPoller::OnPoll() {
 }
 
 }  // namespace rtvc
-
-}  // namespace yealink

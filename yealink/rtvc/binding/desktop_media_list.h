@@ -6,8 +6,6 @@
 #include "base/time/time.h"
 #include "yealink/rtvc/binding/desktop_media_id.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class DesktopMediaListObserver;
@@ -89,7 +87,5 @@ class DesktopMediaList {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_DESKTOP_MEDIA_LIST_H_

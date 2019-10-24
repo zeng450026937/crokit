@@ -3,8 +3,6 @@
 
 #include "base/single_thread_task_runner.h"
 
-namespace yealink {
-
 namespace rtvc {
 
 class NullTaskRunner final : public base::SingleThreadTaskRunner {
@@ -28,7 +26,5 @@ class NullTaskRunner final : public base::SingleThreadTaskRunner {
 };
 
 }  // namespace rtvc
-
-}  // namespace yealink
 
 #endif  // YEALINK_RTVC_BINDING_NULL_TASK_RUNNER_H_
