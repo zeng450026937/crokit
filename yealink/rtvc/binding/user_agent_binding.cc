@@ -349,7 +349,7 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
           is_ha1 ? config_.ha1.size() : config_.password.size());
     case yealink::AUTH_PARAM_PASSWORD_IS_A1HASH:
       return yealink::SByteData(reinterpret_cast<const unsigned char*>(
-                                    is_ha1 ? &truthy_value : &truthy_value),
+                                    is_ha1 ? &truthy_value : &falsy_value),
                                 1);
     case yealink::AUTH_PARAM_DISPLAY_NAME:
       break;
