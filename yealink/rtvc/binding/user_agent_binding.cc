@@ -8,6 +8,8 @@
 #include "yealink/native_mate/object_template_builder.h"
 #include "yealink/rtvc/binding/call_binding.h"
 #include "yealink/rtvc/binding/context.h"
+#include "yealink/rtvc/binding/converter.h"
+#include "yealink/rtvc/glue/struct_traits.h"
 
 namespace rtvc {
 
@@ -368,6 +370,18 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
 void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
   DCHECK(register_promise_);
 
+  size_t i;
+  int bizCode = 900599;  // default unknown code
+  std::string strScheme;
+
+  for (i = 0; i < event.reasons.Size(); i++) {
+    strScheme = event.reasons[i].strScheme.ConstData();
+    if (strScheme.find("APOLLO-BIZ", 0) != -1) {
+      bizCode = event.reasons[i].nCode;
+      break;
+    }
+  }
+
   switch (event.id) {
     case yealink::AEID_SUCCESS:
       register_promise_->Resolve(this);
@@ -375,26 +389,15 @@ void UserAgentBinding::OnAuthEvent(const yealink::AuthEvent& event) {
       Emit("registered");
       break;
     case yealink::AEID_FAILED:
-      register_promise_->Reject();
+      ErrorInfo error_result;
+      error_result.biz_code = bizCode;
+      register_promise_->Reject(error_result);
       registered_ = false;
       Emit("registerFailed");
       break;
-    case yealink::AEID_UPDATED: {
-      size_t i;
-      int bizCode = 900599;  // default unknown code
-      std::string strScheme;
-
-      for (i = 0; i < event.reasons.Size(); i++) {
-        strScheme = event.reasons[i].strScheme.ConstData();
-        if (strScheme.find("APOLLO-BIZ", 0) != -1) {
-          bizCode = event.reasons[i].nCode;
-          break;
-        }
-      }
-
+    case yealink::AEID_UPDATED:
       Emit("reconnectNeeded", bizCode);
       break;
-    }
     default:
       NOTREACHED();
       break;

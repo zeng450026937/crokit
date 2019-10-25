@@ -3,6 +3,8 @@
 
 #include "base/memory/weak_ptr.h"
 #include "yealink/native_mate/handle.h"
+#include "yealink/native_mate/wrappable.h"
+#include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/api/user_agent.h"
 #include "yealink/rtvc/binding/connector_binding.h"
 #include "yealink/rtvc/binding/event_emitter.h"

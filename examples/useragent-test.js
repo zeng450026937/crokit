@@ -21,7 +21,11 @@ async function test(binding, connector, account) {
 
   console.log('register()')
 
-  await userAgent.register().then((r) => console.log(r));
+  try {
+    await userAgent.register().then((r) => console.log(r));
+  } catch (error) {
+    console.warn(error);
+  }
 
   console.log('registerd');
 
