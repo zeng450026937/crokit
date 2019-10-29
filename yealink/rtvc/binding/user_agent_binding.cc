@@ -377,7 +377,7 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
     case yealink::AUTH_PARAM_SUBJECT_ID:
       break;
     case yealink::AUTH_PARAM_GRUU:
-      if (config_.uuid.empty())
+      if (!config_.uuid.empty())
         return yealink::SByteData(
             reinterpret_cast<const unsigned char*>(config_.uuid.c_str()),
             config_.uuid.size());
