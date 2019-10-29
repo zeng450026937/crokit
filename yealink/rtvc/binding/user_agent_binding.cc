@@ -50,7 +50,9 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
     options.Get("ipv6Only", &config.ipv6_only);
     options.Get("proxyServer", &proxy_server);
     options.Get("proxyPort", &config.proxy_port);
+    options.Get("language", &config.language);
     options.Get("connector", &connector);
+    options.Get("uuid", &connector);
 
     config.proxy_server = proxy_server;
   }
@@ -82,6 +84,8 @@ void UserAgentBinding::BuildPrototype(
                    &UserAgentBinding::SetProxyServer)
       .SetProperty("proxyPort", &UserAgentBinding::proxyPort,
                    &UserAgentBinding::SetProxyPort)
+      .SetProperty("language", &UserAgentBinding::language,
+                   &UserAgentBinding::Setlanguage)
       .SetMethod("set", &UserAgentBinding::Set)
       .SetMethod("get", &UserAgentBinding::Get)
       .SetMethod("start", &UserAgentBinding::Start)
@@ -96,7 +100,7 @@ void UserAgentBinding::BuildPrototype(
 UserAgentBinding::UserAgentBinding(v8::Isolate* isolate,
                                    v8::Local<v8::Object> wrapper,
                                    yealink::AccessAgent* access_agent,
-                                   UserAgent::Config config)
+                                   rtvc::UserAgent::Config config)
     : config_(std::move(config)),
       sip_client_(yealink::CreateSIPClient()),
       sip_client_weak_factory_(sip_client_),
@@ -169,6 +173,9 @@ std::string UserAgentBinding::proxyServer() {
 int64_t UserAgentBinding::proxyPort() {
   return config_.proxy_port;
 }
+std::string UserAgentBinding::language() {
+  return config_.language;
+}
 
 void UserAgentBinding::SetUsername(std::string username) {
   config_.username = username;
@@ -188,6 +195,9 @@ void UserAgentBinding::SetProxyServer(std::string server) {
 }
 void UserAgentBinding::SetProxyPort(int64_t port) {
   config_.proxy_port = port;
+}
+void UserAgentBinding::Setlanguage(std::string language) {
+  config_.language = language;
 }
 
 void UserAgentBinding::SetConnector(mate::Handle<ConnectorBinding> connector) {
@@ -226,6 +236,11 @@ void UserAgentBinding::Set(std::string key, mate::Arguments* args) {
     if (args->GetNext(&value)) {
       config_.proxy_port = value;
     }
+  } else if (key == "language") {
+    std::string value;
+    if (args->GetNext(&value)) {
+      config_.language = value;
+    }
   } else {
     args->ThrowError("Unknown setting key");
   }
@@ -244,6 +259,8 @@ v8::Local<v8::Value> UserAgentBinding::Get(std::string key,
     return mate::ConvertToV8(isolate(), config_.proxy_server.value_or(""));
   } else if (key == "proxyPort") {
     return mate::ConvertToV8(isolate(), config_.proxy_port);
+  } else if (key == "language") {
+    return mate::ConvertToV8(isolate(), config_.language);
   } else {
     args->ThrowError("Unknown setting key");
     return v8::Null(isolate());
@@ -360,6 +377,10 @@ yealink::SByteData UserAgentBinding::GetAuthParam(yealink::AuthParamType type) {
     case yealink::AUTH_PARAM_SUBJECT_ID:
       break;
     case yealink::AUTH_PARAM_GRUU:
+      if (config_.uuid.empty())
+        return yealink::SByteData(
+            reinterpret_cast<const unsigned char*>(config_.uuid.c_str()),
+            config_.uuid.size());
       break;
     default:
       NOTREACHED();

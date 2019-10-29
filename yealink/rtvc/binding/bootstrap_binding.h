@@ -44,6 +44,9 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string ha1();
   void SetHa1(std::string ha1);
 
+  std::string language();
+  void SetLanguage(std::string language);
+
 
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
@@ -64,6 +67,7 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   bool debug_;
   bool sms_verify_;
   std::string ha1_;
+  std::string language_;
 
   v8::Global<v8::Value> connector_;
 

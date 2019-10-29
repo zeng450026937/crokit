@@ -27,6 +27,8 @@ class UserAgent {
     bool ipv6_only = false;
     base::Optional<std::string> proxy_server;
     int64_t proxy_port = 0;
+    std::string language;
+    std::string uuid;
   };
 
   virtual ~UserAgent() = default;
@@ -41,6 +43,7 @@ class UserAgent {
   virtual std::string domain() = 0;
   virtual std::string proxyServer() = 0;
   virtual int64_t proxyPort() = 0;
+  virtual std::string language() = 0;
 
   virtual void Register() = 0;
   virtual void UnRegister() = 0;

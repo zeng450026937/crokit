@@ -27,7 +27,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   UserAgentBinding(v8::Isolate* isolate,
                    v8::Local<v8::Object> wrapper,
                    yealink::AccessAgent* access_agent,
-                   UserAgent::Config config);
+                   rtvc::UserAgent::Config config);
   ~UserAgentBinding() override;
 
   std::string workspace_folder();
@@ -38,6 +38,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   std::string domain();
   std::string proxyServer();
   int64_t proxyPort();
+  std::string language();
 
   void SetUsername(std::string username);
   void SetPassword(std::string password);
@@ -45,6 +46,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   void SetDomain(std::string domain);
   void SetProxyServer(std::string server);
   void SetProxyPort(int64_t port);
+  void Setlanguage(std::string language);
   void SetConnector(mate::Handle<ConnectorBinding> connector);
 
   void Set(std::string key, mate::Arguments* args);

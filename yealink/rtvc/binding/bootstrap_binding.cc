@@ -39,6 +39,8 @@ void BootstrapBinding::BuildPrototype(
       .SetProperty("smsVerify", &BootstrapBinding::smsVerify,
                    &BootstrapBinding::SetSmsVerify)
       .SetProperty("ha1", &BootstrapBinding::ha1, &BootstrapBinding::SetHa1)
+      .SetProperty("language", &BootstrapBinding::language,
+                   &BootstrapBinding::SetLanguage)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
       .SetMethod("getConnector", &BootstrapBinding::GetConnector)
       .SetMethod("getToken", &BootstrapBinding::GetToken)
@@ -101,6 +103,16 @@ std::string BootstrapBinding::ha1() {
 }
 void BootstrapBinding::SetHa1(std::string ha1) {
   ha1_ = ha1;
+}
+
+std::string BootstrapBinding::language() {
+  return language_;
+}
+void BootstrapBinding::SetLanguage(std::string language) {
+  language_ = language;
+
+  if (access_agent_)
+    access_agent_->SetLanguage(language_.c_str());
 }
 
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
