@@ -11,6 +11,10 @@ async function test(binding, connector) {
   const start = new Date();
   const end = new Date();
 
+  Schedule.on('updated', (func, arg) => {
+    console.warn('ScheduleUpdate');
+  })
+
   start.setHours(start.getHours() - 10 * 24);
   end.setHours(start.getHours() + 7 * 24);
 

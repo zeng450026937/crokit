@@ -9,7 +9,8 @@
 
 namespace rtvc {
 
-class ScheduleBinding : public mate::EventEmitter<ScheduleBinding> {
+class ScheduleBinding : public mate::EventEmitter<ScheduleBinding>,
+                        public yealink::ScheduleObserver {
  public:
   static mate::WrappableBase* New(mate::Arguments* args);
 
@@ -22,8 +23,16 @@ class ScheduleBinding : public mate::EventEmitter<ScheduleBinding> {
                   yealink::AccessAgent* access_agent);
   ~ScheduleBinding() override;
 
-  v8::Local<v8::Promise> Sync(uint64_t start_time, uint64_t end_time, mate::Arguments* args);
+  v8::Local<v8::Promise> Sync(uint64_t start_time,
+                              uint64_t end_time,
+                              mate::Arguments* args);
   v8::Local<v8::Promise> Fetch(uint64_t start_time, uint64_t end_time);
+
+  // yealink::ScheduleObserver impl
+  void OnScheduleUpdate(
+      const yealink::Array<yealink::ScheduleItem>& newScheduleList,
+      const yealink::Array<yealink::ScheduleItem>& modifyScheduleList,
+      const yealink::Array<yealink::ScheduleItem>& deleteScheduleList) override;
 
  private:
   bool IsOutOfRange(uint64_t start_time, uint64_t end_time);

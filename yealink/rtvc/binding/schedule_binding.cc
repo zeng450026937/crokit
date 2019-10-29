@@ -140,4 +140,11 @@ void ScheduleBinding::DoSync(uint64_t start_time, uint64_t end_time) {
   synced_ = true;
 }
 
+void ScheduleBinding::OnScheduleUpdate(
+    const yealink::Array<yealink::ScheduleItem>& newScheduleList,
+    const yealink::Array<yealink::ScheduleItem>& modifyScheduleList,
+    const yealink::Array<yealink::ScheduleItem>& deleteScheduleList) {
+  Emit("updated");
+}
+
 }  // namespace rtvc
