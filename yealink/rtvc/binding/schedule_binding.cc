@@ -55,8 +55,10 @@ ScheduleBinding::ScheduleBinding(v8::Isolate* isolate,
   DCHECK(schedule_manager_);
   InitWith(isolate, wrapper);
   schedule_manager_->Init();
+  schedule_manager_->AddObserver(this);
 }
 ScheduleBinding::~ScheduleBinding() {
+  schedule_manager_->RemoveObserver(this);
   schedule_manager_->Clear();
 }
 
@@ -144,6 +146,15 @@ void ScheduleBinding::OnScheduleUpdate(
     const yealink::Array<yealink::ScheduleItem>& newScheduleList,
     const yealink::Array<yealink::ScheduleItem>& modifyScheduleList,
     const yealink::Array<yealink::ScheduleItem>& deleteScheduleList) {
+  Context* context = Context::Instance();
+  if (!context->CalledOnValidThread()) {
+    context->PostTask(
+        FROM_HERE, base::BindOnce(&ScheduleBinding::OnScheduleUpdate,
+                                  weak_factory_.GetWeakPtr(), newScheduleList,
+                                  modifyScheduleList, deleteScheduleList));
+    return;
+  }
+
   Emit("updated");
 }
 
