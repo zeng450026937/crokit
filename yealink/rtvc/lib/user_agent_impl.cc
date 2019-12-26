@@ -39,6 +39,10 @@ int64_t UserAgentImpl::proxyPort() {
   LOG(INFO) << __FUNCTIONW__;
   return config_.proxy_port;
 }
+std::string UserAgentImpl::language() {
+  LOG(INFO) << __FUNCTIONW__;
+  return config_.language;
+}
 
 void UserAgentImpl::Register() {
   LOG(INFO) << __FUNCTIONW__;
