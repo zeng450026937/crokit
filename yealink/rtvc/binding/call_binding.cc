@@ -142,7 +142,8 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetProperty("conferenceAware", &CallBinding::conference_aware,
                    &CallBinding::SetConferenceAware)
       .SetMethod("asConference", &CallBinding::AsConference)
-      .SetProperty("conference", &CallBinding::AsConference);
+      .SetProperty("conference", &CallBinding::AsConference)
+      .SetMethod("sendDTMF", &CallBinding::SendDTMF);
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -1027,4 +1028,3 @@ void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
 }
 
 }  // namespace rtvc
-
