@@ -34,8 +34,9 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
   return true;
 }
 
-bool StructTraits<PrimaryAccountInfo>::From(PrimaryAccountInfo& out,
-                                    const yealink::LoginUserInfos& val) {
+bool StructTraits<PrimaryAccountInfo>::From(
+    PrimaryAccountInfo& out,
+    const yealink::LoginUserInfos& val) {
   ConvertFrom(out.upgraded, val.upgraded);
   ConvertFrom(out.algorithm, val.authInfo.algorithm);
   ConvertFrom(out.ha1, val.authInfo.credential);
@@ -321,6 +322,285 @@ bool StructTraits<ScheduleItemDetail>::From(
   ConvertFrom(out.rtmp.logoUrl, val.rtmpLogoUrl);
   ConvertFrom(out.rtmp.password, val.rtmpWatchPwd);
   ConvertFrom(out.rtmp.url, val.rtmpWatchUrl);
+  return true;
+}
+
+bool StructTraits<ScheduleExtensionType>::From(
+    ScheduleExtensionType& out,
+    const yealink::ScheduleExtensionType& val) {
+  switch (val) {
+    case yealink::ScheduleExtensionType::SCHEDULE_EXTENSION_TYPE_INVALID:
+      out = ScheduleExtensionType::kInvalid;
+      break;
+    case yealink::ScheduleExtensionType::SCHEDULE_EXTENSION_TYPE_RTMP:
+      out = ScheduleExtensionType::kRTMP;
+      break;
+    default:
+      out = ScheduleExtensionType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleConfigCreateType>::From(
+    ScheduleConfigCreateType& out,
+    const yealink::ScheduleConfigCreateType& val) {
+  switch (val) {
+    case yealink::ScheduleConfigCreateType::SCHEDULE_CONFIG_CREATE_TYPE_INVALID:
+      out = ScheduleConfigCreateType::kInvalid;
+      break;
+    case yealink::ScheduleConfigCreateType::SCHEDULE_CONFIG_CREATE_TYPE_ADMIN:
+      out = ScheduleConfigCreateType::kAdmin;
+      break;
+    case yealink::ScheduleConfigCreateType::
+        SCHEDULE_CONFIG_CREATE_TYPE_PERSONAL:
+      out = ScheduleConfigCreateType::kPersonal;
+      break;
+    case yealink::ScheduleConfigCreateType::
+        SCHEDULE_CONFIG_CREATE_TYPE_ENTERPRISE:
+      out = ScheduleConfigCreateType::kEnterprise;
+      break;
+    default:
+      out = ScheduleConfigCreateType::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleVideoResolutionLimit>::From(
+    ScheduleVideoResolutionLimit& out,
+    const yealink::ScheduleVideoResolutionLimit& val) {
+  switch (val) {
+    case yealink::ScheduleVideoResolutionLimit::
+        SCHEDULE_VIDEO_RESOLUTION_LIMIT_INVALID:
+      out = ScheduleVideoResolutionLimit::kInvalid;
+      break;
+    case yealink::ScheduleVideoResolutionLimit::
+        SCHEDULE_VIDEO_RESOLUTION_LIMIT_1080P:
+      out = ScheduleVideoResolutionLimit::k1080P;
+      break;
+    case yealink::ScheduleVideoResolutionLimit::
+        SCHEDULE_VIDEO_RESOLUTION_LIMIT_720P:
+      out = ScheduleVideoResolutionLimit::k720P;
+      break;
+    default:
+      out = ScheduleVideoResolutionLimit::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleTextNotificationMode>::From(
+    ScheduleTextNotificationMode& out,
+    const yealink::ScheduleTextNotificationMode& val) {
+  switch (val) {
+    case yealink::ScheduleTextNotificationMode::
+        SCHEDULE_TEXT_NOTIFICATION_MODE_INVALID:
+      out = ScheduleTextNotificationMode::kInvalid;
+      break;
+    case yealink::ScheduleTextNotificationMode::
+        SCHEDULE_TEXT_NOTIFICATION_MODE_CLOSE:
+      out = ScheduleTextNotificationMode::kClose;
+      break;
+    case yealink::ScheduleTextNotificationMode::
+        SCHEDULE_TEXT_NOTIFICATION_MODE_ATTENDEE:
+      out = ScheduleTextNotificationMode::kAttendee;
+      break;
+    case yealink::ScheduleTextNotificationMode::
+        SCHEDULE_TEXT_NOTIFICATION_MODE_AUTHENTICATED:
+      out = ScheduleTextNotificationMode::kAuthenticated;
+      break;
+    case yealink::ScheduleTextNotificationMode::
+        SCHEDULE_TEXT_NOTIFICATION_MODE_ALL:
+      out = ScheduleTextNotificationMode::kAll;
+      break;
+    default:
+      out = ScheduleTextNotificationMode::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleVoicePromptMode>::From(
+    ScheduleVoicePromptMode& out,
+    const yealink::ScheduleVoicePromptMode& val) {
+  switch (val) {
+    case yealink::ScheduleVoicePromptMode::SCHEDULE_VOICE_PROMPT_MODE_INVALID:
+      out = ScheduleVoicePromptMode::kInvalid;
+      break;
+    case yealink::ScheduleVoicePromptMode::SCHEDULE_VOICE_PROMPT_MODE_ATTENDEE:
+      out = ScheduleVoicePromptMode::kAttendee;
+      break;
+    case yealink::ScheduleVoicePromptMode::
+        SCHEDULE_VOICE_PROMPT_MODE_AUTHENTICATED:
+      out = ScheduleVoicePromptMode::kAuthenticated;
+      break;
+    case yealink::ScheduleVoicePromptMode::SCHEDULE_VOICE_PROMPT_MODE_ALL:
+      out = ScheduleVoicePromptMode::kAll;
+      break;
+    default:
+      out = ScheduleVoicePromptMode::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<SchedulePlanConfig>::From(
+    SchedulePlanConfig& out,
+    const yealink::SchedulePlanConfig& val) {
+  ConvertFrom(out.bizCode, val.bizCode);
+
+  ConvertFrom(out.createType, val.createType);
+  ConvertFrom(out.maxVideoResolutionLimit, val.maxVideoResolutionLimit);
+  ConvertFrom(out.enableMaxSecondaryFlowResolutionLimit,
+              val.enableMaxSecondaryFlowResolutionLimit);
+  ConvertFrom(out.enableDeviceManage, val.enableDeviceManage);
+  ConvertFrom(out.enableCooperation, val.enableCooperation);
+
+  ConvertFrom(out.enableInspect, val.enableInspect);
+  ConvertFrom(out.enableSfb, val.enableSfb);
+  ConvertFrom(out.enableTeachingProfile, val.enableTeachingProfile);
+  ConvertFrom(out.enableOpenApi, val.enableOpenApi);
+  ConvertFrom(out.maxScheduledConfDuration, val.maxScheduledConfDuration);
+
+  ConvertFrom(out.maxScheduledConfStartTime, val.maxScheduledConfStartTime);
+  ConvertFrom(out.maxRecurrenceConfAmount, val.maxRecurrenceConfAmount);
+  ConvertFrom(out.maxRecurrenceConfEndTime, val.maxRecurrenceConfEndTime);
+  ConvertFrom(out.maxRecurrenceConfRemarkLength,
+              val.maxRecurrenceConfRemarkLength);
+  ConvertFrom(out.maxRecurrenceConfParticipantAmount,
+              val.maxRecurrenceConfParticipantAmount);
+
+  ConvertFrom(out.enableJoinAutoMute, val.enableJoinAutoMute);
+  ConvertFrom(out.textNotificationMode, val.textNotificationMode);
+  ConvertFrom(out.voicePromptMode, val.voicePromptMode);
+  ConvertFrom(out.forwardMeetingTime, val.forwardMeetingTime);
+  ConvertFrom(out.meetNowPassword, val.meetNowPassword);
+
+  ConvertFrom(out.scheduledPassword, val.scheduledPassword);
+  ConvertFrom(out.enableMeetNowPassword, val.enableMeetNowPassword);
+  ConvertFrom(out.enableScheduledPassword, val.enableScheduledPassword);
+  ConvertFrom(out.enableLoginOpt, val.enableLoginOpt);
+  ConvertFrom(out.enableDnd, val.enableDnd);
+
+  ConvertFrom(out.enableChatByWebrtc, val.enableChatByWebrtc);
+  ConvertFrom(out.enableAutoRecord, val.enableAutoRecord);
+  ConvertFrom(out.maxConferenceTime, val.maxConferenceTime);
+
+  return true;
+}
+
+bool StructTraits<ScheduleServiceAbility>::From(
+    ScheduleServiceAbility& out,
+    const yealink::ScheduleServiceAbility& val) {
+  switch (val) {
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_INVALID:
+      out = ScheduleServiceAbility::kInvalid;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_TRAVERSAL:
+      out = ScheduleServiceAbility::kTraversal;
+      break;
+    case yealink::ScheduleServiceAbility::
+        SCHEDULE_SERVICE_ABILITY_HARDWARE_PORT:
+      out = ScheduleServiceAbility::kHardwarePort;
+      break;
+    case yealink::ScheduleServiceAbility::
+        SCHEDULE_SERVICE_ABILITY_SOFTWARE_PORT:
+      out = ScheduleServiceAbility::kSoftwarePort;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_VMR:
+      out = ScheduleServiceAbility::kVmr;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_SEMINAR:
+      out = ScheduleServiceAbility::kSeminar;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_THIRD_PARTY:
+      out = ScheduleServiceAbility::kThirdParty;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_PSTN:
+      out = ScheduleServiceAbility::kPSTN;
+      break;
+    case yealink::ScheduleServiceAbility::
+        SCHEDULE_SERVICE_ABILITY_CLOUD_STORAGE:
+      out = ScheduleServiceAbility::kCloudStorage;
+      break;
+    case yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_RTMP:
+      out = ScheduleServiceAbility::kRTMP;
+      break;
+    default:
+      out = ScheduleServiceAbility::kInvalid;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleServiceAbility>::To(
+    const ScheduleServiceAbility& val,
+    yealink::ScheduleServiceAbility& out) {
+  switch (val) {
+    case ScheduleServiceAbility::kInvalid:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_INVALID;
+      break;
+    case ScheduleServiceAbility::kCloudStorage:
+      out = yealink::ScheduleServiceAbility::
+          SCHEDULE_SERVICE_ABILITY_CLOUD_STORAGE;
+      break;
+    case ScheduleServiceAbility::kHardwarePort:
+      out = yealink::ScheduleServiceAbility::
+          SCHEDULE_SERVICE_ABILITY_HARDWARE_PORT;
+      break;
+    case ScheduleServiceAbility::kPSTN:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_PSTN;
+      break;
+    case ScheduleServiceAbility::kRTMP:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_RTMP;
+      break;
+    case ScheduleServiceAbility::kSeminar:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_SEMINAR;
+      break;
+    case ScheduleServiceAbility::kSoftwarePort:
+      out = yealink::ScheduleServiceAbility::
+          SCHEDULE_SERVICE_ABILITY_SOFTWARE_PORT;
+      break;
+    case ScheduleServiceAbility::kThirdParty:
+      out =
+          yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_THIRD_PARTY;
+      break;
+    case ScheduleServiceAbility::kTraversal:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_TRAVERSAL;
+      break;
+    case ScheduleServiceAbility::kVmr:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_VMR;
+      break;
+    default:
+      out = yealink::ScheduleServiceAbility::SCHEDULE_SERVICE_ABILITY_INVALID;
+      break;
+  }
+
+  return true;
+}
+
+bool StructTraits<ScheduleServiceStatus>::From(
+    ScheduleServiceStatus& out,
+    const yealink::ScheduleServiceStatus& val) {
+  ConvertFrom(out.type, val.type);
+  ConvertFrom(out.status, val.status);
+
+  return true;
+}
+
+bool StructTraits<ScheduleServiceResponse>::From(
+    ScheduleServiceResponse& out,
+    const yealink::ScheduleServiceResponse& val) {
+  ConvertFrom(out.bizCode, val.bizCode);
+  ConvertFrom(out.statusList, val.statusList);
+
   return true;
 }
 
@@ -1552,6 +1832,9 @@ bool StructTraits<StatsVideoCodecType>::From(StatsVideoCodecType& out,
     case yealink::VideoCodecs::VIDEO_CODEC_H263:
       out = StatsVideoCodecType::kH263;
       break;
+    case yealink::VideoCodecs::VIDEO_CODEC_APL_H264_SVC:
+      out = StatsVideoCodecType::kH264SVC;
+      break;
     default:
       out = StatsVideoCodecType::kNone;
       break;
@@ -1602,7 +1885,7 @@ bool StructTraits<VideoStatsInfo>::From(VideoStatsInfo& out,
 
 bool StructTraits<RTCVideoStats>::From(RTCVideoStats& out,
                                        const yealink::VideoStreamStats& val) {
-  ConvertFrom(out.inbound, val.stRecv);
+  ConvertFrom(out.inbound, val.arrRecv);
   ConvertFrom(out.outbound, val.stSend);
 
   return true;

@@ -3,7 +3,7 @@
 
 #include "av_define.h"
 #include "sip_agent/sip_agent_api.h"
-#include "media/media_api.h"
+#include "media/media_call.h"
 
 namespace yealink
 {
@@ -15,6 +15,13 @@ typedef struct _ContactInfo
     SStringA strUserAgent;
     SStringA strClientInfo;
     SStringA strServerInfo;
+    SStringA strConferenceId;
+    unsigned int uCCID;
+    _ContactInfo()
+        : strConferenceId("svc-p2p")
+        , uCCID(0)
+    {
+    }
 } ContactInfo;
 
 class AVCall;
@@ -114,7 +121,7 @@ public:
          * @brief
          *
          */
-    virtual void OnVideoFrame(const AVCall* pCall, const VideoFrame& frame) = 0;
+    virtual void OnVideoFrame(const AVCall* pCall, const VideoFrame& frame, unsigned int id) = 0;
     /**
          * @brief
          *
@@ -185,13 +192,6 @@ public:
          * @return int 
          */
     virtual bool InviteUri(const char* strReferToUri, const char* strReferedBy, const char* strReplaceId) = 0;
-    /**
-         * @brief dail url
-         * 
-         * @param param 
-         * @return int 
-         */
-    virtual bool RedircetInviteUri(const char* strUri) = 0;
     /**
          * @brief Answer calls
          * 
@@ -334,6 +334,13 @@ public:
 		 */
     virtual bool AcceptReplaces() = 0;
     /**
+         * @brief Termination Call and no sip/http signal.
+         *
+         * @param
+         * @ret
+         */
+    virtual void Termination() = 0;
+    /**
          * @brief Get media stream stats
          * 
          * @param  
@@ -366,6 +373,34 @@ public:
          *
          */
     virtual bool EnableCapturePortrait(bool bEnable) = 0;
+    /**
+         * @brief Set SVC video subscribes.
+         *
+         * @param subscribes
+         * @param sizeSub
+         * @param unsubscribes
+         * @param sizeUnsub
+         * @return bool
+         */
+    virtual bool SetVideoSubscribe(const VideoSubscribe subscribes[], int sizeSub, const unsigned int unsubscribes[], int sizeUnsub) = 0;
+    /**
+         * @brief Get support video subscribe.
+         *
+         * @return bool
+         */
+    virtual bool SupportVideoSubscribe() const = 0;
+    /**
+         * @brief Set SVC codec enable.
+         * 
+         * default is disable svc.
+         */
+    virtual void SetSvcCodecEnable(bool enable) = 0;
+    /**
+         * @brief Set SVC Conference info.
+         *
+         * default is disable svc.
+         */
+    virtual void SetSvcConferenceInfo(const char* strId, unsigned int uCCId) = 0;
 };
 } // namespace yealink
 

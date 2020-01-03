@@ -11,18 +11,11 @@
 #ifndef __SIP_AGENT_DEFINE_H__
 #define __SIP_AGENT_DEFINE_H__
 
-#ifdef _WIN32
-#    ifdef EXPORT_SYMPOLS
-#        define SIP_AGENT_API __declspec(dllexport)
-#    else
-#        define SIP_AGENT_API __declspec(dllimport)
-#    endif
-#else
-#    define SIP_AGENT_API
-#endif
-
 #include "sip_agent/sip_define.h"
 #include "components/base/simplelib/simple_lib.h"
+#include "components/base/simplelib/common_marco_define.h"
+
+#define SIP_AGENT_API VC_EXPORT_API
 
 namespace yealink
 {

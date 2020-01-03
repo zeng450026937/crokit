@@ -96,6 +96,54 @@ public:
     {
     }
     /**
+         * @brief get Schedule Services meta Information
+         *
+         * @param url
+         * @param process
+         * @return ScheduleMetaInfo
+         */
+    static SchedulerMetaInfo GetMetaInfo(const char* url, AccessProcess* process);
+    /**
+         * @brief get Schedule Services Information
+         *
+         * @param url example:http://10.71.1.40:9994/link?device=vcd、mobile
+         * @param process
+         * @return SStringA
+         */
+    static SStringA GetServiceInfo(const char* url, AccessProcess* process);
+    /**
+         * @brief set device display language
+         * 
+         * @param lang 
+         * @return true/false
+         */
+    virtual bool SetLanguage(const char* lang) = 0;
+
+    /**
+         * @brief set registe area
+         * 
+         * @param area 
+         * @return true/false
+         */
+    virtual bool SetRegion(const char* region) = 0;
+
+    /**
+         * @brief set schedule host
+         * 
+         * @param server 
+         * @return true/false
+         */
+    virtual bool SetScheduleHost(const char* server) = 0;
+
+    /**
+         * @brief set access host,only for test
+         * 
+         * @param server 
+         * @return true/false
+         */
+    virtual bool SetAccessHost(const char* server) = 0;
+
+    /**
          * @brief Add the Observer Handler object
          * 
          * @param handler 
@@ -114,20 +162,10 @@ public:
     /**
          * @brief tell the server to send a sms verify code
          * 
-         * @param server : schedule server address
 		 * @param phoneNumber 
          * @return true if server return success,otherwise false
          */
-    virtual bool SendMobileLoginVerifyCode(const char* server, const char* phoneNumber, AccessProcess* process) = 0;
-
-    /**
-         * @brief tell the server to send a sms verify code
-         * 
-         * @param server : access server address
-		 * @param phoneNumber 
-         * @return true if server return success,otherwise false
-         */
-    virtual bool UnscheduledSendMobileLoginVerifyCode(const char* server, const char* phoneNumber, AccessProcess* process) = 0;
+    virtual bool SendMobileLoginVerifyCode(const char* phoneNumber, AccessProcess* process) = 0;
 
     /**
          * @brief tell the server to bind push token
@@ -141,36 +179,17 @@ public:
     /**
          * @brief get wechat state
          * 
-         * @param server : access server address
          * @return true if server return success,otherwise false
          */
-    virtual SStringA GetWechatState(const char* server, AccessProcess* process) = 0;
-
-    /**
-         * @brief get wechat state
-         * 
-         * @param server : server address
-         * @return true if server return success,otherwise false
-         */
-    virtual SStringA UnscheduledGetWechatState(const char* server, AccessProcess* process) = 0;
+    virtual SStringA GetWechatState(AccessProcess* process) = 0;
 
     /**
          * @brief  post wechat auth callback
          * 
-         * @param server : access server address
 		 * @param WechatAuthInfo 
          * @return 
          */
-    virtual WechatAuthCallbackInfo PostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
-
-    /**
-         * @brief  post wechat auth callback
-         * 
-         * @param server : server address
-		 * @param WechatAuthInfo 
-         * @return 
-         */
-    virtual WechatAuthCallbackInfo UnscheduledPostWechatAuthCallback(const char* server, const WechatAuthInfo& info, AccessProcess* process) = 0;
+    virtual WechatAuthCallbackInfo PostWechatAuthCallback(const WechatAuthInfo& info, AccessProcess* process) = 0;
 
     /**
          * @brief login access service by schedule service
@@ -183,16 +202,6 @@ public:
     virtual LoginUserInfos LoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
 
     /**
-         * @brief login access service direct
-         * 
-         * @param server : access server address
-		 * @param username 
-		 * @param password 
-         * @return SStringA
-         */
-    virtual LoginUserInfos UnscheduledLoginAccessService(const LoginInfo& info, AccessProcess* process) = 0;
-
-    /**
          * @brief start access push service, after invoke LoginAccessService()
          * 
          * @param username 
@@ -200,7 +209,7 @@ public:
 		 * @param token
          * @return true/false
          */
-    virtual bool StartAccessPushService(const char* accountInfoId) = 0;
+    virtual bool StartAccessService(const char* accountInfoId) = 0;
 
     /**
          * @brief common http request api
@@ -228,14 +237,6 @@ public:
          */
     virtual SStringA GetTempJWT(const char* partyId, const char* number, AccessProcess* process) = 0;
     /**
-         * @brief get Schedule Services Information
-         *
-         * @param url
-         * @param process
-         * @return ScheduleMetaInfo
-         */
-    virtual SchedulerMetaInfo GetMetaInfo(const char* url, AccessProcess* process) = 0;
-    /**
          * @brief get LoginUserInfo by account id
          * 
          * @param account id 
@@ -251,20 +252,11 @@ public:
     virtual PartyInviteInfo GetPartyInviteInfo(AccessProcess* process) = 0;
 
     /**
-         * @brief set device display language
+         * @brief Logout from access service
          * 
-         * @param lang 
-         * @return true/false
+         * @return 
          */
-    virtual bool SetLanguage(const char* lang) = 0;
-
-    /**
-         * @brief set registe area
-         * 
-         * @param area 
-         * @return true/false
-         */
-    virtual bool SetRegion(const char* region) = 0;
+    virtual void StopAccessService() = 0;
 };
 } // namespace yealink
 

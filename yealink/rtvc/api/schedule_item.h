@@ -7,6 +7,7 @@
 namespace rtvc {
 
 enum class ScheduleItemProfile {
+  kInvalid,
   kDefault,
   kSeminar,
   kEducation,
@@ -71,6 +72,7 @@ struct ScheduleTimeZone {
 };
 
 enum class ScheduleMemberRole {
+  kInvalid,
   kOrganizer,
   kPresenter,
   kPaticipant,
@@ -78,6 +80,7 @@ enum class ScheduleMemberRole {
 };
 
 enum class ScheduleMemberType {
+  kInvalid,
   kInternal,
   kExternal,
 };
@@ -109,8 +112,8 @@ struct ScheduleRTMP {
 };
 
 struct ScheduleItemDetail {
-  std::string share_link;
   std::string remark;
+  std::string share_link;
   ScheduleMember organizer;
   std::vector<ScheduleMember> participants;
   std::vector<ScheduleRoom> rooms;
@@ -145,6 +148,124 @@ struct ScheduleItem {
   int64_t dayOfMonth;
   int64_t monthOfYear;
 };
+
+enum class ScheduleExtensionType { kInvalid, kRTMP };
+
+enum class ScheduleConfigCreateType {
+  kInvalid,
+  kAdmin,
+  kPersonal,
+  kEnterprise,
+};
+
+enum class ScheduleVideoResolutionLimit {
+  kInvalid,
+  k1080P,
+  k720P,
+};
+
+enum class ScheduleTextNotificationMode {
+  kInvalid,
+  kClose,
+  kAttendee,
+  kAuthenticated,
+  kAll,
+};
+
+enum class ScheduleVoicePromptMode {
+  kInvalid,
+  kAttendee,
+  kAuthenticated,
+  kAll,
+};
+
+struct SchedulePlanConfig {
+  int32_t bizCode;
+
+  ScheduleConfigCreateType createType;
+  ScheduleVideoResolutionLimit maxVideoResolutionLimit;
+  bool enableMaxSecondaryFlowResolutionLimit;
+  bool enableDeviceManage;
+  bool enableCooperation;
+
+  bool enableInspect;
+  bool enableSfb;
+  bool enableTeachingProfile;
+  bool enableOpenApi;
+  int32_t maxScheduledConfDuration;
+
+  int32_t maxScheduledConfStartTime;
+  int32_t maxRecurrenceConfAmount;
+  int32_t maxRecurrenceConfEndTime;
+  int32_t maxRecurrenceConfRemarkLength;
+  int32_t maxRecurrenceConfParticipantAmount;
+
+  bool enableJoinAutoMute;
+  ScheduleTextNotificationMode textNotificationMode;
+  ScheduleVoicePromptMode voicePromptMode;
+  int32_t forwardMeetingTime;
+  std::string meetNowPassword;
+
+  std::string scheduledPassword;
+  bool enableMeetNowPassword;
+  bool enableScheduledPassword;
+  bool enableLoginOpt;
+  bool enableDnd;
+
+  bool enableChatByWebrtc;
+  bool enableAutoRecord;
+  int32_t maxConferenceTime;
+};
+
+enum class ScheduleServiceAbility {
+  kInvalid,
+  kTraversal,
+  kHardwarePort,
+  kSoftwarePort,
+  kVmr,
+  kSeminar,
+  kThirdParty,
+  kPSTN,
+  kCloudStorage,
+  kRTMP,
+};
+
+struct ScheduleServiceStatus {
+  ScheduleServiceAbility type;
+  bool status;
+  ScheduleServiceStatus()
+      : type(ScheduleServiceAbility::kInvalid), status(false) {}
+};
+
+struct ScheduleServiceResponse {
+  int32_t bizCode;
+  std::vector<ScheduleServiceStatus> statusList;
+  ScheduleServiceResponse() : bizCode(0) {}
+};
+
+struct SchedulePlanInfo {
+  ScheduleItemProfile profile;
+  std::string subject;
+  std::string zoneId;
+  std::string startDate;
+  std::string startTime;
+  int32_t durationHour;
+  int32_t durationMinute;
+  ScheduleRecurrenceType recurrenceType;
+  int32_t interval;
+  int32_t dayOfWeek;
+  std::string rangeEndDate;
+  std::string remark;
+  std::string identifier;
+  ScheduleMemberType memberType;
+  ScheduleMemberRole roleType;
+  ScheduleExtensionType extensionType;
+  std::string rtmpLogoFileName;
+  ScheduleRTMPLimitType rtmpWatchLimitType;
+  std::string rtmpWatchPwd;
+  bool enableAutoRecord;
+};
+
 /*
 class ScheduleItem {
  public:

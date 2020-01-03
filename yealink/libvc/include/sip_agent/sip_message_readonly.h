@@ -129,6 +129,8 @@ public:
     };
 
 public:
+    virtual SStringA RequestUri() const = 0;
+    virtual bool FindHeader(const char* head, SStringA& strValue) const = 0;
     virtual SStringA RawHeader(const char* head) const = 0;
     virtual SByteData Header(const HeadLine head) const = 0;
     virtual SStringA Headers() const = 0;

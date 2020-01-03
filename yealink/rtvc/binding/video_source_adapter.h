@@ -17,7 +17,7 @@ class VideoSourceAdapter : public yealink::VideoRender, public VideoSource {
   void AddOrUpdateSink(VideoSink* sink) override;
   void RemoveSink(VideoSink* sink) override;
 
-  void OnVideoFrame(const yealink::VideoFrame& frame) override;
+  void OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) override;
 
   std::set<VideoSink*> sinks() { return sinks_; }
 

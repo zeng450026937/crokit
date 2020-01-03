@@ -105,8 +105,8 @@ bool AudioManagerBinding::ans() {
   return media_->GetEnableANS();
 }
 
-void AudioManagerBinding::SetANS(bool enable) {
-  media_->SetEnableANS(enable);
+void AudioManagerBinding::SetANS(bool enable, bool syncTNS) {
+  media_->SetEnableANS(enable, syncTNS);
 }
 
 bool AudioManagerBinding::aec() {

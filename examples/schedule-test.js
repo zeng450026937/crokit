@@ -11,7 +11,7 @@ async function test(binding, connector) {
   const start = new Date();
   const end = new Date();
 
-  Schedule.on('updated', (func, arg) => {
+  schedule.on('updated', (func, arg) => {
     console.warn('ScheduleUpdate');
   })
 
@@ -47,6 +47,40 @@ async function test(binding, connector) {
       console.log(detail[key][0]);
     }
   }
+
+  const config = await schedule.getScheduleConfig().catch((e) => {console.warn(e)});
+  console.warn('schedule config = ', config);
+
+  const new_schedue = {
+    profile: 'kDefault',
+    subject: "lgd test",
+    zoneId: "China_Standard_Time",
+    startDate: "2020-01-02",
+    startTime: "17:30",
+    durationHour: 2,
+    durationMinute: 0,
+    recurrenceType: null,
+    interval: 1,
+    dayOfWeek: 5,
+    rangeEndDate: "2020-01-03",
+    remark: "",
+    identifier: "31786f1b71c54aa9966562262ca4847b",
+    memberType: 'kInternal',
+    roleType: 'kOrganizer',
+    extensionType: 'RTMP',
+    rtmpLogoFileName: '',
+    rtmpWatchLimitType: 'all',
+    rtmpWatchPwd: '',
+    enableAutoRecord: false,
+  };
+
+  const add_res = await schedule.addSchedulePlan(new_schedue).catch((e) => {console.warn(e)});
+
+  console.warn('add result = ', add_res);
+
+  setTimeout(() => {
+
+  }, 100000);
 }
 
 module.exports = test;

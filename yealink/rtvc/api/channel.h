@@ -44,6 +44,7 @@ enum class StatsVideoCodecType {
   kNone = -1,
   kH263,
   kH264,
+  kH264SVC,
 };
 
 enum class StatsVideoProfileType {
@@ -98,7 +99,7 @@ struct VideoStatsInfo {
 
 struct RTCVideoStats {
   VideoStatsInfo outbound;
-  VideoStatsInfo inbound;
+  std::vector<VideoStatsInfo> inbound;
 };
 
 struct RTCAudioStats {
@@ -114,6 +115,20 @@ struct RTCStats {
 struct RTCStatsInfo {
   RTCStats media;
   RTCStats share;
+};
+
+enum class CaptureDeviceFormatType {
+  kNone,
+  KWebcam,
+  kJPEG,
+};
+
+struct CaptureInfo {
+  std::string id;
+  CaptureDeviceFormatType type;
+  int width;
+  int height;
+  int fps;
 };
 
 class ChannelObserver {

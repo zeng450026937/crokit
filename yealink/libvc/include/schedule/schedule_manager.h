@@ -10,10 +10,11 @@
 #include "schedule_observer.h"
 #include "access/access_agent.h"
 #include "components/base/simplelib/common_marco_define.h"
+#include "schedule_plan_info.h"
 
 namespace yealink
 {
-class SCHEDULE_API ScheduleManager
+class VC_EXPORT_API ScheduleManager
 {
     SIMPLE_OBJECT_DECLARE(ScheduleManager)
 public:
@@ -66,6 +67,15 @@ public:
      * @brief release internal object recourse
      */
     void Clear();
+    int32_t AddSchedulePlan(const SchedulePlanInfo& info);
+    int32_t EditSerialSchedulePlan(const char* planId, const SchedulePlanInfo& info);
+    int32_t EditSingleSchedulePlan(const char* planId, int64_t sequence, const SchedulePlanInfo& info);
+    int32_t DeleteSerialSchedulePlan(const char* planId);
+    int32_t DeleteSingleSchedulePlan(const char* planId, int64_t sequence);
+    SchedulePlanConfig GetScheduleConfig();
+    ScheduleServiceResponse GetServiceAbility(const Array<ScheduleServiceAbility>& abilityList);
+
+    Array<ScheduleItem> GetScheduleByPlanId(const char* planId);
 };
 
 } // namespace yealink

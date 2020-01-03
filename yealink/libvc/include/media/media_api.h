@@ -5,6 +5,7 @@
 #include "media/media_video_frame.h"
 #include "media/media_capture.h"
 #include "components/base/simplelib/simple_string.hpp"
+#include "components/base/simplelib/simple_array.hpp"
 
 namespace yealink
 {
@@ -18,7 +19,8 @@ enum VideoCodecs
 {
     VIDEO_CODEC_NONE = -1,
     VIDEO_CODEC_H263,
-    VIDEO_CODEC_H264
+    VIDEO_CODEC_H264,
+    VIDEO_CODEC_APL_H264_SVC
 };
 
 enum VideoCodecProfile
@@ -32,6 +34,7 @@ enum VideoCodecProfile
 
 typedef struct _VideoChannelStats
 {
+    unsigned int id;
     VideoCodecs codec;
     VideoCodecProfile profile;
     int width;
@@ -43,7 +46,8 @@ typedef struct _VideoChannelStats
     int jitter; //ms
     int rtt;
     _VideoChannelStats()
-        : codec(VIDEO_CODEC_NONE)
+        : id(0)
+        , codec(VIDEO_CODEC_NONE)
         , profile(VIDEO_CODEC_PROFILE_NONE)
         , width(-1)
         , height(-1)
@@ -109,7 +113,7 @@ typedef struct _AudioStreamStats
 typedef struct _VideoStreamStats
 {
     VideoChannelStats stSend;
-    VideoChannelStats stRecv;
+    Array<VideoChannelStats> arrRecv;
 } VideoStreamStats;
 
 typedef struct _MediaStreamStats
@@ -143,6 +147,30 @@ typedef struct _ShareWindow
     {
     }
 } ShareWindow;
+
+enum CaptureDeviceFormat
+{
+    CD_NONE,
+    CD_WEBCAM_AUTO,
+    CD_FILE_JPEG_24,
+};
+
+typedef struct _CaptureInfo
+{
+    const char* strId;
+    CaptureDeviceFormat fmtDevice;
+    int nMaxWidth;
+    int nMaxHeight;
+    int nMaxFPS;
+    _CaptureInfo()
+        : strId(nullptr)
+        , fmtDevice(CD_NONE)
+        , nMaxWidth(0)
+        , nMaxHeight(0)
+        , nMaxFPS(0)
+    {
+    }
+} CaptureInfo;
 
 enum AudioMode
 {
@@ -188,7 +216,7 @@ public:
     virtual bool IsMute() = 0;
     virtual bool SetVolume(int volume) = 0;
     virtual int GetVolume() = 0;
-    virtual bool SetEnableANS(bool enable) = 0;
+    virtual bool SetEnableANS(bool enable, bool syncTNS) = 0;
     virtual bool GetEnableANS() = 0;
     virtual bool SetEnableAEC(bool enable) = 0;
     virtual bool GetEnableAEC() = 0;
@@ -196,7 +224,7 @@ public:
     virtual bool GetEnableAGC() = 0;
     virtual bool SetAudioMode(AudioMode mode) = 0;
     virtual int EnumVideoCameraDevice(MediaDeviceInfo descs[], int maxSize) = 0;
-    virtual bool SetCamera(const char* strId, bool isPicture) = 0;
+    virtual bool SetCamera(const CaptureInfo& info) = 0;
     virtual bool SetCameraOrientation(int nOrientation) = 0;
     virtual bool SetShareWindow(const ShareWindow& window) = 0;
     virtual void SetVideoCameraDeviceRender(VideoRender* render) = 0;

@@ -238,6 +238,24 @@ public:
     virtual bool UploadLog(const YtmsLog& log, YTMSProcess* process) = 0;
 
     /**
+        * @brief Upload packet file;
+        *
+        * @param id
+        * @param file
+        * @return true/false
+        */
+    virtual bool UploadPacket(const char* id, const char* file, YTMSProcess* process) = 0;
+
+    /**
+         * @brief Report async work session state; 
+         *
+         * @param id
+         * @param state
+         * @return true/false
+         */
+    virtual bool ReportSessionState(const char* id, const char* state, YTMSProcess* process) = 0;
+
+    /**
          * @brief start to capture net log job
          * 
          * @param ) 

@@ -7,6 +7,7 @@
 #include "yealink/native_mate/handle.h"
 #include "yealink/rtvc/api/schedule_item.h"
 #include "yealink/rtvc/binding/trackable_object.h"
+#include "yealink/rtvc/binding/promise.h"
 
 namespace rtvc {
 
@@ -59,9 +60,22 @@ class ScheduleItemBinding : public mate::TrackableObject<ScheduleItemBinding> {
   v8::Local<v8::Promise> GetDetail();
   v8::Local<v8::Promise> GetMailTemplate();
 
+  v8::Local<v8::Promise> EditSerial(SchedulePlanInfo infos);
+  v8::Local<v8::Promise> EditSingle(SchedulePlanInfo infos);
+
+  v8::Local<v8::Promise> DeleteSingle();
+  v8::Local<v8::Promise> DeleteSerial();
+
  private:
   void DoGetDetail();
   void DoGetMailTemplate();
+
+  void DoEditSerial(SchedulePlanInfo infos, int32_t* res);
+  void DoEditSingle(SchedulePlanInfo infos, int32_t* res);
+  void DoDeleteSingle(int32_t* res);
+  void DoDeleteSerial(int32_t* res);
+
+  void DoHttpRequest(Promise promise, int32_t* res);
 
   yealink::ScheduleItem schedule_item_;
   ScheduleItem properties_;

@@ -9,12 +9,13 @@
 #define __ROOM_STATE_COMPONENT_H__
 #include "room/room_define.h"
 #include "room/room_data.h"
+#include "components/base/simplelib/common_marco_define.h"
 
 namespace yealink
 {
-class ROOM_API RoomStateComponent
+class VC_EXPORT_API RoomStateComponent
 {
-    ROOM_COMPONENT_DECLARE(RoomStateComponent)
+    SIMPLE_OBJECT_DECLARE(RoomStateComponent)
 public:
     friend class RoomController;
 

@@ -196,6 +196,62 @@ struct StructTraits<ContactLoadMode> {
 };
 
 template <>
+struct StructTraits<ScheduleExtensionType> {
+  static bool From(ScheduleExtensionType& out,
+                   const yealink::ScheduleExtensionType& val);
+};
+
+template <>
+struct StructTraits<ScheduleConfigCreateType> {
+  static bool From(ScheduleConfigCreateType& out,
+                   const yealink::ScheduleConfigCreateType& val);
+};
+
+template <>
+struct StructTraits<ScheduleVideoResolutionLimit> {
+  static bool From(ScheduleVideoResolutionLimit& out,
+                   const yealink::ScheduleVideoResolutionLimit& val);
+};
+
+template <>
+struct StructTraits<ScheduleTextNotificationMode> {
+  static bool From(ScheduleTextNotificationMode& out,
+                   const yealink::ScheduleTextNotificationMode& val);
+};
+
+template <>
+struct StructTraits<ScheduleVoicePromptMode> {
+  static bool From(ScheduleVoicePromptMode& out,
+                   const yealink::ScheduleVoicePromptMode& val);
+};
+
+template <>
+struct StructTraits<SchedulePlanConfig> {
+  static bool From(SchedulePlanConfig& out,
+                   const yealink::SchedulePlanConfig& val);
+};
+
+template <>
+struct StructTraits<ScheduleServiceAbility> {
+  static bool From(ScheduleServiceAbility& out,
+                   const yealink::ScheduleServiceAbility& val);
+  static bool To(const ScheduleServiceAbility& val,
+                 yealink::ScheduleServiceAbility& out);
+};
+
+template <>
+struct StructTraits<ScheduleServiceStatus> {
+  static bool From(ScheduleServiceStatus& out,
+                   const yealink::ScheduleServiceStatus& val);
+};
+
+template <>
+struct StructTraits<ScheduleServiceResponse> {
+  static bool From(ScheduleServiceResponse& out,
+                   const yealink::ScheduleServiceResponse& val);
+};
+
+template <>
 struct StructTraits<ContactNodeType> {
   static bool From(ContactNodeType& out,
                    const yealink::CloudContactNodeType& val);

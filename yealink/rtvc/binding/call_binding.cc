@@ -1000,7 +1000,7 @@ void CallBinding::OnRealseConferenceBefore(
   conference_.Clear();
   v8_conference_.Reset();
 }
-void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
+void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) {
   // we must copy video frame as soon as possible
 
   // if (!Context::Instance()->CalledOnValidThread()) {
@@ -1011,9 +1011,9 @@ void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame) {
   //   return;
   // }
 
-  remote_video_source_->OnVideoFrame(frame);
+  remote_video_source_->OnVideoFrame(frame, id);
 }
-void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
+void CallBinding::OnShareFrame(const yealink::VideoFrame& frame, unsigned int id) {
   // we must copy video frame as soon as possible
 
   // if (!Context::Instance()->CalledOnValidThread()) {
@@ -1024,7 +1024,7 @@ void CallBinding::OnShareFrame(const yealink::VideoFrame& frame) {
   //   return;
   // }
 
-  remote_share_video_source_->OnVideoFrame(frame);
+  remote_share_video_source_->OnVideoFrame(frame, id);
 }
 
 }  // namespace rtvc

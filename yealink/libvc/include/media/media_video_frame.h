@@ -82,7 +82,7 @@ protected:
 class MEDIA_EXPORT VideoRender
 {
 public:
-    virtual void OnVideoFrame(const VideoFrame& frame) = 0;
+    virtual void OnVideoFrame(const VideoFrame& frame, unsigned int id) = 0;
 
 protected:
     virtual ~VideoRender()

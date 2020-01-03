@@ -120,8 +120,8 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void OnCallInfoChanged(const yealink::MeetingInfo& info) override;
   void OnCreateConferenceAfter(yealink::RoomController* controller) override;
   void OnRealseConferenceBefore(yealink::RoomController* controller) override;
-  void OnVideoFrame(const yealink::VideoFrame& frame) override;
-  void OnShareFrame(const yealink::VideoFrame& frame) override;
+  void OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) override;
+  void OnShareFrame(const yealink::VideoFrame& frame, unsigned int id) override;
 
  private:
   void OnUpgradeSucceed();

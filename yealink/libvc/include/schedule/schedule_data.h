@@ -209,6 +209,194 @@ struct ScheduleDetailInfo
     SStringA rtmpWatchUrl;
 };
 
+enum ScheduleExtensionType
+{
+    SCHEDULE_EXTENSION_TYPE_INVALID,
+    SCHEDULE_EXTENSION_TYPE_RTMP
+};
+
+enum ScheduleConfigCreateType
+{
+    SCHEDULE_CONFIG_CREATE_TYPE_INVALID,
+    /**
+     * @brief 企业注册生成
+     */
+    SCHEDULE_CONFIG_CREATE_TYPE_ADMIN,
+    /**
+     * @brief 个人注册生成
+     */
+    SCHEDULE_CONFIG_CREATE_TYPE_PERSONAL,
+    /**
+     * @brief 管理员添加
+     */
+    SCHEDULE_CONFIG_CREATE_TYPE_ENTERPRISE
+};
+
+enum ScheduleVideoResolutionLimit
+{
+    SCHEDULE_VIDEO_RESOLUTION_LIMIT_INVALID,
+    /**
+     * @brief 最大为1080P
+     */
+    SCHEDULE_VIDEO_RESOLUTION_LIMIT_1080P,
+    /**
+     * @brief 最大为720P
+     */
+    SCHEDULE_VIDEO_RESOLUTION_LIMIT_720P
+};
+
+enum ScheduleTextNotificationMode
+{
+    SCHEDULE_TEXT_NOTIFICATION_MODE_INVALID,
+    /**
+     * @brief 关闭
+     */
+    SCHEDULE_TEXT_NOTIFICATION_MODE_CLOSE,
+    /**
+     * @brief 仅入会方接收提示语
+     */
+    SCHEDULE_TEXT_NOTIFICATION_MODE_ATTENDEE,
+    /**
+     * @brief 仅入会方和主持人接收提示语
+     */
+    SCHEDULE_TEXT_NOTIFICATION_MODE_AUTHENTICATED,
+    /**
+     * @brief 所有参会方接收提示语
+     */
+    SCHEDULE_TEXT_NOTIFICATION_MODE_ALL
+};
+
+enum ScheduleVoicePromptMode
+{
+    SCHEDULE_VOICE_PROMPT_MODE_INVALID,
+    /**
+     * @brief 仅入会方接收提示音
+     */
+    SCHEDULE_VOICE_PROMPT_MODE_ATTENDEE,
+    /**
+     * @brief 仅入会方和主持人接收提示音
+     */
+    SCHEDULE_VOICE_PROMPT_MODE_AUTHENTICATED,
+    /**
+     * @brief 所有参会方接收提示音
+     */
+    SCHEDULE_VOICE_PROMPT_MODE_ALL
+};
+
+struct SchedulePlanConfig
+{
+    SchedulePlanConfig()
+        : bizCode(900599)
+        , createType(SCHEDULE_CONFIG_CREATE_TYPE_INVALID)
+        , maxVideoResolutionLimit(SCHEDULE_VIDEO_RESOLUTION_LIMIT_INVALID)
+        , enableMaxSecondaryFlowResolutionLimit(false)
+        , enableDeviceManage(false)
+        , enableCooperation(false)
+        , enableInspect(false)
+        , enableSfb(false)
+        , enableTeachingProfile(false)
+        , enableOpenApi(false)
+        , maxScheduledConfDuration(-1)
+        , maxScheduledConfStartTime(-1)
+        , maxRecurrenceConfAmount(-1)
+        , maxRecurrenceConfEndTime(-1)
+        , maxRecurrenceConfRemarkLength(-1)
+        , maxRecurrenceConfParticipantAmount(-1)
+        , enableJoinAutoMute(false)
+        , textNotificationMode(SCHEDULE_TEXT_NOTIFICATION_MODE_INVALID)
+        , voicePromptMode(SCHEDULE_VOICE_PROMPT_MODE_INVALID)
+        , forwardMeetingTime(0)
+        , enableMeetNowPassword(false)
+        , enableScheduledPassword(false)
+        , enableLoginOpt(false)
+        , enableDnd(false)
+        , enableChatByWebrtc(false)
+        , enableAutoRecord(false)
+        , maxConferenceTime(-1)
+    {
+    }
+
+    int32_t bizCode;
+
+    ScheduleConfigCreateType createType;
+    ScheduleVideoResolutionLimit maxVideoResolutionLimit;
+    bool enableMaxSecondaryFlowResolutionLimit;
+    bool enableDeviceManage;
+    bool enableCooperation;
+
+    bool enableInspect;
+    bool enableSfb;
+    bool enableTeachingProfile;
+    bool enableOpenApi;
+    int32_t maxScheduledConfDuration;
+
+    int32_t maxScheduledConfStartTime;
+    int32_t maxRecurrenceConfAmount;
+    int32_t maxRecurrenceConfEndTime;
+    int32_t maxRecurrenceConfRemarkLength;
+    int32_t maxRecurrenceConfParticipantAmount;
+
+    bool enableJoinAutoMute;
+    ScheduleTextNotificationMode textNotificationMode;
+    ScheduleVoicePromptMode voicePromptMode;
+    int32_t forwardMeetingTime;
+    SStringA meetNowPassword;
+
+    SStringA scheduledPassword;
+    bool enableMeetNowPassword;
+    bool enableScheduledPassword;
+    bool enableLoginOpt;
+    bool enableDnd;
+
+    bool enableChatByWebrtc;
+    bool enableAutoRecord;
+    int32_t maxConferenceTime;
+};
+
+enum ScheduleServiceAbility
+{
+    SCHEDULE_SERVICE_ABILITY_INVALID,
+    SCHEDULE_SERVICE_ABILITY_TRAVERSAL,
+    SCHEDULE_SERVICE_ABILITY_HARDWARE_PORT,
+    SCHEDULE_SERVICE_ABILITY_SOFTWARE_PORT,
+    SCHEDULE_SERVICE_ABILITY_VMR,
+
+    SCHEDULE_SERVICE_ABILITY_SEMINAR,
+    SCHEDULE_SERVICE_ABILITY_THIRD_PARTY,
+    SCHEDULE_SERVICE_ABILITY_PSTN,
+    SCHEDULE_SERVICE_ABILITY_CLOUD_STORAGE,
+    SCHEDULE_SERVICE_ABILITY_RTMP
+};
+
+struct ScheduleServiceStatus
+{
+    ScheduleServiceStatus()
+        : type(SCHEDULE_SERVICE_ABILITY_INVALID)
+        , status(false)
+    {
+    }
+
+    ScheduleServiceStatus(ScheduleServiceAbility type, bool status)
+        : type(type)
+        , status(status)
+    {
+    }
+
+    ScheduleServiceAbility type;
+    bool status;
+};
+
+struct ScheduleServiceResponse
+{
+    ScheduleServiceResponse()
+        : bizCode(900599)
+    {
+    }
+
+    int32_t bizCode;
+    Array<ScheduleServiceStatus> statusList;
+};
+
 } // namespace yealink
 
 #endif // __SCHEDULE_DATA_H__

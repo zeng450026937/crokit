@@ -114,11 +114,12 @@ public:
     static void SetFileWriterPath(const char* path, int64_t maxLogSize, int64_t maxTarSize);
     /**
      * @brief tar all log file, and return file path
-     * @param externPath 
+     * @param externPath extern path to tar
+     * @param maxFileCount all is 0
      * @param process 
      * @return file path
      */
-    static LogZipPath TarAllLog(const char* externPath, TarProcess* process);
+    static LogZipPath TarAllLog(const char* externPath, int32_t maxFileCount, TarProcess* process);
     /**
      * @brief 
      */

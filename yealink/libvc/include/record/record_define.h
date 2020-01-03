@@ -88,6 +88,17 @@ struct CallRecordInfos
     CallDirection direction;
     CallStatus status;
     CallMedia media;
+    CallRecordInfos()
+        : id(-1)
+        , startTime(-1)
+        , endTime(-1)
+        , durationTime(-1)
+        , callType()
+        , direction()
+        , status()
+        , media()
+    {
+    }
 };
 } // namespace yealink
 #endif

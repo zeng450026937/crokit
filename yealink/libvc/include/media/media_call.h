@@ -42,6 +42,7 @@ struct SdpParams
     bool bRtcpMux;
     bool bEnableCrypted;
     bool bDtls;
+    bool bEnableSVC;
     bool bEnableICE;
     SStringA strLocalIP; //IP直拨时这里应该填写正确的本地IP
 
@@ -71,6 +72,13 @@ enum MediaEvent
     ME_VIDEO_FLOW_CONTROL_BY_RECEIVER,
     ME_VIDEO_CAMERA_DEVICE_LOST,
     ME_VIDEO_CAMERA_DEVICE_RESUME
+};
+
+struct VideoSubscribe
+{
+    unsigned int id;
+    int width;
+    int height;
 };
 
 class MediaCallObserver
@@ -119,9 +127,12 @@ public:
     virtual void SetSendVideoResolution(const VideoResolution& resolution) = 0;
     virtual bool UpdateSendVideoResolution(const VideoResolution& resolution) = 0;
     virtual void SetRecvVideoResolution(const VideoResolution& resolution) = 0;
+    virtual bool SetVideoSubscribe(const VideoSubscribe subscribes[], int sizeSub, const unsigned int unsubscribes[], int sizeUnsub) = 0;
+    virtual void SetConfernceInfo(const char* strConferenceId, unsigned int uid) = 0;
     virtual bool RestartIce() = 0;
     virtual bool EnableVideoPortrait(bool enable) = 0;
     virtual bool IsKeyFrameRequestMethodExternal() = 0;
+    virtual bool IsSvcVideoSession() = 0;
 
 protected:
     virtual ~MediaCall() = default;

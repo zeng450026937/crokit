@@ -10,12 +10,13 @@
 
 #include "room/room_data.h"
 #include "room/room_define.h"
+#include "components/base/simplelib/common_marco_define.h"
 
 namespace yealink
 {
-class ROOM_API RoomMember
+class VC_EXPORT_API RoomMember
 {
-    ROOM_COMPONENT_DECLARE(RoomMember)
+    SIMPLE_OBJECT_DECLARE(RoomMember)
 
 public:
     friend class RoomMemberManager;

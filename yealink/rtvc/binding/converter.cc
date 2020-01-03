@@ -759,6 +759,476 @@ bool Converter<rtvc::ScheduleItemDetail>::FromV8(
 }
 
 // static
+v8::Local<v8::Value> Converter<rtvc::ScheduleExtensionType>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleExtensionType val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleExtensionType::kRTMP:
+      load_mode = "RTMP";
+      break;
+    default:
+      load_mode = "RTMP";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleExtensionType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleExtensionType* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "RTMP")
+    *out = rtvc::ScheduleExtensionType::kRTMP;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleConfigCreateType>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleConfigCreateType val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleConfigCreateType::kAdmin:
+      load_mode = "admin";
+      break;
+    case rtvc::ScheduleConfigCreateType::kPersonal:
+      load_mode = "personal";
+      break;
+    case rtvc::ScheduleConfigCreateType::kEnterprise:
+      load_mode = "enterprise";
+      break;
+    default:
+      load_mode = "personal";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleConfigCreateType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleConfigCreateType* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "admin")
+    *out = rtvc::ScheduleConfigCreateType::kAdmin;
+  else if (load_mode == "personal")
+    *out = rtvc::ScheduleConfigCreateType::kPersonal;
+  else if (load_mode == "enterprise")
+    *out = rtvc::ScheduleConfigCreateType::kEnterprise;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleVideoResolutionLimit>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleVideoResolutionLimit val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleVideoResolutionLimit::k720P:
+      load_mode = "720P";
+      break;
+    case rtvc::ScheduleVideoResolutionLimit::k1080P:
+      load_mode = "1080P";
+      break;
+    default:
+      load_mode = "720P";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleVideoResolutionLimit>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleVideoResolutionLimit* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "720P")
+    *out = rtvc::ScheduleVideoResolutionLimit::k720P;
+  else if (load_mode == "1080P")
+    *out = rtvc::ScheduleVideoResolutionLimit::k1080P;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleTextNotificationMode>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleTextNotificationMode val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleTextNotificationMode::kClose:
+      load_mode = "close";
+      break;
+    case rtvc::ScheduleTextNotificationMode::kAttendee:
+      load_mode = "attendee";
+      break;
+    case rtvc::ScheduleTextNotificationMode::kAuthenticated:
+      load_mode = "authenticated";
+      break;
+    case rtvc::ScheduleTextNotificationMode::kAll:
+      load_mode = "all";
+      break;
+    default:
+      load_mode = "close";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleTextNotificationMode>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleTextNotificationMode* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "close")
+    *out = rtvc::ScheduleTextNotificationMode::kClose;
+  else if (load_mode == "attendee")
+    *out = rtvc::ScheduleTextNotificationMode::kAttendee;
+  else if (load_mode == "authenticated")
+    *out = rtvc::ScheduleTextNotificationMode::kAuthenticated;
+  else if (load_mode == "all")
+    *out = rtvc::ScheduleTextNotificationMode::kAll;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleVoicePromptMode>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleVoicePromptMode val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleVoicePromptMode::kAttendee:
+      load_mode = "attendee";
+      break;
+    case rtvc::ScheduleVoicePromptMode::kAuthenticated:
+      load_mode = "authenticated";
+      break;
+    case rtvc::ScheduleVoicePromptMode::kAll:
+      load_mode = "all";
+      break;
+    default:
+      load_mode = "attendee";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleVoicePromptMode>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleVoicePromptMode* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "attendee")
+    *out = rtvc::ScheduleVoicePromptMode::kAttendee;
+  else if (load_mode == "authenticated")
+    *out = rtvc::ScheduleVoicePromptMode::kAuthenticated;
+  else if (load_mode == "all")
+    *out = rtvc::ScheduleVoicePromptMode::kAll;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::SchedulePlanConfig>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::SchedulePlanConfig& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("bizCode", val.bizCode);
+  dict.Set("createType", val.createType);
+  dict.Set("maxVideoResolutionLimit", val.maxVideoResolutionLimit);
+  dict.Set("enableMaxSecondaryFlowResolutionLimit",
+           val.enableMaxSecondaryFlowResolutionLimit);
+  dict.Set("enableDeviceManage", val.enableDeviceManage);
+  dict.Set("enableCooperation", val.enableCooperation);
+  dict.Set("enableInspect", val.enableInspect);
+  dict.Set("enableSfb", val.enableSfb);
+  dict.Set("enableTeachingProfile", val.enableTeachingProfile);
+  dict.Set("enableOpenApi", val.enableOpenApi);
+  dict.Set("maxScheduledConfDuration", val.maxScheduledConfDuration);
+  dict.Set("maxScheduledConfStartTime", val.maxScheduledConfStartTime);
+  dict.Set("maxRecurrenceConfAmount", val.maxRecurrenceConfAmount);
+  dict.Set("maxRecurrenceConfEndTime", val.maxRecurrenceConfEndTime);
+  dict.Set("maxRecurrenceConfRemarkLength", val.maxRecurrenceConfRemarkLength);
+  dict.Set("maxRecurrenceConfParticipantAmount",
+           val.maxRecurrenceConfParticipantAmount);
+  dict.Set("enableJoinAutoMute", val.enableJoinAutoMute);
+  dict.Set("textNotificationMode", val.textNotificationMode);
+  dict.Set("voicePromptMode", val.voicePromptMode);
+  dict.Set("forwardMeetingTime", val.forwardMeetingTime);
+  dict.Set("meetNowPassword", val.meetNowPassword);
+  dict.Set("scheduledPassword", val.scheduledPassword);
+  dict.Set("enableMeetNowPassword", val.enableMeetNowPassword);
+  dict.Set("enableScheduledPassword", val.enableScheduledPassword);
+  dict.Set("enableLoginOpt", val.enableLoginOpt);
+  dict.Set("enableDnd", val.enableDnd);
+  dict.Set("enableChatByWebrtc", val.enableChatByWebrtc);
+  dict.Set("enableAutoRecord", val.enableAutoRecord);
+  dict.Set("maxConferenceTime", val.maxConferenceTime);
+
+  return dict.GetHandle();
+}
+
+bool Converter<rtvc::SchedulePlanConfig>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::SchedulePlanConfig* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("bizCode", &(out->bizCode));
+  dict.Get("createType", &(out->createType));
+  dict.Get("maxVideoResolutionLimit", &(out->maxVideoResolutionLimit));
+  dict.Get("enableMaxSecondaryFlowResolutionLimit",
+           &(out->enableMaxSecondaryFlowResolutionLimit));
+  dict.Get("enableDeviceManage", &(out->enableDeviceManage));
+  dict.Get("enableCooperation", &(out->enableCooperation));
+  dict.Get("enableInspect", &(out->enableInspect));
+  dict.Get("enableSfb", &(out->enableSfb));
+  dict.Get("enableTeachingProfile", &(out->enableTeachingProfile));
+  dict.Get("enableOpenApi", &(out->enableOpenApi));
+  dict.Get("maxScheduledConfDuration", &(out->maxScheduledConfDuration));
+  dict.Get("maxScheduledConfStartTime", &(out->maxScheduledConfStartTime));
+  dict.Get("maxRecurrenceConfAmount", &(out->maxRecurrenceConfAmount));
+  dict.Get("maxRecurrenceConfEndTime", &(out->maxRecurrenceConfEndTime));
+  dict.Get("maxRecurrenceConfRemarkLength",
+           &(out->maxRecurrenceConfRemarkLength));
+  dict.Get("maxRecurrenceConfParticipantAmount",
+           &(out->maxRecurrenceConfParticipantAmount));
+  dict.Get("enableJoinAutoMute", &(out->enableJoinAutoMute));
+  dict.Get("textNotificationMode", &(out->textNotificationMode));
+  dict.Get("voicePromptMode", &(out->voicePromptMode));
+  dict.Get("forwardMeetingTime", &(out->forwardMeetingTime));
+  dict.Get("meetNowPassword", &(out->meetNowPassword));
+  dict.Get("scheduledPassword", &(out->scheduledPassword));
+  dict.Get("enableMeetNowPassword", &(out->enableMeetNowPassword));
+  dict.Get("enableScheduledPassword", &(out->enableScheduledPassword));
+  dict.Get("enableLoginOpt", &(out->enableLoginOpt));
+  dict.Get("enableDnd", &(out->enableDnd));
+  dict.Get("enableChatByWebrtc", &(out->enableChatByWebrtc));
+  dict.Get("enableAutoRecord", &(out->enableAutoRecord));
+  dict.Get("maxConferenceTime", &(out->maxConferenceTime));
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleServiceAbility>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleServiceAbility val) {
+  std::string load_mode;
+  switch (val) {
+    case rtvc::ScheduleServiceAbility::kTraversal:
+      load_mode = "traversal";
+      break;
+    case rtvc::ScheduleServiceAbility::kHardwarePort:
+      load_mode = "hardwarePort";
+      break;
+    case rtvc::ScheduleServiceAbility::kSoftwarePort:
+      load_mode = "softwarePort";
+      break;
+    case rtvc::ScheduleServiceAbility::kVmr:
+      load_mode = "vmr";
+      break;
+    case rtvc::ScheduleServiceAbility::kSeminar:
+      load_mode = "seminar";
+      break;
+    case rtvc::ScheduleServiceAbility::kThirdParty:
+      load_mode = "thirdParty";
+      break;
+    case rtvc::ScheduleServiceAbility::kPSTN:
+      load_mode = "PSTN";
+      break;
+    case rtvc::ScheduleServiceAbility::kCloudStorage:
+      load_mode = "cloudStorage";
+      break;
+    case rtvc::ScheduleServiceAbility::kRTMP:
+      load_mode = "RTMP";
+      break;
+    default:
+      load_mode = "traversal";
+      break;
+  }
+  return ConvertToV8(isolate, load_mode);
+}
+
+bool Converter<rtvc::ScheduleServiceAbility>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleServiceAbility* out) {
+  std::string load_mode;
+  if (!ConvertFromV8(isolate, val, &load_mode))
+    return false;
+
+  if (load_mode == "traversal")
+    *out = rtvc::ScheduleServiceAbility::kTraversal;
+  else if (load_mode == "hardwarePort")
+    *out = rtvc::ScheduleServiceAbility::kHardwarePort;
+  else if (load_mode == "softwarePort")
+    *out = rtvc::ScheduleServiceAbility::kSoftwarePort;
+  else if (load_mode == "vmr")
+    *out = rtvc::ScheduleServiceAbility::kVmr;
+  else if (load_mode == "seminar")
+    *out = rtvc::ScheduleServiceAbility::kSeminar;
+  else if (load_mode == "thirdParty")
+    *out = rtvc::ScheduleServiceAbility::kThirdParty;
+  else if (load_mode == "PSTN")
+    *out = rtvc::ScheduleServiceAbility::kPSTN;
+  else if (load_mode == "cloudStorage")
+    *out = rtvc::ScheduleServiceAbility::kCloudStorage;
+  else if (load_mode == "RTMP")
+    *out = rtvc::ScheduleServiceAbility::kRTMP;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleServiceStatus>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::ScheduleServiceStatus& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("type", val.type);
+  dict.Set("status", val.status);
+
+  return dict.GetHandle();
+}
+
+bool Converter<rtvc::ScheduleServiceStatus>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleServiceStatus* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("status", &(out->status));
+  dict.Get("type", &(out->type));
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleServiceResponse>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::ScheduleServiceResponse& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("bizCode", val.bizCode);
+  dict.Set("statusList", val.statusList);
+
+  return dict.GetHandle();
+}
+
+bool Converter<rtvc::ScheduleServiceResponse>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleServiceResponse* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("bizCode", &(out->bizCode));
+  dict.Get("statusList", &(out->statusList));
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::SchedulePlanInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::SchedulePlanInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("profile", val.profile);
+  dict.Set("subject", val.subject);
+  dict.Set("zoneId", val.zoneId);
+  dict.Set("startDate", val.startDate);
+  dict.Set("startTime", val.startTime);
+  dict.Set("durationHour", val.durationHour);
+  dict.Set("durationMinute", val.durationMinute);
+  dict.Set("recurrenceType", val.recurrenceType);
+  dict.Set("interval", val.interval);
+  dict.Set("dayOfWeek", val.dayOfWeek);
+  dict.Set("rangeEndDate", val.rangeEndDate);
+  dict.Set("remark", val.remark);
+  dict.Set("identifier", val.identifier);
+  dict.Set("memberType", val.memberType);
+  dict.Set("roleType", val.roleType);
+  dict.Set("extensionType", val.extensionType);
+  dict.Set("rtmpLogoFileName", val.rtmpLogoFileName);
+  dict.Set("rtmpWatchLimitType", val.rtmpWatchLimitType);
+  dict.Set("rtmpWatchPwd", val.rtmpWatchPwd);
+  dict.Set("enableAutoRecord", val.enableAutoRecord);
+
+  return dict.GetHandle();
+}
+
+bool Converter<rtvc::SchedulePlanInfo>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::SchedulePlanInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("profile", &(out->profile));
+  dict.Get("subject", &(out->subject));
+  dict.Get("zoneId", &(out->zoneId));
+  dict.Get("startDate", &(out->startDate));
+  dict.Get("startTime", &(out->startTime));
+  dict.Get("durationHour", &(out->durationHour));
+  dict.Get("durationMinute", &(out->durationMinute));
+  dict.Get("recurrenceType", &(out->recurrenceType));
+  dict.Get("interval", &(out->interval));
+  dict.Get("dayOfWeek", &(out->dayOfWeek));
+  dict.Get("rangeEndDate", &(out->rangeEndDate));
+  dict.Get("remark", &(out->remark));
+  dict.Get("identifier", &(out->identifier));
+  dict.Get("memberType", &(out->memberType));
+  dict.Get("roleType", &(out->roleType));
+  dict.Get("extensionType", &(out->extensionType));
+  dict.Get("rtmpLogoFileName", &(out->rtmpLogoFileName));
+  dict.Get("rtmpWatchLimitType", &(out->rtmpWatchLimitType));
+  dict.Get("rtmpWatchPwd", &(out->rtmpWatchPwd));
+  dict.Get("enableAutoRecord", &(out->enableAutoRecord));
+
+  return true;
+}
+
+// static
 v8::Local<v8::Value> Converter<rtvc::ContactLoadMode>::ToV8(
     v8::Isolate* isolate,
     rtvc::ContactLoadMode val) {
@@ -3763,6 +4233,76 @@ bool Converter<rtvc::RTCStatsInfo>::FromV8(v8::Isolate* isolate,
     return false;
   dict.Get("media", &(out->media));
   dict.Get("share", &(out->share));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<rtvc::CaptureDeviceFormatType>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::CaptureDeviceFormatType val) {
+  std::string res;
+  switch (val) {
+    case rtvc::CaptureDeviceFormatType::kJPEG:
+      res = "jpeg";
+      break;
+    case rtvc::CaptureDeviceFormatType::KWebcam:
+      res = "webcam";
+      break;
+    default:
+      res = "none";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<rtvc::CaptureDeviceFormatType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::CaptureDeviceFormatType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "jpeg")
+    *out = rtvc::CaptureDeviceFormatType::kJPEG;
+  else if (in == "webcam")
+    *out = rtvc::CaptureDeviceFormatType::KWebcam;
+  else if (in == "none")
+    *out = rtvc::CaptureDeviceFormatType::kNone;
+  else {
+    *out = rtvc::CaptureDeviceFormatType::kNone;
+    return false;
+  }
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<rtvc::CaptureInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::CaptureInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("id", val.id);
+  handler.Set("type", val.type);
+  handler.Set("width", val.width);
+  handler.Set("height", val.height);
+  handler.Set("fps", val.fps);
+
+  return handler.GetHandle();
+}
+
+bool Converter<rtvc::CaptureInfo>::FromV8(v8::Isolate* isolate,
+                                          v8::Local<v8::Value> val,
+                                          rtvc::CaptureInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("id", &(out->id));
+  dict.Get("type", &(out->type));
+  dict.Get("width", &(out->width));
+  dict.Get("height", &(out->height));
+  dict.Get("fps", &(out->fps));
 
   return true;
 }

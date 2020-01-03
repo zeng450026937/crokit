@@ -8,11 +8,12 @@
 #define __SCHEDULE_OBJECT_H__
 #include "schedule_define.h"
 #include "schedule_data.h"
+#include "schedule_plan_info.h"
 #include "components/base/simplelib/common_marco_define.h"
 
 namespace yealink
 {
-class SCHEDULE_API ScheduleItem
+class VC_EXPORT_API ScheduleItem
 {
     SIMPLE_OBJECT_DECLARE(ScheduleItem)
 public:
@@ -67,6 +68,10 @@ public:
      * @return 
      */
     bool IsReady() const;
+    int32_t EditSerial(const SchedulePlanInfo& info);
+    int32_t EditSingle(const SchedulePlanInfo& info);
+    int32_t DeleteSerial();
+    int32_t DeleteSingle();
 };
 } // namespace yealink
 

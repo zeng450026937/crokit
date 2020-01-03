@@ -17,13 +17,14 @@
 #include "sip_agent/sip_client.h"
 #include "room_rtmp_component.h"
 #include "room_record_component.h"
+#include "components/base/simplelib/common_marco_define.h"
 
 namespace yealink
 {
 /**
  * @brief room controller, can control a conference, and it's safe for copy.
  */
-class ROOM_API RoomController
+class VC_EXPORT_API RoomController
 {
 public:
     /**
@@ -45,25 +46,7 @@ public:
     };
 
 public:
-    /**
-     * @brief create an invalid controller, with need to init.
-     */
-    RoomController();
-    /**
-     * @brief 
-     */
-    ~RoomController();
-    /**
-     * @brief copy destructor, this is safe for copy.
-     * @param other another controller 
-     */
-    RoomController(const RoomController& other);
-    /**
-     * @brief equal operator, this is safe for copy.
-     * @param other another controller 
-     * @return *this
-     */
-    RoomController& operator=(const RoomController& other);
+    SIMPLE_OBJECT_DECLARE(RoomController)
 
 public:
     /**
@@ -90,11 +73,6 @@ public:
      * @param observer 
      */
     void RemoveObserver(RoomObserver* observer);
-    /**
-     * @brief 
-     * @return 
-     */
-    bool Available() const;
     /**
      * @brief connect with conference uri and entity
      * @param client sip client
@@ -160,9 +138,7 @@ public:
     RoomRecordComponent GetRecordComponent();
 
 private:
-    RoomController(void* data);
     void Clear();
-    void* m_data;
 };
 } // namespace yealink
 #endif // __ROOM_CONTROLLER_H__

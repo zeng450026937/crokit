@@ -4,10 +4,14 @@
 #include "components/base/simplelib/simple_lib.h"
 
 #ifdef _WIN32
-#    ifdef EXPORT_SYMPOLS
-#        define YTMS_AGENT_API __declspec(dllexport)
+#    ifndef ENABLE_UNIT_TEST
+#        ifdef EXPORT_SYMPOLS
+#            define YTMS_AGENT_API __declspec(dllexport)
+#        else
+#            define YTMS_AGENT_API __declspec(dllimport)
+#        endif
 #    else
-#        define YTMS_AGENT_API __declspec(dllimport)
+#        define YTMS_AGENT_API
 #    endif
 #else
 #    define YTMS_AGENT_API
@@ -136,7 +140,7 @@ struct YtmsConfigInfo
         , updateChannel("")
         , customId("")
         , configFileId("")
-        , clientRemarks(nullptr)
+        , clientRemarks(NULL)
         , model("")
         , resolution("")
         , os("")
@@ -161,6 +165,14 @@ struct YtmsConfigInfo
 
 struct YtmsEvent
 {
+    YtmsEvent()
+        : eventCode("")
+        , eventName("")
+        , networkMode("")
+        , ispType("")
+    {
+    }
+
     const char* eventCode; // E00001
     const char* eventName; // CLIENT_START_UP
     const char* networkMode; // 3G/4G/5G/WIFI
@@ -188,6 +200,12 @@ struct YtmsAlarm
 
 struct PackageInfo
 {
+    PackageInfo()
+        : fileSize(0)
+        , forceUpdate(false)
+    {
+    }
+
     SStringA clientVersion;
     SStringA releaseDate;
     SStringA releaseNote;

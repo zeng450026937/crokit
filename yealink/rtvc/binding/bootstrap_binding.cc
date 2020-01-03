@@ -68,6 +68,14 @@ std::string BootstrapBinding::server() {
 }
 void BootstrapBinding::SetServer(std::string server) {
   server_ = server;
+
+  if(access_agent_)
+  {
+    if(debug_ == false)
+      access_agent_->SetScheduleHost(server.c_str());
+    else
+      access_agent_->SetAccessHost(server.c_str());
+  }
 }
 
 std::string BootstrapBinding::username() {
@@ -89,6 +97,8 @@ bool BootstrapBinding::debug() {
 }
 void BootstrapBinding::SetDebug(bool debug) {
   debug_ = debug;
+
+  if(debug == true && access_agent_) access_agent_->SetAccessHost(server_.c_str());
 }
 
 bool BootstrapBinding::smsVerify() {
@@ -131,7 +141,7 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
              ProcessObserver* observer) {
             int code = observer ? observer->bizCode() : 900500;
 
-            if (code != 900200) {
+            if (code != 900200 && code != 0) {
               ErrorInfo error_result;
               error_result.biz_code = code;
               std::move(promise).Reject(error_result);
@@ -150,7 +160,7 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
 
 v8::Local<v8::Value> BootstrapBinding::GetConnector(std::string uid) {
   DCHECK(access_agent_);
-  access_agent_->StartAccessPushService(uid.c_str());
+  access_agent_->StartAccessService(uid.c_str());
   if (connector_.IsEmpty()) {
     auto handle = ConnectorBinding::Create(isolate(), access_agent_);
     connector_.Reset(isolate(), handle.ToV8());
@@ -181,7 +191,7 @@ v8::Local<v8::Promise> BootstrapBinding::GetPartyInviteInfo() {
              ProcessObserver* observer) {
             int code = observer ? observer->bizCode() : 900500;
 
-            if (code != 900200) {
+            if (code != 900200 && code != 0) {
               ErrorInfo error_result;
               error_result.biz_code = code;
               std::move(promise).Reject(error_result);
@@ -213,7 +223,7 @@ v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
           [](Promise promise, const bool* result, ProcessObserver* observer) {
             int code = observer ? observer->bizCode() : 900500;
 
-            if (code != 900200) {
+            if (code != 900200 && code != 0) {
               ErrorInfo error_result;
               error_result.biz_code = code;
               std::move(promise).Reject(error_result);
@@ -234,17 +244,13 @@ void BootstrapBinding::DoAuthenticate(AccessInfo* result,
                                       ProcessObserver* observer) {
   yealink::LoginInfo info;
   yealink::LoginUserInfos ret;
-  info.server = server_.c_str();
   info.username = username_.c_str();
   info.password = ha1_.size() > 0 ? ha1_.c_str() : password_.c_str();
   info.isSmsVerify = sms_verify_;
   info.algorithm = ha1_.size() > 0 ? "a1_hash" : "";
 
-  if (debug_ == true) {
-    ret = access_agent_->UnscheduledLoginAccessService(info, observer);
-  } else {
+  if (access_agent_)
     ret = access_agent_->LoginAccessService(info, observer);
-  }
 
   ConvertFrom(*result, ret);
 }
@@ -259,12 +265,8 @@ void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result,
 void BootstrapBinding::DoPushVerifyCode(bool* result,
                                         ProcessObserver* observer) {
   if (result != nullptr && access_agent_ != nullptr) {
-    if (debug_ == true)
-      *result = access_agent_->UnscheduledSendMobileLoginVerifyCode(
-          server_.c_str(), username_.c_str(), observer);
-    else
       *result = access_agent_->SendMobileLoginVerifyCode(
-          server_.c_str(), username_.c_str(), observer);
+          username_.c_str(), observer);
   }
 }
 

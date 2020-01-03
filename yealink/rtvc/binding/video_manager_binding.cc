@@ -98,10 +98,12 @@ base::Optional<Device> VideoManagerBinding::videoInputDevice() {
   return video_input_device_;
 };
 void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
+  yealink::CaptureInfo cam;
+
   if (!device) {
     // isolate()->ThrowException(v8::Exception::Error(
     //     mate::StringToV8(isolate(), "Invalid device argument.")));
-    media_->SetCamera(nullptr, false);
+    media_->SetCamera(cam);
     video_input_device_ = device;
     return;
   }
@@ -114,13 +116,17 @@ void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
 
   video_input_device_ = device;
 
+  cam.strId = device->deviceId.c_str();
+
   if (acquiring_stream_) {
     switch (device->type) {
       case DeviceType::kImageFile:
-        media_->SetCamera(device->deviceId.c_str(), true);
+        cam.fmtDevice = yealink::CaptureDeviceFormat::CD_FILE_JPEG_24;
+        media_->SetCamera(cam);
         break;
       case DeviceType::kVideoInput:
-        media_->SetCamera(device->deviceId.c_str(), false);
+        cam.fmtDevice = yealink::CaptureDeviceFormat::CD_WEBCAM_AUTO;
+        media_->SetCamera(cam);
       default:
         break;
     }
@@ -156,16 +162,20 @@ void VideoManagerBinding::AcquireStream() {
   if (acquiring_stream_)
     return;
 
+  yealink::CaptureInfo cam;
   acquiring_stream_ = true;
+  cam.strId = video_input_device_->deviceId.c_str();
 
   if (video_input_device_) {
     switch (video_input_device_->type) {
       case DeviceType::kImageFile:
-        media_->SetCamera(video_input_device_->deviceId.c_str(), true);
+        cam.fmtDevice = yealink::CaptureDeviceFormat::CD_FILE_JPEG_24;
+        media_->SetCamera(cam);
         break;
       case DeviceType::kVideoInput:
       default:
-        media_->SetCamera(video_input_device_->deviceId.c_str(), false);
+        cam.fmtDevice = yealink::CaptureDeviceFormat::CD_WEBCAM_AUTO;
+        media_->SetCamera(cam);
         break;
     }
   }
@@ -175,8 +185,9 @@ void VideoManagerBinding::ReleaseStream() {
     return;
 
   acquiring_stream_ = false;
+  yealink::CaptureInfo cam;
 
-  media_->SetCamera(nullptr, false);
+  media_->SetCamera(cam);
 }
 bool VideoManagerBinding::acquiring() {
   return acquiring_stream_;

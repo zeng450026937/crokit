@@ -29,7 +29,7 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
   void SetMute(bool mute);
 
   bool ans();
-  void SetANS(bool enable);
+  void SetANS(bool enable, bool syncTNS);
 
   bool aec();
   void SetAEC(bool enable);

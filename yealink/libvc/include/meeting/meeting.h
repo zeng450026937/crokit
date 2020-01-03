@@ -110,11 +110,11 @@ public:
     }
 
 public:
-    virtual void OnVideoFrame(const VideoFrame& frame)
+    virtual void OnVideoFrame(const VideoFrame& frame, unsigned int id)
     {
         (void)frame;
     }
-    virtual void OnShareFrame(const VideoFrame& frame)
+    virtual void OnShareFrame(const VideoFrame& frame, unsigned int id)
     {
         (void)frame;
     }
@@ -286,6 +286,31 @@ public:
      *
      */
     virtual bool EnableVideoPortraitMode(bool bEnable) = 0;
+    /**
+     * @brief Set SVC share subscribe.
+     *
+     */
+    virtual bool SetShareSubscribe(const VideoSubscribe subscribes[], int sizeSub, const unsigned int unsubscribes[], int sizeUnsub) = 0;
+    /**
+     * @brief Get support share subscribe.
+     *
+     */
+    virtual bool SupportShareSubscribe() const = 0;
+    /**
+     * @brief Set SVC video subscribe.
+     *
+     */
+    virtual bool SetVideoSubscribe(const VideoSubscribe subscribes[], int sizeSub, const unsigned int unsubscribes[], int sizeUnsub) = 0;
+    /**
+     * @brief Get support video subscribe.
+     *
+     */
+    virtual bool SupportVideoSubscribe() const = 0;
+    /**
+     * @brief Set svc codec enable.
+     *
+     */
+    virtual void SetSvcCodecEnable(bool enable) = 0;
 };
 } // namespace yealink
 #endif //__MEETING_H__

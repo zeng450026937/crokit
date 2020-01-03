@@ -1,13 +1,24 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-19 15:09:04
+ * @LastEditTime: 2019-09-19 15:09:04
+ * @LastEditors: your name
+ */
 #ifndef ACCESS_DEFINE_H
 #define ACCESS_DEFINE_H
 
 #include "components/base/simplelib/simple_lib.h"
 
 #ifdef _WIN32
-#    ifdef EXPORT_SYMPOLS
-#        define ACCESS_AGENT_API __declspec(dllexport)
+#    ifndef ENABLE_UNIT_TEST
+#        ifdef EXPORT_SYMPOLS
+#            define ACCESS_AGENT_API __declspec(dllexport)
+#        else
+#            define ACCESS_AGENT_API __declspec(dllimport)
+#        endif
 #    else
-#        define ACCESS_AGENT_API __declspec(dllimport)
+#        define ACCESS_AGENT_API
 #    endif
 #else
 #    define ACCESS_AGENT_API
@@ -64,6 +75,14 @@ struct AccountInfo
 
 struct PartyInfo
 {
+    PartyInfo()
+        : frozen(false)
+        , slot(0)
+        , status(0)
+        , subType(0)
+    {
+    }
+
     SStringA area;
     SStringA country;
     SStringA domain;
@@ -80,11 +99,22 @@ struct PartyInfo
 
 struct PermissionInfo
 {
+    PermissionInfo()
+        : enableMeetingNow(false)
+    {
+    }
+
     bool enableMeetingNow;
 };
 
 struct SubjectInfo
 {
+    SubjectInfo()
+        : type(0)
+        , gender(0)
+    {
+    }
+
     SStringA groupInfos;
     SStringA uid;
     SStringA name;
@@ -134,6 +164,11 @@ struct LoginUserInfos
     LoginAuthInfo authInfo;
     bool hasRegister; // 是否注册个人账号，因为软终端现在还未限制云账号登录，对于未注册的云账号登录时可能需要根据此字段限制一些功能
     bool upgraded; // 账号是否已创建企业，false：没有创建企业；true：已经创建企业
+    LoginUserInfos()
+        : hasRegister(false)
+        , upgraded(false)
+    {
+    }
 };
 
 struct WechatAuthCallbackInfo
@@ -145,15 +180,13 @@ struct WechatAuthCallbackInfo
 
 struct LoginInfo
 {
-    const char* server;
     const char* username;
     const char* password; //正常密码、短信验证码、LoginUserInfos中的ha1摘要credential
     bool isSmsVerify; //是否短信验证
     const char* algorithm; //摘要算法，通常为空，验证码自动登录时填LoginUserInfos中的algorithm
     const char* realm; //暂时没用到，先填空
     LoginInfo()
-        : server("")
-        , username("")
+        : username("")
         , password("")
         , isSmsVerify(false)
         , algorithm("")
@@ -168,10 +201,15 @@ struct HttpRequestParam
     const char* serverAddr;
     const char* apiUrl;
     const char* body;
+    const char* compressMethod; //压缩方式，如“gzip”,一般放空，有要求才设置
+    const char* httpConnectionName; //有需要长连接时需要设置一个别名来区分
     HttpRequestParam()
-        : serverAddr("")
+        : method()
+        , serverAddr("")
         , apiUrl("")
         , body("")
+        , compressMethod("")
+        , httpConnectionName("")
     {
     }
 };

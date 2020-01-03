@@ -126,8 +126,7 @@ struct Converter<yealink::Array<T>> {
 
 template <>
 struct Converter<rtvc::AudioMode> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   rtvc::AudioMode val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, rtvc::AudioMode val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -136,8 +135,7 @@ struct Converter<rtvc::AudioMode> {
 
 template <>
 struct Converter<rtvc::DeviceType> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   rtvc::DeviceType val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, rtvc::DeviceType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -220,9 +218,8 @@ struct Converter<rtvc::ScheduleRecurrenceType> {
 
 template <>
 struct Converter<rtvc::ScheduleRecurrenceDailyType> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      rtvc::ScheduleRecurrenceDailyType val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleRecurrenceDailyType val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -231,9 +228,8 @@ struct Converter<rtvc::ScheduleRecurrenceDailyType> {
 
 template <>
 struct Converter<rtvc::ScheduleRecurrence> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::ScheduleRecurrence& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleRecurrence& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -242,9 +238,8 @@ struct Converter<rtvc::ScheduleRecurrence> {
 
 template <>
 struct Converter<rtvc::ScheduleDaylightStrategy> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::ScheduleDaylightStrategy& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleDaylightStrategy& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -253,9 +248,8 @@ struct Converter<rtvc::ScheduleDaylightStrategy> {
 
 template <>
 struct Converter<rtvc::ScheduleTimeZoneRule> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::ScheduleTimeZoneRule& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleTimeZoneRule& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -334,13 +328,112 @@ struct Converter<rtvc::ScheduleRTMP> {
 
 template <>
 struct Converter<rtvc::ScheduleItemDetail> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::ScheduleItemDetail& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleItemDetail& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::ScheduleItemDetail* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleExtensionType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleExtensionType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleExtensionType* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleConfigCreateType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleConfigCreateType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleConfigCreateType* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleVideoResolutionLimit> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleVideoResolutionLimit val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleVideoResolutionLimit* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleTextNotificationMode> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleTextNotificationMode val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleTextNotificationMode* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleVoicePromptMode> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleVoicePromptMode val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleVoicePromptMode* out);
+};
+
+template <>
+struct Converter<rtvc::SchedulePlanConfig> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::SchedulePlanConfig& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::SchedulePlanConfig* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleServiceAbility> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleServiceAbility val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleServiceAbility* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleServiceStatus> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleServiceStatus& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleServiceStatus* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleServiceResponse> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ScheduleServiceResponse& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleServiceResponse* out);
+};
+
+template <>
+struct Converter<rtvc::SchedulePlanInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::SchedulePlanInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::SchedulePlanInfo* out);
 };
 
 template <>
@@ -467,8 +560,7 @@ struct Converter<rtvc::EventInfo> {
 // description
 template <>
 struct Converter<rtvc::DescProfile> {
-  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
-                                   rtvc::DescProfile val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate, rtvc::DescProfile val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -857,9 +949,8 @@ struct Converter<rtvc::UserMediaInfo> {
 
 template <>
 struct Converter<rtvc::UserMediaFilterInfo> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::UserMediaFilterInfo& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::UserMediaFilterInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -898,9 +989,8 @@ struct Converter<rtvc::UserMediaDataInfo> {
 
 template <>
 struct Converter<rtvc::UserStatisticsInfo> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::UserStatisticsInfo& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::UserStatisticsInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -1040,9 +1130,8 @@ struct Converter<rtvc::ViewFilterType> {
 
 template <>
 struct Converter<rtvc::ViewFilterRuleInfo> {
-  static v8::Local<v8::Value> ToV8(
-      v8::Isolate* isolate,
-      const rtvc::ViewFilterRuleInfo& val);
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ViewFilterRuleInfo& val);
 
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
@@ -1137,6 +1226,26 @@ struct Converter<rtvc::RTCStatsInfo> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::RTCStatsInfo* out);
+};
+
+template <>
+struct Converter<rtvc::CaptureDeviceFormatType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::CaptureDeviceFormatType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::CaptureDeviceFormatType* out);
+};
+
+template <>
+struct Converter<rtvc::CaptureInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::CaptureInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::CaptureInfo* out);
 };
 
 template <>

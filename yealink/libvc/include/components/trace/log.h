@@ -92,8 +92,6 @@ namespace yealink
         assert(exp); \
     }
 
-void PrintLog(int nLevel, const char* strLog);
-
 class LogLine
 {
 public:
@@ -162,17 +160,6 @@ public:
                 break;
             }
         }
-        //print
-        if (bNewLine)
-        {
-            m_sstreamLog << '\n';
-        }
-        std::stringstream streamLogLine;
-        AppedHeader(streamLogLine);
-        streamLogLine << m_sstreamLog.rdbuf();
-        std::string strLogLine = streamLogLine.str();
-        m_sstreamLog.clear();
-        PrintLog(m_nLevel, strLogLine.c_str());
     }
     void Print(bool bNewLine)
     {
@@ -226,22 +213,8 @@ public:
         default:
             break;
         }
-        if (bNewLine)
-        {
-            m_sstreamLog << '\n';
-        }
-        std::stringstream streamLogLine;
-        AppedHeader(streamLogLine);
-        streamLogLine << m_sstreamLog.rdbuf();
-        std::string strLogLine = streamLogLine.str();
-        m_sstreamLog.clear();
-        PrintLog(m_nLevel, strLogLine.c_str());
     }
     std::stringstream& Stream();
-
-private:
-    void AppedHeader(std::ostream& stream);
-    char ToLevelMask(int nLevel);
 
 private:
     std::stringstream m_sstreamLog;

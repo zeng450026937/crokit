@@ -21,7 +21,7 @@ void VideoSourceAdapter::RemoveSink(VideoSink* sink) {
   sinks_.erase(sink);
 }
 
-void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame) {
+void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) {
   if (sinks_.empty())
     return;
 

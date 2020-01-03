@@ -8,6 +8,7 @@
 #include "yealink/rtvc/binding/converter.h"
 #include "yealink/rtvc/binding/promise.h"
 #include "yealink/rtvc/binding/schedule_item_binding.h"
+#include "yealink/rtvc/glue/struct_traits.h"
 
 namespace mate {
 template <>
@@ -39,7 +40,19 @@ void ScheduleBinding::BuildPrototype(
   mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
       .MakeDestroyable()
       .SetMethod("sync", &ScheduleBinding::Sync)
-      .SetMethod("fetch", &ScheduleBinding::Fetch);
+      .SetMethod("fetch", &ScheduleBinding::Fetch)
+      .SetMethod("addSchedulePlan", &ScheduleBinding::AddSchedulePlan)
+      .SetMethod("editSerialSchedulePlan",
+                 &ScheduleBinding::EditSerialSchedulePlan)
+      .SetMethod("editSingleSchedulePlan",
+                 &ScheduleBinding::EditSingleSchedulePlan)
+      .SetMethod("deleteSerialSchedulePlan",
+                 &ScheduleBinding::DeleteSerialSchedulePlan)
+      .SetMethod("deleteSingleSchedulePlan",
+                 &ScheduleBinding::DeleteSingleSchedulePlan)
+      .SetMethod("getScheduleConfig", &ScheduleBinding::GetScheduleConfig)
+      .SetMethod("getServiceAbility", &ScheduleBinding::GetServiceAbility)
+      .SetMethod("getScheduleByPlanId", &ScheduleBinding::GetScheduleByPlanId);
 }
 
 ScheduleBinding::ScheduleBinding(v8::Isolate* isolate,
@@ -140,6 +153,287 @@ void ScheduleBinding::DoSync(uint64_t start_time, uint64_t end_time) {
   }
 
   synced_ = true;
+}
+
+v8::Local<v8::Promise> ScheduleBinding::AddSchedulePlan(
+    SchedulePlanInfo infos) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  int32_t* res = new int32_t();
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoAddSchedulePlan,
+                     base::Unretained(this), infos, res),
+      base::BindOnce(&ScheduleBinding::DoHttpRequest,
+                     weak_factory_.GetWeakPtr(), std::move(promise), res));
+
+  return handle;
+}
+
+void ScheduleBinding::DoAddSchedulePlan(SchedulePlanInfo infos, int32_t* res) {
+  yealink::SchedulePlanInfo schedule = yealink::SchedulePlanInfo::Create();
+
+  schedule.SetDurationHour(infos.durationHour);
+  schedule.SetDurationMinute(infos.durationMinute);
+  schedule.SetEnableAutoRecord(infos.enableAutoRecord);
+  schedule.SetExtensionType(
+      (yealink::ScheduleExtensionType)infos.extensionType);
+  schedule.SetInterval(infos.interval);
+  schedule.SetProfile((yealink::ScheduleItemProfile)infos.profile);
+  schedule.SetRangeEndDate(infos.rangeEndDate.c_str());
+  schedule.SetRecurrenceType(
+      (yealink::ScheduleRecurrenceType)infos.recurrenceType);
+  schedule.SetRemark(infos.remark.c_str());
+  schedule.SetRtmpLogoFileName(infos.rtmpLogoFileName.c_str());
+  schedule.SetRtmpWatchLimitType(
+      (yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
+  schedule.SetRtmpWatchPwd(infos.rtmpWatchPwd.c_str());
+  schedule.SetStartDate(infos.startDate.c_str());
+  schedule.SetStartTime(infos.startTime.c_str());
+  schedule.SetSubject(infos.subject.c_str());
+  schedule.SetZoneId(infos.zoneId.c_str());
+  schedule.AddDayOfWeek(infos.dayOfWeek);
+  schedule.AddParticipants(infos.identifier.c_str(),
+                           (yealink::ScheduleMemberType)infos.memberType,
+                           (yealink::ScheduleMemberRole)infos.roleType);
+
+  if (res)
+    *res = schedule_manager_->AddSchedulePlan(schedule);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::EditSerialSchedulePlan(
+    std::string id,
+    SchedulePlanInfo infos) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  int32_t* res = new int32_t();
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoEditSerialSchedulePlan,
+                     base::Unretained(this), id, infos, res),
+      base::BindOnce(&ScheduleBinding::DoHttpRequest,
+                     weak_factory_.GetWeakPtr(), std::move(promise), res));
+
+  return handle;
+}
+
+void ScheduleBinding::DoEditSerialSchedulePlan(std::string id,
+                                               SchedulePlanInfo infos,
+                                               int32_t* res) {
+  yealink::SchedulePlanInfo schedule = yealink::SchedulePlanInfo::Create();
+
+  schedule.SetDurationHour(infos.durationHour);
+  schedule.SetDurationMinute(infos.durationMinute);
+  schedule.SetEnableAutoRecord(infos.enableAutoRecord);
+  schedule.SetExtensionType(
+      (yealink::ScheduleExtensionType)infos.extensionType);
+  schedule.SetInterval(infos.interval);
+  schedule.SetProfile((yealink::ScheduleItemProfile)infos.profile);
+  schedule.SetRangeEndDate(infos.rangeEndDate.c_str());
+  schedule.SetRecurrenceType(
+      (yealink::ScheduleRecurrenceType)infos.recurrenceType);
+  schedule.SetRemark(infos.remark.c_str());
+  schedule.SetRtmpLogoFileName(infos.rtmpLogoFileName.c_str());
+  schedule.SetRtmpWatchLimitType(
+      (yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
+  schedule.SetRtmpWatchPwd(infos.rtmpWatchPwd.c_str());
+  schedule.SetStartDate(infos.startDate.c_str());
+  schedule.SetStartTime(infos.startTime.c_str());
+  schedule.SetSubject(infos.subject.c_str());
+  schedule.SetZoneId(infos.zoneId.c_str());
+
+  if (res)
+    *res = schedule_manager_->EditSerialSchedulePlan(id.c_str(), schedule);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::EditSingleSchedulePlan(
+    std::string id,
+    int64_t sequence,
+    SchedulePlanInfo infos) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  int32_t* res = new int32_t();
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoEditSingleSchedulePlan,
+                     base::Unretained(this), id, sequence, infos, res),
+      base::BindOnce(&ScheduleBinding::DoHttpRequest,
+                     weak_factory_.GetWeakPtr(), std::move(promise), res));
+
+  return handle;
+}
+
+void ScheduleBinding::DoEditSingleSchedulePlan(std::string id,
+                                               int64_t sequence,
+                                               SchedulePlanInfo infos,
+                                               int32_t* res) {
+  yealink::SchedulePlanInfo schedule = yealink::SchedulePlanInfo::Create();
+
+  schedule.SetDurationHour(infos.durationHour);
+  schedule.SetDurationMinute(infos.durationMinute);
+  schedule.SetEnableAutoRecord(infos.enableAutoRecord);
+  schedule.SetExtensionType(
+      (yealink::ScheduleExtensionType)infos.extensionType);
+  schedule.SetInterval(infos.interval);
+  schedule.SetProfile((yealink::ScheduleItemProfile)infos.profile);
+  schedule.SetRangeEndDate(infos.rangeEndDate.c_str());
+  schedule.SetRecurrenceType(
+      (yealink::ScheduleRecurrenceType)infos.recurrenceType);
+  schedule.SetRemark(infos.remark.c_str());
+  schedule.SetRtmpLogoFileName(infos.rtmpLogoFileName.c_str());
+  schedule.SetRtmpWatchLimitType(
+      (yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
+  schedule.SetRtmpWatchPwd(infos.rtmpWatchPwd.c_str());
+  schedule.SetStartDate(infos.startDate.c_str());
+  schedule.SetStartTime(infos.startTime.c_str());
+  schedule.SetSubject(infos.subject.c_str());
+  schedule.SetZoneId(infos.zoneId.c_str());
+
+  if (res)
+    *res = schedule_manager_->EditSingleSchedulePlan(id.c_str(), sequence,
+                                                     schedule);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::DeleteSerialSchedulePlan(
+    std::string id) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  int32_t* res = new int32_t();
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoDeleteSerialSchedulePlan,
+                     base::Unretained(this), id, res),
+      base::BindOnce(&ScheduleBinding::DoHttpRequest,
+                     weak_factory_.GetWeakPtr(), std::move(promise), res));
+
+  return handle;
+}
+
+void ScheduleBinding::DoDeleteSerialSchedulePlan(std::string id, int32_t* res) {
+  if (res)
+    *res = schedule_manager_->DeleteSerialSchedulePlan(id.c_str());
+}
+
+v8::Local<v8::Promise> ScheduleBinding::DeleteSingleSchedulePlan(
+    std::string id,
+    int64_t sequence) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  int32_t* res = new int32_t();
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoDeleteSingleSchedulePlan,
+                     base::Unretained(this), id, sequence, res),
+      base::BindOnce(&ScheduleBinding::DoHttpRequest,
+                     weak_factory_.GetWeakPtr(), std::move(promise), res));
+
+  return handle;
+}
+
+void ScheduleBinding::DoDeleteSingleSchedulePlan(std::string id,
+                                                 int64_t sequence,
+                                                 int32_t* res) {
+  if (res)
+    *res = schedule_manager_->DeleteSingleSchedulePlan(id.c_str(), sequence);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::GetScheduleConfig() {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  SchedulePlanConfig* res = new SchedulePlanConfig();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoGetScheduleConfig,
+                     weak_factory_.GetWeakPtr(), base::Unretained(res)),
+      base::BindOnce(
+          [](Promise promise, SchedulePlanConfig* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(res)));
+
+  return handle;
+}
+
+void ScheduleBinding::DoGetScheduleConfig(SchedulePlanConfig* res) {
+  yealink::SchedulePlanConfig ret;
+
+  ret = schedule_manager_->GetScheduleConfig();
+
+  if (res)
+    ConvertFrom(*res, ret);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::GetServiceAbility(
+    std::vector<ScheduleServiceAbility> info) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  ScheduleServiceResponse* res = new ScheduleServiceResponse();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoGetServiceAbility,
+                     weak_factory_.GetWeakPtr(), base::Unretained(res), info),
+      base::BindOnce(
+          [](Promise promise, ScheduleServiceResponse* result) {
+            std::move(promise).Resolve(*result);
+          },
+          std::move(promise), base::Owned(res)));
+
+  return handle;
+}
+
+void ScheduleBinding::DoGetServiceAbility(
+    ScheduleServiceResponse* res,
+    std::vector<ScheduleServiceAbility> info) {
+  yealink::ScheduleServiceResponse ret;
+  yealink::Array<yealink::ScheduleServiceAbility> req;
+
+  ConvertTo(info, req);
+
+  ret = schedule_manager_->GetServiceAbility(req);
+
+  if (res)
+    ConvertFrom(*res, ret);
+}
+
+v8::Local<v8::Promise> ScheduleBinding::GetScheduleByPlanId(std::string id) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&ScheduleBinding::DoGetScheduleByPlanId,
+                     weak_factory_.GetWeakPtr(), id),
+      base::BindOnce(
+          [](Promise promise, yealink::ScheduleManager* manager,
+             std::string id) {
+            std::move(promise).Resolve(
+                manager->GetScheduleByPlanId(id.c_str()));
+          },
+          std::move(promise), schedule_manager_.get(), id));
+
+  return handle;
+}
+
+void ScheduleBinding::DoGetScheduleByPlanId(std::string id) {}
+
+void ScheduleBinding::DoHttpRequest(Promise promise, int32_t* res) {
+  if (res != nullptr) {
+    if (*res == 900200)
+      std::move(promise).Resolve(*res);
+    else
+      std::move(promise).Reject(*res);
+  } else {
+    std::move(promise).Reject();
+  }
 }
 
 void ScheduleBinding::OnScheduleUpdate(
