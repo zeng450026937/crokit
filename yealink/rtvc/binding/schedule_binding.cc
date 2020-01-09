@@ -194,9 +194,13 @@ void ScheduleBinding::DoAddSchedulePlan(SchedulePlanInfo infos, int32_t* res) {
   schedule.SetSubject(infos.subject.c_str());
   schedule.SetZoneId(infos.zoneId.c_str());
   schedule.AddDayOfWeek(infos.dayOfWeek);
-  schedule.AddParticipants(infos.identifier.c_str(),
-                           (yealink::ScheduleMemberType)infos.memberType,
-                           (yealink::ScheduleMemberRole)infos.roleType);
+
+  for (size_t i = 0; i < infos.users.size(); i++) {
+    schedule.AddParticipants(
+        infos.users[i].identifier.c_str(),
+        (yealink::ScheduleMemberType)infos.users[i].memberType,
+        (yealink::ScheduleMemberRole)infos.users[i].roleType);
+  }
 
   if (res)
     *res = schedule_manager_->AddSchedulePlan(schedule);
@@ -243,6 +247,14 @@ void ScheduleBinding::DoEditSerialSchedulePlan(std::string id,
   schedule.SetStartTime(infos.startTime.c_str());
   schedule.SetSubject(infos.subject.c_str());
   schedule.SetZoneId(infos.zoneId.c_str());
+  schedule.AddDayOfWeek(infos.dayOfWeek);
+
+  for (size_t i = 0; i < infos.users.size(); i++) {
+    schedule.AddParticipants(
+        infos.users[i].identifier.c_str(),
+        (yealink::ScheduleMemberType)infos.users[i].memberType,
+        (yealink::ScheduleMemberRole)infos.users[i].roleType);
+  }
 
   if (res)
     *res = schedule_manager_->EditSerialSchedulePlan(id.c_str(), schedule);
@@ -291,6 +303,14 @@ void ScheduleBinding::DoEditSingleSchedulePlan(std::string id,
   schedule.SetStartTime(infos.startTime.c_str());
   schedule.SetSubject(infos.subject.c_str());
   schedule.SetZoneId(infos.zoneId.c_str());
+  schedule.AddDayOfWeek(infos.dayOfWeek);
+
+  for (size_t i = 0; i < infos.users.size(); i++) {
+    schedule.AddParticipants(
+        infos.users[i].identifier.c_str(),
+        (yealink::ScheduleMemberType)infos.users[i].memberType,
+        (yealink::ScheduleMemberRole)infos.users[i].roleType);
+  }
 
   if (res)
     *res = schedule_manager_->EditSingleSchedulePlan(id.c_str(), sequence,

@@ -243,6 +243,12 @@ struct ScheduleServiceResponse {
   ScheduleServiceResponse() : bizCode(0) {}
 };
 
+struct SchedulePlanMember {
+  std::string identifier;         // 用户id
+  ScheduleMemberType memberType;  // 成员类型
+  ScheduleMemberRole roleType;    // 角色类型
+};
+
 struct SchedulePlanInfo {
   ScheduleItemProfile profile;
   std::string subject;
@@ -256,9 +262,7 @@ struct SchedulePlanInfo {
   int32_t dayOfWeek;
   std::string rangeEndDate;
   std::string remark;
-  std::string identifier;
-  ScheduleMemberType memberType;
-  ScheduleMemberRole roleType;
+  std::vector<SchedulePlanMember> users;
   ScheduleExtensionType extensionType;
   std::string rtmpLogoFileName;
   ScheduleRTMPLimitType rtmpWatchLimitType;

@@ -1168,6 +1168,34 @@ bool Converter<rtvc::ScheduleServiceResponse>::FromV8(
 }
 
 // static
+v8::Local<v8::Value> Converter<rtvc::SchedulePlanMember>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::SchedulePlanMember& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("identifier", val.identifier);
+  dict.Set("memberType", val.memberType);
+  dict.Set("roleType", val.roleType);
+
+  return dict.GetHandle();
+}
+
+bool Converter<rtvc::SchedulePlanMember>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::SchedulePlanMember* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("identifier", &(out->identifier));
+  dict.Get("memberType", &(out->memberType));
+  dict.Get("roleType", &(out->roleType));
+
+  return true;
+}
+
+// static
 v8::Local<v8::Value> Converter<rtvc::SchedulePlanInfo>::ToV8(
     v8::Isolate* isolate,
     const rtvc::SchedulePlanInfo& val) {
@@ -1185,9 +1213,7 @@ v8::Local<v8::Value> Converter<rtvc::SchedulePlanInfo>::ToV8(
   dict.Set("dayOfWeek", val.dayOfWeek);
   dict.Set("rangeEndDate", val.rangeEndDate);
   dict.Set("remark", val.remark);
-  dict.Set("identifier", val.identifier);
-  dict.Set("memberType", val.memberType);
-  dict.Set("roleType", val.roleType);
+  dict.Set("users", val.users);
   dict.Set("extensionType", val.extensionType);
   dict.Set("rtmpLogoFileName", val.rtmpLogoFileName);
   dict.Set("rtmpWatchLimitType", val.rtmpWatchLimitType);
@@ -1216,9 +1242,7 @@ bool Converter<rtvc::SchedulePlanInfo>::FromV8(v8::Isolate* isolate,
   dict.Get("dayOfWeek", &(out->dayOfWeek));
   dict.Get("rangeEndDate", &(out->rangeEndDate));
   dict.Get("remark", &(out->remark));
-  dict.Get("identifier", &(out->identifier));
-  dict.Get("memberType", &(out->memberType));
-  dict.Get("roleType", &(out->roleType));
+  dict.Get("users", &(out->users));
   dict.Get("extensionType", &(out->extensionType));
   dict.Get("rtmpLogoFileName", &(out->rtmpLogoFileName));
   dict.Get("rtmpWatchLimitType", &(out->rtmpWatchLimitType));

@@ -233,32 +233,30 @@ v8::Local<v8::Promise> ScheduleItemBinding::GetMailTemplate() {
   return handle;
 }
 
-v8::Local<v8::Promise> ScheduleItemBinding::EditSerial(SchedulePlanInfo infos)
-{
+v8::Local<v8::Promise> ScheduleItemBinding::EditSerial(SchedulePlanInfo infos) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
   int32_t* res = new int32_t();
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&ScheduleItemBinding::DoEditSerial,
-                     base::Unretained(this), infos, res),
+      base::BindOnce(&ScheduleItemBinding::DoEditSerial, base::Unretained(this),
+                     infos, res),
       base::BindOnce(&ScheduleItemBinding::DoHttpRequest,
                      weak_factory_.GetWeakPtr(), std::move(promise), res));
 
   return handle;
 }
 
-v8::Local<v8::Promise> ScheduleItemBinding::EditSingle(SchedulePlanInfo infos)
-{
+v8::Local<v8::Promise> ScheduleItemBinding::EditSingle(SchedulePlanInfo infos) {
   Promise promise(isolate());
   v8::Local<v8::Promise> handle = promise.GetHandle();
 
   int32_t* res = new int32_t();
   base::PostTaskAndReply(
       FROM_HERE,
-      base::BindOnce(&ScheduleItemBinding::DoEditSingle,
-                     base::Unretained(this), infos, res),
+      base::BindOnce(&ScheduleItemBinding::DoEditSingle, base::Unretained(this),
+                     infos, res),
       base::BindOnce(&ScheduleItemBinding::DoHttpRequest,
                      weak_factory_.GetWeakPtr(), std::move(promise), res));
 
@@ -311,21 +309,32 @@ void ScheduleItemBinding::DoEditSerial(SchedulePlanInfo infos, int32_t* res) {
   schedule.SetDurationHour(infos.durationHour);
   schedule.SetDurationMinute(infos.durationMinute);
   schedule.SetEnableAutoRecord(infos.enableAutoRecord);
-  schedule.SetExtensionType((yealink::ScheduleExtensionType)infos.extensionType);
+  schedule.SetExtensionType(
+      (yealink::ScheduleExtensionType)infos.extensionType);
   schedule.SetInterval(infos.interval);
   schedule.SetProfile((yealink::ScheduleItemProfile)infos.profile);
   schedule.SetRangeEndDate(infos.rangeEndDate.c_str());
-  schedule.SetRecurrenceType((yealink::ScheduleRecurrenceType)infos.recurrenceType);
+  schedule.SetRecurrenceType(
+      (yealink::ScheduleRecurrenceType)infos.recurrenceType);
   schedule.SetRemark(infos.remark.c_str());
   schedule.SetRtmpLogoFileName(infos.rtmpLogoFileName.c_str());
-  schedule.SetRtmpWatchLimitType((yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
+  schedule.SetRtmpWatchLimitType(
+      (yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
   schedule.SetRtmpWatchPwd(infos.rtmpWatchPwd.c_str());
   schedule.SetStartDate(infos.startDate.c_str());
   schedule.SetStartTime(infos.startTime.c_str());
   schedule.SetSubject(infos.subject.c_str());
   schedule.SetZoneId(infos.zoneId.c_str());
+  schedule.AddDayOfWeek(infos.dayOfWeek);
 
-  if(res)
+  for (size_t i = 0; i < infos.users.size(); i++) {
+    schedule.AddParticipants(
+        infos.users[i].identifier.c_str(),
+        (yealink::ScheduleMemberType)infos.users[i].memberType,
+        (yealink::ScheduleMemberRole)infos.users[i].roleType);
+  }
+
+  if (res)
     *res = schedule_item_.EditSerial(schedule);
 }
 
@@ -335,30 +344,43 @@ void ScheduleItemBinding::DoEditSingle(SchedulePlanInfo infos, int32_t* res) {
   schedule.SetDurationHour(infos.durationHour);
   schedule.SetDurationMinute(infos.durationMinute);
   schedule.SetEnableAutoRecord(infos.enableAutoRecord);
-  schedule.SetExtensionType((yealink::ScheduleExtensionType)infos.extensionType);
+  schedule.SetExtensionType(
+      (yealink::ScheduleExtensionType)infos.extensionType);
   schedule.SetInterval(infos.interval);
   schedule.SetProfile((yealink::ScheduleItemProfile)infos.profile);
   schedule.SetRangeEndDate(infos.rangeEndDate.c_str());
-  schedule.SetRecurrenceType((yealink::ScheduleRecurrenceType)infos.recurrenceType);
+  schedule.SetRecurrenceType(
+      (yealink::ScheduleRecurrenceType)infos.recurrenceType);
   schedule.SetRemark(infos.remark.c_str());
   schedule.SetRtmpLogoFileName(infos.rtmpLogoFileName.c_str());
-  schedule.SetRtmpWatchLimitType((yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
+  schedule.SetRtmpWatchLimitType(
+      (yealink::ScheduleRtmpWatchLimitType)infos.rtmpWatchLimitType);
   schedule.SetRtmpWatchPwd(infos.rtmpWatchPwd.c_str());
   schedule.SetStartDate(infos.startDate.c_str());
   schedule.SetStartTime(infos.startTime.c_str());
   schedule.SetSubject(infos.subject.c_str());
   schedule.SetZoneId(infos.zoneId.c_str());
+  schedule.AddDayOfWeek(infos.dayOfWeek);
 
-  if(res)
+  for (size_t i = 0; i < infos.users.size(); i++) {
+    schedule.AddParticipants(
+        infos.users[i].identifier.c_str(),
+        (yealink::ScheduleMemberType)infos.users[i].memberType,
+        (yealink::ScheduleMemberRole)infos.users[i].roleType);
+  }
+
+  if (res)
     *res = schedule_item_.EditSingle(schedule);
 }
 
 void ScheduleItemBinding::DoDeleteSingle(int32_t* res) {
-  if(res) *res = schedule_item_.DeleteSingle();
+  if (res)
+    *res = schedule_item_.DeleteSingle();
 }
 
 void ScheduleItemBinding::DoDeleteSerial(int32_t* res) {
-  if(res) *res = schedule_item_.DeleteSerial();
+  if (res)
+    *res = schedule_item_.DeleteSerial();
 }
 
 void ScheduleItemBinding::DoHttpRequest(Promise promise, int32_t* res) {

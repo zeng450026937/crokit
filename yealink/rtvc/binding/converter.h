@@ -427,6 +427,16 @@ struct Converter<rtvc::ScheduleServiceResponse> {
 };
 
 template <>
+struct Converter<rtvc::SchedulePlanMember> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::SchedulePlanMember& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::SchedulePlanMember* out);
+};
+
+template <>
 struct Converter<rtvc::SchedulePlanInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const rtvc::SchedulePlanInfo& val);
