@@ -32,6 +32,7 @@ void ConferenceViewBinding::BuildPrototype(
       .SetMethod("getLayout", &ConferenceViewBinding::GetLayout)
       .SetMethod("setInitialFilters", &ConferenceViewBinding::SetInitialFilters)
       .SetMethod("getInitialFilters", &ConferenceViewBinding::GetInitialFilters)
+      .SetMethod("getSpeakMode", &ConferenceViewBinding::GetSpeakMode)
       .SetMethod("setSpeakMode", &ConferenceViewBinding::SetSpeakMode);
 }
 
@@ -151,6 +152,18 @@ void ConferenceViewBinding::DoSetSpeakMode(ViewSpeakMode params,
     ConvertFrom(*response, room_controller_->GetViewComponent().SetSpeakMode(
                                (yealink::ConferenceViewSpeakMode)params));
 }
+
+ViewSpeakMode ConferenceViewBinding::GetSpeakMode() {
+  ViewSpeakMode value;
+
+  if (room_controller_)
+    ConvertFrom(
+        value,
+        room_controller_->GetViewComponent().GetConferenceView().entityState.speakMode);
+
+  return value;
+}
+
 void ConferenceViewBinding::OnProcessCompeleted(Promise promise,
                                                 HttpResponseInfo* response) {
   if (response != nullptr) {

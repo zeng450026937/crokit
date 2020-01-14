@@ -12,7 +12,7 @@ class VideoSinkV8 : public VideoSink {
   VideoSinkV8(mate::PersistentDictionary sink);
   ~VideoSinkV8();
 
-  void OnFrame(const VideoFrame& frame) override;
+  void OnFrame(const VideoFrame& frame, unsigned int id) override;
 
   mate::PersistentDictionary GetHandle() { return sink_; }
 

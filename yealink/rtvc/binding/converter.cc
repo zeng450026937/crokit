@@ -1399,6 +1399,35 @@ bool Converter<rtvc::ContactNodeType>::FromV8(v8::Isolate* isolate,
 //   return true;
 // }
 
+v8::Local<v8::Value> Converter<rtvc::ContactNodeUpdated>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::ContactNodeUpdated& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("uid", val.uid);
+  handler.Set("type", val.type);
+  handler.Set("operate", val.operate);
+  handler.Set("pid", val.pid);
+  handler.Set("oldPid", val.oldPid);
+
+  return handler.GetHandle();
+}
+
+bool Converter<rtvc::ContactNodeUpdated>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ContactNodeUpdated* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("uid", &(out->uid));
+  dict.Get("type", &(out->type));
+  dict.Get("operate", &(out->operate));
+  dict.Get("pid", &(out->pid));
+  dict.Get("oldPid", &(out->oldPid));
+
+  return true;
+}
+
 v8::Local<v8::Value> Converter<rtvc::TerminalInfo>::ToV8(
     v8::Isolate* isolate,
     const rtvc::TerminalInfo& val) {

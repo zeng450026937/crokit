@@ -21,7 +21,8 @@ void VideoSourceAdapter::RemoveSink(VideoSink* sink) {
   sinks_.erase(sink);
 }
 
-void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) {
+void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame,
+                                      unsigned int id) {
   if (sinks_.empty())
     return;
 
@@ -32,7 +33,8 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame, unsigned
     auto y_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kYPlane);
     auto u_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kUPlane);
     auto v_plane = frame.GetData(yealink::VideoFrame::PlaneValueType::kVPlane);
-    // auto i420_buffer = I420BufferImpl::Create(frame.Width(), frame.Height());;
+    // auto i420_buffer = I420BufferImpl::Create(frame.Width(),
+    // frame.Height());;
     auto i420_buffer = I420BufferImpl::Copy(
         frame.Width(), frame.Height(), (uint8_t*)y_plane.data, y_plane.stride,
         (uint8_t*)u_plane.data, u_plane.stride, (uint8_t*)v_plane.data,
@@ -45,20 +47,20 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame, unsigned
   VideoFrame video_frame =
       VideoFrame::Builder().set_video_frame_buffer(buffer).build();
 
-  OnFrame(video_frame);
+  OnFrame(video_frame, id);
 }
 
-void VideoSourceAdapter::OnFrame(const VideoFrame& frame) {
+void VideoSourceAdapter::OnFrame(const VideoFrame& frame, unsigned int id) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnFrame,
-                                  weak_factory_.GetWeakPtr(), frame));
+                                  weak_factory_.GetWeakPtr(), frame, id));
 
     return;
   }
 
   for (auto sink : sinks_) {
-    sink->OnFrame(frame);
+    sink->OnFrame(frame, id);
   }
 }
 

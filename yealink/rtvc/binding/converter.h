@@ -466,6 +466,16 @@ struct Converter<rtvc::ContactNodeType> {
                      rtvc::ContactNodeType* out);
 };
 
+template <>
+struct Converter<rtvc::ContactNodeUpdated> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::ContactNodeUpdated& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ContactNodeUpdated* out);
+};
+
 // template <>
 // struct Converter<rtvc::ContactNode> {
 //   static v8::Local<v8::Value> ToV8(

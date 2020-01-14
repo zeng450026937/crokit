@@ -211,7 +211,11 @@ void CloudContactBinding::OnNodeChange(
     return;
   }
 
-  Emit("changed");
+  std::vector<ContactNodeUpdated> updateList;
+
+  ConvertFrom(updateList, changeData);
+
+  Emit("changed", updateList);
 }
 
 void CloudContactBinding::DoSync() {

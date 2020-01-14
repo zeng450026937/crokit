@@ -75,8 +75,8 @@ void ConferenceUserBinding::BuildPrototype(
       .SetMethod("isAttendee", &ConferenceUserBinding::IsAttendee)
       .SetMethod("isCastViewer", &ConferenceUserBinding::IsCastViewer)
       .SetMethod("isDemonstrator", &ConferenceUserBinding::IsDemonstrator)
-      .SetMethod("isPresenterDemonstrator",
-                 &ConferenceUserBinding::IsPresenterDemonstrator)
+      // .SetMethod("isPresenterDemonstrator",
+      //            &ConferenceUserBinding::IsPresenterDemonstrator)
       .SetMethod("isOnHold", &ConferenceUserBinding::IsOnHold)
       .SetMethod("isSharing", &ConferenceUserBinding::IsSharing)
       .SetMethod("isFocus", &ConferenceUserBinding::IsFocus)
@@ -93,8 +93,8 @@ void ConferenceUserBinding::BuildPrototype(
                  &ConferenceUserBinding::SetVideoIngressFilter)
       .SetMethod("setPermission", &ConferenceUserBinding::SetPermission)
       .SetMethod("setDemonstrator", &ConferenceUserBinding::SetDemonstrator)
-      .SetMethod("setPresenterDemonstrator",
-                 &ConferenceUserBinding::SetPresenterDemonstrator)
+      // .SetMethod("setPresenterDemonstrator",
+      //            &ConferenceUserBinding::SetPresenterDemonstrator)
       .SetMethod("hold", &ConferenceUserBinding::Hold)
       .SetMethod("unHold", &ConferenceUserBinding::UnHold)
       .SetMethod("kick", &ConferenceUserBinding::Kick)
@@ -400,9 +400,13 @@ UserMediaFilterInfo ConferenceUserBinding::GetAudioFilter() {
 
   param.mediaEgressBlockBy =
       yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-  param.mediaEgressFilter = user_controller_.GetAudioEgressFilter();
-  param.mediaIngressBlockBy = user_controller_.GetAudioIngressBlockBy();
-  param.mediaIngressFilter = user_controller_.GetAudioIngressFilter();
+  param.mediaEgressFilter = (yealink::MemberInfo::Endpoint::Media::MediaFilter)
+                                user_controller_.GetAudioEgressFilter();
+  param.mediaIngressBlockBy =
+      (yealink::MemberInfo::Endpoint::Media::BlockBy)
+          user_controller_.GetAudioIngressBlockBy();
+  param.mediaIngressFilter = (yealink::MemberInfo::Endpoint::Media::MediaFilter)
+                                 user_controller_.GetAudioIngressFilter();
 
   ConvertFrom(value, param);
 
@@ -415,10 +419,12 @@ UserMediaFilterInfo ConferenceUserBinding::GetVideoFilter() {
 
   param.mediaEgressBlockBy =
       yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-  param.mediaEgressFilter = user_controller_.GetVideoEgressFilter();
+  param.mediaEgressFilter = (yealink::MemberInfo::Endpoint::Media::MediaFilter)
+                                user_controller_.GetVideoEgressFilter();
   param.mediaIngressBlockBy =
       yealink::MemberInfo::Endpoint::Media::BlockBy::NONE;
-  param.mediaIngressFilter = user_controller_.GetVideoIngressFilter();
+  param.mediaIngressFilter = (yealink::MemberInfo::Endpoint::Media::MediaFilter)
+                                 user_controller_.GetVideoIngressFilter();
 
   ConvertFrom(value, param);
 

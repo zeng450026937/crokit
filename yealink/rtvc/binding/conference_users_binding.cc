@@ -38,7 +38,7 @@ void ConferenceUsersBinding::BuildPrototype(
       .SetProperty("attendees", &ConferenceUsersBinding::attendees)
       .SetProperty("onHoldUsers", &ConferenceUsersBinding::onHoldUsers)
       .SetProperty("demonstrators", &ConferenceUsersBinding::demonstrators)
-      .SetProperty("castviewers", &ConferenceUsersBinding::castviewers)
+      .SetProperty("castViewers", &ConferenceUsersBinding::castViewers)
       .SetMethod("invite", &ConferenceUsersBinding::Invite)
       .SetMethod("inviteThird", &ConferenceUsersBinding::InviteThird)
       .SetMethod("inviteBatch", &ConferenceUsersBinding::InviteBatch)
@@ -323,7 +323,7 @@ std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::demonstrators() {
   return userlist;
 }
 
-std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::castviewers() {
+std::vector<v8::Local<v8::Value>> ConferenceUsersBinding::castViewers() {
   std::vector<v8::Local<v8::Value>> userlist;
 
   auto iter = user_list_.begin();

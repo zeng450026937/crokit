@@ -23,7 +23,7 @@ class VideoSourceBinding : public mate::Wrappable<VideoSourceBinding>,
   ~VideoSourceBinding() override;
 
   // VideoSink impl
-  void OnFrame(const VideoFrame& frame) override;
+  void OnFrame(const VideoFrame& frame, unsigned int id) override;
 
   void AddOrUpdateSink(mate::PersistentDictionary sink);
   void RemoveSink(mate::PersistentDictionary sink);

@@ -40,6 +40,7 @@ class ConferenceViewBinding : public mate::EventEmitter<ConferenceViewBinding> {
   std::vector<ViewFilterRuleInfo> GetInitialFilters();
 
   v8::Local<v8::Promise> SetSpeakMode(ViewSpeakMode params);
+  ViewSpeakMode GetSpeakMode();
 
  private:
   void OnCommandCompeleted(Promise promise);

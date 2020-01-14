@@ -679,6 +679,30 @@ bool StructTraits<ContactNode>::From(ContactNode& out,
 }
 
 // static
+bool StructTraits<ContactNodeUpdated>::From(ContactNodeUpdated& out,
+                                     const yealink::CloudNodeChangeNotifyEntity& val) {
+  ConvertFrom(out.uid, val.nodeId);
+  ConvertFrom(out.operate, val.operate);
+  ConvertFrom(out.type, val.type);
+  ConvertFrom(out.pid, val.pid);
+  ConvertFrom(out.oldPid, val.oldPid);
+  return true;
+}
+
+// static
+bool StructTraits<std::vector<ContactNodeUpdated>>::From(
+    std::vector<ContactNodeUpdated>& out,
+    const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& val) {
+  for (size_t i = 0; i < val.Size(); i++) {
+    ContactNodeUpdated node;
+    ConvertFrom(node, val[i]);
+    out.emplace_back(node);
+  }
+  return true;
+}
+
+
+// static
 bool StructTraits<std::vector<ContactNode>>::From(
     std::vector<ContactNode>& out,
     const yealink::CloudSubNodeInfo& val) {

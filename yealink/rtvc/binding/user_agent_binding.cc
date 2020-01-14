@@ -52,7 +52,7 @@ mate::WrappableBase* UserAgentBinding::New(mate::Arguments* args) {
     options.Get("proxyPort", &config.proxy_port);
     options.Get("language", &config.language);
     options.Get("connector", &connector);
-    options.Get("uuid", &connector);
+    options.Get("uuid", &config.uuid);
 
     config.proxy_server = proxy_server;
   }

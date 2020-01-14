@@ -46,7 +46,7 @@ class ConferenceUsersBinding
   std::vector<v8::Local<v8::Value>> attendees();
   std::vector<v8::Local<v8::Value>> onHoldUsers();
   std::vector<v8::Local<v8::Value>> demonstrators();
-  std::vector<v8::Local<v8::Value>> castviewers();
+  std::vector<v8::Local<v8::Value>> castViewers();
 
  protected:
   ConferenceUsersBinding(v8::Isolate* isolate,

@@ -469,7 +469,7 @@ void ScheduleBinding::OnScheduleUpdate(
     return;
   }
 
-  Emit("updated");
+  Emit("updated", newScheduleList, modifyScheduleList, deleteScheduleList);
 }
 
 }  // namespace rtvc

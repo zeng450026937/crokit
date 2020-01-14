@@ -11,11 +11,11 @@ VideoSinkV8::VideoSinkV8(mate::PersistentDictionary sink)
     : sink_(sink), weak_factory_(this) {}
 VideoSinkV8::~VideoSinkV8() {}
 
-void VideoSinkV8::OnFrame(const VideoFrame& frame) {
+void VideoSinkV8::OnFrame(const VideoFrame& frame, unsigned int id) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&VideoSinkV8::OnFrame,
-                                  weak_factory_.GetWeakPtr(), frame));
+                                  weak_factory_.GetWeakPtr(), frame, id));
 
     return;
   }

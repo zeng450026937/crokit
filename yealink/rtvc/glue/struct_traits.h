@@ -18,6 +18,7 @@
 #include "yealink/rtvc/api/ytms_info.h"
 
 #include "yealink/libvc/include/access/access_define.h"
+#include "yealink/libvc/include/contact/cloud_contact_msg.h"
 #include "yealink/libvc/include/contact/cloud_contact_type.h"
 #include "yealink/libvc/include/media/media_api.h"
 #include "yealink/libvc/include/room/room_data.h"
@@ -268,6 +269,18 @@ struct StructTraits<std::vector<ContactNode>> {
                    const yealink::CloudSubNodeInfo& val);
   static bool From(std::vector<ContactNode>& out,
                    const yealink::Array<yealink::CloudNodeInfo>& val);
+};
+
+template <>
+struct StructTraits<ContactNodeUpdated> {
+  static bool From(ContactNodeUpdated& out,
+                   const yealink::CloudNodeChangeNotifyEntity& val);
+};
+
+template <>
+struct StructTraits<std::vector<ContactNodeUpdated>> {
+  static bool From(std::vector<ContactNodeUpdated>& out,
+                   const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& val);
 };
 
 template <>

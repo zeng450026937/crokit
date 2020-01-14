@@ -20,7 +20,7 @@ class VideoSourceV8 : public VideoSource {
   mate::PersistentDictionary GetHandle() { return source_; }
 
  private:
-  void OnFrame(mate::Dictionary frame);
+  void OnFrame(mate::Dictionary frame, unsigned int id);
 
   mate::PersistentDictionary source_;
   mate::PersistentDictionary source_adapter_;

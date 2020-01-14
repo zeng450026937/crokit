@@ -39,6 +39,14 @@ struct ContactNode {
   std::string fullNumber;
 };
 
+struct ContactNodeUpdated {
+  std::string uid;
+  std::string operate;
+  ContactNodeType type;
+  std::string pid;
+  std::string oldPid;
+};
+
 struct ContactConfig {
   std::string workspace_folder;
   std::string database_name;
