@@ -62,6 +62,18 @@ struct ErrorInfo {
   int biz_code;
 };
 
+struct SchedulerMetaInfo {
+  std::string phonebook_version;
+  std::vector<std::string> phonebook_support;
+  std::string schedule_version;
+  std::vector<std::string> schedule_support;
+  std::string build;
+  std::string version;
+  std::string web_host;
+  std::string service_account;
+  std::string experience_account;
+};
+
 using AccountInfoList = std::vector<AccountInfo>;
 
 struct PartyInviteInfos {

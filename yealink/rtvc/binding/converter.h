@@ -6,6 +6,7 @@
 #include "yealink/native_mate/dictionary.h"
 #include "yealink/rtvc/api/account_info.h"
 #include "yealink/rtvc/api/audio_manager.h"
+#include "yealink/rtvc/api/call.h"
 #include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
@@ -197,6 +198,12 @@ struct Converter<rtvc::ErrorInfo> {
 };
 
 template <>
+struct Converter<rtvc::SchedulerMetaInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::SchedulerMetaInfo& val);
+};
+
+template <>
 struct Converter<rtvc::ScheduleItemProfile> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    rtvc::ScheduleItemProfile val);
@@ -224,6 +231,16 @@ struct Converter<rtvc::ScheduleRecurrenceDailyType> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::ScheduleRecurrenceDailyType* out);
+};
+
+template <>
+struct Converter<rtvc::ScheduleRecurrenceRangeType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::ScheduleRecurrenceRangeType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::ScheduleRecurrenceRangeType* out);
 };
 
 template <>
@@ -565,6 +582,16 @@ struct Converter<rtvc::NetCaptureInfo> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::NetCaptureInfo* out);
+};
+
+template <>
+struct Converter<rtvc::NetCaptureStatus> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::NetCaptureStatus& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::NetCaptureStatus* out);
 };
 
 template <>
@@ -1276,6 +1303,26 @@ struct Converter<rtvc::PartyInviteInfos> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::PartyInviteInfos* out);
+};
+
+template <>
+struct Converter<rtvc::CallVideoSubscribe> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::CallVideoSubscribe& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::CallVideoSubscribe* out);
+};
+
+template <>
+struct Converter<rtvc::CallSvcSubscribeType> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   rtvc::CallSvcSubscribeType val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::CallSvcSubscribeType* out);
 };
 
 }  // namespace mate

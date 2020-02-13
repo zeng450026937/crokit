@@ -29,7 +29,7 @@ async function test(binding) {
   console.log(secondaryVideoInputDevice);
 
   const sink = {
-    onFrame(frame) {
+    onFrame(frame, id) {
       console.log('onFrame', frame.width, frame.height)
       return;
       console.log(frame);

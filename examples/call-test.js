@@ -17,7 +17,7 @@ async function test(binding, userAgent) {
   console.log(videoInputDeviceList);
 
   const sink = {
-    onFrame(frame) {
+    onFrame(frame, id) {
       console.log('onFrame', frame.width, frame.height)
 
       console.log(frame);

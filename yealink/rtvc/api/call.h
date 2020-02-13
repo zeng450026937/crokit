@@ -18,6 +18,18 @@ enum class CallState {
   kTerminated,
 };
 
+enum class CallSvcSubscribeType {
+  kShare,
+  kMedia,
+};
+
+struct CallVideoSubscribe {
+  bool enable;
+  unsigned int id;
+  int width;
+  int height;
+};
+
 class CallObserver {
  public:
   virtual void OnMediaReady() = 0;

@@ -74,6 +74,7 @@ struct AudioStatsInfo {
 };
 
 struct VideoStatsInfo {
+  unsigned int id;
   StatsVideoCodecType codec;
   StatsVideoProfileType profile;
   int width;

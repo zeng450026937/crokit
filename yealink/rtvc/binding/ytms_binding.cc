@@ -41,7 +41,9 @@ void YTMSBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("downloadFile", &YTMSBinding::DownloadFile)
       .SetMethod("getCaptureDevice", &YTMSBinding::GetCaptureDevice)
       .SetMethod("startCapture", &YTMSBinding::StartCapture)
-      .SetMethod("stopCapture", &YTMSBinding::StopCapture);
+      .SetMethod("stopCapture", &YTMSBinding::StopCapture)
+      .SetMethod("uploadPacket", &YTMSBinding::UploadPacket)
+      .SetMethod("reportSessionStatus", &YTMSBinding::ReportSessionStatus);
 }
 
 YTMSBinding::YTMSBinding(v8::Isolate* isolate,
@@ -598,6 +600,49 @@ v8::Local<v8::Promise> YTMSBinding::StopCapture(mate::Arguments* args) {
 }
 void YTMSBinding::DoStopCapture(std::string params, ProcessObserver* observer) {
   ytms_agent_->StopCaptureNetLog(params.c_str(), observer);
+}
+
+// UploadPacket
+v8::Local<v8::Promise> YTMSBinding::UploadPacket(NetCaptureInfo params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  ProcessObserver* observer = new ProcessObserver();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&YTMSBinding::DoUploadPacket, base::Unretained(this),
+                     params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), observer));
+
+  return handle;
+}
+void YTMSBinding::DoUploadPacket(NetCaptureInfo params,
+                                 ProcessObserver* observer) {
+  ytms_agent_->UploadPacket(params.session_id.c_str(), params.path.c_str(),
+                            observer);
+}
+
+// UploadPacket
+v8::Local<v8::Promise> YTMSBinding::ReportSessionStatus(
+    NetCaptureStatus params) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  ProcessObserver* observer = new ProcessObserver();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&YTMSBinding::DoReportSessionStatus,
+                     base::Unretained(this), params, observer),
+      base::BindOnce(&YTMSBinding::OnProcessCompeleted,
+                     weak_factory_.GetWeakPtr(), std::move(promise), observer));
+
+  return handle;
+}
+void YTMSBinding::DoReportSessionStatus(NetCaptureStatus params,
+                                        ProcessObserver* observer) {
+  ytms_agent_->ReportSessionState(params.session_id.c_str(),
+                                  params.status.c_str(), observer);
 }
 
 }  // namespace rtvc

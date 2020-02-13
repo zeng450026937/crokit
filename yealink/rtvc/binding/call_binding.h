@@ -86,7 +86,7 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   bool outgoing() { return !incoming_; }
 
   bool portrait_mode();
-  void SetPortraitMode(bool enable);
+  bool SetPortraitMode(bool enable);
 
   void StartShare(mate::Dictionary dict, mate::Arguments* args);
   void StopShare();
@@ -109,6 +109,10 @@ class CallBinding : public mate::EventEmitter<CallBinding>,
   void SetConferenceAware(bool enable);
 
   v8::Local<v8::Value> AsConference();
+
+  bool IsSupportSvcSubscribe(CallSvcSubscribeType type);
+  bool SetSvcSubscribe(CallSvcSubscribeType type, std::vector<CallVideoSubscribe>);
+  void SetSvcEnable(bool enable);
 
   // room observer impl
   void OnConnectSuccess() override;

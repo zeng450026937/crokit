@@ -3,13 +3,13 @@
 
 #include <string>
 
+#include "process_observer.h"
 #include "yealink/libvc/include/ytms/ytms_agent_api.h"
 #include "yealink/native_mate/handle.h"
 #include "yealink/native_mate/wrappable.h"
 #include "yealink/rtvc/api/ytms_info.h"
 #include "yealink/rtvc/binding/event_emitter.h"
 #include "yealink/rtvc/binding/promise.h"
-#include "process_observer.h"
 
 namespace rtvc {
 class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
@@ -47,6 +47,9 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
   v8::Local<v8::Promise> StartCapture(NetCaptureInfo params);
   v8::Local<v8::Promise> StopCapture(mate::Arguments* args);
 
+  v8::Local<v8::Promise> UploadPacket(NetCaptureInfo params);
+  v8::Local<v8::Promise> ReportSessionStatus(NetCaptureStatus params);
+
   // yealink::YTMSObserver impl
   void OnPushInstallPacket() override;
   void OnPushConfigFile(const char* configFileId) override;
@@ -80,6 +83,10 @@ class YTMSBinding : public mate::EventEmitter<YTMSBinding>,
 
   void DoStartCapture(NetCaptureInfo params, ProcessObserver* observer);
   void DoStopCapture(std::string params, ProcessObserver* observer);
+
+  void DoUploadPacket(NetCaptureInfo params, ProcessObserver* observer);
+  void DoReportSessionStatus(NetCaptureStatus params,
+                             ProcessObserver* observer);
 
   std::string server_;
   std::string client_id_;

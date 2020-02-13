@@ -278,6 +278,23 @@ v8::Local<v8::Value> Converter<rtvc::ErrorInfo>::ToV8(
   return dict.GetHandle();
 }
 
+v8::Local<v8::Value> Converter<rtvc::SchedulerMetaInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::SchedulerMetaInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("build", val.build);
+  dict.Set("experienceAccount", val.experience_account);
+  dict.Set("phonebook_support", val.phonebook_support);
+  dict.Set("phonebook_version", val.phonebook_version);
+  dict.Set("schedule_support", val.schedule_support);
+  dict.Set("schedule_version", val.schedule_version);
+  dict.Set("service_account", val.service_account);
+  dict.Set("version", val.version);
+  dict.Set("web_host", val.web_host);
+
+  return dict.GetHandle();
+}
+
 // static
 v8::Local<v8::Value> Converter<rtvc::ScheduleItemProfile>::ToV8(
     v8::Isolate* isolate,
@@ -417,6 +434,48 @@ bool Converter<rtvc::ScheduleRecurrenceDailyType>::FromV8(
     *out = rtvc::ScheduleRecurrenceDailyType::kNone;
   else if (recurrence_daily == "kWeekday")
     *out = rtvc::ScheduleRecurrenceDailyType::kWeekday;
+  else
+    return false;
+
+  return true;
+}
+
+// static
+v8::Local<v8::Value> Converter<rtvc::ScheduleRecurrenceRangeType>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::ScheduleRecurrenceRangeType val) {
+  std::string recurrence_daily;
+  switch (val) {
+    case rtvc::ScheduleRecurrenceRangeType::kForever:
+      recurrence_daily = "kForever";
+      break;
+    case rtvc::ScheduleRecurrenceRangeType::kTimes:
+      recurrence_daily = "kTimes";
+      break;
+    case rtvc::ScheduleRecurrenceRangeType::kUntil:
+      recurrence_daily = "kUntil";
+      break;
+    default:
+      recurrence_daily = "kUntil";
+      break;
+  }
+  return ConvertToV8(isolate, recurrence_daily);
+}
+// static
+bool Converter<rtvc::ScheduleRecurrenceRangeType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::ScheduleRecurrenceRangeType* out) {
+  std::string recurrence_daily;
+  if (!ConvertFromV8(isolate, val, &recurrence_daily))
+    return false;
+
+  if (recurrence_daily == "kForever")
+    *out = rtvc::ScheduleRecurrenceRangeType::kForever;
+  else if (recurrence_daily == "kTimes")
+    *out = rtvc::ScheduleRecurrenceRangeType::kTimes;
+  else if (recurrence_daily == "kUntil")
+    *out = rtvc::ScheduleRecurrenceRangeType::kUntil;
   else
     return false;
 
@@ -1698,6 +1757,28 @@ bool Converter<rtvc::NetCaptureInfo>::FromV8(v8::Isolate* isolate,
   dict.Get("sessionId", &(out->session_id));
   dict.Get("deviceId", &(out->device_id));
   dict.Get("path", &(out->path));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<rtvc::NetCaptureStatus>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::NetCaptureStatus& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("sessionId", val.session_id);
+  handler.Set("status", val.status);
+
+  return handler.GetHandle();
+}
+
+bool Converter<rtvc::NetCaptureStatus>::FromV8(v8::Isolate* isolate,
+                                               v8::Local<v8::Value> val,
+                                               rtvc::NetCaptureStatus* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("sessionId", &(out->session_id));
+  dict.Get("status", &(out->status));
 
   return true;
 }
@@ -4379,6 +4460,71 @@ bool Converter<rtvc::PartyInviteInfos>::FromV8(v8::Isolate* isolate,
     return false;
   dict.Get("url", &(out->url));
   dict.Get("applicants", &(out->applicants));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<rtvc::CallVideoSubscribe>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::CallVideoSubscribe& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+
+  handler.Set("id", val.id);
+  handler.Set("width", val.width);
+  handler.Set("height", val.height);
+
+  return handler.GetHandle();
+}
+
+bool Converter<rtvc::CallVideoSubscribe>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::CallVideoSubscribe* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+
+  dict.Get("id", &(out->id));
+  dict.Get("width", &(out->width));
+  dict.Get("height", &(out->height));
+
+  return true;
+}
+
+v8::Local<v8::Value> Converter<rtvc::CallSvcSubscribeType>::ToV8(
+    v8::Isolate* isolate,
+    rtvc::CallSvcSubscribeType val) {
+  std::string res;
+  switch (val) {
+    case rtvc::CallSvcSubscribeType::kShare:
+      res = "share";
+      break;
+    case rtvc::CallSvcSubscribeType::kMedia:
+      res = "media";
+      break;
+    default:
+      res = "media";
+      break;
+  }
+  return ConvertToV8(isolate, res);
+}
+
+bool Converter<rtvc::CallSvcSubscribeType>::FromV8(
+    v8::Isolate* isolate,
+    v8::Local<v8::Value> val,
+    rtvc::CallSvcSubscribeType* out) {
+  std::string in;
+  if (!ConvertFromV8(isolate, val, &in))
+    return false;
+
+  if (in == "share")
+    *out = rtvc::CallSvcSubscribeType::kShare;
+  else if (in == "media")
+    *out = rtvc::CallSvcSubscribeType::kMedia;
+  else {
+    *out = rtvc::CallSvcSubscribeType::kMedia;
+    return false;
+  }
 
   return true;
 }

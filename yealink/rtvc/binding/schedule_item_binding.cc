@@ -390,7 +390,7 @@ void ScheduleItemBinding::DoHttpRequest(Promise promise, int32_t* res) {
     else
       std::move(promise).Reject(*res);
   } else {
-    std::move(promise).Reject();
+    std::move(promise).Reject(-1);
   }
 }
 

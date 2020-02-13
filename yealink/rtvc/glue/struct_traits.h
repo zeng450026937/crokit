@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "yealink/rtvc/api/account_info.h"
+#include "yealink/rtvc/api/call.h"
 #include "yealink/rtvc/api/channel.h"
 #include "yealink/rtvc/api/conference.h"
 #include "yealink/rtvc/api/conference_desc.h"
@@ -21,6 +22,7 @@
 #include "yealink/libvc/include/contact/cloud_contact_msg.h"
 #include "yealink/libvc/include/contact/cloud_contact_type.h"
 #include "yealink/libvc/include/media/media_api.h"
+#include "yealink/libvc/include/media/media_call.h"
 #include "yealink/libvc/include/room/room_data.h"
 #include "yealink/libvc/include/schedule/schedule_item.h"
 #include "yealink/libvc/include/ytms/ytms_define.h"
@@ -107,6 +109,12 @@ struct StructTraits<PrimaryAccountInfo> {
 template <>
 struct StructTraits<AccessInfo> {
   static bool From(AccessInfo& out, const yealink::LoginUserInfos& val);
+};
+
+template <>
+struct StructTraits<SchedulerMetaInfo> {
+  static bool From(SchedulerMetaInfo& out,
+                   const yealink::SchedulerMetaInfo& val);
 };
 
 template <>
@@ -279,8 +287,9 @@ struct StructTraits<ContactNodeUpdated> {
 
 template <>
 struct StructTraits<std::vector<ContactNodeUpdated>> {
-  static bool From(std::vector<ContactNodeUpdated>& out,
-                   const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& val);
+  static bool From(
+      std::vector<ContactNodeUpdated>& out,
+      const yealink::Array<yealink::CloudNodeChangeNotifyEntity>& val);
 };
 
 template <>
@@ -661,6 +670,11 @@ struct StructTraits<RTCStats> {
 template <>
 struct StructTraits<PartyInviteInfos> {
   static bool From(PartyInviteInfos& out, const yealink::PartyInviteInfo& val);
+};
+
+template <>
+struct StructTraits<CallVideoSubscribe> {
+  static bool To(const CallVideoSubscribe& val, yealink::VideoSubscribe& out);
 };
 
 }  // namespace rtvc

@@ -41,10 +41,14 @@ void BootstrapBinding::BuildPrototype(
       .SetProperty("ha1", &BootstrapBinding::ha1, &BootstrapBinding::SetHa1)
       .SetProperty("language", &BootstrapBinding::language,
                    &BootstrapBinding::SetLanguage)
+      .SetProperty("region", &BootstrapBinding::region,
+                   &BootstrapBinding::SetRegion)
       .SetMethod("authenticate", &BootstrapBinding::Authenticate)
       .SetMethod("getConnector", &BootstrapBinding::GetConnector)
       .SetMethod("getToken", &BootstrapBinding::GetToken)
       .SetMethod("getPartyInviteInfo", &BootstrapBinding::GetPartyInviteInfo)
+      .SetMethod("getMetaInfo", &BootstrapBinding::GetMetaInfo)
+      .SetMethod("getServiceInfo", &BootstrapBinding::GetServiceInfo)
       .SetMethod("pushVerifyCode", &BootstrapBinding::PushVerifyCode);
 }
 
@@ -69,9 +73,8 @@ std::string BootstrapBinding::server() {
 void BootstrapBinding::SetServer(std::string server) {
   server_ = server;
 
-  if(access_agent_)
-  {
-    if(debug_ == false)
+  if (access_agent_) {
+    if (debug_ == false)
       access_agent_->SetScheduleHost(server.c_str());
     else
       access_agent_->SetAccessHost(server.c_str());
@@ -98,7 +101,8 @@ bool BootstrapBinding::debug() {
 void BootstrapBinding::SetDebug(bool debug) {
   debug_ = debug;
 
-  if(debug == true && access_agent_) access_agent_->SetAccessHost(server_.c_str());
+  if (debug == true && access_agent_)
+    access_agent_->SetAccessHost(server_.c_str());
 }
 
 bool BootstrapBinding::smsVerify() {
@@ -123,6 +127,16 @@ void BootstrapBinding::SetLanguage(std::string language) {
 
   if (access_agent_)
     access_agent_->SetLanguage(language_.c_str());
+}
+
+std::string BootstrapBinding::region() {
+  return region_;
+}
+void BootstrapBinding::SetRegion(std::string region) {
+  region_ = region;
+
+  if (access_agent_)
+    access_agent_->SetRegion(region_.c_str());
 }
 
 v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
@@ -265,8 +279,88 @@ void BootstrapBinding::DoGetPartyInviteInfo(PartyInviteInfos* result,
 void BootstrapBinding::DoPushVerifyCode(bool* result,
                                         ProcessObserver* observer) {
   if (result != nullptr && access_agent_ != nullptr) {
-      *result = access_agent_->SendMobileLoginVerifyCode(
-          username_.c_str(), observer);
+    *result =
+        access_agent_->SendMobileLoginVerifyCode(username_.c_str(), observer);
+  }
+}
+
+v8::Local<v8::Promise> BootstrapBinding::GetServiceInfo(std::string url) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  ProcessObserver* observer = new ProcessObserver();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&BootstrapBinding::DoGetServiceInfo,
+                     weak_factory_.GetWeakPtr(), url, observer),
+      base::BindOnce(
+          [](Promise promise, base::WeakPtr<BootstrapBinding> bootstrap,
+             std::string url, ProcessObserver* observer) {
+            int code = observer ? observer->bizCode() : 900500;
+
+            if (code != 900200 && code != 0) {
+              ErrorInfo error_result;
+              error_result.biz_code = code;
+              std::move(promise).Reject(error_result);
+            }
+            else
+              std::move(promise).Resolve(bootstrap->server_info_.value());
+
+            if (observer)
+              delete observer;
+          },
+          std::move(promise), weak_factory_.GetWeakPtr(), url, observer));
+
+  return handle;
+}
+void BootstrapBinding::DoGetServiceInfo(std::string url,
+                                        ProcessObserver* observer) {
+  std::string server_info;
+
+  if (access_agent_ != nullptr) {
+    ConvertFrom(server_info,
+                access_agent_->GetServiceInfo(url.c_str(), observer));
+  }
+
+  server_info_ = server_info;
+}
+
+v8::Local<v8::Promise> BootstrapBinding::GetMetaInfo(std::string url) {
+  Promise promise(isolate());
+  v8::Local<v8::Promise> handle = promise.GetHandle();
+  ProcessObserver* observer = new ProcessObserver();
+  SchedulerMetaInfo* res = new SchedulerMetaInfo();
+
+  base::PostTaskAndReply(
+      FROM_HERE,
+      base::BindOnce(&BootstrapBinding::DoGetMetaInfo,
+                     weak_factory_.GetWeakPtr(), url, res, observer),
+      base::BindOnce(
+          [](Promise promise, base::WeakPtr<BootstrapBinding> bootstrap,
+             std::string url, SchedulerMetaInfo* result,
+             ProcessObserver* observer) {
+            int code = observer ? observer->bizCode() : 900500;
+
+            if (code != 900200 && code != 0) {
+              ErrorInfo error_result;
+              error_result.biz_code = code;
+              std::move(promise).Reject(error_result);
+            }
+            else
+              std::move(promise).Resolve(*result);
+
+            if (observer)
+              delete observer;
+          },
+          std::move(promise), weak_factory_.GetWeakPtr(), url, res, observer));
+
+  return handle;
+}
+void BootstrapBinding::DoGetMetaInfo(std::string url,
+                                     SchedulerMetaInfo* result,
+                                     ProcessObserver* observer) {
+  if (access_agent_ != nullptr && result != nullptr) {
+    ConvertFrom(*result, access_agent_->GetMetaInfo(url.c_str(), observer));
   }
 }
 

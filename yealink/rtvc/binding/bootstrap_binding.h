@@ -47,6 +47,8 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   std::string language();
   void SetLanguage(std::string language);
 
+  std::string region();
+  void SetRegion(std::string region);
 
   v8::Local<v8::Promise> Authenticate();
   v8::Local<v8::Value> GetConnector(std::string uid);
@@ -54,11 +56,18 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
 
   v8::Local<v8::Promise> GetPartyInviteInfo();
   v8::Local<v8::Promise> PushVerifyCode();
+  v8::Local<v8::Promise> GetMetaInfo(std::string url);
+  v8::Local<v8::Promise> GetServiceInfo(std::string url);
 
  private:
   void DoAuthenticate(AccessInfo* result, ProcessObserver* observer);
-  void DoGetPartyInviteInfo(PartyInviteInfos* result, ProcessObserver* observer);
+  void DoGetPartyInviteInfo(PartyInviteInfos* result,
+                            ProcessObserver* observer);
   void DoPushVerifyCode(bool* result, ProcessObserver* observer);
+  void DoGetMetaInfo(std::string url,
+                        SchedulerMetaInfo* result,
+                        ProcessObserver* observer);
+  void DoGetServiceInfo(std::string url, ProcessObserver* observer);
 
   std::string server_;
   std::string username_;
@@ -68,6 +77,8 @@ class BootstrapBinding : public mate::Wrappable<BootstrapBinding> {
   bool sms_verify_;
   std::string ha1_;
   std::string language_;
+  std::string region_;
+  base::Optional<std::string> server_info_;
 
   v8::Global<v8::Value> connector_;
 

@@ -55,6 +55,22 @@ bool StructTraits<AccessInfo>::From(AccessInfo& out,
   return true;
 }
 
+bool StructTraits<SchedulerMetaInfo>::From(
+    SchedulerMetaInfo& out,
+    const yealink::SchedulerMetaInfo& val) {
+  ConvertFrom(out.build, val.build);
+  ConvertFrom(out.experience_account, val.experienceAccount);
+  ConvertFrom(out.phonebook_support, val.phonebookSupport);
+  ConvertFrom(out.phonebook_version, val.phonebookVersion);
+  ConvertFrom(out.schedule_support, val.scheduleSupport);
+  ConvertFrom(out.schedule_version, val.scheduleVersion);
+  ConvertFrom(out.service_account, val.serviceAccount);
+  ConvertFrom(out.version, val.version);
+  ConvertFrom(out.web_host, val.webHost);
+
+  return true;
+}
+
 // static
 bool StructTraits<ScheduleItemProfile>::From(
     ScheduleItemProfile& out,
@@ -679,8 +695,9 @@ bool StructTraits<ContactNode>::From(ContactNode& out,
 }
 
 // static
-bool StructTraits<ContactNodeUpdated>::From(ContactNodeUpdated& out,
-                                     const yealink::CloudNodeChangeNotifyEntity& val) {
+bool StructTraits<ContactNodeUpdated>::From(
+    ContactNodeUpdated& out,
+    const yealink::CloudNodeChangeNotifyEntity& val) {
   ConvertFrom(out.uid, val.nodeId);
   ConvertFrom(out.operate, val.operate);
   ConvertFrom(out.type, val.type);
@@ -700,7 +717,6 @@ bool StructTraits<std::vector<ContactNodeUpdated>>::From(
   }
   return true;
 }
-
 
 // static
 bool StructTraits<std::vector<ContactNode>>::From(
@@ -1893,6 +1909,7 @@ bool StructTraits<StatsVideoProfileType>::From(
 
 bool StructTraits<VideoStatsInfo>::From(VideoStatsInfo& out,
                                         const yealink::VideoChannelStats& val) {
+  ConvertFrom(out.id, val.id);
   ConvertFrom(out.codec, val.codec);
   ConvertFrom(out.profile, val.profile);
   ConvertFrom(out.width, val.width);
@@ -1947,6 +1964,15 @@ bool StructTraits<PartyInviteInfos>::From(PartyInviteInfos& out,
                                           const yealink::PartyInviteInfo& val) {
   ConvertFrom(out.applicants, val.applicants);
   ConvertFrom(out.url, val.url);
+  return true;
+}
+
+bool StructTraits<CallVideoSubscribe>::To(const CallVideoSubscribe& val,
+                                          yealink::VideoSubscribe& out) {
+  ConvertTo(val.id, out.id);
+  ConvertTo(val.height, out.height);
+  ConvertTo(val.width, out.width);
+
   return true;
 }
 

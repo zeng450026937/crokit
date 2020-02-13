@@ -7,19 +7,24 @@ let g_bootstrp = null;
 async function test(binding) {
   console.log('Bootstrap test');
 
-  const { Bootstrap, UserAgent, Call } = binding;
+  const {
+    Bootstrap,
+    UserAgent,
+    Call
+  } = binding;
 
   console.log('constructor()');
 
   const bootstrap = g_bootstrp = new Bootstrap('01234567890123456789012345678912');
 
   bootstrap.server = 'https://onylyun.com';
-  bootstrap.username = '223504.1091';
+  bootstrap.username = '18030127553';
   bootstrap.password = 'v123456789';
   bootstrap.debug = false;
   bootstrap.smsVerify = false;
-  bootstrap.algorithm = '';
-  bootstrap.credential = '';
+  bootstrap.ha1 = '';
+
+  //await bootstrap.pushVerifyCode();
 
   console.log('authenticate()');
 
@@ -30,7 +35,7 @@ async function test(binding) {
   const accountList = accountInfo.accountList;
   console.log('authenticated', accountList)
 
-  const [ account ] = accountList;
+  const [account] = accountList;
   const id = account.id;
   const username = account.number;
   const password = bootstrap.password;
@@ -47,7 +52,19 @@ async function test(binding) {
 
   const token = bootstrap.getToken(id);
 
-  const inviteInfo = await bootstrap.getPartyInviteInfo();
+  // const inviteInfo = await bootstrap.getPartyInviteInfo();
+
+  const inviteInfo = await bootstrap.getPartyInviteInfo().catch((e) => {
+    console.warn(e)
+  });
+
+  const serverInfo = await bootstrap.getServiceInfo('https://onylyun.com').catch((e) => {
+    console.warn(e)
+  });
+
+  const metaInfo = await bootstrap.getMetaInfo('https://onylyun.com').catch((e) => {
+    console.warn(e)
+  });
 
   useragent_test(binding, connector, {
     username,

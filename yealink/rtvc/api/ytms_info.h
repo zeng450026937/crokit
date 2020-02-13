@@ -94,6 +94,11 @@ struct NetCaptureInfo {
   std::string session_id;
 };
 
+struct NetCaptureStatus {
+  std::string status;
+  std::string session_id;
+};
+
 struct EventInfo {
   std::string code;
   std::string name;

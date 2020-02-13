@@ -127,9 +127,9 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("stopShare", &CallBinding::StopShare)
       .SetMethod("setMediaBitrate", &CallBinding::SetMediaBitrate)
       .SetMethod("setShareBitrate", &CallBinding::SetShareBitrate)
-      .SetMethod("setLocalVideoSource", &CallBinding::SetLocalVideoSource)
-      .SetMethod("setLocalShareVideoSource",
-                 &CallBinding::SetLocalShareVideoSource)
+      // .SetMethod("setLocalVideoSource", &CallBinding::SetLocalVideoSource)
+      // .SetMethod("setLocalShareVideoSource",
+      //            &CallBinding::SetLocalShareVideoSource)
       .SetMethod("setRemoteVideoSink", &CallBinding::SetRemoteVideoSink)
       .SetMethod("addRemoteVideoSink", &CallBinding::AddRemoteVideoSink)
       .SetMethod("removeRemoteVideoSink", &CallBinding::RemoveRemoteVideoSink)
@@ -143,7 +143,10 @@ void CallBinding::BuildPrototype(v8::Isolate* isolate,
                    &CallBinding::SetConferenceAware)
       .SetMethod("asConference", &CallBinding::AsConference)
       .SetProperty("conference", &CallBinding::AsConference)
-      .SetMethod("sendDTMF", &CallBinding::SendDTMF);
+      .SetMethod("sendDTMF", &CallBinding::SendDTMF)
+      .SetMethod("isSupportSvcSubscribe", &CallBinding::IsSupportSvcSubscribe)
+      .SetMethod("setSvcSubscribe", &CallBinding::SetSvcSubscribe)
+      .SetMethod("setSvcEnable", &CallBinding::SetSvcEnable);
 }
 
 CallBinding::CallBinding(v8::Isolate* isolate,
@@ -456,8 +459,8 @@ bool CallBinding::remote_sharing() {
 bool CallBinding::portrait_mode() {
   return portrait_mode_;
 }
-void CallBinding::SetPortraitMode(bool enable) {
-  meeting_->EnableVideoPortraitMode(enable);
+bool CallBinding::SetPortraitMode(bool enable) {
+  return meeting_->EnableVideoPortraitMode(enable);
 }
 
 void CallBinding::StartShare(mate::Dictionary dict, mate::Arguments* args) {
@@ -645,6 +648,58 @@ v8::Local<v8::Value> CallBinding::AsConference() {
   return v8::Local<v8::Value>::New(isolate(), v8_conference_);
 }
 
+bool CallBinding::IsSupportSvcSubscribe(CallSvcSubscribeType type) {
+  if (type == CallSvcSubscribeType::kMedia)
+    return meeting_->SupportVideoSubscribe();
+  else if (type == CallSvcSubscribeType::kShare)
+    return meeting_->SupportShareSubscribe();
+  else
+    return false;
+}
+
+bool CallBinding::SetSvcSubscribe(CallSvcSubscribeType type,
+                                  std::vector<CallVideoSubscribe> list) {
+  int count = (int)list.size();
+
+  if (list.size() <= 0)
+    return false;
+
+  yealink::VideoSubscribe* subList = new yealink::VideoSubscribe[count];
+  unsigned int* unsubList = new unsigned int[count];
+
+  int subCnt = 0;
+  int unsubCnt = 0;
+
+  for (int i = 0; i < count; i++) {
+    if (list[i].enable == true) {
+      subList[subCnt].id = list[i].id;
+      subList[subCnt].height = list[i].height;
+      subList[subCnt].width = list[i].width;
+      subCnt++;
+    } else {
+      unsubList[unsubCnt] = list[i].id;
+    }
+  }
+
+  bool ret = false;
+
+  if (type == CallSvcSubscribeType::kMedia)
+    ret = meeting_->SetVideoSubscribe(subList, subCnt, unsubList, unsubCnt);
+  else if (type == CallSvcSubscribeType::kShare)
+    ret = meeting_->SetShareSubscribe(subList, subCnt, unsubList, unsubCnt);
+
+  if (subList)
+    delete subList;
+  if (unsubList)
+    delete unsubList;
+
+  return ret;
+}
+
+void CallBinding::SetSvcEnable(bool enable) {
+  meeting_->SetSvcCodecEnable(enable);
+}
+
 void CallBinding::OnUpgradeSucceed() {
   meeting_->TransferToCall(pending_meeting_.get());
 }
@@ -667,8 +722,8 @@ void CallBinding::ExtractCallInfo(yealink::MeetingInfo info) {
 
   remote_identity_.Set("number", info.strNumber);
   remote_identity_.Set("domain", info.strDomain);
-  remote_identity_.Set("display_name", info.strDisplayName);
-  remote_identity_.Set("user_agent", info.strUserAgent);
+  remote_identity_.Set("displayName", info.strDisplayName);
+  remote_identity_.Set("userAgent", info.strUserAgent);
 
   call_info_.Set("localIdentity", local_identity_.GetHandle());
   call_info_.Set("remoteIdentity", remote_identity_.GetHandle());
@@ -1000,7 +1055,8 @@ void CallBinding::OnRealseConferenceBefore(
   conference_.Clear();
   v8_conference_.Reset();
 }
-void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id) {
+void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame,
+                               unsigned int id) {
   // we must copy video frame as soon as possible
 
   // if (!Context::Instance()->CalledOnValidThread()) {
@@ -1013,7 +1069,8 @@ void CallBinding::OnVideoFrame(const yealink::VideoFrame& frame, unsigned int id
 
   remote_video_source_->OnVideoFrame(frame, id);
 }
-void CallBinding::OnShareFrame(const yealink::VideoFrame& frame, unsigned int id) {
+void CallBinding::OnShareFrame(const yealink::VideoFrame& frame,
+                               unsigned int id) {
   // we must copy video frame as soon as possible
 
   // if (!Context::Instance()->CalledOnValidThread()) {
