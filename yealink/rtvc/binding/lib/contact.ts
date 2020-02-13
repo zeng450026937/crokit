@@ -1,32 +1,31 @@
 import { EventEmitter } from 'events';
+import { Connector } from './bootstrap';
 
 export enum ContactNodeType {
-  kDepartment,
-  kStaff,
-  kDevice,
-  kVMR,
-  kThirdParty,
-  kRoom,
-  kEnterprise,
+  kDepartment = 'kDepartment',
+  kStaff = 'kStaff',
+  kDevice = 'kDevice',
+  kVMR = 'kVMR',
+  kThirdParty = 'kThirdParty',
+  kRoom = 'kRoom',
+  kEnterprise = 'kEnterprise',
 }
 
 export interface ContactNode {
-  readonly nodeId: string;
-  readonly nodeType: ContactNodeType;
-  // one node can have many parent node
-  readonly parentId: Array<string> | null;
-  // child node counts(recursive)
-  readonly childCounts: number;
+  uid: string;
+  type: ContactNodeType;
+  parentId: Array<string>;
+  childCounts: number;
 
-  readonly name: string;
-  readonly i18nName: string;
-  readonly pinyin: string;
-  readonly pinyinAbbr: string;
-  readonly email: string;
-  readonly number: string;
-  readonly extensionNum: string;
-
-  getChild(recursive: boolean): Array<ContactNode>;
+  name: string;
+  i18nName: string;
+  pinyin: string;
+  pinyinAbbr: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  number: string;
+  fullNumber: string;
 }
 
 export interface ContactConfig {
@@ -34,54 +33,45 @@ export interface ContactConfig {
   databaseName?: string,
 }
 
-// CRUD
-export interface Contact {
-  new(config: ContactConfig);
+export interface LocalContactConfig extends ContactConfig { }
 
-  create(): void;
-  remove(): void;
-  update(): void;
-  search(): Promise<Array<ContactNode>>;
-  // alias for create
-  add(): void;
-  // alias for update
-  modify(): void;
-  // alias for search
-  find(): void;
-}
-
-export interface LocalContactConfig extends ContactConfig {}
-
-export interface LocalContact extends Contact {
+export interface LocalContact {
   new(config: LocalContactConfig);
 
-  // support paging acquisition
-  // limit 0 to acquire all
-  // acquire all by default
-  getList(limit: number, offset: number): Array<ContactNode>;
+  create(params: {name: string, indexed: string}): number;
+  add(params: {name: string, indexed: string}): number;
+  remove(uid: number): boolean;
+  update(uid: number, params: {name: string, indexed: string}): boolean;
+  modify(uid: number, params: {name: string, indexed: string}): boolean;
+  search(key: string, offset: number, limit: number): Array<{uid: number, name:string, indexed: string}>;
+  searchWith(key: string, val: string, offset: number, limit: number): Array<{uid: number, name:string, indexed: string}>;
+  find(key: string, val: string, offset: number, limit: number): Array<{uid: number, name:string, indexed: string}>;
+  findByName(name: string, offset: number, limit: number): Array<{uid: number, name:string, indexed: string}>;
+  getContact(nodeId: string): {uid: number, name:string, indexed: string};
+  getList(offset: number, limit: number): Array<{uid: number, name:string, indexed: string}>;
 }
 
 export interface CloudContactConfig extends ContactConfig {
-  connector: unknown,
+  connector: Connector,
   server: string,
 }
 
-export interface CloudContact extends EventEmitter, Contact {
+export interface CloudContact extends EventEmitter {
   new(config: CloudContactConfig);
 
-  on(event: 'updating', listener: () => void): this;
-  on(event: 'updated', listener: () => void): this;
+  emit(event: string | symbol, ...args: any[]): boolean;
+  on(event: string, listener: (...args: any[]) => void): this;
+
   on(event: 'changed', listener: () => void): this;
 
   readonly synced: boolean;
   readonly loadMode: any;
-
   readonly rootId: string;
-  readonly selfId: string;
 
   sync(): Promise<void>;
-  search(): Promise<Array<ContactNode>>;
+  search(key: string, offset: number, limit: number): Promise<Array<ContactNode>>;
 
   getNode(nodeId: string): ContactNode;
   getNodeChild(nodeId: string, recursive: boolean): Array<ContactNode>;
+  getNodeByNumber(number: string): ContactNode;
 }

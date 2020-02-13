@@ -1,59 +1,49 @@
 import { Call } from './call';
+import { Connector } from './bootstrap';
 
 export interface AccountConfig {
   username: string;
   password: string;
+  ha1: string;
   domain: string;
-  language: string;
-  // for internal use
-  // all these options below are optional
-  // discussion needed -> should we list them for debugging purpose ?
-  ha1: string | null;
-  authorizationUser: string | null;
   displayName: string | null;
-  sessionTimers: number | null;
-  sessionTimersRefreshMethod: 'update' | 'invite' | null
-  noAnswerTimeout: number | null;
-  registerExpires: number | null;
-  registrarServer: string | null;
+  userAgent: string | null;
   clientInfo: string | null;
-  contentEncoding: boolean | null;
-  acceptEncoding: Array<string> | null;
-  // TODO
-  // proxy address ?
+  sitename: string | null
+  tlsPort: number | null;
+  tcpPort: number | null;
+  udpPort: number | null;
+  ipv4Only: boolean | null;
+  ipv6Only: boolean | null;
+  proxyServer: string | null;
+  proxyPort: number | null;
+  language: string | null;
+  connector: Connector | null;
+  uuid: string | null;
 }
 
-export interface Account {
-  // TODO
-  // add disconnect/connect error event
-  //
-  workspaceFolder(): string;
-  setWorkspaceFolder(path: string | null): void;
+export interface UserAgent {
+  new(config: AccountConfig);
 
-  username(): string;
-  setUsername(username: string): void;
+  workspaceFolder: string;
+  username: string;
+  password: string;
+  ha1: string;
+  domain: string;
+  proxyServer: string;
+  proxyPort: number;
+  language: string;
 
-  password(): string;
-  setPassword(password: string): void;
+  readonly running: boolean;
+  readonly registered: boolean;
 
-  domain(): string;
-  setDomain(domain: string): void;
-
-  // store some custom data/setting
-  // also it can be used for internal debug,
-  // as it should change the account's config as well.
-  set(key: string): void;
+  set(key: string, value: any): void;
   get(key: string): any;
 
-  // register account so it can be founded by server
-  // aka online
-  register(): void;
+  start(): void;
+  stop(): void;
+  register(): Promise<void>;
   unregister(): void;
 
-  isRegistered(): boolean;
-
-  // call someone or join a conference
-  call(target: string, options: any): Call;
-  // send sms message to someone
-  sendMessage(): void;
+  setConnector(handler: Connector): void;
 }

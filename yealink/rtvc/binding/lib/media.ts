@@ -1,4 +1,4 @@
-import { VideoSink } from './video';
+import { VideoSink, VideoSource } from './video';
 
 export enum DeviceType {
   kAudioInput,
@@ -48,60 +48,58 @@ export interface AudioOutputDevice extends AudioDevice {
 }
 
 export interface AudioManager {
-  volume(): number;
-  setVolume(volume: number): void;
+  volume: number;
+  mute: boolean;
+  ans: boolean;
+  aec: boolean;
+  agc: boolean;
+  recording: boolean;
+  playback: boolean;
+  desktopRecording: boolean;
+  audioInputDevice: AudioInputDevice;
+  audioOutputDevice: AudioOutputDevice;
 
-  mute(): boolean;
-  setMute(mute: boolean): void;
+  enumerateDevices(): void;
+  audioInputDeviceList(): Array<AudioInputDevice>;
+  audioOutputDeviceList(): Array<AudioOutputDevice>;
 
-  ans(): boolean;
-  setANS(enable: boolean): void;
-
-  aec(): boolean;
-  setAEC(enable: boolean): void;
-
-  agc(): boolean;
-  setAGC(enable: boolean): void;
-
-  recording(): boolean;
   setRecording(enable: boolean): void;
-
-  playback(): boolean;
   setPlayback(enable: boolean): void;
+  setDesktopRecording(enable: boolean): void;
+  restartDesktopRecording(): void;
 
   playTone(tone: string): void;
+  requestAudioVolume(): number;
 
-  startPlayFile(path: string): void;
-  stopPlayFile(): void;
-
-  audioInputDeviceList(): Array<AudioInputDevice>
-  audioOutputDeviceList(): Array<AudioOutputDevice>
-
-  audioInputDevice(): AudioInputDevice;
-  setAudioInputDevice(device: AudioInputDevice): void;
-
-  audioOutputDevice(): AudioOutputDevice;
-  setAudioOutputDevice(device: AudioOutputDevice): void;
+  builtInAECIsAvailable(): boolean;
+  builtInAGCIsAvailable(): boolean;
+  builtInNSIsAvailable(): boolean;
+  enableBuiltInAEC(enable: boolean): void;
+  enableBuiltInAGC(enable: boolean): void;
+  enableBuiltInNS(enable: boolean): void;
 }
 
 export type Rotation = 0 | 90 | 180 | 270
 
 export interface VideoManager {
-  videoInputDeviceList(): Array<VideoInputDevice>
-  screenDeviceList(): Array<ScreenDevice>
-  windowDeviceList(): Array<WindowDevice>
 
-  videoInputDevice(): VideoInputDevice;
-  setVideoInputDevice(device: VideoInputDevice): void;
+  videoInputDevice: VideoInputDevice;
+  secondaryVideoInputDevice: VideoInputDevice;
 
-  sharedVideoInputDevice(): VideoInputDevice;
-  setSharedVideoInputDevice(device: VideoInputDevice | ScreenDevice | WindowDevice): void;
-
-  setRotation(rotation: Rotation): void
-  setRotation(device: VideoInputDevice | ScreenDevice | WindowDevice, rotation: Rotation): void
+  enumerateDevices(): void;
+  videoInputDeviceList(): Array<VideoInputDevice>;
+  setRotation(degree: Rotation, secondary: boolean): void;
+  acquireStream(): void;
+  releaseStream(): void;
+  acquiring(): boolean;
 
   setLocalVideoSink(sink: VideoSink): void;
+  addLocalVideoSink(sink: VideoSink): void;
+  removeLocalVideoSink(sink: VideoSink): void;
+
   setLocalShareVideoSink(sink: VideoSink): void;
-  // 有set 没有remove
-  // 追加获取video source
+  addLocalShareVideoSink(sink: VideoSink): void;
+  removeLocalShareVideoSink(sink: VideoSink): void;
+
+  setLocalVideoSource(source: VideoSource): void;
 }

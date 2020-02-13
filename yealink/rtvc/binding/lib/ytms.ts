@@ -1,4 +1,6 @@
 
+import { EventEmitter } from 'events';
+
 export interface TerminalInfo {
   name: string;
   type: string;
@@ -25,6 +27,7 @@ export interface TerminalInfo {
   serverAddress: string;
   serverDomain: string;
   serverOutbound: string;
+  registerStatus: string;
   enterpriseDomain: string;
   enterpriseId: string;
   enterpriseName: string;
@@ -84,6 +87,11 @@ export interface NetCaptureInfo {
   sessionId: string;
 }
 
+export interface NetCaptureStatus {
+  status: string;
+  sessionId: string;
+}
+
 export interface EventInfo {
   code: string;
   name: string;
@@ -91,23 +99,42 @@ export interface EventInfo {
   isp: string;
 }
 
-export interface YTMS {
-  server: string,
+export interface YTMS extends EventEmitter {
+  new(clientId: string);
 
-  start(): void,
-  update(params: TerminalInfo): void,
+  server: string;
 
-  uploadAlarm(params: AlarmInfo): void,
-  uploadFeedBack(params: FeedbackInfo): void,
-  uploadEvent(params: EventInfo): void,
-  uploadConfig(params: string): void,
-  uploadLog(params: UploadLogInfo): void,
+  emit(event: string | symbol, ...args: any[]): boolean;
+  on(event: string, listener: (...args: any[]) => void): this;
 
-  getPackagesInfo(): PackageInfo,
-  getConfigFileInfo(): ConfigurationInfo,
+  on(event: 'reboot', listener: () => void): this;
+  on(event: 'pushPacket', listener: () => void): this;
+  on(event: 'pushConfig', listener: () => void): this;
+  on(event: 'message', listener: () => void): this;
+  on(event: 'uploadLog', listener: () => void): this;
+  on(event: 'uploadConfig', listener: () => void): this;
+  on(event: 'startCapture', listener: () => void): this;
+  on(event: 'stopCapture', listener: () => void): this;
+  on(event: 'reregiste', listener: () => void): this;
 
-  downloadFile(params: DownloadInfo): void,
+  start(): Promise<number>,
+  update(params: TerminalInfo): Promise<number>,
 
-  startCapture(params: NetCaptureInfo): void,
-  stopCapture(params: string): void,
+  uploadAlarm(params: AlarmInfo): Promise<number>,
+  uploadFeedBack(params: FeedbackInfo): Promise<number>,
+  uploadEvent(params: EventInfo): Promise<number>,
+  uploadConfig(params: string): Promise<number>,
+  uploadLog(params: UploadLogInfo): Promise<number>,
+
+  getPackagesInfo(): Promise<PackageInfo>,
+  getConfigFileInfo(): Promise<ConfigurationInfo>,
+
+  downloadFile(params: DownloadInfo): Promise<number>,
+
+  getCaptureDevice(): Array<string>;
+  startCapture(params: NetCaptureInfo): Promise<number>,
+  stopCapture(params: string): Promise<number>,
+
+  uploadPacket(params: NetCaptureInfo): Promise<number>,
+  reportSessionStatus(params: NetCaptureStatus): Promise<number>,
 }
