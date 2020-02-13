@@ -158,13 +158,31 @@ void VideoManagerBinding::SetRotation(int64_t degree, bool is_secondary) {
   media_->SetCameraOrientation(degree);
 };
 
-void VideoManagerBinding::AcquireStream() {
+void VideoManagerBinding::AcquireStream(mate::Arguments* args) {
   if (acquiring_stream_)
     return;
 
   yealink::CaptureInfo cam;
+  CameraLimitInfo limit;
+
   acquiring_stream_ = true;
   cam.strId = video_input_device_->deviceId.c_str();
+
+  if(args->Length() == 1)
+    args->GetNext(&limit);
+
+  if (limit.fps > 0)
+    cam.nMaxFPS = limit.fps;
+  else
+    cam.nMaxFPS = 30;
+
+  if (limit.height > 0 && limit.width > 0) {
+    cam.nMaxWidth = limit.width;
+    cam.nMaxHeight = limit.height;
+  } else {
+    cam.nMaxWidth = 1920;
+    cam.nMaxHeight = 1080;
+  }
 
   if (video_input_device_) {
     switch (video_input_device_->type) {

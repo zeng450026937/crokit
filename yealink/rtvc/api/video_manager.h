@@ -9,6 +9,13 @@
 
 namespace rtvc {
 
+struct CameraLimitInfo {
+  int width;
+  int height;
+  int fps;
+  CameraLimitInfo() : width(0), height(0), fps(0) {}
+};
+
 class VideoManager {
  public:
   static VideoManager* Instance();

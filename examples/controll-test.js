@@ -19,20 +19,24 @@ async function test(binding, userAgent) {
   console.log(videoInputDeviceList);
 
   const sink = {
-    onFrame(frame) {},
+    onFrame(frame, id) {},
   };
 
   videoManager.videoInputDevice = videoInputDeviceList[0];
   // videoManager.setLocalVideoSink(sink);
 
-  videoManager.acquireStream();
+  videoManager.acquireStream({
+    fps: 30,
+    width: 1920,
+    height: 1080
+  });
 
   const call = new Call(userAgent);
 
   // call.connect('sip:62061**040660@123456.onylyun.com;transport=tls');
   // call.connect('sip:1001@123456.onylyun.com;transport=tls');
   //call.connect('sip:1090@223504.onylyun.com;transport=tls');
-  call.connect('sip:8602@22014665.10.200.112.39.xip.io;transport=tls');
+  call.connect('sip:38855**@123456.onylyun.com;transport=tls');
   //call.setRemoteVideoSink(sink);
 
   const eventNames = [
@@ -89,13 +93,21 @@ async function test(binding, userAgent) {
     console.warn('chat messageUpdated:', message);
   });
 
+  call.conference.on('messageInited', () => {
+    console.warn("chat history messages inited");
+
+    const result = call.getInfos();
+
+    console.warn(result);
+  });
+
   let user_test = true;
   call.conference.on('usersUpdated', (arg1, arg2) => {
-    console.warn('chat dialogList:', call.conference, call.conference.chat.dialogList);
-    console.warn('chat dialogList length:', call.conference.chat.dialogList.length);
-    console.warn('chat publicDialog:', call.conference.chat.publicDialog);
+    // console.warn('chat dialogList:', call.conference, call.conference.chat.dialogList);
+    // console.warn('chat dialogList length:', call.conference.chat.dialogList.length);
+    // console.warn('chat publicDialog:', call.conference.chat.publicDialog);
 
-    console.warn('chat:', call.conference.chat);
+    // console.warn('chat:', call.conference.chat);
 
     console.warn('usersUpdated users:', call.conference.users);
     // console.warn('usersUpdated currentUser:', call.conference.users.currentUser);
@@ -113,21 +125,24 @@ async function test(binding, userAgent) {
     // console.warn('usersUpdated castviewers:', call.conference.users.castviewers, call.conference.users.castviewers.length);
 
     if (user_test == true) {
-      user_test = true;
+      user_test = false;
+      let cnt = 1;
 
       setInterval(() => {
         console.warn('chat publicDialog:', call.conference.chat);
-        call.conference.chat.sendChatMessage('私聊聊天测试', ['2'])
+        call.conference.chat.sendChatMessage('私聊聊天测试' + cnt, ['2'])
           .then((res) => {
-            //console.warn(res, res.direction);
+            console.warn(res, res.direction);
           })
           .catch(() => {});
 
-        call.conference.chat.sendChatMessage('群聊聊天测试', [])
+        call.conference.chat.sendChatMessage('群聊聊天测试' + cnt, [])
           .then((res) => {
-            //console.warn(res, res.direction);
+            console.warn(res, res.direction);
           })
           .catch(() => {});
+
+        cnt++;
       }, 10000);
 
       // setInterval(() => {
@@ -184,16 +199,22 @@ async function test(binding, userAgent) {
         // console.warn('SetVideoIngressFilter = ', user.setVideoIngressFilter(true));
         // console.warn('SetDisplayName = ', user.setDisplayName('lalaal'));
 
-        // if(user.isCurrentUser() == false)
-        // {
-        //   console.warn('setPermission = ', user.setPermission('attendee'));
-        //   console.warn('hold = ', user.hold());
+        if (user.isCurrentUser() == false) {
+          // console.warn('setPermission = ', user.setPermission('attendee'));
+          //console.warn('hold = ', user.hold());
+          // user.hold()
+          //   .then(() => {
+          //     user.unHold()
+          //   })
+          //   .catch((e) => {
+          //     console.warn(e)
+          //   });
 
-        //   console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
+          // console.warn('unHold = ', call.conference.users.allow([user.entity, '123'], true));
 
-        //   //console.warn('unHold = ', user.unHold());
-        //   console.warn('setPermission = ', user.setPermission('presenter'));
-        // }
+          //console.warn('unHold = ', user.unHold());
+          // console.warn('setPermission = ', user.setPermission('presenter'));
+        }
 
         // console.warn('SetVideoIngressFilter = ', user.setFocus(true));
         // console.warn('SetVideoIngressFilter = ', user.setFocus(false));
@@ -269,13 +290,13 @@ async function test(binding, userAgent) {
     if (view_test == true) {
       view_test = false;
 
-      // call.conference.view.setSpeakMode('free') // handUp | free
-      //   .then((res) => {
-      //     console.warn(res);
-      //   })
-      //   .catch((e) =>{
-      //     console.warn(e);
-      //   })
+      call.conference.view.setSpeakMode('handUp') // handUp | free
+        .then((res) => {
+          console.warn(res);
+        })
+        .catch((e) => {
+          console.warn(e);
+        })
 
       //   call.conference.view.setLayout({
       //       'videoLayout' : 'Equality' // SpeechExcitation | Equality | Exclusive

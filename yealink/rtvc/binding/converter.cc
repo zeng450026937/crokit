@@ -4529,4 +4529,28 @@ bool Converter<rtvc::CallSvcSubscribeType>::FromV8(
   return true;
 }
 
+v8::Local<v8::Value> Converter<rtvc::CameraLimitInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::CameraLimitInfo& val) {
+  Dictionary handler = Dictionary::CreateEmpty(isolate);
+  handler.Set("width", val.width);
+  handler.Set("height", val.height);
+  handler.Set("fps", val.fps);
+
+  return handler.GetHandle();
+}
+
+bool Converter<rtvc::CameraLimitInfo>::FromV8(v8::Isolate* isolate,
+                                              v8::Local<v8::Value> val,
+                                              rtvc::CameraLimitInfo* out) {
+  Dictionary dict;
+  if (!ConvertFromV8(isolate, val, &dict))
+    return false;
+  dict.Get("width", &(out->width));
+  dict.Get("height", &(out->height));
+  dict.Get("fps", &(out->fps));
+
+  return true;
+}
+
 }  // namespace mate

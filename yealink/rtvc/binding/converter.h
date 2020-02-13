@@ -22,6 +22,7 @@
 #include "yealink/rtvc/api/video/video_rotation.h"
 #include "yealink/rtvc/api/video/video_sink.h"
 #include "yealink/rtvc/api/video/video_source.h"
+#include "yealink/rtvc/api/video_manager.h"
 #include "yealink/rtvc/api/ytms_info.h"
 
 #include "yealink/libvc/include/components/base/simplelib/simple_array.hpp"
@@ -1323,6 +1324,16 @@ struct Converter<rtvc::CallSvcSubscribeType> {
   static bool FromV8(v8::Isolate* isolate,
                      v8::Local<v8::Value> val,
                      rtvc::CallSvcSubscribeType* out);
+};
+
+template <>
+struct Converter<rtvc::CameraLimitInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::CameraLimitInfo& val);
+
+  static bool FromV8(v8::Isolate* isolate,
+                     v8::Local<v8::Value> val,
+                     rtvc::CameraLimitInfo* out);
 };
 
 }  // namespace mate
