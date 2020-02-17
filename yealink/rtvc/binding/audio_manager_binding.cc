@@ -39,6 +39,8 @@ void AudioManagerBinding::BuildPrototype(
                    &AudioManagerBinding::SetAEC)
       .SetProperty("agc", &AudioManagerBinding::agc,
                    &AudioManagerBinding::SetAGC)
+      .SetProperty("tns", &AudioManagerBinding::agc,
+                   &AudioManagerBinding::SetAGC)
       .SetProperty("recording", &AudioManagerBinding::recording,
                    &AudioManagerBinding::SetRecording)
       .SetMethod("setRecording", &AudioManagerBinding::SetRecording)
@@ -74,12 +76,12 @@ void AudioManagerBinding::BuildPrototype(
 }
 
 AudioManagerBinding::AudioManagerBinding(v8::Isolate* isolate)
-    : media_(Context::Instance()->GetMedia()) {
+    : media_(Context::Instance()->GetMedia()), sysc_tns_(false) {
   Init(isolate);
 }
 AudioManagerBinding::AudioManagerBinding(v8::Isolate* isolate,
                                          v8::Local<v8::Object> wrapper)
-    : media_(Context::Instance()->GetMedia()) {
+    : media_(Context::Instance()->GetMedia()), sysc_tns_(false) {
   InitWith(isolate, wrapper);
 }
 
@@ -105,8 +107,8 @@ bool AudioManagerBinding::ans() {
   return media_->GetEnableANS();
 }
 
-void AudioManagerBinding::SetANS(bool enable, bool syncTNS) {
-  media_->SetEnableANS(enable, syncTNS);
+void AudioManagerBinding::SetANS(bool enable) {
+  media_->SetEnableANS(enable, sysc_tns_);
 }
 
 bool AudioManagerBinding::aec() {
@@ -123,6 +125,15 @@ bool AudioManagerBinding::agc() {
 
 void AudioManagerBinding::SetAGC(bool enable) {
   media_->SetEnableAGC(enable);
+}
+
+bool AudioManagerBinding::tns() {
+  return sysc_tns_;
+}
+
+void AudioManagerBinding::SetTNS(bool enable) {
+  if (media_->SetEnableANS(media_->GetEnableANS(), enable))
+    sysc_tns_ = enable;
 }
 
 bool AudioManagerBinding::recording() {

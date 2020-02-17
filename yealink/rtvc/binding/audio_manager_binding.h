@@ -29,13 +29,16 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
   void SetMute(bool mute);
 
   bool ans();
-  void SetANS(bool enable, bool syncTNS);
+  void SetANS(bool enable);
 
   bool aec();
   void SetAEC(bool enable);
 
   bool agc();
   void SetAGC(bool enable);
+
+  bool tns();
+  void SetTNS(bool enable);
 
   bool recording();
   void SetRecording(bool enable);
@@ -87,6 +90,8 @@ class AudioManagerBinding : public mate::Wrappable<AudioManagerBinding> {
 
   base::Optional<Device> audio_input_device_;
   base::Optional<Device> audio_output_device_;
+
+  bool sysc_tns_;
 };
 
 }  // namespace rtvc
