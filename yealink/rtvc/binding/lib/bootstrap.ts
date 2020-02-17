@@ -55,6 +55,18 @@ export interface InviteInfo {
   applicants: number;
 }
 
+export interface SchedulerMetaInfo {
+  phonebook_version: string;
+  phonebook_support: Array<string>;
+  schedule_version: string;
+  schedule_support: Array<string>;
+  build: string;
+  version: string;
+  web_host: string;
+  service_account: string;
+  experience_account: string;
+}
+
 export interface Connector {
 }
 
@@ -68,10 +80,13 @@ export interface Bootstrap {
   smsVerify: boolean;
   ha1: string;
   language: string;
+  region: string;
 
   authenticate(): Promise<AuthenticateInfos>;
   getConnector(uid: string): Connector;
   pushVerifyCode(): Promise<boolean>;
   getToken(uid: string): string;
   getPartyInviteInfo(): Promise<InviteInfo>;
+  getMetaInfo(url: string): Promise<SchedulerMetaInfo>;
+  getServiceInfo(url: string): Promise<string>;
 }

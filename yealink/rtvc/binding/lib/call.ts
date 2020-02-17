@@ -3,6 +3,11 @@ import { VideoSink, VideoSource } from './video';
 import { Conference } from './conference';
 import { UserAgent } from './user-agent'
 
+export enum CallSvcSubscribeType {
+  kShare,
+  kMedia,
+}
+
 export interface CallConfig {
   userAgent: UserAgent;
   incoming: boolean;
@@ -14,6 +19,10 @@ export interface CallMedia {
 }
 
 export interface CallLocalInfo {
+  number: string;
+  domain: string;
+  displayName: string;
+  userAgent: string;
 }
 
 export interface CallRemoteInfo {
@@ -81,6 +90,13 @@ export interface CallRTCStats {
 export interface CallRTCStatsInfo {
   media: CallRTCStats;
   share: CallRTCStats;
+}
+
+export interface CallVideoSubscribe {
+  enable: boolean;
+  id: number;
+  width: number;
+  height: number;
 }
 
 export interface Call extends EventEmitter {
@@ -155,6 +171,10 @@ export interface Call extends EventEmitter {
 
   startShare(): void;
   stopShare(): void;
+
+  isSupportSvcSubscribe(type: CallSvcSubscribeType): boolean;
+  setSvcSubscribe(type: CallSvcSubscribeType, list: Array<CallVideoSubscribe>): boolean;
+  setSvcEnable(enable: boolean): void;
 
   readonly isInProgress: boolean;
   readonly isEstablished: boolean;

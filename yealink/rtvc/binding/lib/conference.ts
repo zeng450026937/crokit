@@ -315,5 +315,3 @@ export interface Conference extends EventEmitter {
   readonly record: ConferenceRecord;
   readonly chat: ConferenceChat;
 }
-
-export interface ConferenceManager { }

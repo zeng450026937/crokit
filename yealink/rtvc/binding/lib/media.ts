@@ -79,7 +79,13 @@ export interface AudioManager {
   enableBuiltInNS(enable: boolean): void;
 }
 
-export type Rotation = 0 | 90 | 180 | 270
+export type VideoRotation = 0 | 90 | 180 | 270
+
+export interface VideoLimitInfo{
+  fps: number,
+  width: number,
+  height: number
+}
 
 export interface VideoManager {
 
@@ -88,8 +94,8 @@ export interface VideoManager {
 
   enumerateDevices(): void;
   videoInputDeviceList(): Array<VideoInputDevice>;
-  setRotation(degree: Rotation, secondary: boolean): void;
-  acquireStream(): void;
+  setRotation(degree: VideoLimitInfo, secondary: boolean): void;
+  acquireStream(params: VideoRotation): void;
   releaseStream(): void;
   acquiring(): boolean;
 

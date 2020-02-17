@@ -52,7 +52,7 @@ export interface VideoFrame {
 }
 
 export interface VideoSink {
-  onFrame(frame: VideoFrame): void;
+  onFrame(frame: VideoFrame, id: number): void;
 }
 
 export interface VideoSource {

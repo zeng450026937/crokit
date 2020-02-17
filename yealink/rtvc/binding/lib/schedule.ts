@@ -68,6 +68,19 @@ export enum SchedulePromptType {
   kAll = 'all',
 };
 
+export enum ScheduleServiceAbility {
+  kInvalid = 'invalid',
+  kTraversal = 'traversal',
+  kHardwarePort = 'hardwarePort',
+  kSoftwarePort = 'softwarePort',
+  kVmr = 'vmr',
+  kSeminar = 'seminar',
+  kThirdParty = 'thirdParty',
+  kPSTN = 'PSTN',
+  kCloudStorage = 'cloudStorage',
+  kRTMP = 'RTMP',
+};
+
 export interface ScheduleRecurrenceInfo {
   readonly recurrenceType: ScheduleRecurrence,
   readonly recurrenceDailyType: ScheduleRecurrenceDaily,
@@ -86,6 +99,7 @@ export interface ScheduleDaylightStrategy {
   readonly dayOfWeek: string,
   readonly timeOfDay: string,
 }
+
 export interface ScheduleTimeZoneRule {
   readonly startDate: string,
   readonly endDate: string,
@@ -93,6 +107,7 @@ export interface ScheduleTimeZoneRule {
   readonly daylightStrategyStart: ScheduleDaylightStrategy,
   readonly daylightStrategyEnd: ScheduleDaylightStrategy,
 }
+
 export interface ScheduleTimeZone {
   readonly id: string,
   readonly cnName: string,
@@ -228,19 +243,6 @@ export interface SchedulePlanConfig {
   readonly enableAutoRecord: boolean;
   readonly maxConferenceTime: number;
 }
-
-export enum ScheduleServiceAbility {
-  kInvalid = 'invalid',
-  kTraversal = 'traversal',
-  kHardwarePort = 'hardwarePort',
-  kSoftwarePort = 'softwarePort',
-  kVmr = 'vmr',
-  kSeminar = 'seminar',
-  kThirdParty = 'thirdParty',
-  kPSTN = 'PSTN',
-  kCloudStorage = 'cloudStorage',
-  kRTMP = 'RTMP',
-};
 
 export interface ScheduleServiceStatus {
   readonly type: ScheduleServiceAbility;
