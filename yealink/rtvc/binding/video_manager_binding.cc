@@ -158,9 +158,11 @@ void VideoManagerBinding::SetRotation(int64_t degree, bool is_secondary) {
   media_->SetCameraOrientation(degree);
 };
 
-void VideoManagerBinding::AcquireStream(mate::Arguments* args) {
+bool VideoManagerBinding::AcquireStream(mate::Arguments* args) {
+  bool ret = false;
+
   if (acquiring_stream_)
-    return;
+    return ret;
 
   yealink::CaptureInfo cam;
   CameraLimitInfo limit;
@@ -188,15 +190,17 @@ void VideoManagerBinding::AcquireStream(mate::Arguments* args) {
     switch (video_input_device_->type) {
       case DeviceType::kImageFile:
         cam.fmtDevice = yealink::CaptureDeviceFormat::CD_FILE_JPEG_24;
-        media_->SetCamera(cam);
+        ret = media_->SetCamera(cam);
         break;
       case DeviceType::kVideoInput:
       default:
         cam.fmtDevice = yealink::CaptureDeviceFormat::CD_WEBCAM_AUTO;
-        media_->SetCamera(cam);
+        ret = media_->SetCamera(cam);
         break;
     }
   }
+
+  return ret;
 }
 void VideoManagerBinding::ReleaseStream() {
   if (!acquiring_stream_)

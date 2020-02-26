@@ -41,7 +41,7 @@ class VideoManagerBinding : public mate::Wrappable<VideoManagerBinding> {
 
   void SetRotation(int64_t degree, bool is_secondary = false);
 
-  void AcquireStream(mate::Arguments* args);
+  bool AcquireStream(mate::Arguments* args);
   void ReleaseStream();
   bool acquiring();
 
