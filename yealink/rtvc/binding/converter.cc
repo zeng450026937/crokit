@@ -4470,6 +4470,7 @@ v8::Local<v8::Value> Converter<rtvc::CallVideoSubscribe>::ToV8(
   Dictionary handler = Dictionary::CreateEmpty(isolate);
 
   handler.Set("id", val.id);
+  handler.Set("enable", val.enable);
   handler.Set("width", val.width);
   handler.Set("height", val.height);
 
@@ -4485,6 +4486,7 @@ bool Converter<rtvc::CallVideoSubscribe>::FromV8(
     return false;
 
   dict.Get("id", &(out->id));
+  dict.Get("enable", &(out->enable));
   dict.Get("width", &(out->width));
   dict.Get("height", &(out->height));
 
@@ -4523,7 +4525,6 @@ bool Converter<rtvc::CallSvcSubscribeType>::FromV8(
     *out = rtvc::CallSvcSubscribeType::kMedia;
   else {
     *out = rtvc::CallSvcSubscribeType::kMedia;
-    return false;
   }
 
   return true;
