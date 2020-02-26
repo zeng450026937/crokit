@@ -59,6 +59,7 @@ public:
      @ biref buf size = width * height * 4 (bytes);
     */
     static bool ConvertToARGB32(const VideoFrame& frame, const void* buf, int width, int height);
+    static void CopyPlane(const unsigned char* src, int src_stride, unsigned char* dst, int dst_stride, int width, int height);
 
 public:
     VideoFrame();

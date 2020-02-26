@@ -44,6 +44,7 @@ struct BindPushInfo
     const char* env;
     const char* thirdPartyToken;
     const char* service;
+    const char* voipEnable;
     BindPushInfo()
         : token("")
         , bind(true)
@@ -54,6 +55,7 @@ struct BindPushInfo
         , env("")
         , thirdPartyToken("")
         , service("")
+        , voipEnable("")
     {
     }
 };
