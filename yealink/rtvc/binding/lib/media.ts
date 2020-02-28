@@ -13,6 +13,9 @@ export interface Device {
   deviceId: string;
   label: string;
   type: DeviceType;
+  fps: number;
+  width: number;
+  height: number;
 }
 
 export interface VideoDevice extends Device {

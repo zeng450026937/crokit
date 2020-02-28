@@ -20,6 +20,11 @@ struct Device {
   std::string deviceId;
   std::string label;
   DeviceType type;
+  int fps;
+  int width;
+  int height;
+  Device()
+    :fps(0), width(0), height(0) {}
 };
 
 }  // namespace rtvc

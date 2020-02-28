@@ -97,6 +97,9 @@ v8::Local<v8::Value> Converter<rtvc::Device>::ToV8(v8::Isolate* isolate,
   dict.Set("deviceId", val.deviceId);
   dict.Set("label", val.label);
   dict.Set("type", val.type);
+  dict.Set("fps", val.fps);
+  dict.Set("width", val.width);
+  dict.Set("height", val.height);
   return dict.GetHandle();
 }
 
@@ -109,6 +112,9 @@ bool Converter<rtvc::Device>::FromV8(v8::Isolate* isolate,
   dict.Get("deviceId", &(out->deviceId));
   dict.Get("label", &(out->label));
   dict.Get("type", &(out->type));
+  dict.Get("fps", &(out->fps));
+  dict.Get("width", &(out->width));
+  dict.Get("height", &(out->height));
   return true;
 }
 

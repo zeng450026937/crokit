@@ -118,6 +118,19 @@ void VideoManagerBinding::setVideoInputDevice(base::Optional<Device> device) {
 
   cam.strId = device->deviceId.c_str();
 
+  if (device->fps > 0)
+    cam.nMaxFPS = device->fps;
+  else
+    cam.nMaxFPS = 30;
+
+  if (device->height > 0 && device->width > 0) {
+    cam.nMaxWidth = device->width;
+    cam.nMaxHeight = device->height;
+  } else {
+    cam.nMaxWidth = 1920;
+    cam.nMaxHeight = 1080;
+  }
+
   if (acquiring_stream_) {
     switch (device->type) {
       case DeviceType::kImageFile:
@@ -170,7 +183,7 @@ bool VideoManagerBinding::AcquireStream(mate::Arguments* args) {
   acquiring_stream_ = true;
   cam.strId = video_input_device_->deviceId.c_str();
 
-  if(args->Length() == 1)
+  if (args->Length() == 1)
     args->GetNext(&limit);
 
   if (limit.fps > 0)
