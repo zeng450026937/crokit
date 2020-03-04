@@ -1,12 +1,12 @@
 import { VideoSink, VideoSource } from './video';
 
 export enum DeviceType {
-  kAudioInput,
-  kAudioOutput,
-  kVideoInput,
-  kScreen,
-  kWindow,
-  kImageFile,
+  kAudioInput = 'kAudioInput',
+  kAudioOutput = 'kAudioOutput',
+  kVideoInput = 'kVideoInput',
+  kScreen = 'kScreen',
+  kWindow = 'kWindow',
+  kImageFile = 'kImageFile',
 }
 
 export interface Device {
@@ -50,7 +50,8 @@ export interface AudioOutputDevice extends AudioDevice {
   type: DeviceType.kAudioOutput;
 }
 
-export interface AudioManager {
+declare class AudioManager {
+  constructor();
   volume: number;
   mute: boolean;
   ans: boolean;
@@ -90,8 +91,8 @@ export interface VideoLimitInfo{
   height: number
 }
 
-export interface VideoManager {
-
+declare class VideoManager {
+  constructor();
   videoInputDevice: VideoInputDevice;
   secondaryVideoInputDevice: VideoInputDevice;
 
@@ -111,4 +112,9 @@ export interface VideoManager {
   removeLocalShareVideoSink(sink: VideoSink): void;
 
   setLocalVideoSource(source: VideoSource): void;
+}
+
+export {
+  AudioManager,
+  VideoManager
 }

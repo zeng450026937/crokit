@@ -8,7 +8,6 @@ export interface EnterpriseInfo {
   area: string;
   country: string;
   zone: string;
-
   frozen: boolean;
   slot: number;
   status: number;
@@ -20,6 +19,12 @@ export interface TurnServerInfo {
   password: string;
 }
 
+export interface GroupInfo {
+  uid: string;
+  name: string;
+  namePinyin: string;
+}
+
 export interface AccountInfo {
   id: string;
   uid: string;
@@ -27,11 +32,14 @@ export interface AccountInfo {
   fullNumber: string;
   name: string;
   namePinyin: string;
-  groupInfo: string;
+  groupInfo: Array<GroupInfo>;
   token: string;
   type: number;
   meetnow: boolean;
   ha1: string;
+  mobile: string;
+  email: string;
+
   enterprise: EnterpriseInfo;
   turnServer: EnterpriseInfo;
 }
@@ -70,8 +78,8 @@ export interface SchedulerMetaInfo {
 export interface Connector {
 }
 
-export interface Bootstrap {
-  new(clientId: string);
+declare class Bootstrap {
+  constructor(clientId: string);
 
   server: string;
   username: string;
@@ -90,3 +98,5 @@ export interface Bootstrap {
   getMetaInfo(url: string): Promise<SchedulerMetaInfo>;
   getServiceInfo(url: string): Promise<string>;
 }
+
+export default Bootstrap;

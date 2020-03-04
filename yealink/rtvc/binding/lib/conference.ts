@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { UserAgent } from './user-agent';
+import UserAgent from './user-agent';
 
 /** Chat */
 export interface ConferenceChatMessage {
@@ -272,8 +272,8 @@ export interface CreateInfo {
   conversationId: string;
 }
 
-export interface Conference extends EventEmitter {
-  new(userAgent: UserAgent);
+declare class Conference extends EventEmitter {
+  constructor(userAgent: UserAgent);
 
   emit(event: string | symbol, ...args: any[]): boolean;
   on(event: string, listener: (...args: any[]) => void): this;
@@ -315,3 +315,5 @@ export interface Conference extends EventEmitter {
   readonly record: ConferenceRecord;
   readonly chat: ConferenceChat;
 }
+
+export default Conference;

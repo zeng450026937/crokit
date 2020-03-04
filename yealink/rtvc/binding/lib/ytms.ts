@@ -99,10 +99,10 @@ export interface EventInfo {
   isp: string;
 }
 
-export interface YTMS extends EventEmitter {
-  new(clientId: string);
-
+declare class YTMS extends EventEmitter {
   server: string;
+
+  constructor(clientId: string);
 
   emit(event: string | symbol, ...args: any[]): boolean;
   on(event: string, listener: (...args: any[]) => void): this;
@@ -117,24 +117,26 @@ export interface YTMS extends EventEmitter {
   on(event: 'stopCapture', listener: () => void): this;
   on(event: 'reregiste', listener: () => void): this;
 
-  start(): Promise<number>,
-  update(params: TerminalInfo): Promise<number>,
+  start(): Promise<number>;
+  update(params: TerminalInfo): Promise<number>;
 
-  uploadAlarm(params: AlarmInfo): Promise<number>,
-  uploadFeedBack(params: FeedbackInfo): Promise<number>,
-  uploadEvent(params: EventInfo): Promise<number>,
-  uploadConfig(params: string): Promise<number>,
-  uploadLog(params: UploadLogInfo): Promise<number>,
+  uploadAlarm(params: AlarmInfo): Promise<number>;
+  uploadFeedBack(params: FeedbackInfo): Promise<number>;
+  uploadEvent(params: EventInfo): Promise<number>;
+  uploadConfig(params: string): Promise<number>;
+  uploadLog(params: UploadLogInfo): Promise<number>;
 
-  getPackagesInfo(): Promise<PackageInfo>,
-  getConfigFileInfo(): Promise<ConfigurationInfo>,
+  getPackagesInfo(): Promise<PackageInfo>;
+  getConfigFileInfo(): Promise<ConfigurationInfo>;
 
-  downloadFile(params: DownloadInfo): Promise<number>,
+  downloadFile(params: DownloadInfo): Promise<number>;
 
   getCaptureDevice(): Array<string>;
-  startCapture(params: NetCaptureInfo): Promise<number>,
-  stopCapture(params: string): Promise<number>,
+  startCapture(params: NetCaptureInfo): Promise<number>;
+  stopCapture(params: string): Promise<number>;
 
-  uploadPacket(params: NetCaptureInfo): Promise<number>,
-  reportSessionStatus(params: NetCaptureStatus): Promise<number>,
+  uploadPacket(params: NetCaptureInfo): Promise<number>;
+  reportSessionStatus(params: NetCaptureStatus): Promise<number>;
 }
+
+export default YTMS;

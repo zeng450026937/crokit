@@ -56,8 +56,8 @@ export interface CloudContactConfig extends ContactConfig {
   server: string,
 }
 
-export interface CloudContact extends EventEmitter {
-  new(config: CloudContactConfig);
+declare class CloudContact extends EventEmitter {
+  constructor(config: CloudContactConfig);
 
   emit(event: string | symbol, ...args: any[]): boolean;
   on(event: string, listener: (...args: any[]) => void): this;
@@ -75,3 +75,5 @@ export interface CloudContact extends EventEmitter {
   getNodeChild(nodeId: string, recursive: boolean): Array<ContactNode>;
   getNodeByNumber(number: string): ContactNode;
 }
+
+export default CloudContact;

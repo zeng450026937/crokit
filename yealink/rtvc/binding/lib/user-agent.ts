@@ -1,4 +1,4 @@
-import { Call } from './call';
+import Call from './call';
 import { Connector } from './bootstrap';
 
 export interface AccountConfig {
@@ -22,8 +22,8 @@ export interface AccountConfig {
   uuid: string | null;
 }
 
-export interface UserAgent {
-  new(config: AccountConfig);
+declare class UserAgent {
+  constructor(config: AccountConfig);
 
   workspaceFolder: string;
   username: string;
@@ -47,3 +47,5 @@ export interface UserAgent {
 
   setConnector(handler: Connector): void;
 }
+
+export default UserAgent;

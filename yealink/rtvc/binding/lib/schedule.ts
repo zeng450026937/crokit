@@ -2,9 +2,9 @@ import { EventEmitter } from 'events';
 import { Connector } from './bootstrap';
 
 export enum ScheduleItemProfile {
-  kDefault,
-  kSeminar,
-  kEducation,
+  kDefault = 'kDefault',
+  kSeminar = 'kSeminar',
+  kEducation = 'kEducation',
 }
 
 export enum ScheduleRecurrence {
@@ -27,7 +27,7 @@ export enum ScheduleRecurrenceRange {
   kForever = 'kForever',
   kTimes = 'kTimes',
   kUntil = 'kUntil',
-};
+}
 
 export enum ScheduleMemberRole {
   kInvalid = 'kInvalid',
@@ -35,30 +35,30 @@ export enum ScheduleMemberRole {
   kPresenter = 'kPresenter',
   kPaticipant = 'kPaticipant',
   kCastViewer = 'kCastViewer',
-};
+}
 
 export enum ScheduleMemberType {
   kInvalid = 'kInvalid',
   kInternal = 'kInternal',
   kExternal = 'kExternal',
-};
+}
 
 export enum ScheduleRTMPLimitType {
   kAll = 'kAll',
   kPassword = 'kPassword',
-};
+}
 
 export enum ScheduleMemberCreateType {
   kInvalid = 'invalid',
   kAdmin = 'admin',
   kPersonal = 'personal',
   kEnterprise = 'enterprise',
-};
+}
 
 export enum ScheduleResolutionType {
   k720P = '720P',
   k1080P = '1080P',
-};
+}
 
 export enum SchedulePromptType {
   kInvalid = 'invalid',
@@ -66,7 +66,7 @@ export enum SchedulePromptType {
   kAttendee = 'attendee',
   kAuthenticated = 'authenticated',
   kAll = 'all',
-};
+}
 
 export enum ScheduleServiceAbility {
   kInvalid = 'invalid',
@@ -79,7 +79,7 @@ export enum ScheduleServiceAbility {
   kPSTN = 'PSTN',
   kCloudStorage = 'cloudStorage',
   kRTMP = 'RTMP',
-};
+}
 
 export interface ScheduleRecurrenceInfo {
   readonly recurrenceType: ScheduleRecurrence,
@@ -254,8 +254,8 @@ export interface ScheduleServiceResponse {
   readonly statusList: Array<ScheduleServiceStatus>
 }
 
-export interface Schedule extends EventEmitter {
-  new(config: ScheduleConfig);
+declare class Schedule extends EventEmitter {
+  constructor(config: ScheduleConfig);
 
   emit(event: string | symbol, ...args: any[]): boolean;
   on(event: string, listener: (...args: any[]) => void): this;
@@ -274,3 +274,5 @@ export interface Schedule extends EventEmitter {
   getServiceAbility(abilities: Array<ScheduleServiceAbility>): Promise<ScheduleServiceResponse>;
   getScheduleByPlanId(id: string): Promise<Array<ScheduleItem>>;
 }
+
+export default Schedule;

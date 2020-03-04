@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
 import { VideoSink, VideoSource } from './video';
-import { Conference } from './conference';
-import { UserAgent } from './user-agent'
+import Conference from './conference';
+import UserAgent from './user-agent'
 
 export enum CallSvcSubscribeType {
-  kShare,
-  kMedia,
+  kShare = 'share',
+  kMedia = 'media',
 }
 
 export interface CallConfig {
@@ -99,8 +99,8 @@ export interface CallVideoSubscribe {
   height: number;
 }
 
-export interface Call extends EventEmitter {
-  new(config: CallConfig);
+declare class Call extends EventEmitter {
+  constructor(config: CallConfig);
 
   emit(event: string | symbol, ...args: any[]): boolean;
   on(event: string, listener: (...args: any[]) => void): this;
@@ -191,3 +191,5 @@ export interface Call extends EventEmitter {
   portraitMode: boolean;
   readonly conference: Conference;
 }
+
+export default Call;
