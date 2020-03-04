@@ -67,7 +67,7 @@ public:
          * @param strReferedBy 
          * @param strReplaceId 
          */
-    virtual void OnRefer(const SIPMessageReadonly& message, const char* strReferToUri, const char* strReferedBy, const char* strReplaceId) = 0;
+    virtual void OnRefer(const SIPMessageReadonly& message, const char* strReferToUri, const char* strReferedBy) = 0;
 
     /**
          * @brief 
@@ -274,6 +274,16 @@ public:
          *
          */
     virtual SStringA UsedLocalHost() = 0;
+    /**
+     * @brief Get the invite dlg target uri.
+     *
+     */
+    virtual SStringA TargetUri() = 0;
+    /**
+     * @brief Get the invite dlg replaces info.
+     *
+     */
+    virtual SStringA ReplacesInfo() = 0;
 };
 } // namespace yealink
 #endif

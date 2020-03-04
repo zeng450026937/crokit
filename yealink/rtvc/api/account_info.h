@@ -26,6 +26,12 @@ struct TurnServerInfo {
   std::string password;
 };
 
+struct GroupInfo {
+  std::string uid;
+  std::string name;
+  std::string name_pinyin;
+};
+
 struct AccountInfo {
   std::string id;
   std::string uid;
@@ -33,8 +39,10 @@ struct AccountInfo {
   std::string full_number;
   std::string name;
   std::string name_pinyin;
-  std::string group_info;
+  std::vector<GroupInfo> group_info;
   std::string token;
+  std::string mobile;
+  std::string email;
   int type;
   bool meetnow;
 

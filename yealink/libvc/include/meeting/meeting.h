@@ -197,12 +197,19 @@ public:
          */
     virtual bool Hangup(SIPCode code, const char* strReason) = 0;
     /**
-         * @brief Set the call hold state
-         * 
-         * @param bHold 
-         * @return true 
-         * @return false 
-         */
+     * @brief reconnect meeting.
+     *
+     * @return true
+     * @return false
+     */
+    virtual bool Reconnect() = 0;
+    /**
+     * @brief Set the call hold state
+     * 
+     * @param bHold 
+     * @return true 
+     * @return false 
+     */
     virtual bool SetHold(bool bHold) = 0;
     /**
          * @brief Send DTMF key.
@@ -271,6 +278,20 @@ public:
          * @return false Failure,not calls established or no available channels.
          */
     virtual void SetShareBitRate(int nMaxSendBitRate, int nMaxRecvBitRate) = 0;
+    /**
+     * @brief Rebuild audio and video channel.
+     *
+     * @return true Success, will be renegotiation audio and video channel.
+     * @return false Failure, can not be renegotiation.
+     */
+    virtual bool RebuildCallRTC() = 0;
+    /**
+     * @brief Rebuild share channel.
+     *
+     * @return true Success, will be renegotiation share channel.
+     * @return false Failure, can not be renegotiation.
+     */
+    virtual bool RebuildShareRTC() = 0;
     /**
      * @brief Set custom video capture source.
      *

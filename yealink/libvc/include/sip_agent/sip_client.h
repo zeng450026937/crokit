@@ -104,7 +104,14 @@ public:
          * @return SIPInviteAgent 
          */
     virtual SIPInviteAgent* CreateInviteAgent(const char* strTargetUri) = 0;
-
+    /**
+     * @brief Create a Invite Agent object
+     *
+     * @param strTargetUri 
+     * @param strReplacesUri
+     * @param strRefferByUri
+     * @return SIPInviteAgent
+     */
     virtual SIPInviteAgent* CreateInviteAgent(const char* strTargetUri, const char* strReplacesUri, const char* strRefferByUri) = 0;
     /**
          * @brief 
@@ -139,7 +146,8 @@ public:
     /**
          * @brief
          *
-         * @param nWaitTimems
+         * @param strTargetUri
+         * @param strEvent
          */
     virtual SIPServiceAgent* CreateServiceAgent(const char* strTargetUri, const char* strEvent) = 0;
     /**

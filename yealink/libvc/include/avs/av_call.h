@@ -104,7 +104,7 @@ public:
          * @brief 
          * 
          */
-    virtual void OnRefer(const AVCall* pCall, const char* strReferToUri, const char* strReferedBy, const char* strReplaceId) = 0;
+    virtual void OnRefer(const AVCall* pCall, const char* strReferToUri, const char* strReferedBy) = 0;
     /**
          * @brief
          *
@@ -115,6 +115,11 @@ public:
          *
          */
     virtual void OnReferStateUpdate(SIPReferSubscribeState state) = 0;
+    /**
+         * @brief
+         *
+         */
+    virtual void OnEvent(const char* strEvent) = 0;
 
 public:
     /**
@@ -364,9 +369,14 @@ public:
      */
     virtual void UpdateSendBitrate(int nBitrate) = 0;
     /**
-         * @brief Set custom video capture source.
-         *
-         */
+     * @brief Rebuild ice channel and media.
+     *
+     */
+    virtual bool RebuildRTC() = 0;
+    /**
+     * @brief Set custom video capture source.
+     *
+     */
     virtual bool SetCustomCapture(MediaCapture* pCapture) = 0;
     /**
          * @brief Enable custom capture portrait mode.

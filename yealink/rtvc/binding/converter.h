@@ -181,6 +181,12 @@ struct Converter<rtvc::AccountInfo> {
 };
 
 template <>
+struct Converter<rtvc::GroupInfo> {
+  static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
+                                   const rtvc::GroupInfo& val);
+};
+
+template <>
 struct Converter<rtvc::PrimaryAccountInfo> {
   static v8::Local<v8::Value> ToV8(v8::Isolate* isolate,
                                    const rtvc::PrimaryAccountInfo& val);

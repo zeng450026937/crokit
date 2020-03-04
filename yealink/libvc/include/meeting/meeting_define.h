@@ -26,6 +26,7 @@ enum MeetingEventId
     MEETING_REFER_DONE,
     MEETING_REPLACED,
     MEETING_FINISHED,
+    MEETING_EXT_NEED_AUTH,
 };
 
 enum MeetingMediaEventId

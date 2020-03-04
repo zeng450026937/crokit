@@ -13,6 +13,8 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
   ConvertFrom(out.name_pinyin, val.subject.namePinyinForSearch);
   ConvertFrom(out.group_info, val.subject.groupInfos);
   ConvertFrom(out.type, val.subject.type);
+  ConvertFrom(out.mobile, val.subject.mobile);
+  ConvertFrom(out.ha1, val.subject.email);
   ConvertFrom(out.enterprise.area, val.party.area);
   ConvertFrom(out.enterprise.country, val.party.country);
   ConvertFrom(out.enterprise.domain, val.party.domain);
@@ -30,6 +32,16 @@ bool StructTraits<AccountInfo>::From(AccountInfo& out,
   ConvertFrom(out.turn_server.username, val.turnServer.username);
   ConvertFrom(out.turn_server.password, val.turnServer.password);
   ConvertFrom(out.ha1, val.account.encryptedCredential);
+
+  return true;
+}
+
+bool StructTraits<GroupInfo>::From(
+    GroupInfo& out,
+    const yealink::GroupInfo& val) {
+  ConvertFrom(out.uid, val.uid);
+  ConvertFrom(out.name, val.namePinyinForSearch);
+  ConvertFrom(out.name_pinyin, val.namePinyinForSearch);
 
   return true;
 }

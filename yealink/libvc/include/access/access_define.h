@@ -7,7 +7,6 @@
  */
 #ifndef ACCESS_DEFINE_H
 #define ACCESS_DEFINE_H
-
 #include "components/base/simplelib/simple_lib.h"
 
 #ifdef _WIN32
@@ -109,6 +108,13 @@ struct PermissionInfo
     bool enableMeetingNow;
 };
 
+struct GroupInfo
+{
+    SStringA uid;
+    SStringA name;
+    SStringA namePinyinForSearch;
+};
+
 struct SubjectInfo
 {
     SubjectInfo()
@@ -117,7 +123,7 @@ struct SubjectInfo
     {
     }
 
-    SStringA groupInfos;
+    Array<GroupInfo> groupInfos;
     SStringA uid;
     SStringA name;
     SStringA namePinyinForSearch;
@@ -125,6 +131,8 @@ struct SubjectInfo
     SStringA title;
     int gender;
     Array<int> roles;
+    SStringA mobile;
+    SStringA email;
 };
 
 struct TurnServerInfo
@@ -141,6 +149,14 @@ struct LoginUserInfo
     SubjectInfo subject;
     TurnServerInfo turnServer;
     SStringA token;
+};
+
+struct UserAccountInfo
+{
+    PartyInfo partyInfo;
+    SubjectInfo subjectInfo;
+    AccountInfo accountInfo;
+    PermissionInfo permissionInfo;
 };
 
 //登录返回的账号鉴权信息

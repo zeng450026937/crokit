@@ -32,7 +32,7 @@ AV_API AVCall* CreateCall(SIPClient& client, Media& media, bool bOffer);
      * @param[in] pAgent 
      * @return AVCall*
      */
-AV_API AVCall* CreateReplaceCall(SIPClient& client, Media& media, SIPInviteAgent* pAgent);
+AV_API AVCall* CreateReplaceCall(SIPClient& client, Media& media, bool bOffer, SIPInviteAgent* pAgent);
 /**
      * @brief Create a call object of share content.
      *

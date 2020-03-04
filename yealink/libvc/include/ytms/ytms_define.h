@@ -236,6 +236,19 @@ struct DownloadInfo
     {
     }
 };
+
+struct YtmsVersionUpdateInfo
+{
+    bool upgradeCheckFlag;
+    SStringA forceUpgradeVersion;
+    SStringA recommendUpgradeVersion;
+    SStringA upgradeLink;
+
+    YtmsVersionUpdateInfo()
+        : upgradeCheckFlag(false)
+    {
+    }
+};
 } // namespace yealink
 
 #endif

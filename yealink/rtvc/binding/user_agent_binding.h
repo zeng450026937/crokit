@@ -66,7 +66,7 @@ class UserAgentBinding : public mate::EventEmitter<UserAgentBinding>,
   // yealink::ConnectionHandler impl
   bool OnCertificateError(yealink::ConnectCertificateCode code) override;
   void OnConnectFailed(int message) override;
-  void OnConnected() override;
+  void OnConnected(bool routeChanged) override;
   void OnConnectInterruption(int message) override;
   void OnReceivedData() override;
 

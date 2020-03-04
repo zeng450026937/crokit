@@ -345,7 +345,7 @@ bool UserAgentBinding::OnCertificateError(
 void UserAgentBinding::OnConnectFailed(int message) {
   Emit("connectFailed");
 }
-void UserAgentBinding::OnConnected() {
+void UserAgentBinding::OnConnected(bool routeChanged) {
   Emit("connected");
 }
 void UserAgentBinding::OnConnectInterruption(int message) {

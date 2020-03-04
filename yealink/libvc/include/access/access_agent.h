@@ -245,6 +245,14 @@ public:
     virtual LoginUserInfo GetLoginUserInfoById(const char* id) = 0;
 
     /**
+         * @brief Query AccountInfo by subject id from server
+         * 
+         * @param id 
+         * @return ScheduleMetaInfo
+         */
+    virtual UserAccountInfo GetUserAccountInfoBySubjectId(const char* id, AccessProcess* process) = 0;
+
+    /**
          * @brief get invite info of current account party
          * 
          * @return PartyInviteInfo

@@ -247,6 +247,19 @@ v8::Local<v8::Value> Converter<rtvc::AccountInfo>::ToV8(
   dict.Set("type", val.type);
   dict.Set("meetnow", val.meetnow);
   dict.Set("ha1", val.ha1);
+  dict.Set("mobile", val.mobile);
+  dict.Set("email", val.email);
+
+  return dict.GetHandle();
+}
+
+v8::Local<v8::Value> Converter<rtvc::GroupInfo>::ToV8(
+    v8::Isolate* isolate,
+    const rtvc::GroupInfo& val) {
+  Dictionary dict = Dictionary::CreateEmpty(isolate);
+  dict.Set("uid", val.uid);
+  dict.Set("name", val.name);
+  dict.Set("namePinyin", val.name_pinyin);
 
   return dict.GetHandle();
 }

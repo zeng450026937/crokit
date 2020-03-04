@@ -102,6 +102,11 @@ struct StructTraits<AccountInfo> {
 };
 
 template <>
+struct StructTraits<GroupInfo> {
+  static bool From(GroupInfo& out, const yealink::GroupInfo& val);
+};
+
+template <>
 struct StructTraits<PrimaryAccountInfo> {
   static bool From(PrimaryAccountInfo& out, const yealink::LoginUserInfos& val);
 };

@@ -191,6 +191,14 @@ public:
     virtual ConfigFileInfo GetConfigFileInfo(YTMSProcess* process) = 0;
 
     /**
+         * @brief get version update info, for ios
+         * 
+         * @param log 
+         * @return true/false
+         */
+    virtual YtmsVersionUpdateInfo GetVersionUpdateInfo(YTMSProcess* process) = 0;
+
+    /**
          * @brief Download file by http
          * 
 		 * @param DownloadInfo 

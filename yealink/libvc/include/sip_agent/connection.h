@@ -52,7 +52,7 @@ public:
          * 
          * @param message 
          */
-    virtual void OnConnected()
+    virtual void OnConnected(bool routeChanged)
     {
     }
     /**
@@ -117,10 +117,15 @@ public:
          */
     virtual void Disconnect() = 0;
     /**
-         * @brief Set the user agent name
-         * 
-         * @param userAgent 
-         */
+     * @brief
+     *
+     */
+    virtual bool Reconnect() = 0;
+    /**
+     * @brief Set the user agent name
+     * 
+     * @param userAgent 
+     */
     virtual void SetUserAgent(const char* userAgent) = 0;
     /**
          * @brief Set the site name
@@ -129,11 +134,17 @@ public:
          */
     virtual void SetSiteName(const char* name) = 0;
     /**
-     * @brief Set the user agent name
+     * @brief get account domain
      *
-     * @param userAgent
+     * @param void
      */
     virtual SStringA Domain() = 0;
+    /**
+     * @brief get transport used local ip
+     *
+     * @param void
+     */
+    virtual SStringA GetUsedLocalIp() = 0;
     /**
      * @brief Set DNS servers
      *
