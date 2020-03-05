@@ -301,15 +301,16 @@ v8::Local<v8::Value> Converter<rtvc::SchedulerMetaInfo>::ToV8(
     v8::Isolate* isolate,
     const rtvc::SchedulerMetaInfo& val) {
   Dictionary dict = Dictionary::CreateEmpty(isolate);
+
+  dict.Set("phonebookVersion", val.phonebook_version);
+  dict.Set("phonebookSupport", val.phonebook_support);
+  dict.Set("scheduleVersion", val.schedule_version);
+  dict.Set("scheduleSupport", val.schedule_support);
   dict.Set("build", val.build);
-  dict.Set("experienceAccount", val.experience_account);
-  dict.Set("phonebook_support", val.phonebook_support);
-  dict.Set("phonebook_version", val.phonebook_version);
-  dict.Set("schedule_support", val.schedule_support);
-  dict.Set("schedule_version", val.schedule_version);
-  dict.Set("service_account", val.service_account);
   dict.Set("version", val.version);
-  dict.Set("web_host", val.web_host);
+  dict.Set("webHost", val.web_host);
+  dict.Set("serviceAccount", val.service_account);
+  dict.Set("experienceAccount", val.experience_account);
 
   return dict.GetHandle();
 }

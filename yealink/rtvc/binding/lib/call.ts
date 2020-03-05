@@ -64,10 +64,10 @@ export interface CallVideoStatsInfo {
   profile: string;
   width: number;
   height: number;
-  frame_rate: number;
-  bit_rate: number;
-  loss_rate: number;
-  total_loss_packets: number;
+  frameRate: number;
+  bitRate: number;
+  lossRate: number;
+  totalLossPackets: number;
   jitter: number;
   rtt: number;
 }
@@ -148,9 +148,9 @@ declare class Call extends EventEmitter {
   upgrade(options: CallMedia): Promise<void>;
 
   hold(): void;
-  unhold(): void;
+  unHold(): void;
   mute(): void;
-  unmute(): void;
+  unMute(): void;
   sendDTMF(tone: string): void;
 
   getStats(): Promise<CallRTCStatsInfo>;

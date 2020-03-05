@@ -34,12 +34,11 @@ export interface AccountInfo {
   namePinyin: string;
   groupInfo: Array<GroupInfo>;
   token: string;
+  mobile: string;
+  email: string;
   type: number;
   meetnow: boolean;
   ha1: string;
-  mobile: string;
-  email: string;
-
   enterprise: EnterpriseInfo;
   turnServer: EnterpriseInfo;
 }
@@ -64,13 +63,13 @@ export interface InviteInfo {
 }
 
 export interface SchedulerMetaInfo {
-  phonebook_version: string;
-  phonebook_support: Array<string>;
-  schedule_version: string;
-  schedule_support: Array<string>;
+  phonebookVersion: string;
+  phonebookSupport: Array<string>;
+  scheduleVersion: string;
+  scheduleSupport: Array<string>;
   build: string;
   version: string;
-  web_host: string;
+  webHost: string;
   service_account: string;
   experience_account: string;
 }

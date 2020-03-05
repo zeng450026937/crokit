@@ -45,9 +45,7 @@ struct AccountInfo {
   std::string email;
   int type;
   bool meetnow;
-
   std::string ha1;
-
   EnterpriseInfo enterprise;
   TurnServerInfo turn_server;
 };

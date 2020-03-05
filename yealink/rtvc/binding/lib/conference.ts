@@ -24,7 +24,7 @@ export interface ConferenceChatDialog {
   clearUnread(): boolean;
 }
 export interface ConferenceChat {
-  sendChatMessage(msg: string, entities: Array<string>): Promise<void>;
+  sendChatMessage(msg: string, entities: Array<string>): Promise<ConferenceChatMessage>;
   retrySendChatMessage(message: ConferenceChatMessage): Promise<void>;
 
   publicDialog(): ConferenceChatDialog;
@@ -35,19 +35,19 @@ export interface ConferenceChat {
 export interface ConferenceDescriptionBanner {
   readonly enabled: boolean;
   readonly displayText: string;
-  readonly position: string;
+  readonly position: string;  // top | medium | bottom
 }
 export interface ConferenceDescriptionRtmp {
   readonly enabled: boolean;
   readonly displayText: string;
-  readonly mcuSessionType: string;
-  readonly maxVideoFs: string;
+  readonly mcuSessionType: string;  // AV | AD |AVD
+  readonly maxVideoFs: string;      // 360P |  720P | 1080P
   readonly webShareUrl: string;
 }
 export interface ConferenceDescriptionUriInfo {
   readonly uri: string;
   readonly displayText: string;
-  readonly purpose: string;
+  readonly purpose: string;   // applicationsharing | audio-video | chat | coopshare | focus
 }
 export interface ConferenceDescriptionOrganizer {
   readonly uid: string;
@@ -58,9 +58,9 @@ export interface ConferenceDescriptionOrganizer {
   readonly domain: string;
 }
 export interface ConferenceDescriptionLockInfo {
-  admissionPolicy: string;
+  admissionPolicy: string;  // closedAuthenticated | anonymous | openAuthenticated
   attendeeByPass: boolean;
-  autoPromote: number;
+  autoPromote: number;  // 0 | 32768 | 2147483648
 }
 export interface ConferenceDescription {
   readonly subject: string;
@@ -90,8 +90,8 @@ export interface ConferenceDescription {
   readonly videoEnable: boolean;
   readonly ipcallEnable: boolean;
   readonly webrtcEnable: boolean;
-  readonly recordServerType: string;
-  readonly recordPrivilege: string;
+  readonly recordServerType: string;    // ylrecord | third-party
+  readonly recordPrivilege: string;     // organizer | presenter | attendee
   readonly confInfoUrl: string;
 
   getDefaultRtmp(): ConferenceDescriptionRtmp;
@@ -103,7 +103,7 @@ export interface ConferenceDescription {
 
 /** Record */
 export interface ConferenceRecordUserInfo {
-  recordStatus: string;
+  recordStatus: string; // pause | pausing | resume | resuming | start | starting | stop | stopping
   recordLastStopDuration: number;
   recordLastStartTime: number;
 }
@@ -119,10 +119,10 @@ export interface ConferenceRecord {
 /** Rtmp */
 export interface ConferenceRtmpUserInfo {
   readonly entity: string;
-  readonly isDefault: string;
-  readonly rtmpStatus: string;
-  readonly rtmpLastStopDuration: string;
-  readonly rtmpLastStartTime: string;
+  readonly isDefault: boolean;
+  readonly rtmpStatus: string;  // pause | pausing | resume | resuming | start | starting | stop | stopping
+  readonly rtmpLastStopDuration: number;
+  readonly rtmpLastStartTime: number;
 }
 export interface ConferenceRtmpInfo {
   readonly enable: boolean;
@@ -142,42 +142,65 @@ export interface ConferenceState {
 }
 /** Users */
 export interface ConferenceUserRoleInfo {
-  readonly permission: string;
-  readonly demostate: string;
-  readonly presenterDemostate: string;
+  readonly permission: string;          // attendee | castviewer | organizer | presenter
+  readonly demostate: string;           // audience | demonstrator
+  readonly presenterDemostate: string;  // audience | demonstrator
 }
 export interface ConferenceUserMediaInfo {
   readonly id: string;
-  readonly type: string;
-  readonly label: string;
-  readonly status: string;
-  readonly mediaIngressFilter: string;
-  readonly mediaIngressBlockBy: string;
-  readonly mediaEgressFilter: string;
-  readonly mediaEgressBlockBy: string;
+  readonly type: string;                // application | audio | video
+  readonly label: string;               // application | fecc | main-video | main-audio
+  readonly status: string;              // inactive | recvonly | sendonly | sendrecv
+  readonly mediaIngressFilter: string;  // block | unblock | unblocking
+  readonly mediaIngressBlockBy: string; // client | server | none
+  readonly mediaEgressFilter: string;   // block | unblock | unblocking
+  readonly mediaEgressBlockBy: string;  // client | server | none
 }
 export interface ConferenceUserEndpointInfo {
   readonly entity: string;
-  readonly sessionType: string;
-  readonly status: string;
-  readonly joiningNethod: string;
+  readonly sessionType: string;   // applicationsharing | audio-video | chat | coopshare | focus
+  readonly status: string;        // connected | dialing-in | dialing-out | disconnected | on-hold
+  readonly joiningMethod: string; // dialed-in | dialed-out
   readonly when: string;
   readonly mcuCallId: string;
   readonly media: Array<ConferenceUserMediaInfo>
 }
 export interface ConferenceUserFilterInfo {
-  readonly mediaIngressFilter: string;
-  readonly mediaIngressBlockBy: string;
-  readonly mediaEgressFilter: string;
-  readonly mediaEgressBlockBy: string;
+  readonly mediaIngressFilter: string;  // block | unblock | unblocking
+  readonly mediaIngressBlockBy: string; // client | server | none
+  readonly mediaEgressFilter: string;   // block | unblock | unblocking
+  readonly mediaEgressBlockBy: string;  // client | server | none
 }
+export interface ConferenceUserMediaDataInfo {
+  enable: boolean;
+  ip: string;
+  codec: string;
+  width: number;
+  height: number;
+  fr: number;
+  sampleRate: number;
+  bandwidth: number;
+  bitRate: number;
+  lossRate: number;
+  packetLost: number;
+  jitter: number;
+  rtt: number;
+}
+export interface ConferenceUserStatisticsInfo {
+  mediaId: string;
+  label: string;  // application | fecc | main-audio | main-video
+  type: string;   // application | audio | video
+  send: ConferenceUserMediaDataInfo;
+  recv: ConferenceUserMediaDataInfo;
+}
+
 export interface ConferenceUser {
   readonly entity: string;
   readonly displayText: string;
   readonly displayNumber: string;
   readonly displayTextPinyin: string;
   readonly uid: string;
-  readonly protocol: string;
+  readonly protocol: string; // SIP | H323 | RTMP
   readonly mediumServerType: string;
   readonly ip: string;
   readonly phone: string;
@@ -201,7 +224,7 @@ export interface ConferenceUser {
 
   getAudioFilter(): ConferenceUserFilterInfo;
   getVideoFilter(): ConferenceUserFilterInfo;
-  getStats(): Promise<void>;
+  getStats(): Promise<ConferenceUserStatisticsInfo>;
 
   setAudioIngressFilter(open: boolean): Promise<void>;
   setAudioEgressFilter(open: boolean): Promise<void>;
@@ -236,10 +259,10 @@ export interface ConferenceUsers {
 
 /** View */
 export interface ConferenceViewLayoutInfo {
-  speakMode: string;
-  videoLayout: string;
+  speakMode: string;            // free | handUp
+  videoLayout: string;          // Equality | SpeechExcitation | Exclusive | Presentation
   videoMaxView: number;
-  videoPresenterLayout: string;
+  videoPresenterLayout: string; // Equality | SpeechExcitation | Exclusive
   videoPresenterMaxView: number;
   videoRoundNumber: number;
   videoRoundInterval: number;
@@ -252,9 +275,9 @@ export interface ConferenceViewLayoutInfo {
   hideOsdSitestatus: boolean;
 }
 export interface ConferenceViewFilterInfo {
-  role: string;
-  ingress: string;
-  egress: string;
+  role: string;     // default | attendee
+  ingress: string;  // block | unblock
+  egress: string;   // block | unblock
 }
 export interface ConferenceView {
   getLayout(): ConferenceViewLayoutInfo;
