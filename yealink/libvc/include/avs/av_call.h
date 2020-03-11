@@ -48,7 +48,8 @@ public:
         MEDIA_ESTABLISHED,
         MEDIA_BROKEN,
         MEDIA_RESUME,
-        MEDIA_FINISHED
+        MEDIA_FINISHED,
+        MEDIA_VIDEO_LACK_OF_BANDWIDTH
     };
 
 public:
