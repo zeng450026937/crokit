@@ -927,6 +927,9 @@ void CallBinding::OnEvent(yealink::MeetingEventId id) {
         pending_meeting_->SetObserver(nullptr);
       }
       break;
+    case yealink::MEETING_TRANSFER:
+      Emit("transfer");
+      break;
     default:
       NOTREACHED();
       break;
@@ -983,6 +986,8 @@ void CallBinding::OnMediaEvent(yealink::MeetingMediaEventId id) {
       event_name = "rtc:shareBroken";
       break;
     case yealink::MEETING_MEDIA_HOLD_CHANGED:
+      break;
+    case yealink::MEETING_MEDIA_VIDEO_LACK_OF_BANDWIDTH:
       break;
     default:
       NOTREACHED();
