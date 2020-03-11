@@ -181,6 +181,7 @@ void ConferenceChatBinding::OnMessageCompeleted(
         v8::Local<v8::Value>::New(isolate(), v8_new_message));
 
     delete item;
+    item = nullptr;
   } else {
     std::move(promise).Reject();
   }

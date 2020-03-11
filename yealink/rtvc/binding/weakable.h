@@ -33,6 +33,7 @@ class Weakable {
   template <typename U>
   static void DeleteInternal(const U* x) {
     delete x;
+    x = nullptr;
   }
 
   DISALLOW_COPY_AND_ASSIGN(Weakable);

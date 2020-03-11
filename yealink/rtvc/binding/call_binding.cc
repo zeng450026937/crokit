@@ -593,6 +593,7 @@ void CallBinding::RemoveRemoteVideoSink(mate::PersistentDictionary sink) {
   remote_video_source_->RemoveSink(sink_v8);
 
   delete sink_v8;
+  sink_v8 = nullptr;
 }
 
 void CallBinding::SetRemoteShareVideoSink(mate::Arguments* args) {
@@ -634,6 +635,7 @@ void CallBinding::RemoveRemoteShareVideoSink(mate::PersistentDictionary sink) {
   remote_share_video_source_->RemoveSink(sink_v8);
 
   delete sink_v8;
+  sink_v8 = nullptr;
 }
 
 bool CallBinding::conference_aware() {
@@ -689,9 +691,16 @@ bool CallBinding::SetSvcSubscribe(CallSvcSubscribeType type,
     ret = meeting_->SetShareSubscribe(subList, subCnt, unsubList, unsubCnt);
 
   if (subList)
+  {
     delete subList;
+    subList = nullptr;
+  }
+    
   if (unsubList)
+  {
     delete unsubList;
+    unsubList = nullptr;
+  }
 
   return ret;
 }

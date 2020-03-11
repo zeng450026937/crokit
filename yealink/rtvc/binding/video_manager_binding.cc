@@ -268,6 +268,7 @@ void VideoManagerBinding::RemoveLocalVideoSink(
   local_video_source_->RemoveSink(sink_v8);
 
   delete sink_v8;
+  sink_v8 = nullptr;
 }
 
 void VideoManagerBinding::SetLocalShareVideoSink(mate::Arguments* args) {
@@ -311,6 +312,7 @@ void VideoManagerBinding::RemoveLocalShareVideoSink(
   local_share_video_source_->RemoveSink(sink_v8);
 
   delete sink_v8;
+  sink_v8 = nullptr;
 }
 
 void VideoManagerBinding::SetLocalVideoSource(mate::Arguments* args) {

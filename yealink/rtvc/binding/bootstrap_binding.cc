@@ -165,7 +165,10 @@ v8::Local<v8::Promise> BootstrapBinding::Authenticate() {
               std::move(promise).Resolve(*result);
 
             if (observer)
+            {
               delete observer;
+              observer = nullptr;
+            }
           },
           std::move(promise), base::Owned(result), observer));
 
@@ -215,7 +218,10 @@ v8::Local<v8::Promise> BootstrapBinding::GetPartyInviteInfo() {
               std::move(promise).Resolve(*result);
 
             if (observer)
+            {
               delete observer;
+              observer = nullptr;
+            }
           },
           std::move(promise), base::Owned(result), observer));
 
@@ -247,7 +253,10 @@ v8::Local<v8::Promise> BootstrapBinding::PushVerifyCode() {
               std::move(promise).Resolve(*result);
 
             if (observer)
+            {
               delete observer;
+              observer = nullptr;
+            }
           },
           std::move(promise), base::Owned(result), observer));
 
@@ -307,7 +316,10 @@ v8::Local<v8::Promise> BootstrapBinding::GetServiceInfo(std::string url) {
               std::move(promise).Resolve(bootstrap->server_info_.value());
 
             if (observer)
+            {
               delete observer;
+              observer = nullptr;
+            }
           },
           std::move(promise), weak_factory_.GetWeakPtr(), url, observer));
 
@@ -350,7 +362,10 @@ v8::Local<v8::Promise> BootstrapBinding::GetMetaInfo(std::string url) {
               std::move(promise).Resolve(*result);
 
             if (observer)
+            {
               delete observer;
+              observer = nullptr;
+            }
           },
           std::move(promise), weak_factory_.GetWeakPtr(), url, res, observer));
 

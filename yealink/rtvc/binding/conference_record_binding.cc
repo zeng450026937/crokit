@@ -88,6 +88,7 @@ void ConferenceRecordBinding::OnProcessCompeleted(Promise promise,
   if (response != nullptr) {
     std::move(promise).Resolve(*response);
     delete response;
+    response = nullptr;
   } else {
     std::move(promise).Reject();
   }

@@ -116,6 +116,7 @@ void Context::Initialize(v8::Isolate* isolate,
       [](void* arg) {
         Context* context = reinterpret_cast<Context*>(arg);
         delete context;
+        context = nullptr;
       },
       Context::Instance());
 
