@@ -25,7 +25,7 @@ VideoSourceV8::~VideoSourceV8() {
                                      "removeSink", &converted_args);
 }
 
-void VideoSourceV8::OnFrame(mate::Dictionary frame, unsigned int id) {
+void VideoSourceV8::OnFrame(mate::Dictionary frame) {
   LOG(INFO) << __FUNCTIONW__;
   // TBD
 

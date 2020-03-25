@@ -53,11 +53,12 @@ YTMSBinding::YTMSBinding(v8::Isolate* isolate,
       ytms_agent_(yealink::CreateYTMSAgent(client_id.c_str())),
       weak_factory_(this) {
   InitWith(isolate, wrapper);
-
-  ytms_agent_->AddObserverHandler(this);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->AddObserverHandler(this);
 }
 YTMSBinding::~YTMSBinding() {
-  ytms_agent_->RemoveObserverHandler(this);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->RemoveObserverHandler(this);
 }
 
 std::string YTMSBinding::server() {
@@ -292,7 +293,8 @@ v8::Local<v8::Promise> YTMSBinding::Start() {
   return handle;
 }
 void YTMSBinding::DoStart(ProcessObserver* observer) {
-  is_running_ = ytms_agent_->StartYtmsService(server_.c_str(), nullptr);
+  if (ytms_agent_ != nullptr)
+    is_running_ = ytms_agent_->StartYtmsService(server_.c_str(), nullptr);
 }
 
 v8::Local<v8::Promise> YTMSBinding::Update(TerminalInfo params) {
@@ -345,7 +347,8 @@ void YTMSBinding::DoUpdate(TerminalInfo params, ProcessObserver* observer) {
   config.enterpriseId = params.enterprise_id.c_str();
   config.enterpriseName = params.enterprise_name.c_str();
 
-  ytms_agent_->SetYtmsInfo(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->SetYtmsInfo(config, observer);
 }
 
 v8::Local<v8::Promise> YTMSBinding::UploadAlarm(AlarmInfo params) {
@@ -372,7 +375,8 @@ void YTMSBinding::DoUploadAlarm(AlarmInfo params, ProcessObserver* observer) {
   config.alarmLevel = params.level.c_str();
   config.alarmDesc = params.desc.c_str();
 
-  ytms_agent_->UploadAlarm(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadAlarm(config, observer);
 }
 
 v8::Local<v8::Promise> YTMSBinding::UploadFeedBack(FeedbackInfo params) {
@@ -401,7 +405,8 @@ void YTMSBinding::DoUploadFeedBack(FeedbackInfo params,
   config.imagePath = params.image_path.c_str();
   config.videoPath = params.video_path.c_str();
 
-  ytms_agent_->UploadFeedback(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadFeedback(config, observer);
 }
 
 v8::Local<v8::Promise> YTMSBinding::UploadEvent(EventInfo params) {
@@ -426,7 +431,8 @@ void YTMSBinding::DoUploadEvent(EventInfo params, ProcessObserver* observer) {
   config.ispType = params.isp.c_str();
   config.networkMode = params.network.c_str();
 
-  ytms_agent_->UploadEvent(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadEvent(config, observer);
 }
 
 v8::Local<v8::Promise> YTMSBinding::UploadConfig(mate::Arguments* args) {
@@ -451,7 +457,8 @@ v8::Local<v8::Promise> YTMSBinding::UploadConfig(mate::Arguments* args) {
 }
 void YTMSBinding::DoUploadConfig(std::string params,
                                  ProcessObserver* observer) {
-  ytms_agent_->UploadConfig(params.c_str(), observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadConfig(params.c_str(), observer);
 }
 
 v8::Local<v8::Promise> YTMSBinding::UploadLog(UploadLogInfo params) {
@@ -474,7 +481,8 @@ void YTMSBinding::DoUploadLog(UploadLogInfo params, ProcessObserver* observer) {
   config.sessionId = params.session_id.c_str();
   config.logPath = params.file_path.c_str();
 
-  ytms_agent_->UploadLog(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadLog(config, observer);
 }
 
 // get package info
@@ -491,7 +499,8 @@ v8::Local<v8::Promise> YTMSBinding::GetPackagesInfo() {
   return handle;
 }
 void YTMSBinding::DoGetPackagesInfo() {
-  ConvertFrom(package_info_, ytms_agent_->GetPackagesInfo(nullptr));
+  if (ytms_agent_ != nullptr)
+    ConvertFrom(package_info_, ytms_agent_->GetPackagesInfo(nullptr));
 }
 void YTMSBinding::OnGetPackagesCompeleted(Promise promise) {
   std::move(promise).Resolve(package_info_);
@@ -511,7 +520,8 @@ v8::Local<v8::Promise> YTMSBinding::GetConfigFileInfo() {
   return handle;
 }
 void YTMSBinding::DoGetConfigFileInfo() {
-  ConvertFrom(config_info_, ytms_agent_->GetConfigFileInfo(nullptr));
+  if (ytms_agent_ != nullptr)
+    ConvertFrom(config_info_, ytms_agent_->GetConfigFileInfo(nullptr));
 }
 void YTMSBinding::OnGetConfigCompeleted(Promise promise) {
   std::move(promise).Resolve(config_info_);
@@ -540,13 +550,15 @@ void YTMSBinding::DoDownloadFile(DownloadInfo params,
   config.storePath = params.path.c_str();
   config.storeName = params.file_name.c_str();
 
-  ytms_agent_->DownloadFile(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->DownloadFile(config, observer);
 }
 
 std::vector<std::string> YTMSBinding::GetCaptureDevice() {
   std::vector<std::string> deviceInfo;
 
-  ConvertFrom(deviceInfo, ytms_agent_->GetCaptureDevices());
+  if (ytms_agent_ != nullptr)
+    ConvertFrom(deviceInfo, ytms_agent_->GetCaptureDevices());
 
   return deviceInfo;
 }
@@ -574,7 +586,8 @@ void YTMSBinding::DoStartCapture(NetCaptureInfo params,
   config.logPath = params.path.c_str();
   config.sessionId = params.session_id.c_str();
 
-  ytms_agent_->StartCaptureNetLog(config, observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->StartCaptureNetLog(config, observer);
 }
 
 // stop capture
@@ -599,7 +612,8 @@ v8::Local<v8::Promise> YTMSBinding::StopCapture(mate::Arguments* args) {
   return handle;
 }
 void YTMSBinding::DoStopCapture(std::string params, ProcessObserver* observer) {
-  ytms_agent_->StopCaptureNetLog(params.c_str(), observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->StopCaptureNetLog(params.c_str(), observer);
 }
 
 // UploadPacket
@@ -619,8 +633,9 @@ v8::Local<v8::Promise> YTMSBinding::UploadPacket(NetCaptureInfo params) {
 }
 void YTMSBinding::DoUploadPacket(NetCaptureInfo params,
                                  ProcessObserver* observer) {
-  ytms_agent_->UploadPacket(params.session_id.c_str(), params.path.c_str(),
-                            observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->UploadPacket(params.session_id.c_str(), params.path.c_str(),
+                              observer);
 }
 
 // UploadPacket
@@ -641,8 +656,9 @@ v8::Local<v8::Promise> YTMSBinding::ReportSessionStatus(
 }
 void YTMSBinding::DoReportSessionStatus(NetCaptureStatus params,
                                         ProcessObserver* observer) {
-  ytms_agent_->ReportSessionState(params.session_id.c_str(),
-                                  params.status.c_str(), observer);
+  if (ytms_agent_ != nullptr)
+    ytms_agent_->ReportSessionState(params.session_id.c_str(),
+                                    params.status.c_str(), observer);
 }
 
 }  // namespace rtvc

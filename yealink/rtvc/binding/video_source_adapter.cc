@@ -47,20 +47,20 @@ void VideoSourceAdapter::OnVideoFrame(const yealink::VideoFrame& frame,
   VideoFrame video_frame =
       VideoFrame::Builder().set_video_frame_buffer(buffer).build();
 
-  OnFrame(video_frame, id);
+  OnFrame(video_frame);
 }
 
-void VideoSourceAdapter::OnFrame(const VideoFrame& frame, unsigned int id) {
+void VideoSourceAdapter::OnFrame(const VideoFrame& frame) {
   if (!Context::Instance()->CalledOnValidThread()) {
     Context::Instance()->PostTask(
         FROM_HERE, base::BindOnce(&VideoSourceAdapter::OnFrame,
-                                  weak_factory_.GetWeakPtr(), frame, id));
+                                  weak_factory_.GetWeakPtr(), frame));
 
     return;
   }
 
   for (auto sink : sinks_) {
-    sink->OnFrame(frame, id);
+    sink->OnFrame(frame);
   }
 }
 
